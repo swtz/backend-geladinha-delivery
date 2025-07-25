@@ -2,3 +2,6 @@ Projeto → Backend para "Geladinha Delivery"
 
 → Seguir curso que mostrou como fazer o backend para o projeto "The Blog" e fazer
 as adaptações necessárias.
+
+→ A entidade UserEntity representa o usuário administrador do sistema. A princípio,
+ele é o usuário que tem mais autorização no sistema inteiro.
