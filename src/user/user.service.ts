@@ -23,5 +23,7 @@ export class UserService {
     }
 
     console.log(dto);
+
+    return dto;
   }
 }

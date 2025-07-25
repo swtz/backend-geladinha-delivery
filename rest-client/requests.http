@@ -1,3 +1,12 @@
 @baseUrl = http://localhost:3000
 
-GET {{baseUrl}}
+### Create user
+# @name createUser
+POST {{baseUrl}}/user
+Content-Type: application/json
+
+{
+  "name": "Leonardo",
+  "email": "leonardo@email.com",
+  "password": "123456"
+}
