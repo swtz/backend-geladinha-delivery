@@ -21,5 +21,7 @@ export class UserService {
     if (exists) {
       throw new ConflictException('Email já existe');
     }
+
+    console.log(dto);
   }
 }
