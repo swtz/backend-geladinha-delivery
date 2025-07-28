@@ -1,7 +1,12 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserService } from 'src/user/user.service';
+import { JwtPayload } from './types/jwt-payload.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -21,5 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(...args: any[]): unknown {}
+  async validate(payload: JwtPayload) {
+    const user = await this.userService.findById(payload.sub);
+
+    if (!user || user.forceLogout) {
+      throw new UnauthorizedException('Você precisa fazer login');
+    }
+
+    return user;
+  }
 }
