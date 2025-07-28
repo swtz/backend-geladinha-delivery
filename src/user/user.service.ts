@@ -37,4 +37,8 @@ export class UserService {
       email,
     });
   }
+
+  save(user: UserEntity) {
+    return this.userRepository.save(user);
+  }
 }
