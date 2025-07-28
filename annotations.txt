@@ -5,3 +5,8 @@ as adaptações necessárias.
 
 → A entidade UserEntity representa o usuário administrador do sistema. A princípio,
 ele é o usuário que tem mais autorização no sistema inteiro.
+
+→ A configuração do módulo 'JwtModule' obriga o usuário a ter um arquivo .env para
+as variáveis de configuração do ambiente. Sendo assim, caso não exista esse arquivo ou
+não exista a variável 'JWT_SECRET' nesse arquivo, a aplicação não iniciará, assim
+lançando uma exceção com status code 500.
