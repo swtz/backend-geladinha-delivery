@@ -10,3 +10,13 @@ Content-Type: application/json
   "email": "leonardo@email.com",
   "password": "123456"
 }
+
+### Auth login
+# @name authLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "leonardo@email.com",
+  "password": "123456"
+}
