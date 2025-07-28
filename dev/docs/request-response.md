@@ -13,4 +13,5 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /auth/login          POST        autenticar usuário      Aberta
 
 /user/              POST        Criar usuário           Aberta
+/user/me            GET         Ler usuário             Fechada
 ```
