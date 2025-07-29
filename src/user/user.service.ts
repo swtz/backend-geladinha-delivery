@@ -4,6 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,8 @@ export class UserService {
 
     return created;
   }
+
+  update(id: string, dto: UpdateUserDto) {}
 
   findByEmail(email: string) {
     return this.userRepository.findOneBy({
