@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -37,13 +38,21 @@ export class UserService {
     return created;
   }
 
-  update(id: string, dto: UpdateUserDto) {}
+  async update(id: string, dto: UpdateUserDto) {
+    if (!dto.name && !dto.email) {
+      throw new BadRequestException('Dados não enviados');
+    }
+
+    const user = await this.findOneByOrFail({ id });
+
+    user.name = dto.name ?? user.name;
+  }
 
   async findOneByOrFail(userData: Partial<UserEntity>) {
     const user = await this.userRepository.findOneBy(userData);
 
     if (!user) {
-      throw new NotFoundException('USuário não encontrado');
+      throw new NotFoundException('Usuário não encontrado');
     }
 
     return user;
