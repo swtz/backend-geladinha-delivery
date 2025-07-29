@@ -23,6 +23,11 @@ Content-Type: application/json
   "email": "leonardo@email.com"
 }
 
+### Delete user
+# @name deleteUser
+DELETE {{baseUrl}}/user/me
+Authorization: Bearer {{JwtToken}}
+
 ### Update user password
 # @name updateUserPassword
 PATCH {{baseUrl}}/user/me/password
