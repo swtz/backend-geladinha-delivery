@@ -23,3 +23,7 @@ lançando uma exceção com status code 500.
 
 Notou? Não foi necessário checar o usuário por meio de uma rota dinâmica, pois o login já "salva" os
 dados do usuário que está logado. Assim, ele é AUTORIZADO somente a atualizar SEUS dados.
+
+######### DELIVERY RESOURCE #########
+→ Por simplicidade e aprendizado, começarei desenvolvendo a entidade Delivery com base no anexo
+'Controle de Tele Entrega Motoboy Diário.xlsx', ou seja, não farei nenhuma modificação significante.
