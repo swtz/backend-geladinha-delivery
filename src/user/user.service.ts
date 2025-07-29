@@ -20,11 +20,7 @@ export class UserService {
   ) {}
 
   async create(dto: CreateUserDto) {
-    const exists = await this.findByEmail(dto.email);
-
-    if (exists) {
-      throw new ConflictException('Email já existe');
-    }
+    await this.failIfEmailExists(dto.email);
 
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {
@@ -56,6 +52,14 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async failIfEmailExists(email: string) {
+    const exists = await this.findByEmail(email);
+
+    if (exists) {
+      throw new ConflictException('Email já existe');
+    }
   }
 
   findByEmail(email: string) {
