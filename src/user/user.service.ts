@@ -42,6 +42,14 @@ export class UserService {
     const user = await this.findOneByOrFail({ id });
 
     user.name = dto.name ?? user.name;
+
+    if (dto.email && dto.email !== user.email) {
+      await this.failIfEmailExists(dto.email);
+      user.email = dto.email;
+      user.forceLogout = true;
+    }
+
+    return this.save(user);
   }
 
   async findOneByOrFail(userData: Partial<UserEntity>) {
