@@ -13,6 +13,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /auth/login          POST        autenticar usuário      Aberta
 
 /user/              POST        Criar usuário           Aberta
-/user/me            GET         Ler usuário             Fechada
-/user/me            PATCH       Atualizar usuário       Fechada
+/user/me            GET         Ler usuário             JWT
+/user/me            PATCH       Atualizar usuário       JWT
+/user/me/password   PATCH       Atualizar senha         JWT
 ```

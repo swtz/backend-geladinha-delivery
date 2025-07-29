@@ -23,6 +23,17 @@ Content-Type: application/json
   "email": "leonardo@email.com"
 }
 
+### Update user password
+# @name updateUserPassword
+PATCH {{baseUrl}}/user/me/password
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "123456",
+  "newPassword": "123456"
+}
+
 ### Auth login
 # @name authLogin
 POST {{baseUrl}}/auth/login
