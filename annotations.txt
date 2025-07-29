@@ -10,3 +10,16 @@ ele é o usuário que tem mais autorização no sistema inteiro.
 as variáveis de configuração do ambiente. Sendo assim, caso não exista esse arquivo ou
 não exista a variável 'JWT_SECRET' nesse arquivo, a aplicação não iniciará, assim
 lançando uma exceção com status code 500.
+
+→ Lógica do sistema de login do sistema (igual o projeto The Blog)
+
+  → usuário cria conta no sistema
+  → usuário faz login
+    → após fazer login, é assinado um JWT Token que carrega o ID desse usuário
+  → usuário acessa 'rota fechada'
+    → @UseGuards(JwtAuthGuard) checa autenticidade do usuário
+      → se usuário é autêntico, retorna objeto 'user' para a requisição
+  → o recurso '/user/me' acessa 'req.user.id' e dispara o método 'update' junto ao DTO enviado
+
+Notou? Não foi necessário checar o usuário por meio de uma rota dinâmica, pois o login já "salva" os
+dados do usuário que está logado. Assim, ele é AUTORIZADO somente a atualizar SEUS dados.

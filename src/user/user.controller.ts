@@ -28,7 +28,8 @@ export class UserController {
     return this.userService.create(dto);
   }
 
-  @Patch()
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
   update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
     return this.userService.update(req.user.id, dto);
   }

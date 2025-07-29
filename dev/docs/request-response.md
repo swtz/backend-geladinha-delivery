@@ -14,4 +14,5 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 
 /user/              POST        Criar usuário           Aberta
 /user/me            GET         Ler usuário             Fechada
+/user/me            PATCH       Atualizar usuário       Fechada
 ```
