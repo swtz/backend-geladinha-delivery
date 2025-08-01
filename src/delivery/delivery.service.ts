@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class DeliveryService {
+  private readonly logger = new Logger(DeliveryService.name);
+
   constructor(
     @InjectRepository(DeliveryEntity)
     private readonly deliveryRepository: Repository<DeliveryEntity>,
@@ -23,7 +25,15 @@ export class DeliveryService {
       operator,
     });
 
-    const created = this.deliveryRepository.save(delivery);
+    const created = this.deliveryRepository
+      .save(delivery)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o post', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar o post');
+      });
 
     return created;
   }

@@ -1,6 +1,21 @@
 @baseUrl = http://localhost:3000
 @JwtToken = {{authLogin.response.body.accessToken}}
 
+
+################### LOGIN ###################
+
+### Auth login
+# @name authLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "leonardo@email.com",
+  "password": "123456"
+}
+
+################### USER ###################
+
 ### Create user
 # @name createUser
 POST {{baseUrl}}/user
@@ -39,17 +54,22 @@ Content-Type: application/json
   "newPassword": "123456"
 }
 
-### Auth login
-# @name authLogin
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "leonardo@email.com",
-  "password": "123456"
-}
-
 ### Read one user
 # @name readOneUser
 GET {{baseUrl}}/user/me
 Authorization: Bearer {{JwtToken}}
+
+################### DELIVERY ###################
+
+### Create delivery
+# @name createDelivery
+POST {{baseUrl}}/delivery/me
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "name": "Leonardo, Av. Rio Grande do Sul, 1132, Turimar",
+  "totalPurchase": 88.0,
+  "deliveryTax": 7.0,
+  "paymentMethod": "Dinheiro"
+}
