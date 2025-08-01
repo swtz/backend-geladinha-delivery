@@ -4,7 +4,6 @@ import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class DeliveryService {
@@ -15,7 +14,7 @@ export class DeliveryService {
     private readonly deliveryRepository: Repository<DeliveryEntity>,
   ) {}
 
-  async create(dto: CreateDeliveryDto, operator: UserEntity) {
+  create(dto: CreateDeliveryDto, operator: UserEntity) {
     const delivery = this.deliveryRepository.create({
       name: dto.name,
       totalPurchase: dto.totalPurchase,
@@ -35,5 +34,14 @@ export class DeliveryService {
       });
 
     return created;
+  }
+
+  async findOne(deliveryData: Partial<DeliveryEntity>) {
+    const delivery = await this.deliveryRepository.findOne({
+      where: deliveryData,
+      relations: ['operator'],
+    });
+
+    return delivery;
   }
 }
