@@ -41,6 +41,18 @@ export class DeliveryService {
     return created;
   }
 
+  async findOneOwned(deliveryData: DeliveryEntity, operator: UserEntity) {
+    const ownedDelivery = await this.deliveryRepository.findOne({
+      where: {
+        ...deliveryData,
+        operator: { id: operator.id },
+      },
+      relations: ['operator'],
+    });
+
+    return ownedDelivery;
+  }
+
   async findOneOrFail(deliveryData: Partial<DeliveryEntity>) {
     const delivery = await this.findOne(deliveryData);
 
