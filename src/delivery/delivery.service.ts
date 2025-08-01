@@ -13,7 +13,6 @@ export class DeliveryService {
   constructor(
     @InjectRepository(DeliveryEntity)
     private readonly deliveryRepository: Repository<DeliveryEntity>,
-    private readonly userService: UserService,
   ) {}
 
   async create(dto: CreateDeliveryDto, operator: UserEntity) {
