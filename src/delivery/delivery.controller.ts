@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -18,5 +27,19 @@ export class DeliveryController {
     const delivery = await this.deliveryService.create(dto, req.user);
 
     return new ResponseDeliveryDto(delivery);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/:id')
+  async findOneOwned(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const ownedDelivery = await this.deliveryService.findOneOwnedOrFail(
+      { id },
+      req.user,
+    );
+
+    return new ResponseDeliveryDto(ownedDelivery);
   }
 }

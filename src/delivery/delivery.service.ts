@@ -41,7 +41,10 @@ export class DeliveryService {
     return created;
   }
 
-  async findOneOwnedOrFail(deliveryData: DeliveryEntity, operator: UserEntity) {
+  async findOneOwnedOrFail(
+    deliveryData: Partial<DeliveryEntity>,
+    operator: UserEntity,
+  ) {
     const ownedDelivery = await this.findOneOwned(deliveryData, operator);
 
     if (!ownedDelivery) {
@@ -51,7 +54,10 @@ export class DeliveryService {
     return ownedDelivery;
   }
 
-  async findOneOwned(deliveryData: DeliveryEntity, operator: UserEntity) {
+  async findOneOwned(
+    deliveryData: Partial<DeliveryEntity>,
+    operator: UserEntity,
+  ) {
     const ownedDelivery = await this.deliveryRepository.findOne({
       where: {
         ...deliveryData,

@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "luders@email.com",
   "password": "123456"
 }
 
@@ -73,3 +73,8 @@ Content-Type: application/json
   "deliveryTax": 7.0,
   "paymentMethod": "Dinheiro"
 }
+
+### Find one owned delivery
+# @name findOneOwnedDelivery
+GET {{baseUrl}}/delivery/me/6f892c30-bb85-4ae4-b853-123b3cceec33
+Authorization: Bearer {{JwtToken}}
