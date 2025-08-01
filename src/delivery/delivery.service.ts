@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,6 +39,16 @@ export class DeliveryService {
       });
 
     return created;
+  }
+
+  async findOneOrFail(deliveryData: Partial<DeliveryEntity>) {
+    const delivery = await this.findOne(deliveryData);
+
+    if (!delivery) {
+      throw new NotFoundException('Entrega não encontrada');
+    }
+
+    return delivery;
   }
 
   async findOne(deliveryData: Partial<DeliveryEntity>) {
