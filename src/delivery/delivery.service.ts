@@ -14,7 +14,17 @@ export class DeliveryService {
     private readonly userService: UserService,
   ) {}
 
-  async create(dto: CreateDeliveryDto, user: UserEntity) {
-    const operator = await this.userService.findOneByOrFail({ id: user.id });
+  async create(dto: CreateDeliveryDto, operator: UserEntity) {
+    const delivery = this.deliveryRepository.create({
+      name: dto.name,
+      totalPurchase: dto.totalPurchase,
+      deliveryTax: dto.deliveryTax,
+      paymentMethod: dto.paymentMethod,
+      operator,
+    });
+
+    const created = this.deliveryRepository.save(delivery);
+
+    return created;
   }
 }
