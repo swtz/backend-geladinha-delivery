@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "luders@email.com",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -72,6 +72,20 @@ Content-Type: application/json
   "totalPurchase": 120.89,
   "deliveryTax": 5.0,
   "paymentMethod": "Cartão"
+}
+
+### Update delivery
+# @name updateDelivery
+PATCH {{baseUrl}}/delivery/me/e30e4d2c-abb9-45ea-b681-64a2fcb8a934
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "name": "NOVO → Postal, Rua Rio de Janeiro, 999, Turimar",
+  "totalPurchase": 41.25,
+  "deliveryTax": 10.0,
+  "paymentMethod": "PIX",
+  "paid": false
 }
 
 ### Find one owned delivery

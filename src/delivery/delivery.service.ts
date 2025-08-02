@@ -47,23 +47,25 @@ export class DeliveryService {
     operator: UserEntity,
     deliveryData: Partial<DeliveryEntity>,
   ) {
+    const isPaid = dto.paid;
+    delete dto['paid'];
+
+    if (Object.keys(dto).length === 0 && isPaid == undefined) {
+      throw new BadRequestException('Dados não enviados');
+    }
+
     const delivery = await this.findOneOwnedOrFail(
       { id: deliveryData.id },
       operator,
     );
 
-    // delivery.name = dto.name ?? delivery.name;
-    // delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
-    // delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
-    // delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
-    // delivery.paid = dto.paid ?? delivery.paid;
-
-    const updatedDelivery = {
+    const updatedDelivery: DeliveryEntity = {
       ...delivery,
       ...dto,
+      paid: isPaid ?? delivery.paid,
     };
 
-    return updatedDelivery;
+    return this.deliveryRepository.save(updatedDelivery);
   }
 
   async findOneOwnedOrFail(
