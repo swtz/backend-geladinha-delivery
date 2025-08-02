@@ -63,7 +63,7 @@ export class DeliveryService {
       ...dto,
     };
 
-    console.log(updatedDelivery);
+    return updatedDelivery;
   }
 
   async findOneOwnedOrFail(
