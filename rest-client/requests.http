@@ -68,13 +68,18 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Leonardo, Av. Rio Grande do Sul, 1132, Turimar",
-  "totalPurchase": 88.0,
-  "deliveryTax": 7.0,
-  "paymentMethod": "Dinheiro"
+  "name": "Laura, Rua Rio de Janeiro, 170, Turimar",
+  "totalPurchase": 120.89,
+  "deliveryTax": 5.0,
+  "paymentMethod": "Cartão"
 }
 
 ### Find one owned delivery
 # @name findOneOwnedDelivery
-GET {{baseUrl}}/delivery/me/6f892c30-bb85-4ae4-b853-123b3cceec33
+GET {{baseUrl}}/delivery/me/ba5a0fca-197d-4905-a6da-6d1276fe3793
+Authorization: Bearer {{JwtToken}}
+
+### Find all owned delivery
+# @name findAllOwnedDelivery
+GET {{baseUrl}}/delivery/me
 Authorization: Bearer {{JwtToken}}

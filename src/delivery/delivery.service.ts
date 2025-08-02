@@ -9,6 +9,7 @@ import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { isInstance } from 'class-validator';
 
 @Injectable()
 export class DeliveryService {
@@ -77,7 +78,7 @@ export class DeliveryService {
       order: {
         createdAt: 'DESC',
       },
-      relations: ['author'],
+      relations: ['operator'],
     });
 
     return deliveries;

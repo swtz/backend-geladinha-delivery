@@ -42,4 +42,16 @@ export class DeliveryController {
 
     return new ResponseDeliveryDto(ownedDelivery);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const ownedDeliveries = await this.deliveryService.findAllOwned(req.user);
+
+    const arrayDeliveries = ownedDeliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
+
+    return arrayDeliveries;
+  }
 }
