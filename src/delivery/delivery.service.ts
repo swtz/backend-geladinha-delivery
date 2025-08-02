@@ -9,7 +9,7 @@ import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { isInstance } from 'class-validator';
+import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 
 @Injectable()
 export class DeliveryService {
@@ -40,6 +40,30 @@ export class DeliveryService {
       });
 
     return created;
+  }
+
+  async update(
+    dto: UpdateDeliveryDto,
+    operator: UserEntity,
+    deliveryData: Partial<DeliveryEntity>,
+  ) {
+    const delivery = await this.findOneOwnedOrFail(
+      { id: deliveryData.id },
+      operator,
+    );
+
+    // delivery.name = dto.name ?? delivery.name;
+    // delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
+    // delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
+    // delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
+    // delivery.paid = dto.paid ?? delivery.paid;
+
+    const updatedDelivery = {
+      ...delivery,
+      ...dto,
+    };
+
+    console.log(updatedDelivery);
   }
 
   async findOneOwnedOrFail(
