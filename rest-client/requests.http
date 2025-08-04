@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "luders@email.com",
   "password": "123456"
 }
 
@@ -87,6 +87,11 @@ Content-Type: application/json
   "paymentMethod": "PIX",
   "paid": false
 }
+
+### Delete delivery
+# @name deleteDelivery
+DELETE {{baseUrl}}/delivery/me/6393a4f0-edaa-4a44-95de-3b37967278cc
+Authorization: Bearer {{JwtToken}}
 
 ### Find one owned delivery
 # @name findOneOwnedDelivery
