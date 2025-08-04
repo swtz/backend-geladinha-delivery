@@ -80,4 +80,16 @@ export class DeliveryController {
 
     return arrayDeliveries;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAll() {
+    const deliveries = await this.deliveryService.findAll();
+
+    const arrayDeliveries = deliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
+
+    return arrayDeliveries;
+  }
 }

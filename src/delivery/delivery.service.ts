@@ -139,4 +139,13 @@ export class DeliveryService {
 
     return delivery;
   }
+
+  async findAll() {
+    const deliveries = await this.deliveryRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['operator'],
+    });
+
+    return deliveries;
+  }
 }

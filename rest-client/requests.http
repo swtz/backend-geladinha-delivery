@@ -98,7 +98,12 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery/me/ba5a0fca-197d-4905-a6da-6d1276fe3793
 Authorization: Bearer {{JwtToken}}
 
-### Find all owned delivery
+### Find all owned deliveries
 # @name findAllOwnedDelivery
 GET {{baseUrl}}/delivery/me
+Authorization: Bearer {{JwtToken}}
+
+### Find all deliveries
+# @name findAllOwnedDelivery
+GET {{baseUrl}}/delivery
 Authorization: Bearer {{JwtToken}}
