@@ -148,4 +148,14 @@ export class DeliveryService {
 
     return deliveries;
   }
+
+  async findAllPaid(paid: boolean) {
+    const paidDeliveries = await this.deliveryRepository.find({
+      where: { paid },
+      order: { createdAt: 'DESC' },
+      relations: ['operator'],
+    });
+
+    return paidDeliveries;
+  }
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -85,6 +86,18 @@ export class DeliveryController {
   @Get()
   async findAll() {
     const deliveries = await this.deliveryService.findAll();
+
+    const arrayDeliveries = deliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
+
+    return arrayDeliveries;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:bool')
+  async findAllPaid(@Param('bool', ParseBoolPipe) bool: boolean) {
+    const deliveries = await this.deliveryService.findAllPaid(bool);
 
     const arrayDeliveries = deliveries.map(
       delivery => new ResponseDeliveryDto(delivery),
