@@ -68,10 +68,13 @@ export class DeliveryService {
     return this.deliveryRepository.save(updatedDelivery);
   }
 
-  async remove(operator: UserEntity, operatorData: Partial<UserEntity>) {
-    const delivery = await this.findOneOwnedOrFail(operatorData, operator);
+  async remove(operator: UserEntity, deliveryData: Partial<DeliveryEntity>) {
+    const delivery = await this.findOneOwnedOrFail(deliveryData, operator);
 
-    await this.deliveryRepository.delete(delivery);
+    await this.deliveryRepository.delete({
+      ...deliveryData,
+      operator: { id: operator.id },
+    });
 
     return delivery;
   }
