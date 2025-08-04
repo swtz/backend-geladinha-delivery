@@ -18,6 +18,8 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/me                DELETE      Apagar usuário                            JWT
 /user/me/password       PATCH       Atualizar senha                           JWT
 
+/delivery-man/          POST        Criar usuário                             Aberta
+
 /delivery/              GET         Ver todos os pedidos                      JWT
 /delivery/:boolean      GET         Ver todos os pedidos pagos                JWT
 /delivery/me            GET         Ver todos os pedidos de um usuário        JWT
