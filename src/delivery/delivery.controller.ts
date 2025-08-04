@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -39,6 +40,17 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.update(dto, req.user, { id });
+
+    return new ResponseDeliveryDto(delivery);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me/:id')
+  async remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const delivery = await this.deliveryService.remove(req.user, { id });
 
     return new ResponseDeliveryDto(delivery);
   }
