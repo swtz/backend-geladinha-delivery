@@ -1,7 +1,9 @@
+import { VoucherEntity } from 'src/voucher/entities/voucher.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -40,4 +42,7 @@ export class DeliveryManEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => VoucherEntity, voucher => voucher.deliveryMan)
+  vouchers: VoucherEntity[];
 }

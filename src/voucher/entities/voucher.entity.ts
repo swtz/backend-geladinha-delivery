@@ -25,6 +25,6 @@ export class VoucherEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => DeliveryManEntity)
+  @ManyToOne(() => DeliveryManEntity, deliveryMan => deliveryMan.vouchers)
   deliveryMan: DeliveryManEntity;
 }
