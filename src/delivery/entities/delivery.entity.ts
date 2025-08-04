@@ -34,6 +34,6 @@ export class DeliveryEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
   operator: UserEntity;
 }

@@ -10,9 +10,9 @@ export class ResponseDeliveryDto {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly operator: {
-    id: string;
-    name: string;
-    email: string;
+    id: string | null;
+    name: string | null;
+    email: string | null;
   };
 
   constructor(delivery: DeliveryEntity) {
@@ -25,9 +25,9 @@ export class ResponseDeliveryDto {
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
     this.operator = {
-      id: delivery.operator.id,
-      name: delivery.operator.name,
-      email: delivery.operator.email,
+      id: delivery.operator?.id,
+      name: delivery.operator?.name,
+      email: delivery.operator?.email,
     };
   }
 }
