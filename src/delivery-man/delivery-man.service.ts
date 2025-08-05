@@ -69,6 +69,7 @@ export class DeliveryManService {
     deliveryMan.phone = dto.phone ?? deliveryMan.phone;
     deliveryMan.motorcycle = dto.motorcycle ?? deliveryMan.motorcycle;
     deliveryMan.daily = dto.daily ?? deliveryMan.daily;
+    deliveryMan.tip = dto.tip ?? deliveryMan.tip;
 
     if (dto.email && dto.email !== deliveryMan.email) {
       await this.failIfEmailExists(dto.email);
