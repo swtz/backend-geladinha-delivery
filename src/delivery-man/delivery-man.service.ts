@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { DeliveryManEntity } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
+import { HashingService } from 'src/common/hashing/hashing.service';
 
 @Injectable()
 export class DeliveryManService {
@@ -11,10 +12,13 @@ export class DeliveryManService {
     @InjectRepository(DeliveryManEntity)
     private readonly deliveryManRepository: Repository<DeliveryManEntity>,
     private readonly voucherService: VoucherService,
+    private readonly hashingService: HashingService,
   ) {}
 
   async create(dto: CreateDeliveryManDto) {
     await this.failIfEmailExists(dto.email);
+
+    const hashedPassword = await this.hashingService.hash(dto.password);
   }
 
   async failIfEmailExists(email: string) {
