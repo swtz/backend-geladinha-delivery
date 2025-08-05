@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { Repository } from 'typeorm';
@@ -73,5 +74,16 @@ export class DeliveryManService {
 
   findByEmail(email: string) {
     return this.deliveryManRepository.findOneBy({ email });
+  }
+
+  async findOneByOrFail(deliveryManData: Partial<DeliveryManEntity>) {
+    const deliveryMan =
+      await this.deliveryManRepository.findOneBy(deliveryManData);
+
+    if (!deliveryMan) {
+      throw new NotFoundException('Motoboy não encontrado');
+    }
+
+    return deliveryMan;
   }
 }
