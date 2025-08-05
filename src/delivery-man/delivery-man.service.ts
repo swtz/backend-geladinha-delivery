@@ -50,7 +50,7 @@ export class DeliveryManService {
     return created;
   }
 
-  update(dto: UpdateDeliveryManDto, id: string) {
+  async update(dto: UpdateDeliveryManDto, id: string) {
     const existsData =
       dto.name ||
       dto.email ||
@@ -62,6 +62,21 @@ export class DeliveryManService {
     if (!existsData) {
       throw new BadRequestException('Dados não enviados');
     }
+
+    const deliveryMan = await this.findOneByOrFail({ id });
+
+    deliveryMan.name = dto.name ?? deliveryMan.name;
+    deliveryMan.phone = dto.phone ?? deliveryMan.phone;
+    deliveryMan.motorcycle = dto.motorcycle ?? deliveryMan.motorcycle;
+    deliveryMan.daily = dto.daily ?? deliveryMan.daily;
+
+    if (dto.email && dto.email !== deliveryMan.email) {
+      await this.failIfEmailExists(dto.email);
+      deliveryMan.email = dto.email;
+      deliveryMan.forceLogout = true;
+    }
+
+    return this.deliveryManRepository.save(deliveryMan);
   }
 
   async failIfEmailExists(email: string) {
