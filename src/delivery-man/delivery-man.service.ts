@@ -51,7 +51,7 @@ export class DeliveryManService {
   async failIfEmailExists(email: string) {
     const exists = await this.findByEmail(email);
 
-    if (!exists) {
+    if (exists) {
       throw new ConflictException('Email já existe');
     }
   }
