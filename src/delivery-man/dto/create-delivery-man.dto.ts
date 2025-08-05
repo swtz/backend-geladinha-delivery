@@ -13,7 +13,7 @@ export class CreateDeliveryManDto {
   name: string;
 
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
+  @IsNotEmpty({ message: 'Campo telefone não pode estar vazio' })
   phone: string;
 
   @IsEmail({}, { message: 'E-mail inválido' })
