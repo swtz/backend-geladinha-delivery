@@ -76,6 +76,11 @@ export class DeliveryManService {
       deliveryMan.forceLogout = true;
     }
 
+    if (dto.voucher) {
+      const voucher = await this.voucherService.create(dto.voucher);
+      deliveryMan.vouchers.push(voucher);
+    }
+
     return this.deliveryManRepository.save(deliveryMan);
   }
 
