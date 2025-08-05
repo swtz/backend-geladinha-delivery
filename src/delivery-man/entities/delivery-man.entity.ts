@@ -43,6 +43,8 @@ export class DeliveryManEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => VoucherEntity, voucher => voucher.deliveryMan)
+  @OneToMany(() => VoucherEntity, voucher => voucher.deliveryMan, {
+    nullable: true,
+  })
   vouchers: VoucherEntity[];
 }
