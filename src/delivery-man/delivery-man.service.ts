@@ -10,6 +10,7 @@ import { DeliveryManEntity } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
+import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
 
 @Injectable()
 export class DeliveryManService {
@@ -46,6 +47,20 @@ export class DeliveryManService {
       });
 
     return created;
+  }
+
+  update(dto: UpdateDeliveryManDto, id: string) {
+    const existsData =
+      dto.name ||
+      dto.email ||
+      dto.phone ||
+      dto.motorcycle ||
+      dto.daily ||
+      dto.tip;
+
+    if (!existsData) {
+      throw new BadRequestException('Dados não enviados');
+    }
   }
 
   async failIfEmailExists(email: string) {
