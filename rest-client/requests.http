@@ -112,3 +112,19 @@ Authorization: Bearer {{JwtToken}}
 # @name findAllPaidDeliveries
 GET {{baseUrl}}/delivery/false
 Authorization: Bearer {{JwtToken}}
+
+################### DELIVERY ###################
+
+### Create delivery man
+# @name createDeliveryMan
+POST {{baseUrl}}/delivery-man
+Content-Type: application/json
+
+{
+  "name": "Lucas",
+  "email": "lucas@email.com",
+  "phone": "48988306754",
+  "password": "123456",
+  "motorcycle": "Honda, 150, 2010, Preta",
+  "daily": 30
+}
