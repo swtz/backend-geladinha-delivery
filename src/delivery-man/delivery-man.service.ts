@@ -83,7 +83,7 @@ export class DeliveryManService {
       deliveryMan.vouchers.push(voucher);
     }
 
-    return this.deliveryManRepository.save(deliveryMan);
+    return this.save(deliveryMan);
   }
 
   async failIfEmailExists(email: string) {
@@ -109,5 +109,9 @@ export class DeliveryManService {
     }
 
     return deliveryMan;
+  }
+
+  save(deliveryMan: DeliveryManEntity) {
+    return this.deliveryManRepository.save(deliveryMan);
   }
 }
