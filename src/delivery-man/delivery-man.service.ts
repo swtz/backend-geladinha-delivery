@@ -57,13 +57,14 @@ export class DeliveryManService {
       dto.phone ||
       dto.motorcycle ||
       dto.daily ||
-      dto.tip;
+      dto.tip ||
+      dto.voucher?.amount;
 
     if (!existsData) {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const deliveryMan = await this.findOneByOrFail({ id });
+    const deliveryMan = await this.findOneOrFail({ id });
 
     deliveryMan.name = dto.name ?? deliveryMan.name;
     deliveryMan.phone = dto.phone ?? deliveryMan.phone;
@@ -97,9 +98,11 @@ export class DeliveryManService {
     return this.deliveryManRepository.findOneBy({ email });
   }
 
-  async findOneByOrFail(deliveryManData: Partial<DeliveryManEntity>) {
-    const deliveryMan =
-      await this.deliveryManRepository.findOneBy(deliveryManData);
+  async findOneOrFail(deliveryManData: Partial<DeliveryManEntity>) {
+    const deliveryMan = await this.deliveryManRepository.findOne({
+      where: deliveryManData,
+      relations: ['vouchers'],
+    });
 
     if (!deliveryMan) {
       throw new NotFoundException('Motoboy não encontrado');

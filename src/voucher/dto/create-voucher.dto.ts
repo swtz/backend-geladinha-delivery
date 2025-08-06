@@ -9,5 +9,5 @@ export class CreateVoucherDto {
   @MaxLength(30, {
     message: 'A descrição só pode ter no máximo 30 caracteres.',
   })
-  description: string;
+  description?: string;
 }

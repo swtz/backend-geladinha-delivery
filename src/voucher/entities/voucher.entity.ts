@@ -16,7 +16,7 @@ export class VoucherEntity {
   @Column('double')
   amount: number;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @CreateDateColumn()
