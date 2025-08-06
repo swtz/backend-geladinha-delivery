@@ -59,7 +59,11 @@ export class AuthService {
 
     user.forceLogout = false;
 
-    if (user instanceof UserEntity) await this.userService.save(user);
+    if (user instanceof UserEntity) {
+      await this.userService.save(user);
+    } else {
+      await this.deliveryManService.save(user);
+    }
 
     return { accessToken };
   }
