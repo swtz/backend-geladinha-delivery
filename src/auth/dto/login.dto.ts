@@ -8,9 +8,9 @@ export class LoginDto {
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   password: string;
 
-  @IsBoolean({ message: 'Campo caixa só permite valor verdadeiro-/falso' })
+  @IsBoolean({ message: 'Campo caixa só permite valor verdadeiro/falso' })
   operator: boolean;
 
-  @IsBoolean({ message: 'Campo motoboy só permite valor verdadeiro-/falso' })
+  @IsBoolean({ message: 'Campo motoboy só permite valor verdadeiro/falso' })
   deliveryMan: boolean;
 }

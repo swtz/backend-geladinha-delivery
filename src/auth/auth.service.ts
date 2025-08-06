@@ -1,10 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UserService } from 'src/user/user.service';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types/jwt-payload.type';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +22,20 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
-    const user = await this.userService.findByEmail(dto.email);
+    let user: UserEntity | DeliveryManEntity | null;
+
+    if (dto.operator && dto.deliveryMan) {
+      throw new BadRequestException('Escolha somente uma função');
+    }
+
+    if (dto.operator) {
+      user = await this.userService.findByEmail(dto.email);
+    } else if (dto.deliveryMan) {
+      user = await this.deliveryManService.findByEmail(dto.email);
+    } else {
+      user = null;
+    }
+
     const error = new UnauthorizedException('Usuário ou senha inválidos');
 
     if (!user) {
