@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "luders@email.com",
   "password": "123456"
 }
 
@@ -121,10 +121,28 @@ POST {{baseUrl}}/delivery-man
 Content-Type: application/json
 
 {
-  "name": "Lucas",
-  "email": "lucas@email.com",
+  "name": "Laura",
+  "email": "laura@email.com",
   "phone": "48988306754",
   "password": "123456",
   "motorcycle": "Honda, 150, 2010, Preta",
   "daily": 30
+}
+
+### Update delivery man
+# @name createDeliveryMan
+PATCH {{baseUrl}}/delivery-man/d3171615-a268-4645-991a-ebfd5f3c5df5
+Content-Type: application/json
+
+{
+  "name": "Laura",
+  "email": "arroz@email.com",
+  "phone": "48988306754",
+  "motorcycle": "Honda, 150, 2010, Preta",
+  "daily": 30,
+  "tip": 2.5,
+  "voucher": {
+    "amount": 40.0,
+    "description": "gasolina"
+  }
 }
