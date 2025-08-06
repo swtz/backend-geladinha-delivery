@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginDto {
   @IsEmail({}, { message: 'E-mail inválido' })
@@ -7,4 +7,10 @@ export class LoginDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   password: string;
+
+  @IsBoolean({ message: 'Campo caixa só permite valor verdadeiro-/falso' })
+  operator: boolean;
+
+  @IsBoolean({ message: 'Campo motoboy só permite valor verdadeiro-/falso' })
+  deliveryMan: boolean;
 }
