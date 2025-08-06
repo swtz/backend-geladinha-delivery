@@ -14,5 +14,6 @@ import { CommonModule } from 'src/common/common.module';
   ],
   controllers: [DeliveryManController],
   providers: [DeliveryManService],
+  exports: [DeliveryManService],
 })
 export class DeliveryManModule {}
