@@ -25,6 +25,8 @@ export class VoucherEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => DeliveryManEntity, deliveryMan => deliveryMan.vouchers)
+  @ManyToOne(() => DeliveryManEntity, deliveryMan => deliveryMan.vouchers, {
+    onDelete: 'CASCADE',
+  })
   deliveryMan: DeliveryManEntity;
 }

@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { Repository } from 'typeorm';
@@ -12,6 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
+import { UpdatePasswordDto } from 'src/user/dto/update-password.dto';
 
 @Injectable()
 export class DeliveryManService {
@@ -86,6 +88,24 @@ export class DeliveryManService {
     return this.save(deliveryMan);
   }
 
+  async updatePassword(dto: UpdatePasswordDto, id: string) {
+    const deliveryMan = await this.findOneOrFail({ id });
+    const validPassword = await this.hashingService.compare(
+      dto.currentPassword,
+      deliveryMan.password,
+    );
+
+    if (!validPassword) {
+      throw new UnauthorizedException('Senha inválida');
+    }
+
+    const hashedPassword = await this.hashingService.hash(dto.newPassword);
+    deliveryMan.password = hashedPassword;
+    deliveryMan.forceLogout = true;
+
+    return this.save(deliveryMan);
+  }
+
   async failIfEmailExists(email: string) {
     const exists = await this.findByEmail(email);
 
@@ -112,6 +132,21 @@ export class DeliveryManService {
       throw new NotFoundException('Motoboy não encontrado');
     }
 
+    return deliveryMan;
+  }
+
+  async findAll() {
+    const deliveryMans = await this.deliveryManRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['vouchers'],
+    });
+
+    return deliveryMans;
+  }
+
+  async remove(id: string) {
+    const deliveryMan = await this.findOneOrFail({ id });
+    await this.deliveryManRepository.delete({ id });
     return deliveryMan;
   }
 

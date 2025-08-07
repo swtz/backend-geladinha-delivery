@@ -40,10 +40,10 @@ export class DeliveryService {
       .save(delivery)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar o post', err.stack);
+          this.logger.error('Erro ao criar a entrega', err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar o post');
+        throw new BadRequestException('Erro ao criar a entrega');
       });
 
     return created;

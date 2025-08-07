@@ -11,7 +11,7 @@ Content-Type: application/json
 
 {
   "email": "laura@email.com",
-  "password": "123456",
+  "password": "1234567",
   "operator": false,
   "deliveryMan": true
 }
@@ -24,8 +24,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Luders",
-  "email": "luders@email.com",
+  "name": "Leonardo",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -133,12 +133,13 @@ Content-Type: application/json
 
 ### Update delivery man
 # @name createDeliveryMan
-PATCH {{baseUrl}}/delivery-man/d3171615-a268-4645-991a-ebfd5f3c5df5
+PATCH {{baseUrl}}/delivery-man/me
+Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "name": "Laura",
-  "email": "arroz@email.com",
+  "email": "cabral@email.com",
   "phone": "48988306754",
   "motorcycle": "Honda, 150, 2010, Preta",
   "daily": 30,
@@ -148,3 +149,29 @@ Content-Type: application/json
     "description": "gasolina"
   }
 }
+
+### Update user password
+# @name updateUserPassword
+PATCH {{baseUrl}}/delivery-man/me/password
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "1234567",
+  "newPassword": "1234567"
+}
+
+### Delete delivery man
+# @name deleteDeliveryMan
+DELETE {{baseUrl}}/delivery-man/me
+Authorization: Bearer {{JwtToken}}
+
+### Read one delivery man
+# @name readOneDeliveryMan
+GET {{baseUrl}}/delivery-man/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all delivery man
+# @name readAllDeliveryMan
+GET {{baseUrl}}/delivery-man
+Authorization: Bearer {{JwtToken}}
