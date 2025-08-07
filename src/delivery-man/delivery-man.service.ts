@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { Repository } from 'typeorm';
@@ -12,6 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
+import { UpdatePasswordDto } from 'src/user/dto/update-password.dto';
 
 @Injectable()
 export class DeliveryManService {
@@ -82,6 +84,23 @@ export class DeliveryManService {
       const voucher = await this.voucherService.create(dto.voucher);
       deliveryMan.vouchers.push(voucher);
     }
+
+    return this.save(deliveryMan);
+  }
+
+  async updatePassword(dto: UpdatePasswordDto, id: string) {
+    const deliveryMan = await this.findOneOrFail({ id });
+    const validPassword = await this.hashingService.compare(
+      dto.currentPassword,
+      deliveryMan.password,
+    );
+
+    if (!validPassword) {
+      throw new UnauthorizedException('Senha inválida');
+    }
+
+    const hashedPassword = await this.hashingService.hash(dto.newPassword);
+    deliveryMan.password = hashedPassword;
 
     return this.save(deliveryMan);
   }
