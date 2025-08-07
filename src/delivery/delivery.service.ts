@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryEntity } from './entities/delivery.entity';
@@ -21,6 +22,12 @@ export class DeliveryService {
   ) {}
 
   create(dto: CreateDeliveryDto, operator: UserEntity) {
+    if (!(operator instanceof UserEntity)) {
+      throw new UnauthorizedException(
+        'Somente o operador de caixa pode lançar entregas',
+      );
+    }
+
     const delivery = this.deliveryRepository.create({
       name: dto.name,
       totalPurchase: dto.totalPurchase,
@@ -47,6 +54,12 @@ export class DeliveryService {
     operator: UserEntity,
     deliveryData: Partial<DeliveryEntity>,
   ) {
+    if (!(operator instanceof UserEntity)) {
+      throw new UnauthorizedException(
+        'Somente o operador de caixa pode atualizar entregas',
+      );
+    }
+
     const isPaid = dto.paid;
     delete dto['paid'];
 
@@ -69,6 +82,12 @@ export class DeliveryService {
   }
 
   async remove(operator: UserEntity, deliveryData: Partial<DeliveryEntity>) {
+    if (!(operator instanceof UserEntity)) {
+      throw new UnauthorizedException(
+        'Somente o operador de caixa pode remover entregas',
+      );
+    }
+
     const delivery = await this.findOneOwnedOrFail(deliveryData, operator);
 
     await this.deliveryRepository.delete({
