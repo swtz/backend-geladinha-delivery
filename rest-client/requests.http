@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "luders@email.com",
+  "email": "leonardo@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -24,8 +24,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Luders",
-  "email": "luders@email.com",
+  "name": "Leonardo",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -153,4 +153,9 @@ Content-Type: application/json
 ### Read one delivery man
 # @name readOneDeliveryMan
 GET {{baseUrl}}/delivery-man/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all delivery man
+# @name readAllDeliveryMan
+GET {{baseUrl}}/delivery-man
 Authorization: Bearer {{JwtToken}}

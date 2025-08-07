@@ -115,6 +115,15 @@ export class DeliveryManService {
     return deliveryMan;
   }
 
+  async findAll() {
+    const deliveryMans = await this.deliveryManRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['vouchers'],
+    });
+
+    return deliveryMans;
+  }
+
   save(deliveryMan: DeliveryManEntity) {
     return this.deliveryManRepository.save(deliveryMan);
   }

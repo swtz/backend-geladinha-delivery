@@ -18,14 +18,20 @@ export class DeliveryManController {
   constructor(private readonly deliveryManService: DeliveryManService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
-  findOne(@Req() req: AuthenticatedRequest) {
-    return this.deliveryManService.findOneOrFail({ id: req.user.id });
+  @Get()
+  findAll() {
+    return this.deliveryManService.findAll();
   }
 
   @Post()
   create(@Body() dto: CreateDeliveryManDto) {
     return this.deliveryManService.create(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findOne(@Req() req: AuthenticatedRequest) {
+    return this.deliveryManService.findOneOrFail({ id: req.user.id });
   }
 
   @UseGuards(JwtAuthGuard)
