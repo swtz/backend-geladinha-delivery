@@ -95,7 +95,7 @@ export class DeliveryController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:bool')
+  @Get(':bool')
   async findAllPaid(@Param('bool', ParseBoolPipe) bool: boolean) {
     const deliveries = await this.deliveryService.findAllPaid(bool);
 
