@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "laura@email.com",
   "password": "123456",
-  "operator": true,
-  "deliveryMan": false
+  "operator": false,
+  "deliveryMan": true
 }
 
 ################### USER ###################
@@ -149,6 +149,11 @@ Content-Type: application/json
     "description": "gasolina"
   }
 }
+
+### Delete delivery man
+# @name deleteDeliveryMan
+DELETE {{baseUrl}}/delivery-man/me
+Authorization: Bearer {{JwtToken}}
 
 ### Read one delivery man
 # @name readOneDeliveryMan

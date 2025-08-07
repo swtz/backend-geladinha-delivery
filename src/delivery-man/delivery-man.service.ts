@@ -124,6 +124,12 @@ export class DeliveryManService {
     return deliveryMans;
   }
 
+  async remove(id: string) {
+    const deliveryMan = await this.findOneOrFail({ id });
+    await this.deliveryManRepository.delete({ id });
+    return deliveryMan;
+  }
+
   save(deliveryMan: DeliveryManEntity) {
     return this.deliveryManRepository.save(deliveryMan);
   }

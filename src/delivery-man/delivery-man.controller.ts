@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -38,5 +39,11 @@ export class DeliveryManController {
   @Patch('me')
   update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateDeliveryManDto) {
     return this.deliveryManService.update(dto, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me')
+  remove(@Req() req: AuthenticatedRequest) {
+    return this.deliveryManService.remove(req.user.id);
   }
 }
