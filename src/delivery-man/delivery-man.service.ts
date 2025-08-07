@@ -98,6 +98,10 @@ export class DeliveryManService {
     return this.deliveryManRepository.findOneBy({ email });
   }
 
+  findById(id: string) {
+    return this.deliveryManRepository.findOneBy({ id });
+  }
+
   async findOneOrFail(deliveryManData: Partial<DeliveryManEntity>) {
     const deliveryMan = await this.deliveryManRepository.findOne({
       where: deliveryManData,
