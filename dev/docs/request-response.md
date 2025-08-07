@@ -19,7 +19,8 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/me/password       PATCH       Atualizar senha                           JWT
 
 /delivery-man/          POST        Criar motoboy                             Aberta
-/delivery-man/me/:uuid  PATCH       Atualizar motoboy                         Aberta
+/delivery-man/me/:uuid  PATCH       Atualizar motoboy                         JWT
+/delivery-man/me        GET         Ler motoboy                               JWT
 
 /delivery/              GET         Ver todos os pedidos                      JWT
 /delivery/:boolean      GET         Ver todos os pedidos pagos                JWT

@@ -1,4 +1,12 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { DeliveryManService } from './delivery-man.service';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
@@ -8,6 +16,12 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 @Controller('delivery-man')
 export class DeliveryManController {
   constructor(private readonly deliveryManService: DeliveryManService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findOne(@Req() req: AuthenticatedRequest) {
+    return this.deliveryManService.findOneOrFail({ id: req.user.id });
+  }
 
   @Post()
   create(@Body() dto: CreateDeliveryManDto) {
