@@ -13,6 +13,7 @@ import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UpdatePasswordDto } from 'src/user/dto/update-password.dto';
 
 @Controller('delivery-man')
 export class DeliveryManController {
@@ -39,6 +40,15 @@ export class DeliveryManController {
   @Patch('me')
   update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateDeliveryManDto) {
     return this.deliveryManService.update(dto, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  updatePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdatePasswordDto,
+  ) {
+    return this.deliveryManService.updatePassword(dto, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

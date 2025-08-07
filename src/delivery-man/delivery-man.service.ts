@@ -101,6 +101,7 @@ export class DeliveryManService {
 
     const hashedPassword = await this.hashingService.hash(dto.newPassword);
     deliveryMan.password = hashedPassword;
+    deliveryMan.forceLogout = true;
 
     return this.save(deliveryMan);
   }
