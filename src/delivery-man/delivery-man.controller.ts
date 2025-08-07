@@ -1,14 +1,9 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeliveryManService } from './delivery-man.service';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('delivery-man')
 export class DeliveryManController {
@@ -19,11 +14,9 @@ export class DeliveryManController {
     return this.deliveryManService.create(dto);
   }
 
-  @Patch(':id')
-  update(
-    @Body() dto: UpdateDeliveryManDto,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.deliveryManService.update(dto, id);
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateDeliveryManDto) {
+    return this.deliveryManService.update(dto, req.user.id);
   }
 }
