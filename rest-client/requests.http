@@ -112,7 +112,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/false
+GET {{baseUrl}}/delivery/true
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
