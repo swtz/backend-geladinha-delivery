@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { VoucherEntity } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 
 @Injectable()
 export class VoucherService {
@@ -11,6 +12,7 @@ export class VoucherService {
   constructor(
     @InjectRepository(VoucherEntity)
     private readonly voucherRepository: Repository<VoucherEntity>,
+    private readonly deliveryManService: DeliveryManService,
   ) {}
 
   async create(dto: CreateVoucherDto) {
