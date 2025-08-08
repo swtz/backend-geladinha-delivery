@@ -81,4 +81,23 @@ export class VoucherService {
 
     return voucher;
   }
+
+  async findOneOwnedOrFail(
+    voucherData: Partial<VoucherEntity>,
+    motoboy: DeliveryManEntity,
+  ) {
+    const voucher = await this.voucherRepository.findOne({
+      where: {
+        ...voucherData,
+        deliveryMan: { id: motoboy.id },
+      },
+      relations: ['deliveryMan'],
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não encontrado');
+    }
+
+    return voucher;
+  }
 }
