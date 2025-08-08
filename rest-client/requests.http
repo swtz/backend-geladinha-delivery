@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "laura@email.com",
-  "password": "1234567",
-  "operator": false,
-  "deliveryMan": true
+  "email": "leonardo@email.com",
+  "password": "123456",
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -115,7 +115,7 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery/true
 Authorization: Bearer {{JwtToken}}
 
-################### DELIVERY ###################
+################### DELIVERY MAN ###################
 
 ### Create delivery man
 # @name createDeliveryMan
@@ -123,12 +123,12 @@ POST {{baseUrl}}/delivery-man
 Content-Type: application/json
 
 {
-  "name": "Laura",
-  "email": "laura@email.com",
+  "name": "Guilherme",
+  "email": "gui@email.com",
   "phone": "48988306754",
   "password": "123456",
-  "motorcycle": "Honda, 150, 2010, Preta",
-  "daily": 30
+  "motorcycle": "Honda, 300, 2025, Vermelha",
+  "daily": 35
 }
 
 ### Update delivery man
@@ -143,11 +143,7 @@ Content-Type: application/json
   "phone": "48988306754",
   "motorcycle": "Honda, 150, 2010, Preta",
   "daily": 30,
-  "tip": 2.5,
-  "voucher": {
-    "amount": 40.0,
-    "description": "gasolina"
-  }
+  "tip": 2.5
 }
 
 ### Update user password
@@ -175,3 +171,16 @@ Authorization: Bearer {{JwtToken}}
 # @name readAllDeliveryMan
 GET {{baseUrl}}/delivery-man
 Authorization: Bearer {{JwtToken}}
+
+################### VOUCHER ###################
+
+### Create voucher
+# @name createVoucher
+POST {{baseUrl}}/voucher/me/bc62d912-bebc-4ce4-a3e8-0c3602298cfc
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "amount": 10.0,
+  "description": "coca-cola zero"
+}
