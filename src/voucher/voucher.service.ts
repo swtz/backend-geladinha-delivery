@@ -20,7 +20,7 @@ export class VoucherService {
   async create(
     dto: CreateVoucherDto,
     user: UserEntity | DeliveryManEntity,
-    motoboyId: string = '',
+    motoboyId: string,
   ) {
     const voucher = {
       amount: dto.amount,
