@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { VoucherEntity } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +11,7 @@ import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Injectable()
 export class VoucherService {
@@ -44,5 +50,26 @@ export class VoucherService {
 
     await this.deliveryManService.save(deliveryMan);
     return created;
+  }
+
+  async update(
+    dto: UpdateVoucherDto,
+    user: UserEntity | DeliveryManEntity,
+    motoboyId: string,
+  ) {
+    const voucher = await this.findOneOrFail({ id: dto.id });
+  }
+
+  async findOneOrFail(voucherData: Partial<VoucherEntity>) {
+    const voucher = await this.voucherRepository.findOne({
+      where: voucherData,
+      relations: ['deliveryMan'],
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não encontrado');
+    }
+
+    return voucher;
   }
 }
