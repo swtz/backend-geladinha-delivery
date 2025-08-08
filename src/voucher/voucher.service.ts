@@ -57,7 +57,16 @@ export class VoucherService {
     user: UserEntity | DeliveryManEntity,
     motoboyId: string,
   ) {
+    if (!dto.amount && !dto.description) {
+      throw new BadRequestException('Dados não enviados');
+    }
+
     const voucher = await this.findOneOrFail({ id: dto.id });
+
+    voucher.amount = dto.amount ?? voucher.amount;
+    voucher.description = dto.description ?? voucher.description;
+
+    return this.voucherRepository.save(voucher);
   }
 
   async findOneOrFail(voucherData: Partial<VoucherEntity>) {
