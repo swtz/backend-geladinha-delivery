@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
+  "email": "leonardo@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -176,11 +176,23 @@ Authorization: Bearer {{JwtToken}}
 
 ### Create voucher
 # @name createVoucher
-POST {{baseUrl}}/voucher/me/bc62d912-bebc-4ce4-a3e8-0c3602298cfc
+POST {{baseUrl}}/voucher/me/0e262dbe-acba-4d1c-8ace-4160ae5ddbe9
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "amount": 2.3,
   "description": "other thing"
+}
+
+### Update voucher
+# @name updateVoucher
+PATCH {{baseUrl}}/voucher/me/0e262dbe-acba-4d1c-8ace-4160ae5ddbe9
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "id": "174bce59-1b10-4673-946d-465152085116",
+  "amount": 3.3,
+  "description": "rice"
 }
