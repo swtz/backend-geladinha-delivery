@@ -12,8 +12,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
-import { VoucherService } from 'src/voucher/voucher.service';
 
 @Injectable()
 export class UserService {
@@ -21,8 +19,6 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly hashingService: HashingService,
-    private readonly deliveryManService: DeliveryManService,
-    private readonly voucherService: VoucherService,
   ) {}
 
   async failIfEmailExists(email: string) {
