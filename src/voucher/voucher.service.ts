@@ -61,7 +61,10 @@ export class VoucherService {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const voucher = await this.findOneOrFail({ id: dto.id });
+    const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
+    const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+
+    const voucher = await this.findOneOwnedOrFail({ id: dto.id }, deliveryMan);
 
     voucher.amount = dto.amount ?? voucher.amount;
     voucher.description = dto.description ?? voucher.description;
