@@ -28,6 +28,9 @@ export class VoucherService {
     user: UserEntity | DeliveryManEntity,
     motoboyId: string,
   ) {
+    const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
+    const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+
     const voucher = {
       amount: dto.amount,
       description: dto.description,
@@ -42,9 +45,6 @@ export class VoucherService {
 
         throw new BadRequestException('Erro ao criar a compra/vale');
       });
-
-    const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
-    const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
 
     deliveryMan.vouchers.push(created);
 
