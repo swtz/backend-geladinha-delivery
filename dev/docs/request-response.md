@@ -17,6 +17,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/me                        PATCH       Atualizar usuário                         JWT
 /user/me                        DELETE      Apagar usuário                            JWT
 /user/me/password               PATCH       Atualizar senha                           JWT
+/user/me/voucher/:uuid          POST        Criar compra/vale para motoboy            JWT
 
 /delivery-man/                  POST        Criar motoboy                             Aberta
 /delivery-man/me/:uuid          PATCH       Atualizar motoboy                         JWT
