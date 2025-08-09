@@ -34,6 +34,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /delivery/me/:uuid              DELETE      Apagar uma entrega                        JWT
 
 /voucher/me/:uuid               POST        Criar compra/vale para motoboy            JWT
+/voucher/me/:uuid               PATCH       Atualizar compra/vale para motoboy        JWT
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto

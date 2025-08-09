@@ -6,7 +6,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { VoucherService } from 'src/voucher/voucher.service';
 import { Repository } from 'typeorm';
 import { DeliveryManEntity } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,7 +21,6 @@ export class DeliveryManService {
   constructor(
     @InjectRepository(DeliveryManEntity)
     private readonly deliveryManRepository: Repository<DeliveryManEntity>,
-    private readonly voucherService: VoucherService,
     private readonly hashingService: HashingService,
   ) {}
 
@@ -59,8 +57,7 @@ export class DeliveryManService {
       dto.phone ||
       dto.motorcycle ||
       dto.daily ||
-      dto.tip ||
-      dto.voucher?.amount;
+      dto.tip;
 
     if (!existsData) {
       throw new BadRequestException('Dados não enviados');
@@ -78,11 +75,6 @@ export class DeliveryManService {
       await this.failIfEmailExists(dto.email);
       deliveryMan.email = dto.email;
       deliveryMan.forceLogout = true;
-    }
-
-    if (dto.voucher) {
-      const voucher = await this.voucherService.create(dto.voucher);
-      deliveryMan.vouchers.push(voucher);
     }
 
     return this.save(deliveryMan);
