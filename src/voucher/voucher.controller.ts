@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -17,6 +18,12 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.voucherService.findOneOrFail({ id });
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('me/:id')
