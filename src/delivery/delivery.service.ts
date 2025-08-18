@@ -12,6 +12,7 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
+import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
 export class DeliveryService {
@@ -120,12 +121,17 @@ export class DeliveryService {
 
   async findOneOwned(
     deliveryData: Partial<DeliveryEntity>,
-    operator: UserEntity,
+    user: UserEntity | DeliveryManEntity,
   ) {
+    const queryObject =
+      user instanceof UserEntity
+        ? { operator: { id: user.id } }
+        : { motoboy: { id: user.id } };
+
     const ownedDelivery = await this.deliveryRepository.findOne({
       where: {
         ...deliveryData,
-        operator: { id: operator.id },
+        ...queryObject,
       },
       relations: ['operator', 'motoboy'],
     });

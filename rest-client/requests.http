@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "gui@email.com",
   "password": "123456",
-  "operator": true,
-  "deliveryMan": false
+  "operator": false,
+  "deliveryMan": true
 }
 
 ################### USER ###################
@@ -98,7 +98,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find one owned delivery
 # @name findOneOwnedDelivery
-GET {{baseUrl}}/delivery/me/ba5a0fca-197d-4905-a6da-6d1276fe3793
+GET {{baseUrl}}/delivery/me/3e85163b-3cc2-4307-96a0-97010a98a344
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
