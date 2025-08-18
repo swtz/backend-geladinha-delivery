@@ -103,4 +103,15 @@ export class VoucherService {
 
     return voucher;
   }
+
+  async findAllOwned(motoboyData: Partial<DeliveryManEntity>) {
+    const vouchers = await this.voucherRepository.find({
+      where: {
+        deliveryMan: motoboyData,
+      },
+      relations: ['deliveryMan'],
+    });
+
+    return vouchers;
+  }
 }

@@ -201,3 +201,8 @@ Content-Type: application/json
 # @name readOneVoucher
 GET {{baseUrl}}/voucher/174bce59-1b10-4673-946d-465152085116
 Authorization: Bearer {{JwtToken}}
+
+### Read all owned vouchers
+# @name readAllOwnedVouchers
+GET {{baseUrl}}/voucher/me
+Authorization: Bearer {{JwtToken}}
