@@ -1,3 +1,4 @@
+import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -36,4 +37,7 @@ export class DeliveryEntity {
 
   @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
   operator: UserEntity;
+
+  @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
+  motoboy: DeliveryManEntity;
 }
