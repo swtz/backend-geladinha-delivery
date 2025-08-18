@@ -146,7 +146,7 @@ Content-Type: application/json
   "tip": 2.5
 }
 
-### Update user password
+### Update delivery man password
 # @name updateUserPassword
 PATCH {{baseUrl}}/delivery-man/me/password
 Authorization: Bearer {{JwtToken}}
@@ -193,6 +193,26 @@ Content-Type: application/json
 
 {
   "id": "174bce59-1b10-4673-946d-465152085116",
-  "amount": 3.3,
+  "amount": 3.4,
   "description": "rice"
 }
+
+### Delete one voucher
+# @name deleteOneVoucher
+DELETE {{baseUrl}}/voucher/me/9c49ee4c-8095-44a2-affe-ade6cf982658
+Authorization: Bearer {{JwtToken}}
+
+### Read one voucher by delivery man
+# @name readOneVoucherByDeliveryMan
+GET {{baseUrl}}/voucher/me/174bce59-1b10-4673-946d-465152085116
+Authorization: Bearer {{JwtToken}}
+
+### Read all owned vouchers
+# @name readAllOwnedVouchers
+GET {{baseUrl}}/voucher/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all vouchers
+# @name readAllVouchers
+GET {{baseUrl}}/voucher
+Authorization: Bearer {{JwtToken}}

@@ -85,6 +85,22 @@ export class VoucherService {
     return voucher;
   }
 
+  async findOneByDeliveryMan(
+    voucherData: Partial<VoucherEntity>,
+    user: UserEntity | DeliveryManEntity,
+  ) {
+    if (user instanceof DeliveryManEntity) {
+      return this.findOneOwnedOrFail(voucherData, user);
+    }
+
+    const voucher = await this.findOneOrFail(voucherData);
+    const deliveryMan = await this.deliveryManService.findOneOrFail({
+      id: voucher.deliveryMan.id,
+    });
+
+    return this.findOneOwnedOrFail({ id: voucher.id }, deliveryMan);
+  }
+
   async findOneOwnedOrFail(
     voucherData: Partial<VoucherEntity>,
     motoboy: DeliveryManEntity,
@@ -101,6 +117,33 @@ export class VoucherService {
       throw new NotFoundException('Compra ou vale não encontrado');
     }
 
+    return voucher;
+  }
+
+  async findAllOwned(motoboyData: Partial<DeliveryManEntity>) {
+    const vouchers = await this.voucherRepository.find({
+      where: {
+        deliveryMan: motoboyData,
+      },
+      relations: ['deliveryMan'],
+    });
+
+    return vouchers;
+  }
+
+  async findAll() {
+    const vouchers = await this.voucherRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['deliveryMan'],
+    });
+
+    return vouchers;
+  }
+
+  async remove(id: string, user: UserEntity | DeliveryManEntity) {
+    const voucher = await this.findOneByDeliveryMan({ id }, user);
+
+    await this.voucherRepository.delete({ id });
     return voucher;
   }
 }
