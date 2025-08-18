@@ -75,7 +75,7 @@ export class DeliveryService {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const delivery = await this.findOneOwnedOrFail(
+    const delivery = await this.findOneOwnedByOrFail(
       { id: deliveryData.id },
       operator,
     );
@@ -96,7 +96,7 @@ export class DeliveryService {
       );
     }
 
-    const delivery = await this.findOneOwnedOrFail(deliveryData, operator);
+    const delivery = await this.findOneOwnedByOrFail(deliveryData, operator);
 
     await this.deliveryRepository.delete({
       ...deliveryData,
@@ -106,11 +106,11 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findOneOwnedOrFail(
+  async findOneOwnedByOrFail(
     deliveryData: Partial<DeliveryEntity>,
-    operator: UserEntity,
+    user: UserEntity | DeliveryManEntity,
   ) {
-    const ownedDelivery = await this.findOneOwned(deliveryData, operator);
+    const ownedDelivery = await this.findOneOwnedBy(deliveryData, user);
 
     if (!ownedDelivery) {
       throw new NotFoundException('Entrega não encontrada');
@@ -119,7 +119,7 @@ export class DeliveryService {
     return ownedDelivery;
   }
 
-  async findOneOwned(
+  async findOneOwnedBy(
     deliveryData: Partial<DeliveryEntity>,
     user: UserEntity | DeliveryManEntity,
   ) {
@@ -139,10 +139,15 @@ export class DeliveryService {
     return ownedDelivery;
   }
 
-  async findAllOwned(operator: UserEntity) {
+  async findAllOwnedBy(user: UserEntity | DeliveryManEntity) {
+    const queryObject =
+      user instanceof UserEntity
+        ? { operator: { id: user.id } }
+        : { motoboy: { id: user.id } };
+
     const deliveries = await this.deliveryRepository.find({
       where: {
-        operator: { id: operator.id },
+        ...queryObject,
       },
       order: {
         createdAt: 'DESC',

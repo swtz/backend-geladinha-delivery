@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
+  "email": "leonardo@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################

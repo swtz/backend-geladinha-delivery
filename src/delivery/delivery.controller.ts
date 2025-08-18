@@ -58,11 +58,11 @@ export class DeliveryController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me/:id')
-  async findOneOwned(
+  async findOneOwnedBy(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const ownedDelivery = await this.deliveryService.findOneOwnedOrFail(
+    const ownedDelivery = await this.deliveryService.findOneOwnedByOrFail(
       { id },
       req.user,
     );
@@ -72,8 +72,8 @@ export class DeliveryController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const ownedDeliveries = await this.deliveryService.findAllOwned(req.user);
+  async findAllOwnedBy(@Req() req: AuthenticatedRequest) {
+    const ownedDeliveries = await this.deliveryService.findAllOwnedBy(req.user);
 
     const arrayDeliveries = ownedDeliveries.map(
       delivery => new ResponseDeliveryDto(delivery),
