@@ -14,6 +14,12 @@ export class ResponseDeliveryDto {
     name: string | null;
     email: string | null;
   };
+  readonly motoboy: {
+    id: string;
+    name: string;
+    phone: string;
+    motorcycle: string;
+  };
 
   constructor(delivery: DeliveryEntity) {
     this.id = delivery.id;
@@ -28,6 +34,12 @@ export class ResponseDeliveryDto {
       id: delivery.operator?.id,
       name: delivery.operator?.name,
       email: delivery.operator?.email,
+    };
+    this.motoboy = {
+      id: delivery.motoboy.id,
+      name: delivery.motoboy.name,
+      phone: delivery.motoboy.phone,
+      motorcycle: delivery.motoboy.motorcycle,
     };
   }
 }

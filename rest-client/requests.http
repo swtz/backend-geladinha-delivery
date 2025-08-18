@@ -24,8 +24,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Leonardo",
-  "email": "leonardo@email.com",
+  "name": "Lucas",
+  "email": "lucas@email.com",
   "password": "123456"
 }
 
@@ -79,7 +79,7 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/e30e4d2c-abb9-45ea-b681-64a2fcb8a934
+PATCH {{baseUrl}}/delivery/me/d4ae9901-df8e-4043-b0e1-7c00e32c5c78
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -113,7 +113,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/true
+GET {{baseUrl}}/delivery/false
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY MAN ###################
