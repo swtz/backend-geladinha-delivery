@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 
 @Injectable()
 export class DeliveryService {
@@ -19,14 +20,19 @@ export class DeliveryService {
   constructor(
     @InjectRepository(DeliveryEntity)
     private readonly deliveryRepository: Repository<DeliveryEntity>,
+    private readonly deliveryManService: DeliveryManService,
   ) {}
 
-  create(dto: CreateDeliveryDto, operator: UserEntity) {
+  async create(dto: CreateDeliveryDto, operator: UserEntity) {
     if (!(operator instanceof UserEntity)) {
       throw new UnauthorizedException(
         'Somente o operador de caixa pode lançar entregas',
       );
     }
+
+    const motoboy = await this.deliveryManService.findOneOrFail({
+      id: dto.motoboy,
+    });
 
     const delivery = this.deliveryRepository.create({
       name: dto.name,
@@ -34,6 +40,7 @@ export class DeliveryService {
       deliveryTax: dto.deliveryTax,
       paymentMethod: dto.paymentMethod,
       operator,
+      motoboy,
     });
 
     const created = this.deliveryRepository
@@ -120,7 +127,7 @@ export class DeliveryService {
         ...deliveryData,
         operator: { id: operator.id },
       },
-      relations: ['operator'],
+      relations: ['operator', 'motoboy'],
     });
 
     return ownedDelivery;
@@ -134,7 +141,7 @@ export class DeliveryService {
       order: {
         createdAt: 'DESC',
       },
-      relations: ['operator'],
+      relations: ['operator', 'motoboy'],
     });
 
     return deliveries;
@@ -153,7 +160,7 @@ export class DeliveryService {
   async findOne(deliveryData: Partial<DeliveryEntity>) {
     const delivery = await this.deliveryRepository.findOne({
       where: deliveryData,
-      relations: ['operator'],
+      relations: ['operator', 'motoboy'],
     });
 
     return delivery;
@@ -162,7 +169,7 @@ export class DeliveryService {
   async findAll() {
     const deliveries = await this.deliveryRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['operator'],
+      relations: ['operator', 'motoboy'],
     });
 
     return deliveries;
@@ -172,7 +179,7 @@ export class DeliveryService {
     const paidDeliveries = await this.deliveryRepository.find({
       where: { paid },
       order: { createdAt: 'DESC' },
-      relations: ['operator'],
+      relations: ['operator', 'motoboy'],
     });
 
     return paidDeliveries;
