@@ -70,6 +70,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "motoboy": "ce810f71-0e52-43df-9ab4-6d2403e4b052",
   "name": "Laura, Rua Rio de Janeiro, 170, Turimar",
   "totalPurchase": 120.89,
   "deliveryTax": 5.0,
@@ -176,7 +177,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Create voucher
 # @name createVoucher
-POST {{baseUrl}}/voucher/me/0e262dbe-acba-4d1c-8ace-4160ae5ddbe9
+POST {{baseUrl}}/voucher/me/ce810f71-0e52-43df-9ab4-6d2403e4b052
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -187,14 +188,14 @@ Content-Type: application/json
 
 ### Update voucher
 # @name updateVoucher
-PATCH {{baseUrl}}/voucher/me/0e262dbe-acba-4d1c-8ace-4160ae5ddbe9
+PATCH {{baseUrl}}/voucher/me/ce810f71-0e52-43df-9ab4-6d2403e4b052
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "174bce59-1b10-4673-946d-465152085116",
-  "amount": 3.4,
-  "description": "rice"
+  "id": "ac21f1ff-e588-470b-9fb9-245216b490d4",
+  "amount": 10.0,
+  "description": "coca-cola"
 }
 
 ### Delete one voucher
@@ -204,7 +205,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher by delivery man
 # @name readOneVoucherByDeliveryMan
-GET {{baseUrl}}/voucher/me/174bce59-1b10-4673-946d-465152085116
+GET {{baseUrl}}/voucher/me/ac21f1ff-e588-470b-9fb9-245216b490d4
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers

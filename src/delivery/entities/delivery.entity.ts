@@ -38,6 +38,6 @@ export class DeliveryEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
   operator: UserEntity;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
+  @ManyToOne(() => DeliveryManEntity, { onDelete: 'SET NULL' })
   motoboy: DeliveryManEntity;
 }
