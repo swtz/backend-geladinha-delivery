@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -66,5 +67,14 @@ export class VoucherController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.voucherService.update(dto, req.user, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me/:id')
+  remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.voucherService.remove(id, req.user);
   }
 }

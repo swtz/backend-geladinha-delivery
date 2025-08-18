@@ -139,4 +139,11 @@ export class VoucherService {
 
     return vouchers;
   }
+
+  async remove(id: string, user: UserEntity | DeliveryManEntity) {
+    const voucher = await this.findOneByDeliveryMan({ id }, user);
+
+    await this.voucherRepository.delete({ id });
+    return voucher;
+  }
 }

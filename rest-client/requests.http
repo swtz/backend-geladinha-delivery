@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
+  "email": "leonardo@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -196,6 +196,11 @@ Content-Type: application/json
   "amount": 3.4,
   "description": "rice"
 }
+
+### Delete one voucher
+# @name deleteOneVoucher
+DELETE {{baseUrl}}/voucher/me/9c49ee4c-8095-44a2-affe-ade6cf982658
+Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher by delivery man
 # @name readOneVoucherByDeliveryMan
