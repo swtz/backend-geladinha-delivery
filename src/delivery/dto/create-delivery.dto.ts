@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateDeliveryDto {
   @IsString({ message: 'Formato inválido' })
@@ -19,4 +19,8 @@ export class CreateDeliveryDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo método de pagamento não pode estar vazio' })
   paymentMethod: string;
+
+  @IsUUID('4', { message: 'Formato inválido' })
+  @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
+  motoboy: string;
 }
