@@ -130,4 +130,13 @@ export class VoucherService {
 
     return vouchers;
   }
+
+  async findAll() {
+    const vouchers = await this.voucherRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['deliveryMan'],
+    });
+
+    return vouchers;
+  }
 }

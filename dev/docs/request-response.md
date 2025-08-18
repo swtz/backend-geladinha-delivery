@@ -37,6 +37,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /voucher/me/:uuid               PATCH       Atualizar compra/vale para motoboy        JWT
 /voucher/me/:uuid               GET         Ler uma compra/vale de um motoboy         JWT
 /voucher/me                     GET         Ler todas as compras/vale de um motoboy   JWT
+/voucher/                       GET         Ler todas as compras/vale                 JWT
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto
