@@ -85,6 +85,22 @@ export class VoucherService {
     return voucher;
   }
 
+  async findOneByDeliveryMan(
+    voucherData: Partial<VoucherEntity>,
+    user: UserEntity | DeliveryManEntity,
+  ) {
+    if (user instanceof DeliveryManEntity) {
+      return this.findOneOwnedOrFail(voucherData, user);
+    }
+
+    const voucher = await this.findOneOrFail(voucherData);
+    const deliveryMan = await this.deliveryManService.findOneOrFail({
+      id: voucher.deliveryMan.id,
+    });
+
+    return this.findOneOwnedOrFail({ id: voucher.id }, deliveryMan);
+  }
+
   async findOneOwnedOrFail(
     voucherData: Partial<VoucherEntity>,
     motoboy: DeliveryManEntity,

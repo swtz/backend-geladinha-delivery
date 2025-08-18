@@ -19,11 +19,14 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get(':id')
-  // findOne(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.voucherService.findOneOrFail({ id });
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('me/:id')
+  findOneOwned(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.voucherService.findOneByDeliveryMan({ id }, req.user);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')

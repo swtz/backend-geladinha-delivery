@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
+  "email": "leonardo@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -197,9 +197,9 @@ Content-Type: application/json
   "description": "rice"
 }
 
-### Read one voucher
-# @name readOneVoucher
-GET {{baseUrl}}/voucher/174bce59-1b10-4673-946d-465152085116
+### Read one voucher by delivery man
+# @name readOneVoucherByDeliveryMan
+GET {{baseUrl}}/voucher/me/174bce59-1b10-4673-946d-465152085116
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
