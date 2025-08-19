@@ -1,6 +1,6 @@
 import { UserEntity } from '../entities/user.entity';
 
-export class UserResponseDto {
+export class ResponseUserDto {
   readonly id: string;
   readonly name: string;
   readonly email: string;
