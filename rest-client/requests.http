@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "igor@email.com",
+  "email": "gui@email.com",
   "password": "123456",
-  "operator": true,
-  "deliveryMan": false
+  "operator": false,
+  "deliveryMan": true
 }
 
 ################### USER ###################
@@ -70,25 +70,21 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "6f20ee5f-77d7-4043-ace3-cd276a655686",
-  "name": "Laura, Rua Rio de Janeiro, 170, Turimar",
-  "totalPurchase": 120.89,
-  "deliveryTax": 5.0,
-  "paymentMethod": "Cartão"
+  "motoboy": "0d4dc644-8149-4cd0-bb28-36564c326ef6",
+  "name": "Leonardo, Avenida Brasil, 222, Mutuca",
+  "totalPurchase": 22.89,
+  "deliveryTax": 8.0,
+  "paymentMethod": "PIX"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/d4ae9901-df8e-4043-b0e1-7c00e32c5c78
+PATCH {{baseUrl}}/delivery/me/98b97391-dfba-4c2d-9dfd-520215048e22
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "NOVO → Postal, Rua Rio de Janeiro, 999, Turimar",
-  "totalPurchase": 41.25,
-  "deliveryTax": 10.0,
-  "paymentMethod": "PIX",
-  "paid": false
+  "paid": true
 }
 
 ### Delete delivery
