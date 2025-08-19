@@ -17,6 +17,7 @@ import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { ResponseVoucherDto } from './dto/response-voucher.dto';
 
 @Controller('voucher')
 export class VoucherController {
@@ -24,57 +25,74 @@ export class VoucherController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me/:id')
-  findOneOwned(
+  async findOneOwned(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.voucherService.findOneByDeliveryMan({ id }, req.user);
+    const ownedVoucher = await this.voucherService.findOneByDeliveryMan(
+      { id },
+      req.user,
+    );
+    return new ResponseVoucherDto(ownedVoucher);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
+  async findAll(@Req() req: AuthenticatedRequest) {
     if (req.user instanceof DeliveryManEntity) {
       throw new UnauthorizedException(
         'Somente operador de caixa pode acessar essa rota',
       );
     }
 
-    return this.voucherService.findAll();
+    const vouchers = await this.voucherService.findAll();
+    const arrayVouchers = vouchers.map(
+      voucher => new ResponseVoucherDto(voucher),
+    );
+    return arrayVouchers;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  findAllOwned(@Req() req: AuthenticatedRequest) {
-    return this.voucherService.findAllOwned({ id: req.user.id });
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const vouchers = await this.voucherService.findAllOwned({
+      id: req.user.id,
+    });
+    const arrayVouchers = vouchers.map(
+      voucher => new ResponseVoucherDto(voucher),
+    );
+    return arrayVouchers;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('me/:id')
-  create(
+  async create(
     @Body() dto: CreateVoucherDto,
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.voucherService.create(dto, req.user, id);
+    const voucher = await this.voucherService.create(dto, req.user, id);
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/:id')
-  update(
+  async update(
     @Body() dto: UpdateVoucherDto,
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.voucherService.update(dto, req.user, id);
+    const voucher = await this.voucherService.update(dto, req.user, id);
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('me/:id')
-  remove(
+  async remove(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.voucherService.remove(id, req.user);
+    const voucher = await this.voucherService.remove(id, req.user);
+    return new ResponseVoucherDto(voucher);
   }
 }

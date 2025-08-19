@@ -49,7 +49,10 @@ export class VoucherService {
     deliveryMan.vouchers.push(created);
 
     await this.deliveryManService.save(deliveryMan);
-    return created;
+    return {
+      ...created,
+      deliveryMan,
+    };
   }
 
   async update(
@@ -125,6 +128,7 @@ export class VoucherService {
       where: {
         deliveryMan: motoboyData,
       },
+      order: { createdAt: 'DESC' },
       relations: ['deliveryMan'],
     });
 

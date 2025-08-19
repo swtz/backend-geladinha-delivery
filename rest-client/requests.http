@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "laura@email.com",
+  "email": "igor@email.com",
   "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "operator": true,
+  "deliveryMan": false
 }
 
 ################### USER ###################
@@ -24,8 +24,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Lucas",
-  "email": "lucas@email.com",
+  "name": "Igor",
+  "email": "igor@email.com",
   "password": "123456"
 }
 
@@ -36,8 +36,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Leonardo",
-  "email": "leonardo@email.com"
+  "name": "Igor Cunha",
+  "email": "igor@email.com"
 }
 
 ### Delete user
@@ -177,25 +177,24 @@ Authorization: Bearer {{JwtToken}}
 
 ### Create voucher
 # @name createVoucher
-POST {{baseUrl}}/voucher/me/ce810f71-0e52-43df-9ab4-6d2403e4b052
+POST {{baseUrl}}/voucher/me/6f20ee5f-77d7-4043-ace3-cd276a655686
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 40.0,
+  "amount": 45.0,
   "description": "gasolina"
 }
 
 ### Update voucher
 # @name updateVoucher
-PATCH {{baseUrl}}/voucher/me/ce810f71-0e52-43df-9ab4-6d2403e4b052
+PATCH {{baseUrl}}/voucher/me/6f20ee5f-77d7-4043-ace3-cd276a655686
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "ac21f1ff-e588-470b-9fb9-245216b490d4",
-  "amount": 10.0,
-  "description": "coca-cola"
+  "id": "66ed239b-b620-4959-98f1-66fd479f0e84",
+  "amount": 20.0
 }
 
 ### Delete one voucher
@@ -205,7 +204,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher by delivery man
 # @name readOneVoucherByDeliveryMan
-GET {{baseUrl}}/voucher/me/ac21f1ff-e588-470b-9fb9-245216b490d4
+GET {{baseUrl}}/voucher/me/66ed239b-b620-4959-98f1-66fd479f0e84
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
