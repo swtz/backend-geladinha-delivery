@@ -14,6 +14,7 @@ import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdatePasswordDto } from 'src/user/dto/update-password.dto';
+import { ResponseDeliveryManDto } from './dto/response-delivery-man.dto';
 
 @Controller('delivery-man')
 export class DeliveryManController {
@@ -21,39 +22,56 @@ export class DeliveryManController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.deliveryManService.findAll();
+  async findAll() {
+    const deliveryMans = await this.deliveryManService.findAll();
+    const arrayDeliveryMans = deliveryMans.map(
+      deliveryMan => new ResponseDeliveryManDto(deliveryMan),
+    );
+    return arrayDeliveryMans;
   }
 
   @Post()
-  create(@Body() dto: CreateDeliveryManDto) {
-    return this.deliveryManService.create(dto);
+  async create(@Body() dto: CreateDeliveryManDto) {
+    const deliveryMan = await this.deliveryManService.create(dto);
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  findOne(@Req() req: AuthenticatedRequest) {
-    return this.deliveryManService.findOneOrFail({ id: req.user.id });
+  async findOne(@Req() req: AuthenticatedRequest) {
+    const deliveryMan = await this.deliveryManService.findOneOrFail({
+      id: req.user.id,
+    });
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
-  update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateDeliveryManDto) {
-    return this.deliveryManService.update(dto, req.user.id);
+  async update(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateDeliveryManDto,
+  ) {
+    const deliveryMan = await this.deliveryManService.update(dto, req.user.id);
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/password')
-  updatePassword(
+  async updatePassword(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdatePasswordDto,
   ) {
-    return this.deliveryManService.updatePassword(dto, req.user.id);
+    const deliveryMan = await this.deliveryManService.updatePassword(
+      dto,
+      req.user.id,
+    );
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('me')
-  remove(@Req() req: AuthenticatedRequest) {
-    return this.deliveryManService.remove(req.user.id);
+  async remove(@Req() req: AuthenticatedRequest) {
+    const deliveryMan = await this.deliveryManService.remove(req.user.id);
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 }

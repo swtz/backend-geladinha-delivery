@@ -10,10 +10,10 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "laura@email.com",
   "password": "123456",
-  "operator": true,
-  "deliveryMan": false
+  "operator": false,
+  "deliveryMan": true
 }
 
 ################### USER ###################
@@ -70,7 +70,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "ce810f71-0e52-43df-9ab4-6d2403e4b052",
+  "motoboy": "6f20ee5f-77d7-4043-ace3-cd276a655686",
   "name": "Laura, Rua Rio de Janeiro, 170, Turimar",
   "totalPurchase": 120.89,
   "deliveryTax": 5.0,
@@ -124,12 +124,12 @@ POST {{baseUrl}}/delivery-man
 Content-Type: application/json
 
 {
-  "name": "Guilherme",
-  "email": "gui@email.com",
+  "name": "Laura",
+  "email": "laura@email.com",
   "phone": "48988306754",
   "password": "123456",
-  "motorcycle": "Honda, 300, 2025, Vermelha",
-  "daily": 35
+  "motorcycle": "Honda, 300, 2025, Preta",
+  "daily": 25
 }
 
 ### Update delivery man
@@ -182,8 +182,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 2.3,
-  "description": "other thing"
+  "amount": 40.0,
+  "description": "gasolina"
 }
 
 ### Update voucher

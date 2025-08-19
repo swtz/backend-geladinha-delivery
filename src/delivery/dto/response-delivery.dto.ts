@@ -10,16 +10,16 @@ export class ResponseDeliveryDto {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly operator: {
-    id: string | null;
-    name: string | null;
-    email: string | null;
-  };
+    id: string;
+    name: string;
+    email: string;
+  } | null;
   readonly motoboy: {
     id: string;
     name: string;
     phone: string;
     motorcycle: string;
-  };
+  } | null;
 
   constructor(delivery: DeliveryEntity) {
     this.id = delivery.id;
@@ -36,10 +36,10 @@ export class ResponseDeliveryDto {
       email: delivery.operator?.email,
     };
     this.motoboy = {
-      id: delivery.motoboy.id,
-      name: delivery.motoboy.name,
-      phone: delivery.motoboy.phone,
-      motorcycle: delivery.motoboy.motorcycle,
+      id: delivery.motoboy?.id,
+      name: delivery.motoboy?.name,
+      phone: delivery.motoboy?.phone,
+      motorcycle: delivery.motoboy?.motorcycle,
     };
   }
 }
