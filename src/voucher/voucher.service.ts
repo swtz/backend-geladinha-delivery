@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Injectable()
@@ -25,10 +25,10 @@ export class VoucherService {
 
   async create(
     dto: CreateVoucherDto,
-    user: User | DeliveryManEntity,
+    user: User | DeliveryMan,
     motoboyId: string,
   ) {
-    const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
+    const id = user instanceof DeliveryMan ? user.id : motoboyId;
     const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
 
     const voucher = {
@@ -57,14 +57,14 @@ export class VoucherService {
 
   async update(
     dto: UpdateVoucherDto,
-    user: User | DeliveryManEntity,
+    user: User | DeliveryMan,
     motoboyId: string,
   ) {
     if (!dto.amount && !dto.description) {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
+    const id = user instanceof DeliveryMan ? user.id : motoboyId;
     const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
 
     const voucher = await this.findOneOwnedOrFail({ id: dto.id }, deliveryMan);
@@ -90,9 +90,9 @@ export class VoucherService {
 
   async findOneByDeliveryMan(
     voucherData: Partial<Voucher>,
-    user: User | DeliveryManEntity,
+    user: User | DeliveryMan,
   ) {
-    if (user instanceof DeliveryManEntity) {
+    if (user instanceof DeliveryMan) {
       return this.findOneOwnedOrFail(voucherData, user);
     }
 
@@ -106,7 +106,7 @@ export class VoucherService {
 
   async findOneOwnedOrFail(
     voucherData: Partial<Voucher>,
-    motoboy: DeliveryManEntity,
+    motoboy: DeliveryMan,
   ) {
     const voucher = await this.voucherRepository.findOne({
       where: {
@@ -123,7 +123,7 @@ export class VoucherService {
     return voucher;
   }
 
-  async findAllOwned(motoboyData: Partial<DeliveryManEntity>) {
+  async findAllOwned(motoboyData: Partial<DeliveryMan>) {
     const vouchers = await this.voucherRepository.find({
       where: {
         deliveryMan: motoboyData,
@@ -144,7 +144,7 @@ export class VoucherService {
     return vouchers;
   }
 
-  async remove(id: string, user: User | DeliveryManEntity) {
+  async remove(id: string, user: User | DeliveryMan) {
     const voucher = await this.findOneByDeliveryMan({ id }, user);
 
     await this.voucherRepository.delete({ id });

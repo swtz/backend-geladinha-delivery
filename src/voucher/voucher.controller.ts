@@ -16,7 +16,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
 import { ResponseVoucherDto } from './dto/response-voucher.dto';
 
 @Controller('voucher')
@@ -39,7 +39,7 @@ export class VoucherController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req: AuthenticatedRequest) {
-    if (req.user instanceof DeliveryManEntity) {
+    if (req.user instanceof DeliveryMan) {
       throw new UnauthorizedException(
         'Somente operador de caixa pode acessar essa rota',
       );

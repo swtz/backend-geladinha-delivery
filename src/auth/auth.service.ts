@@ -10,7 +10,7 @@ import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types/jwt-payload.type';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
-    let user: User | DeliveryManEntity | null;
+    let user: User | DeliveryMan | null;
 
     if (dto.operator && dto.deliveryMan) {
       throw new BadRequestException('Escolha somente uma função');

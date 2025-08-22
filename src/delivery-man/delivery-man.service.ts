@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { DeliveryManEntity } from './entities/delivery-man.entity';
+import { DeliveryMan } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
@@ -19,8 +19,8 @@ export class DeliveryManService {
   private readonly logger = new Logger(DeliveryManService.name);
 
   constructor(
-    @InjectRepository(DeliveryManEntity)
-    private readonly deliveryManRepository: Repository<DeliveryManEntity>,
+    @InjectRepository(DeliveryMan)
+    private readonly deliveryManRepository: Repository<DeliveryMan>,
     private readonly hashingService: HashingService,
   ) {}
 
@@ -114,7 +114,7 @@ export class DeliveryManService {
     return this.deliveryManRepository.findOneBy({ id });
   }
 
-  async findOneOrFail(deliveryManData: Partial<DeliveryManEntity>) {
+  async findOneOrFail(deliveryManData: Partial<DeliveryMan>) {
     const deliveryMan = await this.deliveryManRepository.findOne({
       where: deliveryManData,
       relations: ['vouchers'],
@@ -142,7 +142,7 @@ export class DeliveryManService {
     return deliveryMan;
   }
 
-  save(deliveryMan: DeliveryManEntity) {
+  save(deliveryMan: DeliveryMan) {
     return this.deliveryManRepository.save(deliveryMan);
   }
 }

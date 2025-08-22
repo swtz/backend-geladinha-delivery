@@ -12,7 +12,7 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
 export class DeliveryService {
@@ -108,7 +108,7 @@ export class DeliveryService {
 
   async findOneOwnedByOrFail(
     deliveryData: Partial<DeliveryEntity>,
-    user: User | DeliveryManEntity,
+    user: User | DeliveryMan,
   ) {
     const ownedDelivery = await this.findOneOwnedBy(deliveryData, user);
 
@@ -121,7 +121,7 @@ export class DeliveryService {
 
   async findOneOwnedBy(
     deliveryData: Partial<DeliveryEntity>,
-    user: User | DeliveryManEntity,
+    user: User | DeliveryMan,
   ) {
     const queryObject =
       user instanceof User
@@ -139,7 +139,7 @@ export class DeliveryService {
     return ownedDelivery;
   }
 
-  async findAllOwnedBy(user: User | DeliveryManEntity) {
+  async findAllOwnedBy(user: User | DeliveryMan) {
     const queryObject =
       user instanceof User
         ? { operator: { id: user.id } }

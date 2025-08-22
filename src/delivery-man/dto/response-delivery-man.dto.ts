@@ -1,4 +1,4 @@
-import { DeliveryManEntity } from '../entities/delivery-man.entity';
+import { DeliveryMan } from '../entities/delivery-man.entity';
 
 export class ResponseDeliveryManDto {
   readonly id: string;
@@ -20,7 +20,7 @@ export class ResponseDeliveryManDto {
       }[]
     | null;
 
-  constructor(deliveryMan: DeliveryManEntity) {
+  constructor(deliveryMan: DeliveryMan) {
     this.id = deliveryMan.id;
     this.name = deliveryMan.name;
     this.phone = deliveryMan.phone;
