@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from './entities/role.entity';
-import { CreateRoleDto } from './dto/create-role.dto';
+import { Role as RoleEntity } from './entities/role.entity';
+import { Role } from './roles.enum';
 
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository<RoleEntity>,
   ) {}
 
-  create(dto: CreateRoleDto) {
-    return this.roleRepository.save({ name: dto.name });
+  create(name: Role) {
+    return this.roleRepository.save({ name });
   }
 }
