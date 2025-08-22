@@ -6,11 +6,10 @@ export class ResponseVoucherDto {
   readonly description?: string | undefined;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly deliveryMan: {
+  readonly user: {
     id: string;
     name: string;
     phone: string;
-    motorcycle: string;
   };
 
   constructor(voucher: Voucher) {
@@ -19,11 +18,10 @@ export class ResponseVoucherDto {
     this.description = voucher.description;
     this.createdAt = voucher.createdAt;
     this.updatedAt = voucher.updatedAt;
-    this.deliveryMan = {
-      id: voucher.deliveryMan.id,
-      name: voucher.deliveryMan.name,
-      phone: voucher.deliveryMan.phone,
-      motorcycle: voucher.deliveryMan.motorcycle,
+    this.user = {
+      id: voucher.users.id,
+      name: voucher.users.name,
+      phone: voucher.users.phone,
     };
   }
 }
