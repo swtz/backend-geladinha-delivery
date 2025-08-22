@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { VoucherEntity } from './entities/voucher.entity';
+import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
@@ -18,8 +18,8 @@ export class VoucherService {
   private readonly logger = new Logger(VoucherService.name);
 
   constructor(
-    @InjectRepository(VoucherEntity)
-    private readonly voucherRepository: Repository<VoucherEntity>,
+    @InjectRepository(Voucher)
+    private readonly voucherRepository: Repository<Voucher>,
     private readonly deliveryManService: DeliveryManService,
   ) {}
 
@@ -75,7 +75,7 @@ export class VoucherService {
     return this.voucherRepository.save(voucher);
   }
 
-  async findOneOrFail(voucherData: Partial<VoucherEntity>) {
+  async findOneOrFail(voucherData: Partial<Voucher>) {
     const voucher = await this.voucherRepository.findOne({
       where: voucherData,
       relations: ['deliveryMan'],
@@ -89,7 +89,7 @@ export class VoucherService {
   }
 
   async findOneByDeliveryMan(
-    voucherData: Partial<VoucherEntity>,
+    voucherData: Partial<Voucher>,
     user: User | DeliveryManEntity,
   ) {
     if (user instanceof DeliveryManEntity) {
@@ -105,7 +105,7 @@ export class VoucherService {
   }
 
   async findOneOwnedOrFail(
-    voucherData: Partial<VoucherEntity>,
+    voucherData: Partial<Voucher>,
     motoboy: DeliveryManEntity,
   ) {
     const voucher = await this.voucherRepository.findOne({

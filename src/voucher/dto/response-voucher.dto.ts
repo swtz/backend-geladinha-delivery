@@ -1,4 +1,4 @@
-import { VoucherEntity } from '../entities/voucher.entity';
+import { Voucher } from '../entities/voucher.entity';
 
 export class ResponseVoucherDto {
   readonly id: string;
@@ -13,7 +13,7 @@ export class ResponseVoucherDto {
     motorcycle: string;
   };
 
-  constructor(voucher: VoucherEntity) {
+  constructor(voucher: Voucher) {
     this.id = voucher.id;
     this.amount = voucher.amount;
     this.description = voucher.description;

@@ -1,4 +1,4 @@
-import { VoucherEntity } from 'src/voucher/entities/voucher.entity';
+import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
   Column,
   CreateDateColumn,
@@ -42,9 +42,4 @@ export class DeliveryManEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => VoucherEntity, voucher => voucher.deliveryMan, {
-    nullable: true,
-  })
-  vouchers: VoucherEntity[];
 }

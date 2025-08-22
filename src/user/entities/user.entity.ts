@@ -1,10 +1,12 @@
 import { Role } from 'src/common/role/entities/role.entity';
+import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
@@ -19,7 +21,7 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   phone: string;
 
   @Column({ unique: true })
@@ -36,6 +38,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Voucher, voucher => voucher.users, {
+    nullable: true,
+  })
+  vouchers: Voucher[];
 
   @ManyToMany(() => Role, role => role.users)
   @JoinTable()

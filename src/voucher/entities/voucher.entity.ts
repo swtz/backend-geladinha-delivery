@@ -1,4 +1,4 @@
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class VoucherEntity {
+export class Voucher {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -25,8 +25,8 @@ export class VoucherEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => DeliveryManEntity, deliveryMan => deliveryMan.vouchers, {
+  @ManyToOne(() => User, user => user.vouchers, {
     onDelete: 'CASCADE',
   })
-  deliveryMan: DeliveryManEntity;
+  users: User;
 }
