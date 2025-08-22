@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { RoleService } from 'src/common/role/role.service';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly hashingService: HashingService,
+    private readonly roleService: RoleService,
   ) {}
 
   async failIfEmailExists(email: string) {
@@ -35,13 +37,18 @@ export class UserService {
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {
       name: dto.name,
+      phone: dto.phone,
       email: dto.email,
       password: hashedPassword,
     };
 
-    const created = this.userRepository.save(newUser);
+    const created = await this.userRepository.save(newUser);
+    const user = await this.findOneByOrFail({ id: created.id });
+    const role = await this.roleService.create(dto.role);
+    user.roles.push(role);
+    await this.save(user);
 
-    return created;
+    return user;
   }
 
   async update(id: string, dto: UpdateUserDto) {
@@ -89,7 +96,10 @@ export class UserService {
   }
 
   async findOneByOrFail(userData: Partial<User>) {
-    const user = await this.userRepository.findOneBy(userData);
+    const user = await this.userRepository.findOne({
+      where: userData,
+      relations: ['roles'],
+    });
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
