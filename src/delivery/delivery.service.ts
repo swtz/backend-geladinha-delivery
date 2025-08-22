@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
@@ -24,8 +24,8 @@ export class DeliveryService {
     private readonly deliveryManService: DeliveryManService,
   ) {}
 
-  async create(dto: CreateDeliveryDto, operator: UserEntity) {
-    if (!(operator instanceof UserEntity)) {
+  async create(dto: CreateDeliveryDto, operator: User) {
+    if (!(operator instanceof User)) {
       throw new UnauthorizedException(
         'Somente o operador de caixa pode lançar entregas',
       );
@@ -59,10 +59,10 @@ export class DeliveryService {
 
   async update(
     dto: UpdateDeliveryDto,
-    operator: UserEntity,
+    operator: User,
     deliveryData: Partial<DeliveryEntity>,
   ) {
-    if (!(operator instanceof UserEntity)) {
+    if (!(operator instanceof User)) {
       throw new UnauthorizedException(
         'Somente o operador de caixa pode atualizar entregas',
       );
@@ -89,8 +89,8 @@ export class DeliveryService {
     return this.deliveryRepository.save(updatedDelivery);
   }
 
-  async remove(operator: UserEntity, deliveryData: Partial<DeliveryEntity>) {
-    if (!(operator instanceof UserEntity)) {
+  async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
+    if (!(operator instanceof User)) {
       throw new UnauthorizedException(
         'Somente o operador de caixa pode remover entregas',
       );
@@ -108,7 +108,7 @@ export class DeliveryService {
 
   async findOneOwnedByOrFail(
     deliveryData: Partial<DeliveryEntity>,
-    user: UserEntity | DeliveryManEntity,
+    user: User | DeliveryManEntity,
   ) {
     const ownedDelivery = await this.findOneOwnedBy(deliveryData, user);
 
@@ -121,10 +121,10 @@ export class DeliveryService {
 
   async findOneOwnedBy(
     deliveryData: Partial<DeliveryEntity>,
-    user: UserEntity | DeliveryManEntity,
+    user: User | DeliveryManEntity,
   ) {
     const queryObject =
-      user instanceof UserEntity
+      user instanceof User
         ? { operator: { id: user.id } }
         : { motoboy: { id: user.id } };
 
@@ -139,9 +139,9 @@ export class DeliveryService {
     return ownedDelivery;
   }
 
-  async findAllOwnedBy(user: UserEntity | DeliveryManEntity) {
+  async findAllOwnedBy(user: User | DeliveryManEntity) {
     const queryObject =
-      user instanceof UserEntity
+      user instanceof User
         ? { operator: { id: user.id } }
         : { motoboy: { id: user.id } };
 

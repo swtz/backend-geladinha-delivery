@@ -8,7 +8,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserService } from 'src/user/user.service';
 import { JwtPayload } from './types/jwt-payload.type';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    let user: UserEntity | DeliveryManEntity | null;
+    let user: User | DeliveryManEntity | null;
 
     user = await this.userService.findById(payload.sub);
 

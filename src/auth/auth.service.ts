@@ -9,7 +9,7 @@ import { UserService } from 'src/user/user.service';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types/jwt-payload.type';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
-    let user: UserEntity | DeliveryManEntity | null;
+    let user: User | DeliveryManEntity | null;
 
     if (dto.operator && dto.deliveryMan) {
       throw new BadRequestException('Escolha somente uma função');
@@ -59,7 +59,7 @@ export class AuthService {
 
     user.forceLogout = false;
 
-    if (user instanceof UserEntity) {
+    if (user instanceof User) {
       await this.userService.save(user);
     } else {
       await this.deliveryManService.save(user);

@@ -9,7 +9,7 @@ import { VoucherEntity } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
@@ -25,7 +25,7 @@ export class VoucherService {
 
   async create(
     dto: CreateVoucherDto,
-    user: UserEntity | DeliveryManEntity,
+    user: User | DeliveryManEntity,
     motoboyId: string,
   ) {
     const id = user instanceof DeliveryManEntity ? user.id : motoboyId;
@@ -57,7 +57,7 @@ export class VoucherService {
 
   async update(
     dto: UpdateVoucherDto,
-    user: UserEntity | DeliveryManEntity,
+    user: User | DeliveryManEntity,
     motoboyId: string,
   ) {
     if (!dto.amount && !dto.description) {
@@ -90,7 +90,7 @@ export class VoucherService {
 
   async findOneByDeliveryMan(
     voucherData: Partial<VoucherEntity>,
-    user: UserEntity | DeliveryManEntity,
+    user: User | DeliveryManEntity,
   ) {
     if (user instanceof DeliveryManEntity) {
       return this.findOneOwnedOrFail(voucherData, user);
@@ -144,7 +144,7 @@ export class VoucherService {
     return vouchers;
   }
 
-  async remove(id: string, user: UserEntity | DeliveryManEntity) {
+  async remove(id: string, user: User | DeliveryManEntity) {
     const voucher = await this.findOneByDeliveryMan({ id }, user);
 
     await this.voucherRepository.delete({ id });

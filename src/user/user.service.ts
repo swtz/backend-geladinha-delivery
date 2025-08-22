@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
@@ -16,8 +16,8 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly hashingService: HashingService,
   ) {}
 
@@ -88,7 +88,7 @@ export class UserService {
     return user;
   }
 
-  async findOneByOrFail(userData: Partial<UserEntity>) {
+  async findOneByOrFail(userData: Partial<User>) {
     const user = await this.userRepository.findOneBy(userData);
 
     if (!user) {
@@ -110,7 +110,7 @@ export class UserService {
     });
   }
 
-  save(user: UserEntity) {
+  save(user: User) {
     return this.userRepository.save(user);
   }
 }
