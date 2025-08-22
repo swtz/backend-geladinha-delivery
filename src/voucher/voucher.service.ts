@@ -23,131 +23,131 @@ export class VoucherService {
     private readonly deliveryManService: DeliveryManService,
   ) {}
 
-  async create(
-    dto: CreateVoucherDto,
-    user: User | DeliveryMan,
-    motoboyId: string,
-  ) {
-    const id = user instanceof DeliveryMan ? user.id : motoboyId;
-    const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+  // async create(
+  //   dto: CreateVoucherDto,
+  //   user: User | DeliveryMan,
+  //   motoboyId: string,
+  // ) {
+  //   const id = user instanceof DeliveryMan ? user.id : motoboyId;
+  //   const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
 
-    const voucher = {
-      amount: dto.amount,
-      description: dto.description,
-    };
+  //   const voucher = {
+  //     amount: dto.amount,
+  //     description: dto.description,
+  //   };
 
-    const created = await this.voucherRepository
-      .save(voucher)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar a compra/vale', err.stack);
-        }
+  //   const created = await this.voucherRepository
+  //     .save(voucher)
+  //     .catch((err: unknown) => {
+  //       if (err instanceof Error) {
+  //         this.logger.error('Erro ao criar a compra/vale', err.stack);
+  //       }
 
-        throw new BadRequestException('Erro ao criar a compra/vale');
-      });
+  //       throw new BadRequestException('Erro ao criar a compra/vale');
+  //     });
 
-    deliveryMan.vouchers.push(created);
+  //   deliveryMan.vouchers.push(created);
 
-    await this.deliveryManService.save(deliveryMan);
-    return {
-      ...created,
-      deliveryMan,
-    };
-  }
+  //   await this.deliveryManService.save(deliveryMan);
+  //   return {
+  //     ...created,
+  //     deliveryMan,
+  //   };
+  // }
 
-  async update(
-    dto: UpdateVoucherDto,
-    user: User | DeliveryMan,
-    motoboyId: string,
-  ) {
-    if (!dto.amount && !dto.description) {
-      throw new BadRequestException('Dados não enviados');
-    }
+  // async update(
+  //   dto: UpdateVoucherDto,
+  //   user: User | DeliveryMan,
+  //   motoboyId: string,
+  // ) {
+  //   if (!dto.amount && !dto.description) {
+  //     throw new BadRequestException('Dados não enviados');
+  //   }
 
-    const id = user instanceof DeliveryMan ? user.id : motoboyId;
-    const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+  //   const id = user instanceof DeliveryMan ? user.id : motoboyId;
+  //   const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
 
-    const voucher = await this.findOneOwnedOrFail({ id: dto.id }, deliveryMan);
+  //   const voucher = await this.findOneOwnedOrFail({ id: dto.id }, deliveryMan);
 
-    voucher.amount = dto.amount ?? voucher.amount;
-    voucher.description = dto.description ?? voucher.description;
+  //   voucher.amount = dto.amount ?? voucher.amount;
+  //   voucher.description = dto.description ?? voucher.description;
 
-    return this.voucherRepository.save(voucher);
-  }
+  //   return this.voucherRepository.save(voucher);
+  // }
 
-  async findOneOrFail(voucherData: Partial<Voucher>) {
-    const voucher = await this.voucherRepository.findOne({
-      where: voucherData,
-      relations: ['deliveryMan'],
-    });
+  // async findOneOrFail(voucherData: Partial<Voucher>) {
+  //   const voucher = await this.voucherRepository.findOne({
+  //     where: voucherData,
+  //     relations: ['deliveryMan'],
+  //   });
 
-    if (!voucher) {
-      throw new NotFoundException('Compra ou vale não encontrado');
-    }
+  //   if (!voucher) {
+  //     throw new NotFoundException('Compra ou vale não encontrado');
+  //   }
 
-    return voucher;
-  }
+  //   return voucher;
+  // }
 
-  async findOneByDeliveryMan(
-    voucherData: Partial<Voucher>,
-    user: User | DeliveryMan,
-  ) {
-    if (user instanceof DeliveryMan) {
-      return this.findOneOwnedOrFail(voucherData, user);
-    }
+  // async findOneByDeliveryMan(
+  //   voucherData: Partial<Voucher>,
+  //   user: User | DeliveryMan,
+  // ) {
+  //   if (user instanceof DeliveryMan) {
+  //     return this.findOneOwnedOrFail(voucherData, user);
+  //   }
 
-    const voucher = await this.findOneOrFail(voucherData);
-    const deliveryMan = await this.deliveryManService.findOneOrFail({
-      id: voucher.deliveryMan.id,
-    });
+  //   const voucher = await this.findOneOrFail(voucherData);
+  //   const deliveryMan = await this.deliveryManService.findOneOrFail({
+  //     id: voucher.deliveryMan.id,
+  //   });
 
-    return this.findOneOwnedOrFail({ id: voucher.id }, deliveryMan);
-  }
+  //   return this.findOneOwnedOrFail({ id: voucher.id }, deliveryMan);
+  // }
 
-  async findOneOwnedOrFail(
-    voucherData: Partial<Voucher>,
-    motoboy: DeliveryMan,
-  ) {
-    const voucher = await this.voucherRepository.findOne({
-      where: {
-        ...voucherData,
-        deliveryMan: { id: motoboy.id },
-      },
-      relations: ['deliveryMan'],
-    });
+  // async findOneOwnedOrFail(
+  //   voucherData: Partial<Voucher>,
+  //   motoboy: DeliveryMan,
+  // ) {
+  //   const voucher = await this.voucherRepository.findOne({
+  //     where: {
+  //       ...voucherData,
+  //       deliveryMan: { id: motoboy.id },
+  //     },
+  //     relations: ['deliveryMan'],
+  //   });
 
-    if (!voucher) {
-      throw new NotFoundException('Compra ou vale não encontrado');
-    }
+  //   if (!voucher) {
+  //     throw new NotFoundException('Compra ou vale não encontrado');
+  //   }
 
-    return voucher;
-  }
+  //   return voucher;
+  // }
 
-  async findAllOwned(motoboyData: Partial<DeliveryMan>) {
-    const vouchers = await this.voucherRepository.find({
-      where: {
-        deliveryMan: motoboyData,
-      },
-      order: { createdAt: 'DESC' },
-      relations: ['deliveryMan'],
-    });
+  // async findAllOwned(motoboyData: Partial<DeliveryMan>) {
+  //   const vouchers = await this.voucherRepository.find({
+  //     where: {
+  //       deliveryMan: motoboyData,
+  //     },
+  //     order: { createdAt: 'DESC' },
+  //     relations: ['deliveryMan'],
+  //   });
 
-    return vouchers;
-  }
+  //   return vouchers;
+  // }
 
-  async findAll() {
-    const vouchers = await this.voucherRepository.find({
-      order: { createdAt: 'DESC' },
-      relations: ['deliveryMan'],
-    });
+  // async findAll() {
+  //   const vouchers = await this.voucherRepository.find({
+  //     order: { createdAt: 'DESC' },
+  //     relations: ['deliveryMan'],
+  //   });
 
-    return vouchers;
-  }
+  //   return vouchers;
+  // }
 
-  async remove(id: string, user: User | DeliveryMan) {
-    const voucher = await this.findOneByDeliveryMan({ id }, user);
+  // async remove(id: string, user: User | DeliveryMan) {
+  //   const voucher = await this.findOneByDeliveryMan({ id }, user);
 
-    await this.voucherRepository.delete({ id });
-    return voucher;
-  }
+  //   await this.voucherRepository.delete({ id });
+  //   return voucher;
+  // }
 }
