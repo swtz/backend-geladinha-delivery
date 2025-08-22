@@ -1,7 +1,10 @@
+import { Role } from 'src/common/role/entities/role.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
@@ -33,4 +36,8 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => Role, role => role.users)
+  @JoinTable()
+  roles: Role[];
 }
