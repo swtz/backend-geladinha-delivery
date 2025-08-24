@@ -19,9 +19,9 @@ export class ResponseVoucherDto {
     this.createdAt = voucher.createdAt;
     this.updatedAt = voucher.updatedAt;
     this.user = {
-      id: voucher.users.id,
-      name: voucher.users.name,
-      phone: voucher.users.phone,
+      id: voucher.user.id,
+      name: voucher.user.name,
+      phone: voucher.user.phone,
     };
   }
 }

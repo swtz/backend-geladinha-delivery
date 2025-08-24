@@ -39,7 +39,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Voucher, voucher => voucher.users, {
+  @OneToMany(() => Voucher, voucher => voucher.user, {
     nullable: true,
   })
   vouchers: Voucher[];

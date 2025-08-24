@@ -7,7 +7,7 @@ export class Role {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ enum: Object.values(RoleEnum) })
+  @Column({ enum: Object.values(RoleEnum), unique: true })
   name: RoleEnum;
 
   @ManyToMany(() => User, user => user.roles)

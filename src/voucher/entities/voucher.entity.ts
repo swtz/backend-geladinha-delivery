@@ -28,5 +28,5 @@ export class Voucher {
   @ManyToOne(() => User, user => user.vouchers, {
     onDelete: 'CASCADE',
   })
-  users: User;
+  user: User;
 }
