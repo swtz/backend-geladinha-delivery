@@ -13,6 +13,7 @@ import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
+import { Role as RoleEnum } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class UserService {
@@ -49,6 +50,10 @@ export class UserService {
     await this.save(user);
 
     return user;
+  }
+
+  createRoleForUser(roleName: RoleEnum) {
+    return this.roleService.findOneOrCreate(roleName);
   }
 
   async update(id: string, dto: UpdateUserDto) {

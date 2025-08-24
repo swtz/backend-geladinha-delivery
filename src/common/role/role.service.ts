@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role as RoleEntity } from './entities/role.entity';
@@ -28,10 +33,28 @@ export class RoleService {
   }
 
   async findOneOrCreate(name: Role) {
-    const role = await this.roleRepository.findOneBy({ name });
+    const role = await this.findOneByName(name);
 
     if (!role) {
-      return this.create(name);
+      const created = await this.create(name);
+      return this.findOneByNameOrFail(created.name);
+    }
+
+    return role;
+  }
+
+  findOneByName(name: Role) {
+    return this.roleRepository.findOne({
+      where: { name },
+      relations: ['users'],
+    });
+  }
+
+  async findOneByNameOrFail(name: Role) {
+    const role = await this.findOneByName(name);
+
+    if (!role) {
+      throw new NotFoundException('Essa função não existe');
     }
 
     return role;
