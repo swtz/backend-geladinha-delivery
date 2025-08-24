@@ -31,9 +31,13 @@ export class RoleService {
     const role = await this.roleRepository.findOneBy({ name });
 
     if (!role) {
-      await this.create(name);
+      return this.create(name);
     }
 
     return role;
+  }
+
+  save(role: RoleEntity) {
+    return this.roleRepository.save(role);
   }
 }
