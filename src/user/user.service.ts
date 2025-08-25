@@ -13,7 +13,7 @@ import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
-import { Role as RoleEnum } from 'src/common/role/roles.enum';
+import { Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class UserService {
@@ -34,6 +34,10 @@ export class UserService {
 
   async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
+
+    if (!dto.role || !roles.includes(dto.role)) {
+      throw new BadRequestException('Função inválida');
+    }
 
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {

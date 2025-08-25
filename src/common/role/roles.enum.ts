@@ -3,3 +3,5 @@ export enum Role {
   Operator = 'operator',
   Motoboy = 'motoboy',
 }
+
+export const roles = Object.values(Role);
