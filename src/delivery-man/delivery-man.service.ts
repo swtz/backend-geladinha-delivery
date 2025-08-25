@@ -24,87 +24,87 @@ export class DeliveryManService {
     private readonly hashingService: HashingService,
   ) {}
 
-  async create(dto: CreateDeliveryManDto) {
-    await this.failIfEmailExists(dto.email);
+  // async create(dto: CreateDeliveryManDto) {
+  //   await this.failIfEmailExists(dto.email);
 
-    const hashedPassword = await this.hashingService.hash(dto.password);
-    const deliveryMan = {
-      name: dto.name,
-      email: dto.email,
-      phone: dto.phone,
-      password: hashedPassword,
-      motorcycle: dto.motorcycle,
-      daily: dto.daily,
-    };
+  //   const hashedPassword = await this.hashingService.hash(dto.password);
+  //   const deliveryMan = {
+  //     name: dto.name,
+  //     email: dto.email,
+  //     phone: dto.phone,
+  //     password: hashedPassword,
+  //     motorcycle: dto.motorcycle,
+  //     daily: dto.daily,
+  //   };
 
-    const created = await this.deliveryManRepository
-      .save(deliveryMan)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar o Motoboy', err.stack);
-        }
+  //   const created = await this.deliveryManRepository
+  //     .save(deliveryMan)
+  //     .catch((err: unknown) => {
+  //       if (err instanceof Error) {
+  //         this.logger.error('Erro ao criar o Motoboy', err.stack);
+  //       }
 
-        throw new BadRequestException('Erro ao criar o Motoboy');
-      });
+  //       throw new BadRequestException('Erro ao criar o Motoboy');
+  //     });
 
-    return created;
-  }
+  //   return created;
+  // }
 
-  async update(dto: UpdateDeliveryManDto, id: string) {
-    const existsData =
-      dto.name ||
-      dto.email ||
-      dto.phone ||
-      dto.motorcycle ||
-      dto.daily ||
-      dto.tip;
+  // async update(dto: UpdateDeliveryManDto, id: string) {
+  //   const existsData =
+  //     dto.name ||
+  //     dto.email ||
+  //     dto.phone ||
+  //     dto.motorcycle ||
+  //     dto.daily ||
+  //     dto.tip;
 
-    if (!existsData) {
-      throw new BadRequestException('Dados não enviados');
-    }
+  //   if (!existsData) {
+  //     throw new BadRequestException('Dados não enviados');
+  //   }
 
-    const deliveryMan = await this.findOneOrFail({ id });
+  //   const deliveryMan = await this.findOneOrFail({ id });
 
-    deliveryMan.name = dto.name ?? deliveryMan.name;
-    deliveryMan.phone = dto.phone ?? deliveryMan.phone;
-    deliveryMan.motorcycle = dto.motorcycle ?? deliveryMan.motorcycle;
-    deliveryMan.daily = dto.daily ?? deliveryMan.daily;
-    deliveryMan.tip = dto.tip ?? deliveryMan.tip;
+  //   deliveryMan.name = dto.name ?? deliveryMan.name;
+  //   deliveryMan.phone = dto.phone ?? deliveryMan.phone;
+  //   deliveryMan.motorcycle = dto.motorcycle ?? deliveryMan.motorcycle;
+  //   deliveryMan.daily = dto.daily ?? deliveryMan.daily;
+  //   deliveryMan.tip = dto.tip ?? deliveryMan.tip;
 
-    if (dto.email && dto.email !== deliveryMan.email) {
-      await this.failIfEmailExists(dto.email);
-      deliveryMan.email = dto.email;
-      deliveryMan.forceLogout = true;
-    }
+  //   if (dto.email && dto.email !== deliveryMan.email) {
+  //     await this.failIfEmailExists(dto.email);
+  //     deliveryMan.email = dto.email;
+  //     deliveryMan.forceLogout = true;
+  //   }
 
-    return this.save(deliveryMan);
-  }
+  //   return this.save(deliveryMan);
+  // }
 
-  async updatePassword(dto: UpdatePasswordDto, id: string) {
-    const deliveryMan = await this.findOneOrFail({ id });
-    const validPassword = await this.hashingService.compare(
-      dto.currentPassword,
-      deliveryMan.password,
-    );
+  // async updatePassword(dto: UpdatePasswordDto, id: string) {
+  //   const deliveryMan = await this.findOneOrFail({ id });
+  //   const validPassword = await this.hashingService.compare(
+  //     dto.currentPassword,
+  //     deliveryMan.password,
+  //   );
 
-    if (!validPassword) {
-      throw new UnauthorizedException('Senha inválida');
-    }
+  //   if (!validPassword) {
+  //     throw new UnauthorizedException('Senha inválida');
+  //   }
 
-    const hashedPassword = await this.hashingService.hash(dto.newPassword);
-    deliveryMan.password = hashedPassword;
-    deliveryMan.forceLogout = true;
+  //   const hashedPassword = await this.hashingService.hash(dto.newPassword);
+  //   deliveryMan.password = hashedPassword;
+  //   deliveryMan.forceLogout = true;
 
-    return this.save(deliveryMan);
-  }
+  //   return this.save(deliveryMan);
+  // }
 
-  async failIfEmailExists(email: string) {
-    const exists = await this.findByEmail(email);
+  // async failIfEmailExists(email: string) {
+  //   const exists = await this.findByEmail(email);
 
-    if (exists) {
-      throw new ConflictException('Email já existe');
-    }
-  }
+  //   if (exists) {
+  //     throw new ConflictException('Email já existe');
+  //   }
+  // }
 
   findByEmail(email: string) {
     return this.deliveryManRepository.findOneBy({ email });
@@ -114,33 +114,33 @@ export class DeliveryManService {
     return this.deliveryManRepository.findOneBy({ id });
   }
 
-  async findOneOrFail(deliveryManData: Partial<DeliveryMan>) {
-    const deliveryMan = await this.deliveryManRepository.findOne({
-      where: deliveryManData,
-      relations: ['vouchers'],
-    });
+  // async findOneOrFail(deliveryManData: Partial<DeliveryMan>) {
+  //   const deliveryMan = await this.deliveryManRepository.findOne({
+  //     where: deliveryManData,
+  //     relations: ['vouchers'],
+  //   });
 
-    if (!deliveryMan) {
-      throw new NotFoundException('Motoboy não encontrado');
-    }
+  //   if (!deliveryMan) {
+  //     throw new NotFoundException('Motoboy não encontrado');
+  //   }
 
-    return deliveryMan;
-  }
+  //   return deliveryMan;
+  // }
 
-  async findAll() {
-    const deliveryMans = await this.deliveryManRepository.find({
-      order: { createdAt: 'DESC' },
-      relations: ['vouchers'],
-    });
+  // async findAll() {
+  //   const deliveryMans = await this.deliveryManRepository.find({
+  //     order: { createdAt: 'DESC' },
+  //     relations: ['vouchers'],
+  //   });
 
-    return deliveryMans;
-  }
+  //   return deliveryMans;
+  // }
 
-  async remove(id: string) {
-    const deliveryMan = await this.findOneOrFail({ id });
-    await this.deliveryManRepository.delete({ id });
-    return deliveryMan;
-  }
+  // async remove(id: string) {
+  //   const deliveryMan = await this.findOneOrFail({ id });
+  //   await this.deliveryManRepository.delete({ id });
+  //   return deliveryMan;
+  // }
 
   save(deliveryMan: DeliveryMan) {
     return this.deliveryManRepository.save(deliveryMan);
