@@ -1,5 +1,4 @@
-import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
-import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,

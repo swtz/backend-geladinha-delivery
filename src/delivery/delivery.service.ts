@@ -12,7 +12,6 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
-import { DeliveryMan } from 'src/delivery-man/entities/delivery-man.entity';
 
 @Injectable()
 export class DeliveryService {

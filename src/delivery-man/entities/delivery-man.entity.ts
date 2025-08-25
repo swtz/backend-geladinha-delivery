@@ -1,14 +1,14 @@
 import { User } from 'src/user/entities/user.entity';
 import { ChildEntity, Column } from 'typeorm';
 
-@ChildEntity()
+// @ChildEntity()
 export class DeliveryMan extends User {
-  @Column()
+  // @Column()
   motorcycle: string;
 
-  @Column('double', { nullable: true })
+  // @Column('double', { nullable: true })
   tip: number;
 
-  @Column('double')
+  // @Column('double')
   daily: number;
 }

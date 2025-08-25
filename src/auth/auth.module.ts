@@ -5,12 +5,10 @@ import { UserModule } from 'src/user/user.module';
 import { CommonModule } from 'src/common/common.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { DeliveryManModule } from 'src/delivery-man/delivery-man.module';
 
 @Module({
   imports: [
     UserModule,
-    DeliveryManModule,
     CommonModule,
     JwtModule.registerAsync({
       useFactory: () => {
