@@ -223,16 +223,20 @@ export class UserService {
   }
 
   async findOneByOrFail(userData: Partial<User>) {
-    const user = await this.userRepository.findOne({
-      where: userData,
-      relations: ['roles'],
-    });
+    const user = await this.findOne(userData);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
 
     return user;
+  }
+
+  async findOne(userData: Partial<User>) {
+    return this.userRepository.findOne({
+      where: userData,
+      relations: ['roles'],
+    });
   }
 
   findByEmail(email: string) {

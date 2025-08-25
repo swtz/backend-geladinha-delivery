@@ -10,10 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
-  "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "email": "postal@email.com",
+  "password": "123456"
 }
 
 ################### USER ###################
@@ -68,7 +66,7 @@ Content-Type: application/json
 ### Read one user
 # @name readOneUser
 GET {{baseUrl}}/user/me
-# Authorization: Bearer {{JwtToken}}
+Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
 

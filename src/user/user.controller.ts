@@ -1,18 +1,27 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @Req() req: AuthenticatedRequest
+  @UseGuards(JwtAuthGuard)
   @Get('me')
-  async findOne() {
+  async findOne(@Req() req: AuthenticatedRequest) {
     const user = await this.userService.findOneByOrFail({
-      id: 'e9f1fee3-d963-409f-a054-da1505b5ece8',
+      id: req.user.id,
     });
     return user;
   }
