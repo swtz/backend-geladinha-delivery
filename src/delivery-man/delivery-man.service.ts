@@ -6,23 +6,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { DeliveryMan } from './entities/delivery-man.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
-import { HashingService } from 'src/common/hashing/hashing.service';
-import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
-import { UpdatePasswordDto } from 'src/user/dto/update-password.dto';
 
 @Injectable()
 export class DeliveryManService {
   private readonly logger = new Logger(DeliveryManService.name);
 
-  constructor(
-    @InjectRepository(DeliveryMan)
-    private readonly deliveryManRepository: Repository<DeliveryMan>,
-    private readonly hashingService: HashingService,
-  ) {}
+  constructor() {}
 
   // async create(dto: CreateDeliveryManDto) {
   //   await this.failIfEmailExists(dto.email);
@@ -106,13 +96,13 @@ export class DeliveryManService {
   //   }
   // }
 
-  findByEmail(email: string) {
-    return this.deliveryManRepository.findOneBy({ email });
-  }
+  // findByEmail(email: string) {
+  //   return this.deliveryManRepository.findOneBy({ email });
+  // }
 
-  findById(id: string) {
-    return this.deliveryManRepository.findOneBy({ id });
-  }
+  // findById(id: string) {
+  //   return this.deliveryManRepository.findOneBy({ id });
+  // }
 
   // async findOneOrFail(deliveryManData: Partial<DeliveryMan>) {
   //   const deliveryMan = await this.deliveryManRepository.findOne({
@@ -142,7 +132,7 @@ export class DeliveryManService {
   //   return deliveryMan;
   // }
 
-  save(deliveryMan: DeliveryMan) {
-    return this.deliveryManRepository.save(deliveryMan);
-  }
+  // save(deliveryMan: DeliveryMan) {
+  //   return this.deliveryManRepository.save(deliveryMan);
+  // }
 }

@@ -1,6 +1,7 @@
 import { Role } from 'src/common/role/entities/role.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
+  ChildEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -47,4 +48,16 @@ export class User {
   @ManyToMany(() => Role, role => role.users)
   @JoinTable()
   roles: Role[];
+}
+
+@ChildEntity()
+export class DeliveryMan extends User {
+  @Column()
+  motorcycle: string;
+
+  @Column('double', { nullable: true })
+  tip: number;
+
+  @Column('double')
+  daily: number;
 }
