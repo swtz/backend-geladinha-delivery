@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { DeliveryMan, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
@@ -23,6 +23,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(DeliveryMan)
+    private readonly deliveryManRepository: Repository<DeliveryMan>,
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
   ) {}
@@ -59,25 +61,10 @@ export class UserService {
       email: dto.email,
       password: hashedPassword,
     };
-
-    if (dto.role === RoleEnum.Motoboy) {
-      const motoboy = await this.createUserMotoboy(dto, newUser);
-      motoboy.roles.push(role);
-      console.log('criou motoboy');
-
-      return this.save(motoboy);
-    }
-
-    const created = await this.userRepository
-      .save(newUser)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar o usuário', err.stack);
-        }
-
-        throw new BadRequestException('Erro ao criar o usuário');
-      });
-    const user = await this.findOneByOrFail({ id: created.id });
+    const user =
+      dto.role === RoleEnum.Motoboy
+        ? await this.createUserMotoboy(dto, newUser)
+        : await this.createUserOperator(newUser);
 
     user.roles.push(role);
 
@@ -98,7 +85,7 @@ export class UserService {
       ...newUser,
     };
 
-    const created = await this.userRepository
+    const created = await this.deliveryManRepository
       .save(newMotoboy)
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -106,6 +93,24 @@ export class UserService {
         }
 
         throw new BadRequestException('Erro ao criar o motoboy');
+      });
+    return this.findOneByOrFail({ id: created.id });
+  }
+
+  async createUserOperator(newUser: {
+    name: string;
+    phone: string;
+    email: string;
+    password: string;
+  }) {
+    const created = await this.userRepository
+      .save(newUser)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o usuário', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar o usuário');
       });
     return this.findOneByOrFail({ id: created.id });
   }
