@@ -35,8 +35,17 @@ export class UserService {
     }
   }
 
+  async failIfPhoneExists(phone: string) {
+    const exists = await this.findByPhone(phone);
+
+    if (exists) {
+      throw new ConflictException('Telefone já existe');
+    }
+  }
+
   async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
+    await this.failIfPhoneExists(dto.phone);
 
     if (!dto.role || !roles.includes(dto.role)) {
       throw new BadRequestException('Função inválida');
@@ -131,6 +140,12 @@ export class UserService {
   findByEmail(email: string) {
     return this.userRepository.findOneBy({
       email,
+    });
+  }
+
+  findByPhone(phone: string) {
+    return this.userRepository.findOneBy({
+      phone,
     });
   }
 

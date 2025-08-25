@@ -24,8 +24,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Lucas",
-  "email": "lucas@email.com",
+  "name": "Maria",
+  "email": "maria@email.com",
   "phone": "48976020103",
   "role": "motoboy",
   "password": "123456"
