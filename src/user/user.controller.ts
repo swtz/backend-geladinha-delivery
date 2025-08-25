@@ -12,7 +12,7 @@ export class UserController {
   @Get('me')
   async findOne() {
     const user = await this.userService.findOneByOrFail({
-      id: 'a6bf4857-ae9d-4033-a030-0a7335cc9800',
+      id: 'e9f1fee3-d963-409f-a054-da1505b5ece8',
     });
     return user;
   }
@@ -28,7 +28,7 @@ export class UserController {
   @Patch('me')
   async update(@Body() dto: UpdateUserDto) {
     const user = await this.userService.update(
-      'a6bf4857-ae9d-4033-a030-0a7335cc9800',
+      'e9f1fee3-d963-409f-a054-da1505b5ece8',
       dto,
     );
     return user;

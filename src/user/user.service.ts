@@ -126,6 +126,20 @@ export class UserService {
     const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
     const entity = await this.findOneByOrFail({ id });
     const isMotoboy = entity.roles.some(role => RoleEnum.Motoboy === role.name);
+    const isOperator = entity.roles.some(
+      role => RoleEnum.Operator === role.name,
+    );
+    const assignRoleError = new BadRequestException(
+      'Não é possível atribuir duas funções a um usuário',
+    );
+
+    if (isMotoboy && dto.role === RoleEnum.Operator) {
+      throw assignRoleError;
+    }
+
+    if (isOperator && dto.role === RoleEnum.Motoboy) {
+      throw assignRoleError;
+    }
 
     const user = isMotoboy
       ? await this.updateUserMotoboy(!!existsMotoboyData, dto, entity)

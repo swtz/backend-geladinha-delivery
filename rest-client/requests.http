@@ -40,9 +40,9 @@ PATCH {{baseUrl}}/user/me
 Content-Type: application/json
 
 {
-  "name": "Postal Dude",
-  "email": "postal@email.com",
-  "phone": "48999887755",
+  "name": "Eluana",
+  "email": "eluana@email.com",
+  "phone": "48999887710",
   "role": "operator",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
   "daily": 45,
