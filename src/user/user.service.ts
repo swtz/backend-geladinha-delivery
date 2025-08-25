@@ -61,6 +61,7 @@ export class UserService {
       email: dto.email,
       password: hashedPassword,
     };
+
     const user =
       dto.role === RoleEnum.Motoboy
         ? await this.createUserMotoboy(dto, newUser)
@@ -80,11 +81,16 @@ export class UserService {
       password: string;
     },
   ) {
+    if (!dto.motorcycle && !dto.daily) {
+      throw new BadRequestException(
+        'Campo motocicleta e diária são obrigatórios para o motoboy',
+      );
+    }
+
     const newMotoboy = {
       ...dto,
       ...newUser,
     };
-
     const created = await this.deliveryManRepository
       .save(newMotoboy)
       .catch((err: unknown) => {
@@ -94,6 +100,7 @@ export class UserService {
 
         throw new BadRequestException('Erro ao criar o motoboy');
       });
+
     return this.findOneByOrFail({ id: created.id });
   }
 
@@ -112,6 +119,7 @@ export class UserService {
 
         throw new BadRequestException('Erro ao criar o usuário');
       });
+
     return this.findOneByOrFail({ id: created.id });
   }
 

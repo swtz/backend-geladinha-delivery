@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   MinLength,
@@ -28,14 +29,12 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   @MinLength(6, { message: 'A senha precisa ter no mínimo 6 caracteres' })
   password: string;
-}
 
-export class CreateMotoboyDto extends CreateUserDto {
+  @IsOptional()
   @IsString({ message: 'Formato inválido' })
-  @IsNotEmpty({ message: 'Campo motocicleta não pode estar vazio' })
-  motorcycle: string;
+  motorcycle?: string;
 
+  @IsOptional()
   @IsNumber({}, { message: 'Valor da diária precisa ser um número' })
-  @IsNotEmpty({ message: 'Campo diária não pode estar vazio' })
-  daily: number;
+  daily?: number;
 }

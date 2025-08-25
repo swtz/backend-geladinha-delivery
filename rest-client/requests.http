@@ -24,11 +24,13 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Jose",
-  "email": "jose@email.com",
-  "phone": "48976020107",
-  "role": "motoboy",
-  "password": "123456"
+  "name": "Postal",
+  "email": "postal@email.com",
+  "phone": "48976020110",
+  "role": "admin",
+  "password": "123456",
+  "motorcycle": "Honda, 2024, 150, Preta",
+  "daily": 30
 }
 
 ### Update user
