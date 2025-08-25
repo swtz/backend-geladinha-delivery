@@ -60,6 +60,14 @@ export class UserService {
       password: hashedPassword,
     };
 
+    if (dto.role === RoleEnum.Motoboy) {
+      const motoboy = await this.createUserMotoboy(dto, newUser);
+      motoboy.roles.push(role);
+      console.log('criou motoboy');
+
+      return this.save(motoboy);
+    }
+
     const created = await this.userRepository
       .save(newUser)
       .catch((err: unknown) => {
@@ -74,6 +82,32 @@ export class UserService {
     user.roles.push(role);
 
     return this.save(user);
+  }
+
+  async createUserMotoboy(
+    dto: CreateUserDto,
+    newUser: {
+      name: string;
+      phone: string;
+      email: string;
+      password: string;
+    },
+  ) {
+    const newMotoboy = {
+      ...dto,
+      ...newUser,
+    };
+
+    const created = await this.userRepository
+      .save(newMotoboy)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o motoboy', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar o motoboy');
+      });
+    return this.findOneByOrFail({ id: created.id });
   }
 
   createRoleForUser(roleName: RoleEnum) {
