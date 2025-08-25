@@ -36,12 +36,17 @@ Content-Type: application/json
 ### Update user
 # @name updateUser
 PATCH {{baseUrl}}/user/me
-Authorization: Bearer {{JwtToken}}
+# Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Igor Cunha",
-  "email": "igor@email.com"
+  "name": "Postal Dude",
+  "email": "postal@email.com",
+  "phone": "48999887755",
+  "role": "operator",
+  "motorcycle": "Yamaha, 250, 2017, Vermelha",
+  "daily": 45,
+  "tip": 2.5
 }
 
 ### Delete user
@@ -63,7 +68,7 @@ Content-Type: application/json
 ### Read one user
 # @name readOneUser
 GET {{baseUrl}}/user/me
-Authorization: Bearer {{JwtToken}}
+# Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
 

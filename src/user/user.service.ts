@@ -122,11 +122,18 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    if (!dto.name && !dto.email) {
-      throw new BadRequestException('Dados não enviados');
-    }
+    const existsUserData = dto.name || dto.email || dto.phone;
+    const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
+    const entity = await this.findOneByOrFail({ id });
+    const isMotoboy = entity.roles.some(role => RoleEnum.Motoboy === role.name);
 
-    const user = await this.findOneByOrFail({ id });
+    const user = isMotoboy
+      ? await this.updateUserMotoboy(!!existsMotoboyData, dto, entity)
+      : entity;
+
+    if (!isMotoboy && !existsUserData) {
+      throw new BadRequestException('Dados do operador não enviados');
+    }
 
     user.name = dto.name ?? user.name;
 
@@ -136,7 +143,43 @@ export class UserService {
       user.forceLogout = true;
     }
 
+    if (dto.phone && dto.phone !== user.phone) {
+      await this.failIfPhoneExists(dto.phone);
+      user.phone = dto.phone;
+    }
+
+    if (dto.role) {
+      const role = await this.createRoleForUser(dto.role);
+      user.roles.push(role);
+      user.forceLogout = true;
+    }
+
     return this.save(user);
+  }
+
+  async updateUserMotoboy(
+    existsMotoboyData: boolean,
+    dto: UpdateUserDto,
+    user: User,
+  ) {
+    if (!existsMotoboyData) {
+      throw new BadRequestException('Dados do motoboy não enviados');
+    }
+
+    const motoboy = await this.deliveryManRepository.findOne({
+      where: { id: user.id },
+      relations: ['roles'],
+    });
+
+    if (!motoboy) {
+      throw new NotFoundException('Motoboy não encontrado');
+    }
+
+    motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
+    motoboy.daily = dto.daily ?? motoboy.daily;
+    motoboy.tip = dto.tip ?? motoboy.tip;
+
+    return motoboy;
   }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {

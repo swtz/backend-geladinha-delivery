@@ -1,31 +1,21 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ResponseUserDto } from './dto/response-user.dto';
-import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // @UseGuards(JwtAuthGuard)
-  // @Get('me')
-  // async findOne(@Req() req: AuthenticatedRequest) {
-  //   const user = await this.userService.findOneByOrFail({ id: req.user.id });
-  //   return new ResponseUserDto(user);
-  // }
+  // @Req() req: AuthenticatedRequest
+  @Get('me')
+  async findOne() {
+    const user = await this.userService.findOneByOrFail({
+      id: 'a6bf4857-ae9d-4033-a030-0a7335cc9800',
+    });
+    return user;
+  }
 
   @Post()
   async create(@Body() dto: CreateUserDto) {
@@ -34,11 +24,15 @@ export class UserController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  // @Patch('me')
-  // async update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
-  //   const user = await this.userService.update(req.user.id, dto);
-  //   return new ResponseUserDto(user);
-  // }
+  // @Req() req: AuthenticatedRequest,
+  @Patch('me')
+  async update(@Body() dto: UpdateUserDto) {
+    const user = await this.userService.update(
+      'a6bf4857-ae9d-4033-a030-0a7335cc9800',
+      dto,
+    );
+    return user;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Patch('me/password')
