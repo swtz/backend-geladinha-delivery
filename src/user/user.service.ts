@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -39,6 +42,7 @@ export class UserService {
       throw new BadRequestException('Função inválida');
     }
 
+    const role = await this.createRoleForUser(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {
       name: dto.name,
@@ -47,13 +51,20 @@ export class UserService {
       password: hashedPassword,
     };
 
-    const created = await this.userRepository.save(newUser);
-    const user = await this.findOneByOrFail({ id: created.id });
-    const role = await this.roleService.create(dto.role);
-    user.roles.push(role);
-    await this.save(user);
+    const created = await this.userRepository
+      .save(newUser)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o usuário', err.stack);
+        }
 
-    return user;
+        throw new BadRequestException('Erro ao criar o usuário');
+      });
+    const user = await this.findOneByOrFail({ id: created.id });
+
+    user.roles.push(role);
+
+    return this.save(user);
   }
 
   createRoleForUser(roleName: RoleEnum) {
