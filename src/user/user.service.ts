@@ -16,6 +16,13 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 
+type NewUser = {
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+};
+
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -72,15 +79,7 @@ export class UserService {
     return this.save(user);
   }
 
-  async createUserMotoboy(
-    dto: CreateUserDto,
-    newUser: {
-      name: string;
-      phone: string;
-      email: string;
-      password: string;
-    },
-  ) {
+  async createUserMotoboy(dto: CreateUserDto, newUser: NewUser) {
     if (!dto.motorcycle && !dto.daily) {
       throw new BadRequestException(
         'Campo motocicleta e diária são obrigatórios para o motoboy',
@@ -104,12 +103,7 @@ export class UserService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async createUserOperator(newUser: {
-    name: string;
-    phone: string;
-    email: string;
-    password: string;
-  }) {
+  async createUserOperator(newUser: NewUser) {
     const created = await this.userRepository
       .save(newUser)
       .catch((err: unknown) => {
