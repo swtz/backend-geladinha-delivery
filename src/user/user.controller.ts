@@ -12,6 +12,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +21,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @Roles(Role.Operator)
   async findOne(@Req() req: AuthenticatedRequest) {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
