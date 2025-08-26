@@ -27,11 +27,20 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-      context.getClass(),
       context.getHandler(),
+      context.getClass(),
     ]);
 
-    console.log(requiredRoles);
+    if (!requiredRoles) {
+      return super.handleRequest(err, user, info, context, status);
+    }
+
+    const roles = user.roles.map(role => role.name);
+    const userRole = roles.some(role => requiredRoles.includes(role));
+
+    if (!userRole) {
+      throw new UnauthorizedException('Acesso negado');
+    }
 
     return super.handleRequest(err, user, info, context, status);
   }

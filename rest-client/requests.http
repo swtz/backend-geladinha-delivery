@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "mario@email.com",
+  "email": "joao_vitor@email.com",
   "password": "123456"
 }
 
@@ -19,6 +19,7 @@ Content-Type: application/json
 ### Create user
 # @name createUser
 POST {{baseUrl}}/user
+Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
@@ -34,14 +35,14 @@ Content-Type: application/json
 ### Update user
 # @name updateUser
 PATCH {{baseUrl}}/user/me
-# Authorization: Bearer {{JwtToken}}
+Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Eluana",
-  "email": "eluana@email.com",
-  "phone": "48999887710",
-  "role": "operator",
+  "name": "João Vitor",
+  "email": "joao_vitor@email.com",
+  "phone": "48999887711",
+  "role": "motoboy",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
   "daily": 45,
   "tip": 2.5

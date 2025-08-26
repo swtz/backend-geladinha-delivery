@@ -16,12 +16,12 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 
 @Controller('user')
+@Roles(Role.Operator, Role.Motoboy)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  @Roles(Role.Operator)
   async findOne(@Req() req: AuthenticatedRequest) {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
@@ -30,19 +30,16 @@ export class UserController {
   }
 
   @Post()
+  @Roles(Role.Admin)
   async create(@Body() dto: CreateUserDto) {
     const user = await this.userService.create(dto);
     return user;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Req() req: AuthenticatedRequest,
+  @UseGuards(JwtAuthGuard)
   @Patch('me')
-  async update(@Body() dto: UpdateUserDto) {
-    const user = await this.userService.update(
-      'e9f1fee3-d963-409f-a054-da1505b5ece8',
-      dto,
-    );
+  async update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
+    const user = await this.userService.update(req.user.id, dto);
     return user;
   }
 
