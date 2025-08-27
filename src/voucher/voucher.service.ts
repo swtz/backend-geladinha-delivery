@@ -43,13 +43,17 @@ export class VoucherService {
     };
   }
 
-  async createForMotoboy(dto: CreateVoucherDto, user: User, id: string) {
+  async createForEntity(dto: CreateVoucherDto, user: User, id: string) {
     const voucher = {
       amount: dto.amount,
       description: dto.description,
     };
+    const entity = await this.userService.findOneByOrFail({ id });
 
-    const motoboy = await this.userService.findOneMotoboyOrFail({ id });
+    // se user.role === operator tentar lançar voucher para entity.role === operator, admin → 401
+    // se user.role === admin → 200
+    const userRoles = await this.userService.getAllRoleNames(user);
+    const entityRoles = await this.userService.getAllRoleNames(entity);
   }
 
   // async update(

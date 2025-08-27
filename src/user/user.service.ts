@@ -121,6 +121,11 @@ export class UserService {
     return this.roleService.findOneOrCreate(roleName);
   }
 
+  async getAllRoleNames(userData: Partial<User>) {
+    const user = await this.findOneByOrFail(userData);
+    return user.roles.map(role => role.name);
+  }
+
   async update(id: string, dto: UpdateUserDto) {
     const existsUserData = dto.name || dto.email || dto.phone;
     const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
@@ -180,7 +185,7 @@ export class UserService {
       throw new BadRequestException('Dados do motoboy não enviados');
     }
 
-    const motoboy = await this.findOneMotoboyOrFail({ id: user.id });
+    const motoboy = await this.findOneMotoboyByOrFail({ id: user.id });
 
     motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
     motoboy.daily = dto.daily ?? motoboy.daily;
@@ -219,7 +224,7 @@ export class UserService {
   }
 
   async findOneByOrFail(userData: Partial<User>) {
-    const user = await this.findOne(userData);
+    const user = await this.findOneBy(userData);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -228,14 +233,14 @@ export class UserService {
     return user;
   }
 
-  async findOne(userData: Partial<User>) {
+  async findOneBy(userData: Partial<User>) {
     return this.userRepository.findOne({
       where: userData,
       relations: ['roles', 'vouchers'],
     });
   }
 
-  async findOneMotoboyOrFail(userData: Partial<User>) {
+  async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
       relations: ['roles', 'vouchers'],
