@@ -43,6 +43,15 @@ export class VoucherService {
     };
   }
 
+  async createForMotoboy(dto: CreateVoucherDto, user: User, id: string) {
+    const voucher = {
+      amount: dto.amount,
+      description: dto.description,
+    };
+
+    const motoboy = await this.userService.findOneMotoboyOrFail({ id });
+  }
+
   // async update(
   //   dto: UpdateVoucherDto,
   //   user: User | DeliveryMan,

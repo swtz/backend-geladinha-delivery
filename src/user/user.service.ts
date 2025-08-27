@@ -180,14 +180,7 @@ export class UserService {
       throw new BadRequestException('Dados do motoboy não enviados');
     }
 
-    const motoboy = await this.deliveryManRepository.findOne({
-      where: { id: user.id },
-      relations: ['roles', 'vouchers'],
-    });
-
-    if (!motoboy) {
-      throw new NotFoundException('Motoboy não encontrado');
-    }
+    const motoboy = await this.findOneMotoboyOrFail({ id: user.id });
 
     motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
     motoboy.daily = dto.daily ?? motoboy.daily;
@@ -240,6 +233,19 @@ export class UserService {
       where: userData,
       relations: ['roles', 'vouchers'],
     });
+  }
+
+  async findOneMotoboyOrFail(userData: Partial<User>) {
+    const motoboy = await this.deliveryManRepository.findOne({
+      where: userData,
+      relations: ['roles', 'vouchers'],
+    });
+
+    if (!motoboy) {
+      throw new NotFoundException('Motoboy não encontrado');
+    }
+
+    return motoboy;
   }
 
   findByEmail(email: string) {
