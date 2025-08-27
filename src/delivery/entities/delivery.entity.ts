@@ -1,5 +1,4 @@
-import { DeliveryManEntity } from 'src/delivery-man/entities/delivery-man.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -35,9 +34,9 @@ export class DeliveryEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
-  operator: UserEntity;
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
+  operator: User;
 
-  @ManyToOne(() => DeliveryManEntity, { onDelete: 'SET NULL' })
-  motoboy: DeliveryManEntity;
+  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL' })
+  motoboy: DeliveryMan;
 }

@@ -10,10 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gui@email.com",
-  "password": "123456",
-  "operator": false,
-  "deliveryMan": true
+  "email": "joao_vitor@email.com",
+  "password": "1234567"
 }
 
 ################### USER ###################
@@ -21,12 +19,17 @@ Content-Type: application/json
 ### Create user
 # @name createUser
 POST {{baseUrl}}/user
+Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Igor",
-  "email": "igor@email.com",
-  "password": "123456"
+  "name": "Postal",
+  "email": "postal@email.com",
+  "phone": "48976020110",
+  "role": "admin",
+  "password": "123456",
+  "motorcycle": "Honda, 2024, 150, Preta",
+  "daily": 30
 }
 
 ### Update user
@@ -36,13 +39,18 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Igor Cunha",
-  "email": "igor@email.com"
+  "name": "Postal Dude",
+  "email": "postal@email.com",
+  "phone": "48976020110",
+  "role": "motoboy",
+  "motorcycle": "Yamaha, 250, 2017, Vermelha",
+  "daily": 45,
+  "tip": 2.5
 }
 
 ### Delete user
 # @name deleteUser
-DELETE {{baseUrl}}/user/me
+DELETE {{baseUrl}}/user/1234
 Authorization: Bearer {{JwtToken}}
 
 ### Update user password
@@ -53,12 +61,17 @@ Content-Type: application/json
 
 {
   "currentPassword": "123456",
-  "newPassword": "123456"
+  "newPassword": "1234567"
 }
 
 ### Read one user
 # @name readOneUser
 GET {{baseUrl}}/user/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all motoboys
+# @name readAllMotoboys
+GET {{baseUrl}}/user/motoboy
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
