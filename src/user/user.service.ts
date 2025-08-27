@@ -216,10 +216,13 @@ export class UserService {
     return this.save(user);
   }
 
-  async remove(id: string) {
-    const user = await this.findOneByOrFail({ id });
-    await this.userRepository.delete({ id });
-    return user;
+  async findAllMotoboy() {
+    const motoboys = await this.deliveryManRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['roles'],
+    });
+
+    return motoboys;
   }
 
   async findOneByOrFail(userData: Partial<User>) {
@@ -255,6 +258,12 @@ export class UserService {
     return this.userRepository.findOneBy({
       id,
     });
+  }
+
+  async remove(id: string) {
+    const user = await this.findOneByOrFail({ id });
+    await this.userRepository.delete({ id });
+    return user;
   }
 
   save(user: User) {

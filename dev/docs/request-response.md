@@ -13,9 +13,10 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /auth/login                     POST        autenticar usuário                        Aberta         PUBLIC
 
 /user/                          POST        Criar usuário                             JWT            ADMIN
-/user/me                        GET         Ler usuário                               JWT            OPERATOR/MOTOBOY
-/user/me                        PATCH       Atualizar usuário                         JWT            OPERATOR/MOTOBOY
-/user/me/password               PATCH       Atualizar senha                           JWT            OPERATOR/MOTOBOY
+/user/me                        GET         Ler usuário                               JWT            ADMIN/OPERATOR/MOTOBOY
+/user/motoboy                   GET         Ler todos os motoboys                     JWT            ADMIN/OPERATOR/MOTOBOY
+/user/me                        PATCH       Atualizar usuário                         JWT            ADMIN/OPERATOR/MOTOBOY
+/user/me/password               PATCH       Atualizar senha                           JWT            ADMIN/OPERATOR/MOTOBOY
 /user/:uuid                     DELETE      Apagar usuário                            JWT            ADMIN
 
 /delivery-man/                  POST        Criar motoboy                             Aberta

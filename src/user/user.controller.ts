@@ -20,7 +20,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('user')
-@Roles(Role.Operator, Role.Motoboy)
+@Roles(Role.Operator, Role.Motoboy, Role.Admin)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -31,6 +31,13 @@ export class UserController {
       id: req.user.id,
     });
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('motoboy')
+  async findAllMotoboy() {
+    const motoboys = await this.userService.findAllMotoboy();
+    return motoboys;
   }
 
   @UseGuards(JwtAuthGuard)
