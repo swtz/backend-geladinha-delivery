@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "joao_vitor@email.com",
+  "email": "eluana@email.com",
   "password": "1234567"
 }
 
@@ -136,6 +136,16 @@ Content-Type: application/json
 {
   "amount": 3.5,
   "description": "caipirão"
+}
+
+### Create voucher for user
+# @name createVoucherForUser
+POST {{baseUrl}}/voucher/me/user/a7e9f589-0d3b-4bda-ba3d-6c06ac3910aa
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "amount": 12.0
 }
 
 ### Update voucher

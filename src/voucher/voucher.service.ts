@@ -48,8 +48,11 @@ export class VoucherService {
 
     // se user.role === operator tentar lançar voucher para entity.role === operator, admin → 401
     // se user.role === admin → 200
-    const userRoles = await this.userService.getAllRoleNames(user);
-    const entityRoles = await this.userService.getAllRoleNames(entity);
+    const userRoles = await this.userService.getAllRoleNames({ id: user.id });
+    const entityRoles = await this.userService.getAllRoleNames({
+      id: entity.id,
+    });
+    console.log(entityRoles);
 
     if (userRoles.includes(Role.Admin)) {
       const created = await this.save(newVoucher);
@@ -71,6 +74,8 @@ export class VoucherService {
       await this.save(voucher);
 
       return voucher;
+    } else {
+      throw Error('500');
     }
   }
 

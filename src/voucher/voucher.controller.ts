@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
@@ -59,6 +67,22 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
   ) {
     const voucher = await this.voucherService.create(dto, req.user);
+    return voucher;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/user/:id')
+  @Roles(Role.Admin, Role.Operator)
+  async createForEntity(
+    @Body() dto: CreateVoucherDto,
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const voucher = await this.voucherService.createForEntity(
+      dto,
+      req.user,
+      id,
+    );
     return voucher;
   }
 
