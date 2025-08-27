@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +40,7 @@ export class VoucherService {
   }
 
   async createForEntity(dto: CreateVoucherDto, user: User, id: string) {
-    const voucher = {
+    const newVoucher = {
       amount: dto.amount,
       description: dto.description,
     };
@@ -47,14 +52,25 @@ export class VoucherService {
     const entityRoles = await this.userService.getAllRoleNames(entity);
 
     if (userRoles.includes(Role.Admin)) {
-      const created = await this.save(voucher);
+      const created = await this.save(newVoucher);
 
       entity.vouchers.push(created);
 
-      return {
-        ...created,
-        entity,
-      };
+      await this.userService.save(entity);
+
+      const voucher = await this.voucherRepository.findOne({
+        where: { id: created.id },
+        relations: ['createdBy', 'user'],
+      });
+
+      if (!voucher) {
+        throw new NotFoundException('Compra ou vale não encontrado');
+      }
+
+      voucher.createdBy = user;
+      await this.save(voucher);
+
+      return voucher;
     }
   }
 
