@@ -46,43 +46,44 @@ export class VoucherService {
       description: dto.description,
     };
     const entity = await this.userService.findOneByOrFail({ id });
-
-    // se user.role === operator tentar lançar voucher para entity.role === operator, admin → 401
     const userRoles = await this.userService.getAllRoleNames({ id: user.id });
     const entityRoles = await this.userService.getAllRoleNames({
       id: entity.id,
     });
-
     const isLoggedUserOperator = userRoles.includes(Role.Operator);
     const isLoggedUserAdmin = userRoles.includes(Role.Admin);
     const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
 
     if (isLoggedUserAdmin) {
-      const created = await this.save(newVoucher);
-
-      entity.vouchers.push(created);
-
-      await this.userService.save(entity);
-
-      const voucher = await this.voucherRepository.findOne({
-        where: { id: created.id },
-        relations: ['createdBy', 'user'],
-      });
-
-      if (!voucher) {
-        throw new NotFoundException('Compra ou vale não encontrado');
-      }
-
-      voucher.createdBy = user;
-      await this.save(voucher);
-
-      return voucher;
+      return this.pushToEntity(entity, user, newVoucher);
     } else if (isLoggedUserOperator && isEntityMotoboy) {
       const motoboy = await this.userService.findOneMotoboyByOrFail({ id });
-      return motoboy;
+      return this.pushToEntity(motoboy, user, newVoucher);
     } else {
       throw new UnauthorizedException('Função desconhecida');
     }
+  }
+
+  async pushToEntity(entity: User, user: User, newVoucher: Partial<Voucher>) {
+    const created = await this.save(newVoucher);
+
+    entity.vouchers.push(created);
+
+    await this.userService.save(entity);
+
+    const voucher = await this.voucherRepository.findOne({
+      where: { id: created.id },
+      relations: ['createdBy', 'user'],
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não encontrado');
+    }
+
+    voucher.createdBy = user;
+    await this.save(voucher);
+
+    return voucher;
   }
 
   // async update(
