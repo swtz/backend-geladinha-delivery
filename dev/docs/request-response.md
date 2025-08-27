@@ -13,10 +13,10 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /auth/login                     POST        autenticar usuário                        Aberta         PUBLIC
 
 /user/                          POST        Criar usuário                             JWT            ADMIN
-/user/me                        GET         Ler usuário                               JWT            ADMIN/OPERATOR/MOTOBOY
-/user/motoboy                   GET         Ler todos os motoboys                     JWT            ADMIN/OPERATOR/MOTOBOY
-/user/me                        PATCH       Atualizar usuário                         JWT            ADMIN/OPERATOR/MOTOBOY
-/user/me/password               PATCH       Atualizar senha                           JWT            ADMIN/OPERATOR/MOTOBOY
+/user/me                        GET         Ler usuário                               JWT            ALL
+/user/motoboy                   GET         Ler todos os motoboys                     JWT            ALL
+/user/me                        PATCH       Atualizar usuário                         JWT            ALL
+/user/me/password               PATCH       Atualizar senha                           JWT            ALL
 /user/:uuid                     DELETE      Apagar usuário                            JWT            ADMIN
 
 /delivery/                      GET         Ver todos os pedidos                      JWT
@@ -28,6 +28,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /delivery/me/:uuid              DELETE      Apagar uma entrega                        JWT
 
 /voucher/me                     POST        Criar compra/vale                         JWT             ALL
+/voucher/me/user/:uuid          POST        Criar compra/vale para usuário            JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               PATCH       Atualizar compra/vale para motoboy        JWT             
 /voucher/me/:uuid               GET         Ler uma compra/vale de um motoboy         JWT             
 /voucher/me                     GET         Ler todas as compras/vale de um motoboy   JWT             

@@ -56,12 +56,16 @@ export class VoucherService {
 
     if (isLoggedUserAdmin) {
       return this.pushToEntity(entity, user, newVoucher);
-    } else if (isLoggedUserOperator && isEntityMotoboy) {
-      const motoboy = await this.userService.findOneMotoboyByOrFail({ id });
-      return this.pushToEntity(motoboy, user, newVoucher);
-    } else {
-      throw new UnauthorizedException('Função desconhecida');
     }
+
+    if (!isLoggedUserOperator || !isEntityMotoboy) {
+      throw new UnauthorizedException(
+        'Só é possível criar compras ou vales para os motoboys',
+      );
+    }
+
+    const motoboy = await this.userService.findOneMotoboyByOrFail({ id });
+    return this.pushToEntity(motoboy, user, newVoucher);
   }
 
   async pushToEntity(entity: User, user: User, newVoucher: Partial<Voucher>) {
