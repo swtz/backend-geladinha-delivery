@@ -129,7 +129,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Create voucher
 # @name createVoucher
-POST {{baseUrl}}/voucher/me/6f20ee5f-77d7-4043-ace3-cd276a655686
+POST {{baseUrl}}/voucher/me
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 

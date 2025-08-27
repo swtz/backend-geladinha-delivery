@@ -1,6 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
@@ -46,16 +52,15 @@ export class VoucherController {
   //   return arrayVouchers;
   // }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Post('me/:id')
-  // async create(
-  //   @Body() dto: CreateVoucherDto,
-  //   @Req() req: AuthenticatedRequest,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const voucher = await this.voucherService.create(dto, req.user, id);
-  //   return new ResponseVoucherDto(voucher);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Post('me')
+  async create(
+    @Body() dto: CreateVoucherDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const voucher = await this.voucherService.create(dto, req.user);
+    return voucher;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Patch('me/:id')
