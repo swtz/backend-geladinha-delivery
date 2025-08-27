@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class VoucherService {
@@ -18,21 +19,11 @@ export class VoucherService {
 
   async create(dto: CreateVoucherDto, user: User) {
     const entity = await this.userService.findOneByOrFail({ id: user.id });
-
     const voucher = {
       amount: dto.amount,
       description: dto.description,
     };
-
-    const created = await this.voucherRepository
-      .save(voucher)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar a compra/vale', err.stack);
-        }
-
-        throw new BadRequestException('Erro ao criar a compra/vale');
-      });
+    const created = await this.save(voucher);
 
     entity.vouchers.push(created);
 
@@ -54,6 +45,17 @@ export class VoucherService {
     // se user.role === admin → 200
     const userRoles = await this.userService.getAllRoleNames(user);
     const entityRoles = await this.userService.getAllRoleNames(entity);
+
+    if (userRoles.includes(Role.Admin)) {
+      const created = await this.save(voucher);
+
+      entity.vouchers.push(created);
+
+      return {
+        ...created,
+        entity,
+      };
+    }
   }
 
   // async update(
@@ -151,4 +153,18 @@ export class VoucherService {
   //   await this.voucherRepository.delete({ id });
   //   return voucher;
   // }
+
+  async save(voucher: Partial<Voucher>) {
+    const created = await this.voucherRepository
+      .save(voucher)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar a compra/vale', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar a compra/vale');
+      });
+
+    return created;
+  }
 }

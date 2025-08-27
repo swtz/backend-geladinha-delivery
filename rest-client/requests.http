@@ -134,8 +134,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 45.0,
-  "description": "gasolina"
+  "amount": 3.5,
+  "description": "caipirão"
 }
 
 ### Update voucher
