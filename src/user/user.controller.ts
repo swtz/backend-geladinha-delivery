@@ -17,6 +17,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy)
@@ -32,6 +33,7 @@ export class UserController {
     return user;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @Roles(Role.Admin)
   async create(@Body() dto: CreateUserDto) {
@@ -46,15 +48,15 @@ export class UserController {
     return user;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Patch('me/password')
-  // async updatePassword(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Body() dto: UpdatePasswordDto,
-  // ) {
-  //   const user = await this.userService.updatePassword(req.user.id, dto);
-  //   return new ResponseUserDto(user);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  async updatePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdatePasswordDto,
+  ) {
+    const user = await this.userService.updatePassword(req.user.id, dto);
+    return user;
+  }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
