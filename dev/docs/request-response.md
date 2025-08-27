@@ -10,13 +10,13 @@ path, o caminho do recurso.
 Ler   Criar  Atualizar     Apagar
 GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 
-/auth/login                     POST        autenticar usuário                        Aberta
+/auth/login                     POST        autenticar usuário                        Aberta         PUBLIC
 
-/user/                          POST        Criar usuário                             Aberta
-/user/me                        GET         Ler usuário                               JWT
-/user/me                        PATCH       Atualizar usuário                         JWT
-/user/me                        DELETE      Apagar usuário                            JWT
-/user/me/password               PATCH       Atualizar senha                           JWT
+/user/                          POST        Criar usuário                             JWT            ADMIN
+/user/me                        GET         Ler usuário                               JWT            OPERATOR/MOTOBOY
+/user/me                        PATCH       Atualizar usuário                         JWT            OPERATOR/MOTOBOY
+/user/me/password               PATCH       Atualizar senha                           JWT            OPERATOR/MOTOBOY
+/user/:uuid                     DELETE      Apagar usuário                            JWT            ADMIN
 
 /delivery-man/                  POST        Criar motoboy                             Aberta
 /delivery-man/me/:uuid          PATCH       Atualizar motoboy                         JWT

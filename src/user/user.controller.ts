@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Req,
@@ -53,10 +56,11 @@ export class UserController {
   //   return new ResponseUserDto(user);
   // }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Delete('me')
-  // async remove(@Req() req: AuthenticatedRequest) {
-  //   const user = await this.userService.remove(req.user.id);
-  //   return new ResponseUserDto(user);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @Roles(Role.Admin)
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.userService.remove(id);
+    return user;
+  }
 }
