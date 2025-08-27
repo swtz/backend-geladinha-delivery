@@ -125,63 +125,6 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery/false
 Authorization: Bearer {{JwtToken}}
 
-################### DELIVERY MAN ###################
-
-### Create delivery man
-# @name createDeliveryMan
-POST {{baseUrl}}/delivery-man
-Content-Type: application/json
-
-{
-  "name": "Laura",
-  "email": "laura@email.com",
-  "phone": "48988306754",
-  "password": "123456",
-  "motorcycle": "Honda, 300, 2025, Preta",
-  "daily": 25
-}
-
-### Update delivery man
-# @name createDeliveryMan
-PATCH {{baseUrl}}/delivery-man/me
-Authorization: Bearer {{JwtToken}}
-Content-Type: application/json
-
-{
-  "name": "Laura",
-  "email": "cabral@email.com",
-  "phone": "48988306754",
-  "motorcycle": "Honda, 150, 2010, Preta",
-  "daily": 30,
-  "tip": 2.5
-}
-
-### Update delivery man password
-# @name updateUserPassword
-PATCH {{baseUrl}}/delivery-man/me/password
-Authorization: Bearer {{JwtToken}}
-Content-Type: application/json
-
-{
-  "currentPassword": "1234567",
-  "newPassword": "1234567"
-}
-
-### Delete delivery man
-# @name deleteDeliveryMan
-DELETE {{baseUrl}}/delivery-man/me
-Authorization: Bearer {{JwtToken}}
-
-### Read one delivery man
-# @name readOneDeliveryMan
-GET {{baseUrl}}/delivery-man/me
-Authorization: Bearer {{JwtToken}}
-
-### Read all delivery man
-# @name readAllDeliveryMan
-GET {{baseUrl}}/delivery-man
-Authorization: Bearer {{JwtToken}}
-
 ################### VOUCHER ###################
 
 ### Create voucher

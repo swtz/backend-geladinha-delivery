@@ -182,7 +182,7 @@ export class UserService {
 
     const motoboy = await this.deliveryManRepository.findOne({
       where: { id: user.id },
-      relations: ['roles'],
+      relations: ['roles', 'vouchers'],
     });
 
     if (!motoboy) {
@@ -219,7 +219,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['roles'],
+      relations: ['roles', 'vouchers'],
     });
 
     return motoboys;
@@ -238,7 +238,7 @@ export class UserService {
   async findOne(userData: Partial<User>) {
     return this.userRepository.findOne({
       where: userData,
-      relations: ['roles'],
+      relations: ['roles', 'vouchers'],
     });
   }
 

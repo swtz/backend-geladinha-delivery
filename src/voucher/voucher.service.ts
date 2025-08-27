@@ -1,7 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from 'src/user/user.service';
+import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class VoucherService {
@@ -10,39 +13,35 @@ export class VoucherService {
   constructor(
     @InjectRepository(Voucher)
     private readonly voucherRepository: Repository<Voucher>,
+    private readonly userService: UserService,
   ) {}
 
-  // async create(
-  //   dto: CreateVoucherDto,
-  //   user: User | DeliveryMan,
-  //   motoboyId: string,
-  // ) {
-  //   const id = user instanceof DeliveryMan ? user.id : motoboyId;
-  //   const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+  async create(dto: CreateVoucherDto, user: User) {
+    const entity = await this.userService.findOneByOrFail({ id: user.id });
 
-  //   const voucher = {
-  //     amount: dto.amount,
-  //     description: dto.description,
-  //   };
+    const voucher = {
+      amount: dto.amount,
+      description: dto.description,
+    };
 
-  //   const created = await this.voucherRepository
-  //     .save(voucher)
-  //     .catch((err: unknown) => {
-  //       if (err instanceof Error) {
-  //         this.logger.error('Erro ao criar a compra/vale', err.stack);
-  //       }
+    const created = await this.voucherRepository
+      .save(voucher)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar a compra/vale', err.stack);
+        }
 
-  //       throw new BadRequestException('Erro ao criar a compra/vale');
-  //     });
+        throw new BadRequestException('Erro ao criar a compra/vale');
+      });
 
-  //   deliveryMan.vouchers.push(created);
+    entity.vouchers.push(created);
 
-  //   await this.deliveryManService.save(deliveryMan);
-  //   return {
-  //     ...created,
-  //     deliveryMan,
-  //   };
-  // }
+    await this.userService.save(entity);
+    return {
+      ...created,
+      entity,
+    };
+  }
 
   // async update(
   //   dto: UpdateVoucherDto,
