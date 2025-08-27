@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
@@ -47,14 +48,16 @@ export class VoucherService {
     const entity = await this.userService.findOneByOrFail({ id });
 
     // se user.role === operator tentar lançar voucher para entity.role === operator, admin → 401
-    // se user.role === admin → 200
     const userRoles = await this.userService.getAllRoleNames({ id: user.id });
     const entityRoles = await this.userService.getAllRoleNames({
       id: entity.id,
     });
-    console.log(entityRoles);
 
-    if (userRoles.includes(Role.Admin)) {
+    const isLoggedUserOperator = userRoles.includes(Role.Operator);
+    const isLoggedUserAdmin = userRoles.includes(Role.Admin);
+    const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
+
+    if (isLoggedUserAdmin) {
       const created = await this.save(newVoucher);
 
       entity.vouchers.push(created);
@@ -74,8 +77,11 @@ export class VoucherService {
       await this.save(voucher);
 
       return voucher;
+    } else if (isLoggedUserOperator && isEntityMotoboy) {
+      const motoboy = await this.userService.findOneMotoboyByOrFail({ id });
+      return motoboy;
     } else {
-      throw Error('500');
+      throw new UnauthorizedException('Função desconhecida');
     }
   }
 
