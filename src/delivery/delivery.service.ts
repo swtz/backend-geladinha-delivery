@@ -1,17 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryEntity } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDeliveryDto } from './dto/create-delivery.dto';
-import { User } from 'src/user/entities/user.entity';
-import { UpdateDeliveryDto } from './dto/update-delivery.dto';
-import { DeliveryManService } from 'src/delivery-man/delivery-man.service';
 
 @Injectable()
 export class DeliveryService {
@@ -20,7 +10,6 @@ export class DeliveryService {
   constructor(
     @InjectRepository(DeliveryEntity)
     private readonly deliveryRepository: Repository<DeliveryEntity>,
-    private readonly deliveryManService: DeliveryManService,
   ) {}
 
   // async create(dto: CreateDeliveryDto, operator: User) {

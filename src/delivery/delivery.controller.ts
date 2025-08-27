@@ -1,22 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseBoolPipe,
-  ParseUUIDPipe,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
-import { CreateDeliveryDto } from './dto/create-delivery.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
-import { ResponseDeliveryDto } from './dto/response-delivery.dto';
-import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 
 @Controller('delivery')
 export class DeliveryController {

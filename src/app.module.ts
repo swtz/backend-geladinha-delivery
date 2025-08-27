@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeliveryModule } from './delivery/delivery.module';
-import { DeliveryManModule } from './delivery-man/delivery-man.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { CustomerModule } from './customer/customer.module';
 
@@ -12,6 +11,9 @@ import { CustomerModule } from './customer/customer.module';
   imports: [
     AuthModule,
     UserModule,
+    VoucherModule,
+    CustomerModule,
+    DeliveryModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -38,10 +40,6 @@ import { CustomerModule } from './customer/customer.module';
         };
       },
     }),
-    DeliveryModule,
-    DeliveryManModule,
-    VoucherModule,
-    CustomerModule,
   ],
 })
 export class AppModule {}

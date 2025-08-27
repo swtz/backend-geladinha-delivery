@@ -19,13 +19,6 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/me/password               PATCH       Atualizar senha                           JWT            ADMIN/OPERATOR/MOTOBOY
 /user/:uuid                     DELETE      Apagar usuário                            JWT            ADMIN
 
-/delivery-man/                  POST        Criar motoboy                             Aberta
-/delivery-man/me/:uuid          PATCH       Atualizar motoboy                         JWT
-/delivery-man/me                GET         Ler motoboy                               JWT
-/delivery-man/                  GET         Ler todos os motoboys                     JWT
-/delivery-man/me                DELETE      Apagar motoboy                            JWT
-/delivery-man/me/password       PATCH       Atualizar senha                           JWT
-
 /delivery/                      GET         Ver todos os pedidos                      JWT
 /delivery/:boolean              GET         Ver todos os pedidos pagos                JWT
 /delivery/me                    GET         Ver todos os pedidos de um usuário        JWT
