@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "mario@email.com",
+  "email": "rodrigo@email.com",
   "password": "123456"
 }
 
@@ -23,10 +23,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Postal",
-  "email": "postal@email.com",
-  "phone": "48976020110",
-  "role": "admin",
+  "name": "Renato",
+  "email": "renato@email.com",
+  "phone": "48976020113",
+  "role": "operator",
   "password": "123456",
   "motorcycle": "Honda, 2024, 150, Preta",
   "daily": 30
@@ -39,10 +39,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Postal Dude",
-  "email": "postal@email.com",
-  "phone": "48976020110",
-  "role": "motoboy",
+  "name": "Renato",
+  "email": "renato@email.com",
+  "phone": "48976020113",
+  "role": "admin",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
   "daily": 45,
   "tip": 2.5
@@ -140,7 +140,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/a7e9f589-0d3b-4bda-ba3d-6c06ac3910aa
+POST {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -163,6 +163,11 @@ Content-Type: application/json
 ### Delete one voucher
 # @name deleteOneVoucher
 DELETE {{baseUrl}}/voucher/me/9c49ee4c-8095-44a2-affe-ade6cf982658
+Authorization: Bearer {{JwtToken}}
+
+### Read one voucher
+# @name readOneVoucher
+GET {{baseUrl}}/voucher/87e39325-c784-440d-946a-c115d85d8ec7
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher by delivery man

@@ -29,10 +29,10 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 
 /voucher/me                     POST        Criar compra/vale                         JWT             ALL
 /voucher/me/user/:uuid          POST        Criar compra/vale para usuário            JWT             ADMIN/OPERATOR
-/voucher/me/:uuid               PATCH       Atualizar compra/vale para motoboy        JWT             
-/voucher/me/:uuid               GET         Ler uma compra/vale de um motoboy         JWT             
+/voucher/:uuid                  GET         Ler compra/vale de um usuário             JWT             ADMIN/OPERATOR
 /voucher/me                     GET         Ler todas as compras/vale de um motoboy   JWT             
 /voucher/                       GET         Ler todas as compras/vale                 JWT             
+/voucher/me/:uuid               PATCH       Atualizar compra/vale para motoboy        JWT             
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale de um motoboy      JWT             
 ```
 

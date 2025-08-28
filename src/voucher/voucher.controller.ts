@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Post,
@@ -18,6 +19,14 @@ import { Role } from 'src/common/role/roles.enum';
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @Roles(Role.Admin, Role.Operator)
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const voucher = await this.voucherService.findOneByOrFail({ id });
+    return voucher;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Get('me/:id')
