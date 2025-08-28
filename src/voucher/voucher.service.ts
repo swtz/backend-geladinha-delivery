@@ -11,8 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
-import { Role } from 'src/common/role/roles.enum';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class VoucherService {
@@ -22,6 +22,7 @@ export class VoucherService {
     @InjectRepository(Voucher)
     private readonly voucherRepository: Repository<Voucher>,
     private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(dto: CreateVoucherDto, user: User) {
@@ -46,20 +47,14 @@ export class VoucherService {
       amount: dto.amount,
       description: dto.description,
     };
-    const entity = await this.userService.findOneByOrFail({ id });
-    const userRoles = await this.userService.getAllRoleNames({ id: user.id });
-    const entityRoles = await this.userService.getAllRoleNames({
-      id: entity.id,
-    });
-    const isLoggedUserOperator = userRoles.includes(Role.Operator);
-    const isLoggedUserAdmin = userRoles.includes(Role.Admin);
-    const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
 
-    if (isLoggedUserAdmin) {
-      return this.pushToEntity(entity, user, newVoucher);
+    const authFlags = await this.authService.getUserAndEntityAuth(user, id);
+
+    if (authFlags.isLoggedUserAdmin) {
+      return this.pushToEntity(authFlags.entity, user, newVoucher);
     }
 
-    if (!isLoggedUserOperator || !isEntityMotoboy) {
+    if (!authFlags.isLoggedUserOperator || !authFlags.isEntityMotoboy) {
       throw new UnauthorizedException(
         'Só é possível criar compras ou vales para os motoboys',
       );
@@ -85,20 +80,47 @@ export class VoucherService {
   }
 
   async updateForEntity(dto: UpdateVoucherDto, user: User, entityId: string) {
+    // TODO: fazer lógica para checar 'createdBy'
+    // e controlar quem pode ou não atualizar tais dados
+
     // userService.findOneByOrFail({id: entityId}) → entity
+    const authFlags = await this.authService.getUserAndEntityAuth(
+      user,
+      entityId,
+    );
     // this.findOneOwnedByOrFail({id: dto.id}, entity.id) → voucher
-    //
+    const voucher = authFlags.entity.vouchers.find(
+      voucher => voucher.id === dto.id,
+    );
+
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não existe');
+    }
+
     // isAdmin → this.update(dto, entity, voucher)
+    if (authFlags.isLoggedUserAdmin) {
+      return this.update(dto, authFlags.entity, voucher.id);
+    }
+
     // if (!isLoggedUserOperator || !isEntityMotoboy) → 401
-    // this.update(dto, motoboy, voucher)
+    if (!authFlags.isLoggedUserOperator || !authFlags.isEntityMotoboy) {
+      throw new UnauthorizedException(
+        'Só é possível atualizar compras ou vales para os motoboys',
+      );
+    }
+
+    const motoboy = await this.userService.findOneMotoboyByOrFail({
+      id: entityId,
+    });
+    return this.update(dto, motoboy, voucher.id);
   }
 
-  async update(dto: UpdateVoucherDto, user: User, id: string) {
+  async update(dto: UpdateVoucherDto, user: User, voucherId: string) {
     if (!dto.amount && !dto.description) {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const voucher = await this.findOneOwnedByOrFail({ id }, user);
+    const voucher = await this.findOneOwnedByOrFail({ id: voucherId }, user);
 
     voucher.amount = dto.amount ?? voucher.amount;
     voucher.description = dto.description ?? voucher.description;

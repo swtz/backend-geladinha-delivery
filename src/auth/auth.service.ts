@@ -45,8 +45,8 @@ export class AuthService {
     return { accessToken };
   }
 
-  async getUserAndEntityAuth(user: User, entityId: string) {
-    const entity = await this.userService.findOneByOrFail({ id: entityId });
+  async getUserAndEntityAuth(user: User, id: string) {
+    const entity = await this.userService.findOneByOrFail({ id });
     const userRoles = await this.userService.getAllRoleNames({ id: user.id });
     const entityRoles = await this.userService.getAllRoleNames({
       id: entity.id,

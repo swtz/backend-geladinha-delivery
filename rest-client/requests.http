@@ -140,7 +140,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
+POST {{baseUrl}}/voucher/me/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
