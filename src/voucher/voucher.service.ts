@@ -84,29 +84,25 @@ export class VoucherService {
       throw new BadRequestException('Campo ID não pode estar vazio');
     }
 
-    // TODO: fazer lógica para checar 'createdBy'
-    // e controlar quem pode ou não atualizar tais dados
-
-    // userService.findOneByOrFail({id: entityId}) → entity
     const authFlags = await this.authService.getUserAndEntityAuth(
       user,
       entityId,
     );
-    // this.findOneOwnedByOrFail({id: dto.id}, entity.id) → voucher
-    const voucher = authFlags.entity.vouchers.find(
-      voucher => voucher.id === dto.id,
+    const voucher = await this.findOneOwnedByOrFail(
+      { id: dto.id },
+      authFlags.entity,
     );
 
-    if (!voucher) {
-      throw new NotFoundException('Compra ou vale não existe');
+    if (voucher.createdBy !== null && user.id !== voucher.createdBy.id) {
+      throw new UnauthorizedException(
+        `Somente o usuário ${voucher.createdBy.name} pode alterar essa compra ou vale`,
+      );
     }
 
-    // isAdmin → this.update(dto, entity, voucher)
     if (authFlags.isLoggedUserAdmin) {
       return this.update(dto, authFlags.entity, voucher.id);
     }
 
-    // if (!isLoggedUserOperator || !isEntityMotoboy) → 401
     if (!authFlags.isLoggedUserOperator || !authFlags.isEntityMotoboy) {
       throw new UnauthorizedException(
         'Só é possível atualizar compras ou vales para os motoboys',
@@ -116,6 +112,7 @@ export class VoucherService {
     const motoboy = await this.userService.findOneMotoboyByOrFail({
       id: entityId,
     });
+
     return this.update(dto, motoboy, voucher.id);
   }
 
