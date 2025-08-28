@@ -190,12 +190,38 @@ export class VoucherService {
     return vouchers;
   }
 
-  // async remove(id: string, user: User | DeliveryMan) {
-  //   const voucher = await this.findOneByDeliveryMan({ id }, user);
+  async remove(id: string, user: User) {
+    const voucher = await this.findOneByOrFail({ id });
+    const authFlags = await this.authService.getUserAndEntityAuth(
+      user,
+      user.id,
+    );
 
-  //   await this.voucherRepository.delete({ id });
-  //   return voucher;
-  // }
+    if (authFlags.isLoggedUserAdmin) {
+      await this.voucherRepository.delete({ id });
+      return voucher;
+    }
+
+    if (authFlags.isLoggedUserMotoboy) {
+      const ownedVoucher = await this.findOneOwnedByOrFail({ id }, user);
+      await this.voucherRepository.delete({ id: ownedVoucher.id });
+      return ownedVoucher;
+    }
+
+    if (voucher.createdBy !== null && user.id === voucher.createdBy.id) {
+      await this.voucherRepository.delete({ id });
+      return voucher;
+    }
+
+    if (voucher.user.id !== user.id) {
+      throw new UnauthorizedException(
+        `Somente o usuário ${voucher.createdBy?.name || voucher.user.name} pode excluir essa compra ou vale`,
+      );
+    }
+
+    await this.voucherRepository.delete({ id });
+    return voucher;
+  }
 
   async save(voucher: Partial<Voucher>) {
     const created = await this.voucherRepository

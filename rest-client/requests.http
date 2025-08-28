@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "rodrigo@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -172,7 +172,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/9c49ee4c-8095-44a2-affe-ade6cf982658
+DELETE {{baseUrl}}/voucher/me/b996de8f-a0ee-43ac-bdc6-d7958d201982
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher

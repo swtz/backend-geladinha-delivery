@@ -53,6 +53,7 @@ export class AuthService {
     });
     const isLoggedUserOperator = userRoles.includes(Role.Operator);
     const isLoggedUserAdmin = userRoles.includes(Role.Admin);
+    const isLoggedUserMotoboy = userRoles.includes(Role.Motoboy);
     const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
 
     return {
@@ -61,6 +62,7 @@ export class AuthService {
       entityRoles,
       isLoggedUserOperator,
       isLoggedUserAdmin,
+      isLoggedUserMotoboy,
       isEntityMotoboy,
     };
   }

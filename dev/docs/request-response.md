@@ -34,7 +34,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /voucher/me                     GET         Ler todas as compras/vales                JWT             ALL
 /voucher/me/:uuid               PATCH       Atualizar compra/vale                     JWT             ALL
 /voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário       JWT             ADMIN/OPERATOR
-/voucher/me/:uuid               DELETE      Apagar uma compra/vale de um motoboy      JWT             
+/voucher/me/:uuid               DELETE      Apagar uma compra/vale                    JWT             ALL
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto
