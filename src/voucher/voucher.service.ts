@@ -127,6 +127,26 @@ export class VoucherService {
     });
   }
 
+  async findOneOwnedByOrFail(voucherData: Partial<Voucher>, user: User) {
+    const voucher = await this.findOneOwnedBy(voucherData, user);
+
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não encontrado');
+    }
+
+    return voucher;
+  }
+
+  findOneOwnedBy(voucherData: Partial<Voucher>, user: User) {
+    return this.voucherRepository.findOne({
+      where: {
+        ...voucherData,
+        user: { id: user.id },
+      },
+      relations: ['user', 'createdBy'],
+    });
+  }
+
   // async findOneByDeliveryMan(
   //   voucherData: Partial<Voucher>,
   //   user: User | DeliveryMan,
