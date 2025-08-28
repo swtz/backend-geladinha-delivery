@@ -178,14 +178,17 @@ export class VoucherService {
     return vouchers;
   }
 
-  // async findAll() {
-  //   const vouchers = await this.voucherRepository.find({
-  //     order: { createdAt: 'DESC' },
-  //     relations: ['deliveryMan'],
-  //   });
+  async findAllOwned(user: User) {
+    const vouchers = await this.voucherRepository.find({
+      where: {
+        user: { id: user.id },
+      },
+      order: { createdAt: 'DESC' },
+      relations: ['user', 'createdBy'],
+    });
 
-  //   return vouchers;
-  // }
+    return vouchers;
+  }
 
   // async remove(id: string, user: User | DeliveryMan) {
   //   const voucher = await this.findOneByDeliveryMan({ id }, user);
