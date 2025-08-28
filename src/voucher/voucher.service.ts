@@ -84,6 +84,15 @@ export class VoucherService {
     return voucher;
   }
 
+  async updateForEntity(dto: UpdateVoucherDto, user: User, entityId: string) {
+    // userService.findOneByOrFail({id: entityId}) → entity
+    // this.findOneOwnedByOrFail({id: dto.id}, entity.id) → voucher
+    //
+    // isAdmin → this.update(dto, entity, voucher)
+    // if (!isLoggedUserOperator || !isEntityMotoboy) → 401
+    // this.update(dto, motoboy, voucher)
+  }
+
   async update(dto: UpdateVoucherDto, user: User, id: string) {
     if (!dto.amount && !dto.description) {
       throw new BadRequestException('Dados não enviados');
