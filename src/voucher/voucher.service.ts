@@ -110,18 +110,22 @@ export class VoucherService {
   //   return this.voucherRepository.save(voucher);
   // }
 
-  // async findOneOrFail(voucherData: Partial<Voucher>) {
-  //   const voucher = await this.voucherRepository.findOne({
-  //     where: voucherData,
-  //     relations: ['deliveryMan'],
-  //   });
+  async findOneByOrFail(voucherData: Partial<Voucher>) {
+    const voucher = await this.findOneBy(voucherData);
 
-  //   if (!voucher) {
-  //     throw new NotFoundException('Compra ou vale não encontrado');
-  //   }
+    if (!voucher) {
+      throw new NotFoundException('Compra ou vale não encontrado');
+    }
 
-  //   return voucher;
-  // }
+    return voucher;
+  }
+
+  findOneBy(voucherData: Partial<Voucher>) {
+    return this.voucherRepository.findOne({
+      where: voucherData,
+      relations: ['user', 'createdBy'],
+    });
+  }
 
   // async findOneByDeliveryMan(
   //   voucherData: Partial<Voucher>,
