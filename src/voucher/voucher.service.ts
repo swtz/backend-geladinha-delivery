@@ -208,12 +208,12 @@ export class VoucherService {
       return ownedVoucher;
     }
 
-    if (voucher.createdBy !== null && user.id === voucher.createdBy.id) {
+    if (voucher.user.id === user.id && voucher.createdBy === null) {
       await this.voucherRepository.delete({ id });
       return voucher;
     }
 
-    if (voucher.user.id !== user.id) {
+    if (voucher.createdBy === null || voucher.createdBy.id !== user.id) {
       throw new UnauthorizedException(
         `Somente o usuário ${voucher.createdBy?.name || voucher.user.name} pode excluir essa compra ou vale`,
       );

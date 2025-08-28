@@ -23,9 +23,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Renato",
-  "email": "renato@email.com",
-  "phone": "48976020113",
+  "name": "Igor",
+  "email": "igor@email.com",
+  "phone": "48976020114",
   "role": "operator",
   "password": "123456",
   "motorcycle": "Honda, 2024, 150, Preta",
@@ -140,7 +140,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
+POST {{baseUrl}}/voucher/me/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -172,7 +172,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/b996de8f-a0ee-43ac-bdc6-d7958d201982
+DELETE {{baseUrl}}/voucher/me/50375c80-6f5e-4e03-9855-5e0141bd83c2
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher
@@ -182,7 +182,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers by user
 # @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
+GET {{baseUrl}}/voucher/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
