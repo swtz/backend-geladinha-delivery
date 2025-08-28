@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "rodrigo@email.com",
   "password": "123456"
 }
 
@@ -180,12 +180,12 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/voucher/87e39325-c784-440d-946a-c115d85d8ec7
 Authorization: Bearer {{JwtToken}}
 
-### Read all owned vouchers
-# @name readAllOwnedVouchers
-GET {{baseUrl}}/voucher/me
-Authorization: Bearer {{JwtToken}}
-
 ### Read all vouchers by user
 # @name readAllVouchersByUser
 GET {{baseUrl}}/voucher/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
+Authorization: Bearer {{JwtToken}}
+
+### Read all owned vouchers
+# @name readAllOwnedVouchers
+GET {{baseUrl}}/voucher/me
 Authorization: Bearer {{JwtToken}}

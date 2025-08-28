@@ -24,9 +24,16 @@ export class VoucherController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:id')
-  @Roles(Role.Operator, Role.Operator)
+  @Roles(Role.Admin, Role.Operator)
   async findByUser(@Param('id', ParseUUIDPipe) id: string) {
     const vouchers = await this.voucherService.findByUser(id);
+    return vouchers;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const vouchers = await this.voucherService.findAllOwned(req.user);
     return vouchers;
   }
 
@@ -37,47 +44,6 @@ export class VoucherController {
     const voucher = await this.voucherService.findOneByOrFail({ id });
     return voucher;
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('me/:id')
-  // async findOneOwned(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const ownedVoucher = await this.voucherService.findOneByDeliveryMan(
-  //     { id },
-  //     req.user,
-  //   );
-  //   return new ResponseVoucherDto(ownedVoucher);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get()
-  // async findAll(@Req() req: AuthenticatedRequest) {
-  //   if (req.user instanceof DeliveryMan) {
-  //     throw new UnauthorizedException(
-  //       'Somente operador de caixa pode acessar essa rota',
-  //     );
-  //   }
-
-  //   const vouchers = await this.voucherService.findAll();
-  //   const arrayVouchers = vouchers.map(
-  //     voucher => new ResponseVoucherDto(voucher),
-  //   );
-  //   return arrayVouchers;
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('me')
-  // async findAllOwned(@Req() req: AuthenticatedRequest) {
-  //   const vouchers = await this.voucherService.findAllOwned({
-  //     id: req.user.id,
-  //   });
-  //   const arrayVouchers = vouchers.map(
-  //     voucher => new ResponseVoucherDto(voucher),
-  //   );
-  //   return arrayVouchers;
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Post('me')
