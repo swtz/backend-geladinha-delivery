@@ -166,52 +166,17 @@ export class VoucherService {
     });
   }
 
-  // async findOneByDeliveryMan(
-  //   voucherData: Partial<Voucher>,
-  //   user: User | DeliveryMan,
-  // ) {
-  //   if (user instanceof DeliveryMan) {
-  //     return this.findOneOwnedOrFail(voucherData, user);
-  //   }
+  async findByUser(id: string) {
+    const vouchers = await this.voucherRepository.find({
+      where: {
+        user: { id },
+      },
+      order: { createdAt: 'DESC' },
+      relations: ['user', 'createdBy'],
+    });
 
-  //   const voucher = await this.findOneOrFail(voucherData);
-  //   const deliveryMan = await this.deliveryManService.findOneOrFail({
-  //     id: voucher.deliveryMan.id,
-  //   });
-
-  //   return this.findOneOwnedOrFail({ id: voucher.id }, deliveryMan);
-  // }
-
-  // async findOneOwnedOrFail(
-  //   voucherData: Partial<Voucher>,
-  //   motoboy: DeliveryMan,
-  // ) {
-  //   const voucher = await this.voucherRepository.findOne({
-  //     where: {
-  //       ...voucherData,
-  //       deliveryMan: { id: motoboy.id },
-  //     },
-  //     relations: ['deliveryMan'],
-  //   });
-
-  //   if (!voucher) {
-  //     throw new NotFoundException('Compra ou vale não encontrado');
-  //   }
-
-  //   return voucher;
-  // }
-
-  // async findAllOwned(motoboyData: Partial<DeliveryMan>) {
-  //   const vouchers = await this.voucherRepository.find({
-  //     where: {
-  //       deliveryMan: motoboyData,
-  //     },
-  //     order: { createdAt: 'DESC' },
-  //     relations: ['deliveryMan'],
-  //   });
-
-  //   return vouchers;
-  // }
+    return vouchers;
+  }
 
   // async findAll() {
   //   const vouchers = await this.voucherRepository.find({

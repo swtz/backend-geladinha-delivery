@@ -23,6 +23,14 @@ export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get('user/:id')
+  @Roles(Role.Operator, Role.Operator)
+  async findByUser(@Param('id', ParseUUIDPipe) id: string) {
+    const vouchers = await this.voucherService.findByUser(id);
+    return vouchers;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @Roles(Role.Admin, Role.Operator)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {

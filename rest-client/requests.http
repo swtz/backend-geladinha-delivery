@@ -180,17 +180,12 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/voucher/87e39325-c784-440d-946a-c115d85d8ec7
 Authorization: Bearer {{JwtToken}}
 
-### Read one voucher by delivery man
-# @name readOneVoucherByDeliveryMan
-GET {{baseUrl}}/voucher/me/66ed239b-b620-4959-98f1-66fd479f0e84
-Authorization: Bearer {{JwtToken}}
-
 ### Read all owned vouchers
 # @name readAllOwnedVouchers
 GET {{baseUrl}}/voucher/me
 Authorization: Bearer {{JwtToken}}
 
-### Read all vouchers
-# @name readAllVouchers
-GET {{baseUrl}}/voucher
+### Read all vouchers by user
+# @name readAllVouchersByUser
+GET {{baseUrl}}/voucher/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
 Authorization: Bearer {{JwtToken}}
