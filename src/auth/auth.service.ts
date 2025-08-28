@@ -4,6 +4,8 @@ import { HashingService } from 'src/common/hashing/hashing.service';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types/jwt-payload.type';
+import { User } from 'src/user/entities/user.entity';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -41,5 +43,25 @@ export class AuthService {
     await this.userService.save(user);
 
     return { accessToken };
+  }
+
+  async getUserAndEntityAuth(user: User, entityId: string) {
+    const entity = await this.userService.findOneByOrFail({ id: entityId });
+    const userRoles = await this.userService.getAllRoleNames({ id: user.id });
+    const entityRoles = await this.userService.getAllRoleNames({
+      id: entity.id,
+    });
+    const isLoggedUserOperator = userRoles.includes(Role.Operator);
+    const isLoggedUserAdmin = userRoles.includes(Role.Admin);
+    const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
+
+    return {
+      entity,
+      userRoles,
+      entityRoles,
+      isLoggedUserOperator,
+      isLoggedUserAdmin,
+      isEntityMotoboy,
+    };
   }
 }
