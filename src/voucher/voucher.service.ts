@@ -12,6 +12,7 @@ import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
 import { Role } from 'src/common/role/roles.enum';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Injectable()
 export class VoucherService {
@@ -75,14 +76,7 @@ export class VoucherService {
 
     await this.userService.save(entity);
 
-    const voucher = await this.voucherRepository.findOne({
-      where: { id: created.id },
-      relations: ['createdBy', 'user'],
-    });
-
-    if (!voucher) {
-      throw new NotFoundException('Compra ou vale não encontrado');
-    }
+    const voucher = await this.findOneByOrFail({ id: created.id });
 
     voucher.createdBy = user;
     await this.save(voucher);
@@ -90,25 +84,18 @@ export class VoucherService {
     return voucher;
   }
 
-  // async update(
-  //   dto: UpdateVoucherDto,
-  //   user: User | DeliveryMan,
-  //   motoboyId: string,
-  // ) {
-  //   if (!dto.amount && !dto.description) {
-  //     throw new BadRequestException('Dados não enviados');
-  //   }
+  async update(dto: UpdateVoucherDto, user: User, id: string) {
+    if (!dto.amount && !dto.description) {
+      throw new BadRequestException('Dados não enviados');
+    }
 
-  //   const id = user instanceof DeliveryMan ? user.id : motoboyId;
-  //   const deliveryMan = await this.deliveryManService.findOneOrFail({ id });
+    const voucher = await this.findOneOwnedByOrFail({ id }, user);
 
-  //   const voucher = await this.findOneOwnedOrFail({ id: dto.id }, deliveryMan);
+    voucher.amount = dto.amount ?? voucher.amount;
+    voucher.description = dto.description ?? voucher.description;
 
-  //   voucher.amount = dto.amount ?? voucher.amount;
-  //   voucher.description = dto.description ?? voucher.description;
-
-  //   return this.voucherRepository.save(voucher);
-  // }
+    return this.save(voucher);
+  }
 
   async findOneByOrFail(voucherData: Partial<Voucher>) {
     const voucher = await this.findOneBy(voucherData);
