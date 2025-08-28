@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "postal@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -157,6 +157,17 @@ Content-Type: application/json
 
 {
   "amount": 4.5
+}
+
+### Update voucher for user
+# @name updateVoucherForUser
+PATCH {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "id": "87e39325-c784-440d-946a-c115d85d8ec7",
+  "amount": 24.99
 }
 
 ### Delete one voucher

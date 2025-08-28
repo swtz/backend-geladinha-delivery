@@ -80,6 +80,10 @@ export class VoucherService {
   }
 
   async updateForEntity(dto: UpdateVoucherDto, user: User, entityId: string) {
+    if (!dto.id) {
+      throw new BadRequestException('Campo ID não pode estar vazio');
+    }
+
     // TODO: fazer lógica para checar 'createdBy'
     // e controlar quem pode ou não atualizar tais dados
 

@@ -108,6 +108,22 @@ export class VoucherController {
     return voucher;
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/user/:id')
+  @Roles(Role.Admin, Role.Operator)
+  async updateForEntity(
+    @Body() dto: UpdateVoucherDto,
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const voucher = await this.voucherService.updateForEntity(
+      dto,
+      req.user,
+      id,
+    );
+    return voucher;
+  }
+
   // @UseGuards(JwtAuthGuard)
   // @Delete('me/:id')
   // async remove(
