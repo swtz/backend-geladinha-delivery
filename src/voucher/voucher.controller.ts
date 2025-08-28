@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -14,6 +15,7 @@ import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
@@ -95,16 +97,16 @@ export class VoucherController {
     return voucher;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Patch('me/:id')
-  // async update(
-  //   @Body() dto: UpdateVoucherDto,
-  //   @Req() req: AuthenticatedRequest,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const voucher = await this.voucherService.update(dto, req.user, id);
-  //   return new ResponseVoucherDto(voucher);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/:id')
+  async update(
+    @Body() dto: UpdateVoucherDto,
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const voucher = await this.voucherService.update(dto, req.user, id);
+    return voucher;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Delete('me/:id')
