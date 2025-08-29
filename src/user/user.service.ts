@@ -122,54 +122,56 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(user: User, dto: UpdateUserDto) {
     const existsUserData = dto.name || dto.email || dto.phone;
     const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
-    const entity = await this.findOneByOrFail({ id });
-    const isMotoboy = entity.roles.some(role => RoleEnum.Motoboy === role.name);
-    const isOperator = entity.roles.some(
-      role => RoleEnum.Operator === role.name,
-    );
+    const authFlags = await this.getUserAndEntityAuth(user, user.id);
     const assignRoleError = new BadRequestException(
       'Não é possível atribuir duas funções a um usuário',
     );
+    const isMotoboyButNotAdmin =
+      authFlags.isLoggedUserMotoboy && !authFlags.isLoggedUserAdmin;
 
-    if (isMotoboy && dto.role === RoleEnum.Operator) {
+    if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
       throw assignRoleError;
     }
 
-    if (isOperator && dto.role === RoleEnum.Motoboy) {
+    if (authFlags.isLoggedUserOperator && dto.role === RoleEnum.Motoboy) {
       throw assignRoleError;
     }
 
-    const user = isMotoboy
-      ? await this.updateUserMotoboy(!!existsMotoboyData, dto, entity)
-      : entity;
+    const entity = isMotoboyButNotAdmin
+      ? await this.updateUserMotoboy(!!existsMotoboyData, dto, authFlags.entity)
+      : authFlags.entity;
 
-    if (!isMotoboy && !existsUserData) {
-      throw new BadRequestException('Dados do operador não enviados');
+    if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
+      throw new BadRequestException('Dados não enviados');
     }
 
-    user.name = dto.name ?? user.name;
+    entity.name = dto.name ?? entity.name;
 
-    if (dto.email && dto.email !== user.email) {
+    if (dto.email && dto.email !== entity.email) {
       await this.failIfEmailExists(dto.email);
-      user.email = dto.email;
-      user.forceLogout = true;
+      entity.email = dto.email;
+      entity.forceLogout = true;
     }
 
-    if (dto.phone && dto.phone !== user.phone) {
+    if (dto.phone && dto.phone !== entity.phone) {
       await this.failIfPhoneExists(dto.phone);
-      user.phone = dto.phone;
+      entity.phone = dto.phone;
     }
 
-    if (dto.role) {
+    if (
+      dto.role &&
+      !authFlags.userRoles.includes(dto.role) &&
+      authFlags.isLoggedUserAdmin
+    ) {
       const role = await this.roleService.findOneOrCreate(dto.role);
-      user.roles.push(role);
-      user.forceLogout = true;
+      entity.roles.push(role);
+      entity.forceLogout = true;
     }
 
-    return this.save(user);
+    return this.save(entity);
   }
 
   async updateUserMotoboy(

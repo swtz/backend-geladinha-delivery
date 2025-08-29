@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "rodrigo@email.com",
   "password": "123456"
 }
 
@@ -39,10 +39,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Renato",
-  "email": "renato@email.com",
-  "phone": "48976020113",
-  "role": "admin",
+  "name": "Rodrigo",
+  "email": "rodrigo@email.com",
+  "phone": "48976020112",
+  "role": "motoboy",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
   "daily": 45,
   "tip": 2.5
