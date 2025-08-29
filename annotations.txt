@@ -3,27 +3,11 @@ Projeto → Backend para "Geladinha Delivery"
 → Seguir curso que mostrou como fazer o backend para o projeto "The Blog" e fazer
 as adaptações necessárias.
 
-→ A entidade UserEntity representa o usuário administrador do sistema. A princípio,
-ele é o usuário que tem mais autorização no sistema inteiro.
+→ Novo sistema de autorização seguindo o RBAC (Role-Based Access Control).
+Roles disponíveis: Admin, Operator e Motoboy.
 
-→ A configuração do módulo 'JwtModule' obriga o usuário a ter um arquivo .env para
-as variáveis de configuração do ambiente. Sendo assim, caso não exista esse arquivo ou
-não exista a variável 'JWT_SECRET' nesse arquivo, a aplicação não iniciará, assim
-lançando uma exceção com status code 500.
-
-→ Lógica do sistema de login do sistema (igual o projeto The Blog)
-
-  → usuário cria conta no sistema
-  → usuário faz login
-    → após fazer login, é assinado um JWT Token que carrega o ID desse usuário
-  → usuário acessa 'rota fechada'
-    → @UseGuards(JwtAuthGuard) checa autenticidade do usuário
-      → se usuário é autêntico, retorna objeto 'user' para a requisição
-  → o recurso '/user/me' acessa 'req.user.id' e dispara o método 'update' junto ao DTO enviado
-
-Notou? Não foi necessário checar o usuário por meio de uma rota dinâmica, pois o login já "salva" os
-dados do usuário que está logado. Assim, ele é AUTORIZADO somente a atualizar SEUS dados.
-
-######### DELIVERY RESOURCE #########
-→ Por simplicidade e aprendizado, começarei desenvolvendo a entidade Delivery com base no anexo
-'Controle de Tele Entrega Motoboy Diário.xlsx', ou seja, não farei nenhuma modificação significante.
+→ Após a criação das principais entidades do sistema (User, Voucher, Delivery, Role, Customer e Address),
+  acredito que já seja possível ir para o Frontend. Entretanto, acho que seria interessante fazer
+  um resource representando o Dashboard do sistema, ou seja, uma reunião das funcionalidades necessárias
+  que vêm dessas entidades, a fim de usar endpoints específicos para isso.
+  (mais detalhes: Observações Diárias 19/08/25)

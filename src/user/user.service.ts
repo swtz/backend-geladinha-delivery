@@ -60,7 +60,7 @@ export class UserService {
       throw new BadRequestException('Função inválida');
     }
 
-    const role = await this.createRoleForUser(dto.role);
+    const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {
       name: dto.name,
@@ -117,10 +117,6 @@ export class UserService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  createRoleForUser(roleName: RoleEnum) {
-    return this.roleService.findOneOrCreate(roleName);
-  }
-
   async getAllRoleNames(userData: Partial<User>) {
     const user = await this.findOneByOrFail(userData);
     return user.roles.map(role => role.name);
@@ -168,7 +164,7 @@ export class UserService {
     }
 
     if (dto.role) {
-      const role = await this.createRoleForUser(dto.role);
+      const role = await this.roleService.findOneOrCreate(dto.role);
       user.roles.push(role);
       user.forceLogout = true;
     }
