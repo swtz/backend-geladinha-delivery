@@ -12,7 +12,6 @@ import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class VoucherService {
@@ -22,7 +21,6 @@ export class VoucherService {
     @InjectRepository(Voucher)
     private readonly voucherRepository: Repository<Voucher>,
     private readonly userService: UserService,
-    private readonly authService: AuthService,
   ) {}
 
   async create(dto: CreateVoucherDto, user: User) {
@@ -48,7 +46,7 @@ export class VoucherService {
       description: dto.description,
     };
 
-    const authFlags = await this.authService.getUserAndEntityAuth(user, id);
+    const authFlags = await this.userService.getUserAndEntityAuth(user, id);
 
     if (authFlags.isLoggedUserAdmin) {
       return this.pushToEntity(authFlags.entity, user, newVoucher);
@@ -84,7 +82,7 @@ export class VoucherService {
       throw new BadRequestException('Campo ID não pode estar vazio');
     }
 
-    const authFlags = await this.authService.getUserAndEntityAuth(
+    const authFlags = await this.userService.getUserAndEntityAuth(
       user,
       entityId,
     );
@@ -192,7 +190,7 @@ export class VoucherService {
 
   async remove(id: string, user: User) {
     const voucher = await this.findOneByOrFail({ id });
-    const authFlags = await this.authService.getUserAndEntityAuth(
+    const authFlags = await this.userService.getUserAndEntityAuth(
       user,
       user.id,
     );

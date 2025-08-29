@@ -14,7 +14,7 @@ import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
-import { Role as RoleEnum, roles } from 'src/common/role/roles.enum';
+import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 
 type NewUser = {
   name: string;
@@ -275,5 +275,27 @@ export class UserService {
 
   save(user: User) {
     return this.userRepository.save(user);
+  }
+
+  async getUserAndEntityAuth(user: User, id: string) {
+    const entity = await this.findOneByOrFail({ id });
+    const userRoles = await this.getAllRoleNames({ id: user.id });
+    const entityRoles = await this.getAllRoleNames({
+      id: entity.id,
+    });
+    const isLoggedUserOperator = userRoles.includes(Role.Operator);
+    const isLoggedUserAdmin = userRoles.includes(Role.Admin);
+    const isLoggedUserMotoboy = userRoles.includes(Role.Motoboy);
+    const isEntityMotoboy = entityRoles.includes(Role.Motoboy);
+
+    return {
+      entity,
+      userRoles,
+      entityRoles,
+      isLoggedUserOperator,
+      isLoggedUserAdmin,
+      isLoggedUserMotoboy,
+      isEntityMotoboy,
+    };
   }
 }
