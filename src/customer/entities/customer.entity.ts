@@ -1,13 +1,15 @@
+import { Address } from 'src/address/entities/address.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class CustomerEntity {
+export class Customer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,4 +24,7 @@ export class CustomerEntity {
 
   @UpdateDateColumn()
   updateAt: Date;
+
+  @OneToMany(() => Address, address => address.customer)
+  addresses: Address[];
 }
