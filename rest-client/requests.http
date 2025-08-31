@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "renato@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Igor",
-  "email": "igor@email.com",
-  "phone": "48976020114",
-  "role": "operator",
+  "name": "Claudio",
+  "email": "claudio@email.com",
+  "phone": "48976020115",
+  "role": "motoboy",
   "password": "123456",
-  "motorcycle": "Honda, 2024, 150, Preta",
-  "daily": 30
+  "motorcycle": "Honda, 2024, 150, Vermelha",
+  "daily": 45
 }
 
 ### Update user
@@ -140,7 +140,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
+POST {{baseUrl}}/voucher/me/user/6f9d066f-c826-4ae7-b661-1332d1aca19b
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -172,7 +172,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/50375c80-6f5e-4e03-9855-5e0141bd83c2
+DELETE {{baseUrl}}/voucher/me/f8fc1e84-30a8-4c27-a5d5-64fb73c71d8c
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher
