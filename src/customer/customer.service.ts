@@ -21,14 +21,18 @@ export class CustomerService {
     private readonly addressService: AddressService,
   ) {}
 
-  async create(dto: CreateCustomerDto) {
-    const exists = await this.customerRepository.existsBy({ phone: dto.phone });
+  async failIfPhoneExists(phone: string) {
+    const exists = await this.customerRepository.existsBy({ phone });
 
     if (exists) {
       throw new BadRequestException(
-        `O número ${dto.phone} já pertence a um cliente`,
+        `O número ${phone} já pertence a um cliente`,
       );
     }
+  }
+
+  async create(dto: CreateCustomerDto) {
+    await this.failIfPhoneExists(dto.phone);
 
     const newCustomer = {
       name: dto.name,
@@ -58,16 +62,7 @@ export class CustomerService {
 
     if (existsCustomerData) {
       if (dto.phone && dto.phone !== customer.phone) {
-        const exists = await this.customerRepository.existsBy({
-          phone: dto.phone,
-        });
-
-        if (exists) {
-          throw new BadRequestException(
-            `O número ${dto.phone} já pertence a um cliente`,
-          );
-        }
-
+        await this.failIfPhoneExists(dto.phone);
         customer.phone = dto.phone;
       }
 
