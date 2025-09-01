@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Customer } from './entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomerService {
@@ -40,6 +46,32 @@ export class CustomerService {
     customer.addresses.push(address);
 
     return this.save(customer);
+  }
+
+  async update(dto: UpdateCustomerDto, id: string) {
+    const existsCustomerData = dto.name || dto.phone;
+
+    if (!existsCustomerData && dto.addressId !== undefined) {
+      await this.addressService.update(dto, id);
+      return this.findOneByOrFail({ id });
+    }
+  }
+
+  async findOneByOrFail(customerData: Partial<Customer>) {
+    const customer = await this.findOneBy(customerData);
+
+    if (!customer) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
+    return customer;
+  }
+
+  async findOneBy(customerData: Partial<Customer>) {
+    return this.customerRepository.findOne({
+      where: customerData,
+      relations: ['addresses'],
+    });
   }
 
   async save(customer: Partial<Customer>) {
