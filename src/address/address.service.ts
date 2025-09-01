@@ -52,6 +52,17 @@ export class AddressService {
     return address;
   }
 
+  async findAllOwned(customerData: Partial<Customer>) {
+    const addresses = await this.addressRepository.find({
+      where: {
+        customer: customerData,
+      },
+      relations: ['customer'],
+    });
+
+    return addresses;
+  }
+
   async save(address: Partial<Address>) {
     const created = await this.addressRepository
       .save(address)
