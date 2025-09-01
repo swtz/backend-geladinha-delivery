@@ -9,6 +9,7 @@ import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Injectable()
 export class AddressService {
@@ -34,6 +35,30 @@ export class AddressService {
     };
 
     return this.save(newAddress);
+  }
+
+  async update(dto: UpdateAddressDto, customerId: string) {
+    if (!dto.id) {
+      throw new BadRequestException('Campo ID não pode estar vazio');
+    }
+
+    const ownedAddress = await this.findOneOwnedOrFail(dto.id, {
+      id: customerId,
+    });
+
+    ownedAddress.city = dto.city ?? ownedAddress.city;
+    ownedAddress.complement = dto.complement ?? ownedAddress.complement;
+    ownedAddress.neighborhood = dto.neighborhood ?? ownedAddress.neighborhood;
+    ownedAddress.referencePoint =
+      dto.referencePoint ?? ownedAddress.referencePoint;
+    ownedAddress.street = dto.street ?? ownedAddress.street;
+    ownedAddress.number = dto.number ?? ownedAddress.number;
+    ownedAddress.postalCode = dto.postalCode ?? ownedAddress.postalCode;
+    ownedAddress.location = dto.location ?? ownedAddress.location;
+    ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
+    ownedAddress.isDefault = dto.isDefault ?? ownedAddress.isDefault;
+
+    return this.save(ownedAddress);
   }
 
   async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {
