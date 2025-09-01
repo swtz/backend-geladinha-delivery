@@ -16,13 +16,13 @@ export class Address {
   @Column({ length: 48 })
   street: string;
 
-  @Column({ length: 16 })
+  @Column({ length: 16, default: 'S/N' })
   number: string;
 
-  @Column({ length: 32 })
+  @Column({ length: 32, nullable: true })
   complement: string;
 
-  @Column({ length: 32 })
+  @Column({ length: 32, nullable: true })
   referencePoint: string;
 
   @Column({ length: 32 })
@@ -37,8 +37,11 @@ export class Address {
   @Column({ length: 2, default: 'SC' })
   stateCode: string;
 
-  @Column({ length: 32 })
+  @Column({ length: 32, nullable: true })
   location: string;
+
+  @Column({ default: false })
+  isDefault: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
