@@ -97,6 +97,26 @@ Content-Type: application/json
   "isDefault": true
 }
 
+### Update customer
+# @name createCustomer
+PATCH {{baseUrl}}/customer/1956048f-159d-4970-8091-4a35b568402f
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "addressId": "07ac43b0-d947-422a-9b86-b3dadde2b380",
+  "street": "Avenida Francisco",
+  "number": "1132",
+  "complement": "Apto. 104",
+  "referencePoint": "Ao lado da cachaçaria",
+  "neighborhood": "Itapuã",
+  "postalCode": "88955-000",
+  "city": "Araranguá",
+  "stateCode": "SC",
+  "location": "19.8987° N, 155.6659° W",
+  "isDefault": false
+}
+
 ################### DELIVERY ###################
 
 ### Create delivery

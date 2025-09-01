@@ -55,6 +55,8 @@ export class CustomerService {
       await this.addressService.update(dto, id);
       return this.findOneByOrFail({ id });
     }
+
+    throw new BadRequestException('Dados não enviados');
   }
 
   async findOneByOrFail(customerData: Partial<Customer>) {
