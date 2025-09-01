@@ -161,18 +161,18 @@ Content-Type: application/json
 
 ### Update voucher for user
 # @name updateVoucherForUser
-PATCH {{baseUrl}}/voucher/me/user/00c4381d-51c4-436a-8706-b284e120e331
+PATCH {{baseUrl}}/voucher/me/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "cd8fab39-983e-494e-856c-68e3a36a798b",
-  "amount": 5.5
+  "id": "801ed52f-a011-4663-aa4f-8e6bfeef88d9",
+  "amount": 25.5
 }
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/f8fc1e84-30a8-4c27-a5d5-64fb73c71d8c
+DELETE {{baseUrl}}/voucher/me/7d90e306-a1c1-4681-9292-0af78c18d642
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher

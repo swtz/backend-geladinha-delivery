@@ -196,14 +196,9 @@ export class VoucherService {
       user,
       entityId,
     );
-    // voucher.createdBy === User.roles.includes === Admin, Operator
-    // quem criou o voucher é quem pode excluir o voucher
-    //
-    // se voucher.createdBy === null &&
-    // voucher.user.id === user.id → pode excluir
+
     if (haveCreatedBy) {
       if (voucher.createdBy.id !== user.id) {
-        // usuário não criou o voucher
         throw new UnauthorizedException(
           `Somente o usuário ${authFlags.entity.name} pode excluir essa compra ou vale`,
         );
@@ -218,7 +213,6 @@ export class VoucherService {
         authFlags.isLoggedUserAdmin ||
         (authFlags.isEntityMotoboy && authFlags.isLoggedUserOperator)
       ) {
-        // excluir voucher, pois entity é um motoboy
         await this.voucherRepository.delete({ id });
         return voucher;
       }
@@ -230,37 +224,6 @@ export class VoucherService {
 
     await this.voucherRepository.delete({ id });
     return voucher;
-
-    // if (voucher.createdBy === null) {
-    //   if (authFlags.isLoggedUserAdmin) {
-    //     await this.voucherRepository.delete({ id });
-    //     return voucher;
-    //   }
-
-    //   if (authFlags.isLoggedUserMotoboy) {
-    //     const ownedVoucher = await this.findOneOwnedByOrFail({ id }, user);
-    //     await this.voucherRepository.delete({ id: ownedVoucher.id });
-    //     return ownedVoucher;
-    //   }
-
-    //   if (voucher.user.id !== user.id && !authFlags.isEntityMotoboy) {
-    //     throw new UnauthorizedException(
-    //       `Somente o usuário ${voucher.user.name} pode excluir essa compra ou vale`,
-    //     );
-    //   }
-
-    //   await this.voucherRepository.delete({ id });
-    //   return voucher;
-    // }
-
-    // if (user.id !== voucher.createdBy.id) {
-    //   throw new UnauthorizedException(
-    //     `Somente o usuário ${voucher.createdBy.name} pode excluir essa compra ou vale`,
-    //   );
-    // }
-
-    // await this.voucherRepository.delete({ id });
-    // return voucher;
   }
 
   async save(voucher: Partial<Voucher>) {
