@@ -1,8 +1,14 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { Customer } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class AddressService {
@@ -28,6 +34,22 @@ export class AddressService {
     };
 
     return this.save(newAddress);
+  }
+
+  async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {
+    const address = await this.addressRepository.findOne({
+      where: {
+        id,
+        customer: customerData,
+      },
+      relations: ['customer'],
+    });
+
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado');
+    }
+
+    return address;
   }
 
   async save(address: Partial<Address>) {

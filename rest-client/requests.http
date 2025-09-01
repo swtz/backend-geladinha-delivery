@@ -84,12 +84,12 @@ Content-Type: application/json
 
 {
   "name": "Maria",
-  "phone": "48988550032",
+  "phone": "48988550033",
   "street": "Avenida Brasil",
-  "number": "33",
+  "number": "1132",
   "complement": "Apto. 103",
   "referencePoint": "Ao lado da cachaçaria",
-  "neighborhood": "Turimar",
+  "neighborhood": "Itapuã",
   "postalCode": "88955-000",
   "city": "Sombrio",
   "stateCode": "SC",
