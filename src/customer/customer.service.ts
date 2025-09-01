@@ -50,13 +50,37 @@ export class CustomerService {
 
   async update(dto: UpdateCustomerDto, id: string) {
     const existsCustomerData = dto.name || dto.phone;
+    const customer = await this.findOneByOrFail({ id });
 
-    if (!existsCustomerData && dto.addressId !== undefined) {
-      await this.addressService.update(dto, id);
-      return this.findOneByOrFail({ id });
+    if (!existsCustomerData && dto.addressId === undefined) {
+      throw new BadRequestException('Dados não enviados');
     }
 
-    throw new BadRequestException('Dados não enviados');
+    if (existsCustomerData) {
+      if (dto.phone && dto.phone !== customer.phone) {
+        const exists = await this.customerRepository.existsBy({
+          phone: dto.phone,
+        });
+
+        if (exists) {
+          throw new BadRequestException(
+            `O número ${dto.phone} já pertence a um cliente`,
+          );
+        }
+
+        customer.phone = dto.phone;
+      }
+
+      customer.name = dto.name ?? customer.name;
+    }
+
+    if (dto.addressId !== undefined) {
+      await this.addressService.update(dto, id);
+    }
+
+    const updatedCustomer = await this.save(customer);
+
+    return this.findOneByOrFail({ id: updatedCustomer.id });
   }
 
   async findOneByOrFail(customerData: Partial<Customer>) {
