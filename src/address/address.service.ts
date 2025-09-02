@@ -58,7 +58,24 @@ export class AddressService {
     ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
     ownedAddress.isDefault = dto.isDefault ?? ownedAddress.isDefault;
 
-    return this.save(ownedAddress);
+    const nullableValues = {
+      complement: dto.complement,
+      referencePoint: dto.referencePoint,
+      number: dto.number,
+    };
+    const updatedValues = {};
+
+    Object.keys(nullableValues).forEach(key => {
+      if (nullableValues[key] === null) {
+        if (key === 'number') {
+          updatedValues['number'] = 'S/N';
+        }
+
+        updatedValues[key] = '';
+      }
+    });
+
+    return this.save({ ...ownedAddress, ...updatedValues });
   }
 
   async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {

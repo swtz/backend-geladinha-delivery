@@ -109,9 +109,9 @@ Content-Type: application/json
   "address": {
     "id": "07ac43b0-d947-422a-9b86-b3dadde2b380",
     "street": "Avenida Barramares",
-    "number": "32",
-    "complement": null,
-    "referencePoint": "Ao lado da padaria",
+    "number": null,
+    "complement": "Casa de esquina",
+    "referencePoint": null,
     "neighborhood": "Próspera",
     "postalCode": "88955-000",
     "city": "Araranguá",
