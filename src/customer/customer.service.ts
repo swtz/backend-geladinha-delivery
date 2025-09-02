@@ -38,7 +38,7 @@ export class CustomerService {
       name: dto.name,
       phone: dto.phone,
     };
-    const address = await this.addressService.create(dto);
+    const address = await this.addressService.create(dto.address);
     const created = await this.save(newCustomer);
     const customer = await this.customerRepository.findOneOrFail({
       where: {

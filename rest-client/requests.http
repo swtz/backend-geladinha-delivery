@@ -83,18 +83,18 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Maria",
-  "phone": "48988550033",
-  "street": "Avenida Brasil",
-  "number": "1132",
-  "complement": "Apto. 103",
-  "referencePoint": "Ao lado da cachaçaria",
-  "neighborhood": "Itapuã",
-  "postalCode": "88955-000",
-  "city": "Sombrio",
-  "stateCode": "SC",
-  "location": "19.8987° N, 155.6659° W",
-  "isDefault": true
+  "name": "Osmar",
+  "phone": "48988550036",
+  "address": {
+    "street": "Travessa Ribeirinhos",
+    "number": "777",
+    "neighborhood": "Maçaricos",
+    "postalCode": "88955-000",
+    "city": "Gaivota",
+    "stateCode": "SC",
+    "location": "19.8987° N, 155.6659° W",
+    "isDefault": true
+  }
 }
 
 ### Update customer

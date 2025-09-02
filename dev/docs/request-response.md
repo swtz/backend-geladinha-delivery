@@ -19,6 +19,9 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/me/password               PATCH       Atualizar senha                           JWT            ALL
 /user/:uuid                     DELETE      Apagar usuário                            JWT            ADMIN
 
+/customer/                      POST        Criar cliente com endereço                JWT            ADMIN/OPERATOR
+/customer/:uuid                 PATCH       Atualizar cliente e/ou endereço           JWT            ADMIN/OPERATOR
+
 /delivery/                      GET         Ver todos os pedidos                      JWT
 /delivery/:boolean              GET         Ver todos os pedidos pagos                JWT
 /delivery/me                    GET         Ver todos os pedidos de um usuário        JWT
