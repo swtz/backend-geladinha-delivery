@@ -56,7 +56,7 @@ export class CustomerService {
     const existsCustomerData = dto.name || dto.phone;
     const customer = await this.findOneByOrFail({ id });
 
-    if (!existsCustomerData && dto.addressId === undefined) {
+    if (!existsCustomerData && dto.address === undefined) {
       throw new BadRequestException('Dados não enviados');
     }
 
@@ -69,8 +69,8 @@ export class CustomerService {
       customer.name = dto.name ?? customer.name;
     }
 
-    if (dto.addressId !== undefined) {
-      await this.addressService.update(dto, id);
+    if (dto.address && dto.address.id !== null) {
+      await this.addressService.update(dto.address, id);
     }
 
     const updatedCustomer = await this.save(customer);

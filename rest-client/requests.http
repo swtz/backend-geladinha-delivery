@@ -104,19 +104,21 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Laura Zeferina",
+  "name": "Laura Cabral",
   "phone": "48988550034",
-  "addressId": "07ac43b0-d947-422a-9b86-b3dadde2b380",
-  "street": "Avenida Francisco",
-  "number": "32",
-  "complement": "não há complemento",
-  "referencePoint": "Ao lado da padaria",
-  "neighborhood": "Próspera",
-  "postalCode": "88955-000",
-  "city": "Araranguá",
-  "stateCode": "SC",
-  "location": "19.8987° N, 155.6659° W",
-  "isDefault": true
+  "address": {
+    "id": "07ac43b0-d947-422a-9b86-b3dadde2b380",
+    "street": "Avenida Barramares",
+    "number": "32",
+    "complement": null,
+    "referencePoint": "Ao lado da padaria",
+    "neighborhood": "Próspera",
+    "postalCode": "88955-000",
+    "city": "Araranguá",
+    "stateCode": "SC",
+    "location": "19.8987° N, 155.6659° W",
+    "isDefault": true
+  }
 }
 
 ################### DELIVERY ###################

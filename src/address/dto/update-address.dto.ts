@@ -5,5 +5,5 @@ import { IsOptional, IsUUID } from 'class-validator';
 export class UpdateAddressDto extends PartialType(CreateAddressDto) {
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  addressId?: string;
+  id?: string;
 }

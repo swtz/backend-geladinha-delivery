@@ -38,11 +38,11 @@ export class AddressService {
   }
 
   async update(dto: UpdateAddressDto, customerId: string) {
-    if (!dto.addressId) {
+    if (!dto.id) {
       throw new BadRequestException('Campo ID não pode estar vazio');
     }
 
-    const ownedAddress = await this.findOneOwnedOrFail(dto.addressId, {
+    const ownedAddress = await this.findOneOwnedOrFail(dto.id, {
       id: customerId,
     });
 

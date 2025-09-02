@@ -1,7 +1,12 @@
-import { PartialType, IntersectionType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreateCustomerDto } from './create-customer.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { IsNotEmptyObject, IsOptional } from 'class-validator';
 
 export class UpdateCustomerDto extends PartialType(
-  IntersectionType(CreateCustomerDto, UpdateAddressDto),
-) {}
+  OmitType(CreateCustomerDto, ['address']),
+) {
+  @IsOptional()
+  @IsNotEmptyObject({}, { message: 'Formato inválido' })
+  address?: UpdateAddressDto;
+}

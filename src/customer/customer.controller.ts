@@ -14,6 +14,7 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
+import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -34,9 +35,10 @@ export class CustomerController {
   @Patch(':id')
   async update(
     @Body() dto: UpdateCustomerDto,
+    @Body('address') address: UpdateAddressDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const customer = await this.customerService.update(dto, id);
+    const customer = await this.customerService.update({ ...dto, address }, id);
     return customer;
   }
 }
