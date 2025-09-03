@@ -97,25 +97,25 @@ Content-Type: application/json
 }
 
 ### Update customer
-# @name createCustomer
-PATCH {{baseUrl}}/customer/1956048f-159d-4970-8091-4a35b568402f
+# @name updateCustomer
+PATCH {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Laura Cabral",
-  "phone": "48988550034",
+  "name": "Valdenir",
+  "phone": "48988550043",
   "address": {
-    "id": "07ac43b0-d947-422a-9b86-b3dadde2b380",
-    "street": "Avenida Barramares",
-    "number": null,
-    "complement": "Casa de esquina",
+    "id": "c6bb0d39-8bf3-43f2-a007-3ba185828f94",
+    "street": "Avenida Brasil",
+    "number": "S/N",
+    "complement": null,
     "referencePoint": null,
-    "neighborhood": "Próspera",
+    "neighborhood": "Clube HC",
     "postalCode": "88955-000",
-    "city": "Araranguá",
+    "city": "Balneário Gaivota",
     "stateCode": "SC",
-    "location": "19.8987° N, 155.6659° W",
+    "location": null,
     "isDefault": true
   }
 }
