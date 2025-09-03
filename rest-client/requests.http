@@ -128,7 +128,8 @@ Content-Type: application/json
 
 {
   "street": "NOVO TEST",
-  "neighborhood": "TEST"
+  "neighborhood": "TEST",
+  "isDefault": true
 }
 
 ### find one customer

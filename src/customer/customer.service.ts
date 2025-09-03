@@ -122,6 +122,13 @@ export class CustomerService {
     }
 
     const customer = await this.findOneByOrFail({ id });
+
+    if (customer.addresses.length >= 3) {
+      throw new BadRequestException(
+        'Só é possível cadastrar 3 endereços por cliente',
+      );
+    }
+
     const address = await this.addressService.create(dto, dto.isDefault);
 
     if (dto.isDefault) {
