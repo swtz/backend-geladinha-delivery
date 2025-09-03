@@ -132,6 +132,11 @@ Content-Type: application/json
   "isDefault": true
 }
 
+### remove address
+# @name removeAddress
+DELETE {{baseUrl}}/customer/address/265cf4e6-9fd1-49a9-a677-ee96914ebfcd
+Authorization: Bearer {{JwtToken}}
+
 ### find one customer
 # @name findOneCustomer
 GET {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7

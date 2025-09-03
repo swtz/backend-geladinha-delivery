@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -69,5 +70,12 @@ export class CustomerController {
   ) {
     const customer = await this.customerService.addAddress(dto, id);
     return customer;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('address/:id')
+  async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
+    const address = await this.customerService.removeAddress(id);
+    return address;
   }
 }
