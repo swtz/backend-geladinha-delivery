@@ -79,7 +79,10 @@ export class AddressService {
   }
 
   async findOneByOrFail(id: string) {
-    return this.addressRepository.findOneByOrFail({ id });
+    return this.addressRepository.findOneOrFail({
+      where: { id },
+      relations: ['customer'],
+    });
   }
 
   async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {

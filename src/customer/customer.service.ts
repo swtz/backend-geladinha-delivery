@@ -144,5 +144,17 @@ export class CustomerService {
 
   async removeAddress(id: string) {
     const address = await this.addressService.findOneByOrFail(id);
+
+    if (address.isDefault) {
+      throw new BadRequestException(
+        'Não é possível excluir o endereço que está como padrão',
+      );
+    }
+
+    if (address.customer.addresses.length === 1) {
+      throw new BadRequestException('Cliente precisa ter ao menos 1 endereço');
+    }
+
+    return this.addressService.remove(id);
   }
 }
