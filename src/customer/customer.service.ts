@@ -108,4 +108,8 @@ export class CustomerService {
 
     return created;
   }
+
+  findAddressesByCustomer(customer: Partial<Customer>) {
+    return this.addressService.findAllOwned(customer);
+  }
 }

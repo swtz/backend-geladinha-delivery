@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -20,6 +21,15 @@ import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/address')
+  async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
+    const addresses = await this.customerService.findAddressesByCustomer({
+      id,
+    });
+    return addresses;
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

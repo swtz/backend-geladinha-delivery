@@ -121,6 +121,11 @@ Content-Type: application/json
   }
 }
 
+### findAllAddressesByCustomer
+# @name findAllAddressesByCustomer
+GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b/address
+Authorization: Bearer {{JwtToken}}
+
 ################### DELIVERY ###################
 
 ### Create delivery
