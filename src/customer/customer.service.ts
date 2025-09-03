@@ -144,6 +144,7 @@ export class CustomerService {
 
   async removeAddress(id: string) {
     const address = await this.addressService.findOneByOrFail(id);
+    const customer = await this.findOneByOrFail({ id: address.customer.id });
 
     if (address.isDefault) {
       throw new BadRequestException(
@@ -151,7 +152,7 @@ export class CustomerService {
       );
     }
 
-    if (address.customer.addresses.length === 1) {
+    if (customer.addresses.length === 1) {
       throw new BadRequestException('Cliente precisa ter ao menos 1 endereço');
     }
 

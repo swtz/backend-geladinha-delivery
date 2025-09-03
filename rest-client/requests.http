@@ -134,7 +134,7 @@ Content-Type: application/json
 
 ### remove address
 # @name removeAddress
-DELETE {{baseUrl}}/customer/address/265cf4e6-9fd1-49a9-a677-ee96914ebfcd
+DELETE {{baseUrl}}/customer/address/c6bb0d39-8bf3-43f2-a007-3ba185828f94
 Authorization: Bearer {{JwtToken}}
 
 ### find one customer
