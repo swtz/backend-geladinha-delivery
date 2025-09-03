@@ -23,6 +23,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /customer/:uuid                 GET         Ler cliente                               JWT            ADMIN/OPERATOR
 /customer/:uuid                 PATCH       Atualizar cliente e/ou endereço           JWT            ADMIN/OPERATOR
 /customer/:uuid/address         GET         Ler todos os endereços de um cliente      JWT            ADMIN/OPERATOR
+/customer/:uuid/address         POST        Adicionar endereço                        JWT            ADMIN/OPERATOR
 
 /delivery/                      GET         Ver todos os pedidos                      JWT
 /delivery/:boolean              GET         Ver todos os pedidos pagos                JWT

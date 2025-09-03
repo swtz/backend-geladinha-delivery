@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 
 @Injectable()
 export class CustomerService {
@@ -111,5 +112,14 @@ export class CustomerService {
 
   findAddressesByCustomer(customer: Partial<Customer>) {
     return this.addressService.findAllOwned(customer);
+  }
+
+  async addAddress(dto: CreateAddressDto, id: string) {
+    const customer = await this.findOneByOrFail({ id });
+    const address = await this.addressService.create(dto);
+
+    customer.addresses.push(address);
+
+    return this.save(customer);
   }
 }

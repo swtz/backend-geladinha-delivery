@@ -121,6 +121,17 @@ Content-Type: application/json
   }
 }
 
+### add address
+# @name addAddress
+POST {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b/address
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "street": "Avenida das Flores",
+  "neighborhood": "Fungos"
+}
+
 ### find one customer
 # @name findOneCustomer
 GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b

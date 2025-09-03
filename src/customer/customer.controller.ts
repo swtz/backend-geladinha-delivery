@@ -60,4 +60,14 @@ export class CustomerController {
     const customer = await this.customerService.update({ ...dto, address }, id);
     return customer;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/address')
+  async addAddress(
+    @Body() dto: CreateAddressDto,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const customer = await this.customerService.addAddress(dto, id);
+    return customer;
+  }
 }
