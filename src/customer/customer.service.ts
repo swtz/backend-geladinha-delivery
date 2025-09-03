@@ -115,11 +115,23 @@ export class CustomerService {
   }
 
   async addAddress(dto: CreateAddressDto, id: string) {
+    if (dto.isDefault === undefined || dto.isDefault === null) {
+      throw new BadRequestException(
+        'Campo endereço padrão não pode estar vazio',
+      );
+    }
+
     const customer = await this.findOneByOrFail({ id });
-    const address = await this.addressService.create(dto);
+    const address = await this.addressService.create(dto, dto.isDefault);
+
+    if (dto.isDefault) {
+      void customer.addresses.map(async address => {
+        await this.addressService.save({ ...address, isDefault: false });
+      });
+    }
 
     customer.addresses.push(address);
 
-    return this.save(customer);
+    return this.save({ ...customer, addresses: customer.addresses });
   }
 }

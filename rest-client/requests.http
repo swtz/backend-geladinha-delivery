@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Claudio",
-  "email": "claudio@email.com",
-  "phone": "48976020115",
+  "name": "Gabriel",
+  "email": "gabriel@email.com",
+  "phone": "48976020116",
   "role": "motoboy",
   "password": "123456",
-  "motorcycle": "Honda, 2024, 150, Vermelha",
-  "daily": 45
+  "motorcycle": "Suzuki, 2017, 300, Verde",
+  "daily": 35
 }
 
 ### Update user
@@ -83,17 +83,16 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Osmar",
-  "phone": "48988550036",
+  "name": "Valdenir",
+  "phone": "48988550043",
   "address": {
-    "street": "Travessa Ribeirinhos",
-    "number": "777",
+    "street": "Travessa Tesourinhas",
+    "number": "888",
     "neighborhood": "Maçaricos",
     "postalCode": "88955-000",
     "city": "Gaivota",
     "stateCode": "SC",
-    "location": "19.8987° N, 155.6659° W",
-    "isDefault": true
+    "location": "19.8987° N, 155.6659° W"
   }
 }
 
@@ -123,23 +122,23 @@ Content-Type: application/json
 
 ### add address
 # @name addAddress
-POST {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b/address
+POST {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7/address
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "street": "Avenida das Flores",
-  "neighborhood": "Fungos"
+  "street": "NOVO TEST",
+  "neighborhood": "TEST"
 }
 
 ### find one customer
 # @name findOneCustomer
-GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b
+GET {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7
 Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
 # @name findAddressesByCustomer
-GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b/address
+GET {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7/address
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################

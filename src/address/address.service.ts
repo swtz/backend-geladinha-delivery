@@ -20,7 +20,7 @@ export class AddressService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  create(dto: CreateAddressDto) {
+  create(dto: CreateAddressDto, isDefault = true) {
     const newAddress = {
       street: dto.street,
       number: dto.number,
@@ -31,7 +31,7 @@ export class AddressService {
       city: dto.city,
       stateCode: dto.stateCode,
       location: dto.location,
-      isDefault: dto.isDefault,
+      isDefault,
     };
 
     return this.save(newAddress);
