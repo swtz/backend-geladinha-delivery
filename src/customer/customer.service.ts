@@ -141,4 +141,8 @@ export class CustomerService {
 
     return this.save({ ...customer, addresses: customer.addresses });
   }
+
+  async removeAddress(id: string) {
+    const address = await this.addressService.findOneByOrFail(id);
+  }
 }

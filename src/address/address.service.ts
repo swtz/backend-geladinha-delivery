@@ -78,6 +78,10 @@ export class AddressService {
     return this.save({ ...ownedAddress, ...updatedValues });
   }
 
+  async findOneByOrFail(id: string) {
+    return this.addressRepository.findOneByOrFail({ id });
+  }
+
   async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {
     const address = await this.addressRepository.findOne({
       where: {
