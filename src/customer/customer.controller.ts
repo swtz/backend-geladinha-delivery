@@ -23,6 +23,15 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const customer = await this.customerService.findOneByOrFail({
+      id,
+    });
+    return customer;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id/address')
   async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
     const addresses = await this.customerService.findAddressesByCustomer({
