@@ -79,10 +79,16 @@ export class AddressService {
   }
 
   async findOneByOrFail(id: string) {
-    return this.addressRepository.findOneOrFail({
+    const address = await this.addressRepository.findOne({
       where: { id },
       relations: ['customer'],
     });
+
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado');
+    }
+
+    return address;
   }
 
   async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {
