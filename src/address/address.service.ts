@@ -109,6 +109,12 @@ export class AddressService {
     return addresses;
   }
 
+  async remove(id: string) {
+    const address = await this.findOneByOrFail(id);
+    await this.addressRepository.delete({ id });
+    return address;
+  }
+
   async save(address: Partial<Address>) {
     const created = await this.addressRepository
       .save(address)
