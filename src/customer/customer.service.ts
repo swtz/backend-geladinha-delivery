@@ -74,9 +74,9 @@ export class CustomerService {
       await this.addressService.update(dto.address, id);
     }
 
-    const updatedCustomer = await this.save(customer);
+    await this.save(customer);
 
-    return this.findOneByOrFail({ id: updatedCustomer.id });
+    return this.findOneByOrFail({ id });
   }
 
   async findOneByOrFail(customerData: Partial<Customer>) {

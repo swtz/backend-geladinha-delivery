@@ -106,17 +106,11 @@ Content-Type: application/json
   "name": "Valdenir",
   "phone": "48988550043",
   "address": {
-    "id": "c6bb0d39-8bf3-43f2-a007-3ba185828f94",
-    "street": "Avenida Brasil",
-    "number": "S/N",
+    "id": "68b630fc-9007-4803-86f8-9c5df6a23b3d",
+    "city": "KKKKKK",
+    "number": null,
     "complement": null,
-    "referencePoint": null,
-    "neighborhood": "Clube HC",
-    "postalCode": "88955-000",
-    "city": "Balneário Gaivota",
-    "stateCode": "SC",
-    "location": null,
-    "isDefault": true
+    "referencePoint": null
   }
 }
 

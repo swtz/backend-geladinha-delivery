@@ -46,13 +46,6 @@ export class AddressService {
       id: customerId,
     });
 
-    if (dto.isDefault) {
-      const ownedAddresses = await this.findAllOwned({ id: customerId });
-      void ownedAddresses.map(async address => {
-        await this.save({ ...address, isDefault: false });
-      });
-    }
-
     ownedAddress.city = dto.city ?? ownedAddress.city;
     ownedAddress.complement = dto.complement ?? ownedAddress.complement;
     ownedAddress.neighborhood = dto.neighborhood ?? ownedAddress.neighborhood;
@@ -63,9 +56,7 @@ export class AddressService {
     ownedAddress.postalCode = dto.postalCode ?? ownedAddress.postalCode;
     ownedAddress.location = dto.location ?? ownedAddress.location;
     ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
-    ownedAddress.isDefault = !dto.isDefault
-      ? ownedAddress.isDefault
-      : dto.isDefault;
+    ownedAddress.isDefault = dto.isDefault ?? ownedAddress.isDefault;
 
     const nullableValues = {
       complement: dto.complement,
@@ -76,11 +67,11 @@ export class AddressService {
 
     Object.keys(nullableValues).forEach(key => {
       if (nullableValues[key] === null) {
-        if (key === 'number') {
-          updatedValues['number'] = 'S/N';
-        }
-
         updatedValues[key] = '';
+
+        if (key === 'number') {
+          updatedValues[key] = 'S/N';
+        }
       }
     });
 
