@@ -1,3 +1,5 @@
+import { Address } from 'src/address/entities/address.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -9,12 +11,12 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class DeliveryEntity {
+export class Delivery {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: string;
+  @Column({ length: 150 })
+  description: string;
 
   @Column({ type: 'double' })
   totalPurchase: number;
@@ -39,4 +41,10 @@ export class DeliveryEntity {
 
   @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL' })
   motoboy: DeliveryMan;
+
+  @ManyToOne(() => Customer, { onDelete: 'SET NULL' })
+  customer: Customer;
+
+  @ManyToOne(() => Address, { onDelete: 'SET NULL' })
+  address: Address;
 }

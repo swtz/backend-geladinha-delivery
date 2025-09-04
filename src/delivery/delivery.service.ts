@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { DeliveryEntity } from './entities/delivery.entity';
+import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -8,8 +8,8 @@ export class DeliveryService {
   private readonly logger = new Logger(DeliveryService.name);
 
   constructor(
-    @InjectRepository(DeliveryEntity)
-    private readonly deliveryRepository: Repository<DeliveryEntity>,
+    @InjectRepository(Delivery)
+    private readonly deliveryRepository: Repository<Delivery>,
   ) {}
 
   // async create(dto: CreateDeliveryDto, operator: User) {

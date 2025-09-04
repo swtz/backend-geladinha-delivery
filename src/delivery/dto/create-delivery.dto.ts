@@ -2,8 +2,8 @@ import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateDeliveryDto {
   @IsString({ message: 'Formato inválido' })
-  @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
-  name: string;
+  @IsNotEmpty({ message: 'Campo descrição não pode estar vazio' })
+  description: string;
 
   @IsNumber(
     {},
@@ -23,4 +23,8 @@ export class CreateDeliveryDto {
   @IsUUID('4', { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
   motoboy: string;
+
+  @IsUUID('4', { message: 'Formato inválido' })
+  @IsNotEmpty({ message: 'Campo cliente não pode estar vazio' })
+  customer: string;
 }

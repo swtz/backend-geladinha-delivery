@@ -98,15 +98,13 @@ Content-Type: application/json
 
 ### Update customer
 # @name updateCustomer
-PATCH {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7
+PATCH {{baseUrl}}/customer/643da16e-d81d-413e-b71d-b01728742c97
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Valdenir",
-  "phone": "48988550043",
   "address": {
-    "id": "8a0bb160-de28-44f7-9b06-fbcf454c11e2",
+    "id": "20576940-ad80-42d3-9953-b4e5ebec50d7",
     "city": "KKKKKK",
     "number": null,
     "complement": null,
@@ -144,7 +142,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
 # @name findAddressesByCustomer
-GET {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7/address
+GET {{baseUrl}}/customer/643da16e-d81d-413e-b71d-b01728742c97/address
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
