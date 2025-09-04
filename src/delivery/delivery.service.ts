@@ -21,9 +21,10 @@ export class DeliveryService {
   ) {}
 
   async create(dto: CreateDeliveryDto, operator: User) {
-    // const motoboy = await this.deliveryManService.findOneOrFail({
-    //   id: dto.motoboy,
-    // });
+    const motoboy = await this.userService.findOneMotoboyByOrFail({
+      id: dto.motoboy,
+    });
+
     // const delivery = this.deliveryRepository.create({
     //   name: dto.name,
     //   totalPurchase: dto.totalPurchase,
@@ -40,7 +41,7 @@ export class DeliveryService {
     //     }
     //     throw new BadRequestException('Erro ao criar a entrega');
     //   });
-    // return created;
+    return motoboy;
   }
 
   // async update(

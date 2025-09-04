@@ -1,9 +1,16 @@
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateDeliveryDto {
+  @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo descrição não pode estar vazio' })
-  description: string;
+  description?: string;
 
   @IsNumber(
     {},
