@@ -63,6 +63,13 @@ export class CustomerController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const customer = await this.customerService.remove(id);
+    return customer;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post(':id/address')
   async addAddress(
     @Body() dto: CreateAddressDto,

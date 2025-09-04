@@ -115,6 +115,11 @@ Content-Type: application/json
   }
 }
 
+### Delete customer
+# @name deleteCustomer
+DELETE {{baseUrl}}/customer/d1dac663-5fdf-4e1d-b6c2-2cdacfaa91ba
+Authorization: Bearer {{JwtToken}}
+
 ### add address
 # @name addAddress
 POST {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7/address
