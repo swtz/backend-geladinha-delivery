@@ -127,14 +127,14 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "street": "NOVO TEST",
-  "neighborhood": "TEST",
+  "street": "NOVO ADDRESS",
+  "neighborhood": "TRUE",
   "isDefault": true
 }
 
 ### remove address
 # @name removeAddress
-DELETE {{baseUrl}}/customer/address/c6bb0d39-8bf3-43f2-a007-3ba185828f94
+DELETE {{baseUrl}}/customer/address/75366fb8-7df5-4424-9858-8a3f5e6371bc
 Authorization: Bearer {{JwtToken}}
 
 ### find one customer

@@ -138,8 +138,9 @@ export class CustomerService {
     }
 
     customer.addresses.push(address);
+    await this.save(customer);
 
-    return this.save({ ...customer, addresses: customer.addresses });
+    return this.findOneByOrFail({ id });
   }
 
   async removeAddress(id: string) {
