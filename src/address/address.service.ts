@@ -42,9 +42,12 @@ export class AddressService {
       throw new BadRequestException('Campo ID não pode estar vazio');
     }
 
-    const ownedAddress = await this.findOneOwnedOrFail(dto.id, {
-      id: customerId,
-    });
+    const ownedAddress = await this.findOneOwnedOrFail(
+      { id: dto.id },
+      {
+        id: customerId,
+      },
+    );
 
     ownedAddress.city = dto.city ?? ownedAddress.city;
     ownedAddress.complement = dto.complement ?? ownedAddress.complement;
@@ -56,7 +59,9 @@ export class AddressService {
     ownedAddress.postalCode = dto.postalCode ?? ownedAddress.postalCode;
     ownedAddress.location = dto.location ?? ownedAddress.location;
     ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
-    ownedAddress.isDefault = dto.isDefault ?? ownedAddress.isDefault;
+    ownedAddress.isDefault = !dto.isDefault
+      ? ownedAddress.isDefault
+      : dto.isDefault;
 
     const nullableValues = {
       complement: dto.complement,
@@ -78,9 +83,9 @@ export class AddressService {
     return this.save({ ...ownedAddress, ...updatedValues });
   }
 
-  async findOneByOrFail(id: string) {
+  async findOneByOrFail(addressData: Partial<Address>) {
     const address = await this.addressRepository.findOne({
-      where: { id },
+      where: addressData,
       relations: ['customer'],
     });
 
@@ -91,10 +96,13 @@ export class AddressService {
     return address;
   }
 
-  async findOneOwnedOrFail(id: string, customerData: Partial<Customer>) {
+  async findOneOwnedOrFail(
+    addressData: Partial<Address>,
+    customerData: Partial<Customer>,
+  ) {
     const address = await this.addressRepository.findOne({
       where: {
-        id,
+        ...addressData,
         customer: customerData,
       },
       relations: ['customer'],
@@ -119,7 +127,7 @@ export class AddressService {
   }
 
   async remove(id: string) {
-    const address = await this.findOneByOrFail(id);
+    const address = await this.findOneByOrFail({ id });
     await this.addressRepository.delete({ id });
     return address;
   }

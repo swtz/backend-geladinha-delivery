@@ -71,6 +71,17 @@ export class CustomerService {
     }
 
     if (dto.address && dto.address.id !== null) {
+      if (dto.address.isDefault) {
+        const address = await this.addressService.findOneOwnedOrFail(
+          { isDefault: true },
+          { id },
+        );
+
+        if (dto.address.id !== address.id) {
+          await this.addressService.save({ ...address, isDefault: false });
+        }
+      }
+
       await this.addressService.update(dto.address, id);
     }
 
@@ -144,7 +155,7 @@ export class CustomerService {
   }
 
   async removeAddress(id: string) {
-    const address = await this.addressService.findOneByOrFail(id);
+    const address = await this.addressService.findOneByOrFail({ id });
     const customer = await this.findOneByOrFail({ id: address.customer.id });
 
     if (address.isDefault) {

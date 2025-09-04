@@ -106,11 +106,12 @@ Content-Type: application/json
   "name": "Valdenir",
   "phone": "48988550043",
   "address": {
-    "id": "68b630fc-9007-4803-86f8-9c5df6a23b3d",
+    "id": "8a0bb160-de28-44f7-9b06-fbcf454c11e2",
     "city": "KKKKKK",
     "number": null,
     "complement": null,
-    "referencePoint": null
+    "referencePoint": null,
+    "isDefault": true
   }
 }
 
