@@ -2,6 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateDeliveryDto } from './dto/create-delivery.dto';
+import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
+import { CustomerService } from 'src/customer/customer.service';
+import { AddressService } from 'src/address/address.service';
 
 @Injectable()
 export class DeliveryService {
@@ -10,40 +15,33 @@ export class DeliveryService {
   constructor(
     @InjectRepository(Delivery)
     private readonly deliveryRepository: Repository<Delivery>,
+    private readonly userService: UserService,
+    private readonly customerService: CustomerService,
+    private readonly addressService: AddressService,
   ) {}
 
-  // async create(dto: CreateDeliveryDto, operator: User) {
-  //   if (!(operator instanceof User)) {
-  //     throw new UnauthorizedException(
-  //       'Somente o operador de caixa pode lançar entregas',
-  //     );
-  //   }
-
-  //   const motoboy = await this.deliveryManService.findOneOrFail({
-  //     id: dto.motoboy,
-  //   });
-
-  //   const delivery = this.deliveryRepository.create({
-  //     name: dto.name,
-  //     totalPurchase: dto.totalPurchase,
-  //     deliveryTax: dto.deliveryTax,
-  //     paymentMethod: dto.paymentMethod,
-  //     operator,
-  //     motoboy,
-  //   });
-
-  //   const created = this.deliveryRepository
-  //     .save(delivery)
-  //     .catch((err: unknown) => {
-  //       if (err instanceof Error) {
-  //         this.logger.error('Erro ao criar a entrega', err.stack);
-  //       }
-
-  //       throw new BadRequestException('Erro ao criar a entrega');
-  //     });
-
-  //   return created;
-  // }
+  async create(dto: CreateDeliveryDto, operator: User) {
+    // const motoboy = await this.deliveryManService.findOneOrFail({
+    //   id: dto.motoboy,
+    // });
+    // const delivery = this.deliveryRepository.create({
+    //   name: dto.name,
+    //   totalPurchase: dto.totalPurchase,
+    //   deliveryTax: dto.deliveryTax,
+    //   paymentMethod: dto.paymentMethod,
+    //   operator,
+    //   motoboy,
+    // });
+    // const created = this.deliveryRepository
+    //   .save(delivery)
+    //   .catch((err: unknown) => {
+    //     if (err instanceof Error) {
+    //       this.logger.error('Erro ao criar a entrega', err.stack);
+    //     }
+    //     throw new BadRequestException('Erro ao criar a entrega');
+    //   });
+    // return created;
+  }
 
   // async update(
   //   dto: UpdateDeliveryDto,
