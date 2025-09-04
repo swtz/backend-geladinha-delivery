@@ -107,6 +107,12 @@ export class CustomerService {
     });
   }
 
+  async remove(id: string) {
+    const customer = await this.findOneByOrFail({ id });
+    await this.customerRepository.delete({ id });
+    return customer;
+  }
+
   async save(customer: Partial<Customer>) {
     const created = await this.customerRepository
       .save(customer)
