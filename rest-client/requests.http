@@ -155,7 +155,7 @@ Content-Type: application/json
 
 {
   "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
-  "customer": "0d4dc644-8149-4cd0-bb28-36564c326ef6",
+  "customer": "643da16e-d81d-413e-b71d-b01728742c97",
   "totalPurchase": 22.89,
   "deliveryTax": 8.0,
   "paymentMethod": "PIX"

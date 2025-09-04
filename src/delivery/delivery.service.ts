@@ -20,10 +20,20 @@ export class DeliveryService {
     private readonly addressService: AddressService,
   ) {}
 
-  async create(dto: CreateDeliveryDto, operator: User) {
+  async create(dto: CreateDeliveryDto, user: User) {
+    const operator = await this.userService.findOneByOrFail({
+      id: user.id,
+    });
     const motoboy = await this.userService.findOneMotoboyByOrFail({
       id: dto.motoboy,
     });
+    const customer = await this.customerService.findOneByOrFail({
+      id: dto.customer,
+    });
+    const defaultAddress = await this.addressService.findOneOwnedOrFail(
+      { isDefault: true },
+      { id: dto.customer },
+    );
 
     // const delivery = this.deliveryRepository.create({
     //   name: dto.name,
@@ -41,7 +51,7 @@ export class DeliveryService {
     //     }
     //     throw new BadRequestException('Erro ao criar a entrega');
     //   });
-    return motoboy;
+    return defaultAddress;
   }
 
   // async update(
