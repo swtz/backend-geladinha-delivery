@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,23 +35,18 @@ export class DeliveryService {
       { id: dto.customer },
     );
 
-    // const delivery = this.deliveryRepository.create({
-    //   name: dto.name,
-    //   totalPurchase: dto.totalPurchase,
-    //   deliveryTax: dto.deliveryTax,
-    //   paymentMethod: dto.paymentMethod,
-    //   operator,
-    //   motoboy,
-    // });
-    // const created = this.deliveryRepository
-    //   .save(delivery)
-    //   .catch((err: unknown) => {
-    //     if (err instanceof Error) {
-    //       this.logger.error('Erro ao criar a entrega', err.stack);
-    //     }
-    //     throw new BadRequestException('Erro ao criar a entrega');
-    //   });
-    return defaultAddress;
+    const delivery = this.deliveryRepository.create({
+      description: dto.description,
+      totalPurchase: dto.totalPurchase,
+      deliveryTax: dto.deliveryTax,
+      paymentMethod: dto.paymentMethod,
+      operator,
+      motoboy,
+      customer,
+      address: defaultAddress,
+    });
+
+    return this.save(delivery);
   }
 
   // async update(
@@ -192,4 +187,17 @@ export class DeliveryService {
 
   //   return paidDeliveries;
   // }
+
+  async save(delivery: Partial<Delivery>) {
+    const created = await this.deliveryRepository
+      .save(delivery)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar a entrega', err.stack);
+        }
+        throw new BadRequestException('Erro ao criar a entrega');
+      });
+
+    return created;
+  }
 }

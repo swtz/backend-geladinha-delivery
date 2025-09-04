@@ -15,7 +15,7 @@ export class Delivery {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 150 })
+  @Column({ length: 150, nullable: true })
   description: string;
 
   @Column({ type: 'double' })
