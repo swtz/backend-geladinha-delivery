@@ -56,25 +56,37 @@ export class DeliveryService {
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
-    const isPaid = dto.paid;
-    delete dto['paid'];
+    // const isPaid = dto.paid;
+    // delete dto['paid'];
 
-    if (Object.keys(dto).length === 0 && isPaid == undefined) {
-      throw new BadRequestException('Dados não enviados');
+    // if (Object.keys(dto).length === 0 && isPaid == undefined) {
+    //   throw new BadRequestException('Dados não enviados');
+    // }
+
+    const delivery = await this.findOneOwnedByOrFail(operator, { id });
+
+    if (dto.motoboy) {
+      const newMotoboy = await this.userService.findOneMotoboyByOrFail({
+        id: dto.motoboy,
+      });
+
+      delivery.motoboy = newMotoboy;
     }
 
-    // const delivery = await this.findOneOwnedByOrFail(
-    //   { id: deliveryData.id },
-    //   operator,
-    // );
+    if (dto.customer) {
+      const newCustomer = await this.customerService.findOneByOrFail({
+        id: dto.customer,
+      });
 
-    // const updatedDelivery: DeliveryEntity = {
-    //   ...delivery,
-    //   ...dto,
-    //   paid: isPaid ?? delivery.paid,
-    // };
+      delivery.customer = newCustomer;
+    }
 
-    return isPaid;
+    const updatedDelivery: Delivery = {
+      ...delivery,
+      paid: dto.paid ?? delivery.paid,
+    };
+
+    return updatedDelivery;
   }
 
   // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
