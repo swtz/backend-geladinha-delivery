@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -89,18 +94,15 @@ export class DeliveryService {
   //   return delivery;
   // }
 
-  // async findOneOwnedByOrFail(
-  //   deliveryData: Partial<DeliveryEntity>,
-  //   user: User | DeliveryMan,
-  // ) {
-  //   const ownedDelivery = await this.findOneOwnedBy(deliveryData, user);
+  async findOneOwnedByOrFail(user: User, deliveryData: Partial<Delivery>) {
+    const delivery = await this.findOneOwnedBy(user, deliveryData);
 
-  //   if (!ownedDelivery) {
-  //     throw new NotFoundException('Entrega não encontrada');
-  //   }
+    if (!delivery) {
+      throw new NotFoundException('Entrega não encontrada');
+    }
 
-  //   return ownedDelivery;
-  // }
+    return delivery;
+  }
 
   async findOneOwnedBy(user: User, deliveryData: Partial<Delivery>) {
     const { isLoggedUserMotoboy } = await this.userService.getUserAndEntityAuth(
