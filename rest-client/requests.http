@@ -10,8 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gabriel@email.com",
-  "password": "123456"
+  "email": "renato@email.com",
+  "password": "1234567"
 }
 
 ################### USER ###################
@@ -137,7 +137,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find one customer
 # @name findOneCustomer
-GET {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7
+GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b
 Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
@@ -163,12 +163,19 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/98b97391-dfba-4c2d-9dfd-520215048e22
+PATCH {{baseUrl}}/delivery/me/8c30fe8f-fdce-4032-bbf5-7da2e316bd40
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "paid": true
+  "motoboy": "6f9d066f-c826-4ae7-b661-1332d1aca19b",
+  "customer": null,
+  "address": "fd920c2f-61ff-4edc-a6b1-591bd8e5ba04",
+  "description": "Olá, mundo!",
+  "totalPurchase": 22.89,
+  "deliveryTax": 8.0,
+  "paymentMethod": "CARTÃO",
+  "paid": false
 }
 
 ### Delete delivery

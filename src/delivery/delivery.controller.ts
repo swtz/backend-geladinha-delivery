@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -21,17 +32,16 @@ export class DeliveryController {
     return delivery;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Patch('me/:id')
-  // async update(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Body() dto: UpdateDeliveryDto,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const delivery = await this.deliveryService.update(dto, req.user, { id });
-
-  //   return new ResponseDeliveryDto(delivery);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/:id')
+  async update(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateDeliveryDto,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const delivery = await this.deliveryService.update(dto, req.user, id);
+    return delivery;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Delete('me/:id')
