@@ -129,18 +129,19 @@ export class UserService {
     const assignRoleError = new BadRequestException(
       'Não é possível atribuir duas funções a um usuário',
     );
-    const isMotoboyButNotAdmin =
-      authFlags.isLoggedUserMotoboy && !authFlags.isLoggedUserAdmin;
 
     if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
       throw assignRoleError;
     }
 
-    if (authFlags.isLoggedUserOperator && dto.role === RoleEnum.Motoboy) {
+    if (
+      (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
+      dto.role === RoleEnum.Motoboy
+    ) {
       throw assignRoleError;
     }
 
-    const entity = isMotoboyButNotAdmin
+    const entity = authFlags.isLoggedUserMotoboy
       ? await this.updateUserMotoboy(!!existsMotoboyData, dto, authFlags.entity)
       : authFlags.entity;
 
