@@ -73,12 +73,27 @@ export class DeliveryService {
       delivery.motoboy = newMotoboy;
     }
 
+    if (dto.address && !dto.customer) {
+      const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
+        { id: dto.address },
+        { id: delivery.customer.id },
+      );
+      delivery.address = newOwnedAddress;
+    }
+
+    // e se o usuário tentar a atualizar o endereço e o cliente?
+
     if (dto.customer) {
       const newCustomer = await this.customerService.findOneByOrFail({
         id: dto.customer,
       });
+      const newDefaultAddress = await this.addressService.findOneOwnedOrFail(
+        { isDefault: true },
+        { id: dto.customer },
+      );
 
       delivery.customer = newCustomer;
+      delivery.address = newDefaultAddress;
     }
 
     const updatedDelivery: Delivery = {
