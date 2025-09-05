@@ -7,6 +7,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { AddressService } from 'src/address/address.service';
+import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 
 @Injectable()
 export class DeliveryService {
@@ -49,37 +50,27 @@ export class DeliveryService {
     return this.save(delivery);
   }
 
-  // async update(
-  //   dto: UpdateDeliveryDto,
-  //   operator: User,
-  //   deliveryData: Partial<DeliveryEntity>,
-  // ) {
-  //   if (!(operator instanceof User)) {
-  //     throw new UnauthorizedException(
-  //       'Somente o operador de caixa pode atualizar entregas',
-  //     );
-  //   }
+  async update(dto: UpdateDeliveryDto, operator: User, id: string) {
+    const isPaid = dto.paid;
+    delete dto['paid'];
 
-  //   const isPaid = dto.paid;
-  //   delete dto['paid'];
+    if (Object.keys(dto).length === 0 && isPaid == undefined) {
+      throw new BadRequestException('Dados não enviados');
+    }
 
-  //   if (Object.keys(dto).length === 0 && isPaid == undefined) {
-  //     throw new BadRequestException('Dados não enviados');
-  //   }
+    // const delivery = await this.findOneOwnedByOrFail(
+    //   { id: deliveryData.id },
+    //   operator,
+    // );
 
-  //   const delivery = await this.findOneOwnedByOrFail(
-  //     { id: deliveryData.id },
-  //     operator,
-  //   );
+    // const updatedDelivery: DeliveryEntity = {
+    //   ...delivery,
+    //   ...dto,
+    //   paid: isPaid ?? delivery.paid,
+    // };
 
-  //   const updatedDelivery: DeliveryEntity = {
-  //     ...delivery,
-  //     ...dto,
-  //     paid: isPaid ?? delivery.paid,
-  //   };
-
-  //   return this.deliveryRepository.save(updatedDelivery);
-  // }
+    return isPaid;
+  }
 
   // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
   //   if (!(operator instanceof User)) {

@@ -1,11 +1,13 @@
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateDeliveryDto } from './create-delivery.dto';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional, IsUUID } from 'class-validator';
 
-export class UpdateDeliveryDto extends PartialType(
-  OmitType(CreateDeliveryDto, ['motoboy']),
-) {
+export class UpdateDeliveryDto extends PartialType(CreateDeliveryDto) {
   @IsOptional()
   @IsBoolean({ message: 'Campo pago precisa ser verdadeiro/falso' })
   paid?: boolean;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'Formato inválido' })
+  address?: string;
 }
