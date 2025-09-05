@@ -102,25 +102,25 @@ export class DeliveryService {
   //   return ownedDelivery;
   // }
 
-  // async findOneOwnedBy(
-  //   deliveryData: Partial<DeliveryEntity>,
-  //   user: User | DeliveryMan,
-  // ) {
-  //   const queryObject =
-  //     user instanceof User
-  //       ? { operator: { id: user.id } }
-  //       : { motoboy: { id: user.id } };
+  async findOneOwnedBy(user: User, deliveryData: Partial<Delivery>) {
+    const { isLoggedUserMotoboy } = await this.userService.getUserAndEntityAuth(
+      user,
+      user.id,
+    );
+    const queryObject = isLoggedUserMotoboy
+      ? { motoboy: { id: user.id } }
+      : { operator: { id: user.id } };
 
-  //   const ownedDelivery = await this.deliveryRepository.findOne({
-  //     where: {
-  //       ...deliveryData,
-  //       ...queryObject,
-  //     },
-  //     relations: ['operator', 'motoboy'],
-  //   });
+    const delivery = await this.deliveryRepository.findOne({
+      where: {
+        ...deliveryData,
+        ...queryObject,
+      },
+      relations: ['operator', 'motoboy', 'customer', 'address'],
+    });
 
-  //   return ownedDelivery;
-  // }
+    return delivery;
+  }
 
   async findAllOwned(user: User) {
     const { isLoggedUserMotoboy } = await this.userService.getUserAndEntityAuth(
