@@ -54,26 +54,19 @@ export class DeliveryController {
   //   return new ResponseDeliveryDto(delivery);
   // }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('me/:id')
-  // async findOneOwnedBy(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const ownedDelivery = await this.deliveryService.findOneOwnedByOrFail(
-  //     { id },
-  //     req.user,
-  //   );
-
-  //   return new ResponseDeliveryDto(ownedDelivery);
-  // }
-
   @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const deliveries = await this.deliveryService.findAllOwned(req.user);
     return deliveries;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
+    const delivery = await this.deliveryService.findOneByOrFail({ id });
+    return delivery;
   }
 
   // @UseGuards(JwtAuthGuard)

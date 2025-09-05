@@ -10,8 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "renato@email.com",
-  "password": "1234567"
+  "email": "gabriel@email.com",
+  "password": "123456"
 }
 
 ################### USER ###################
@@ -183,14 +183,14 @@ Content-Type: application/json
 DELETE {{baseUrl}}/delivery/me/6393a4f0-edaa-4a44-95de-3b37967278cc
 Authorization: Bearer {{JwtToken}}
 
-### Find one owned delivery
-# @name findOneOwnedDelivery
-GET {{baseUrl}}/delivery/me/3e85163b-3cc2-4307-96a0-97010a98a344
-Authorization: Bearer {{JwtToken}}
-
 ### Find all owned deliveries
 # @name findAllOwnedDeliveries
 GET {{baseUrl}}/delivery/me
+Authorization: Bearer {{JwtToken}}
+
+### Read delivery
+# @name readDelivery
+GET {{baseUrl}}/delivery/6508e2d1-de81-4062-b4aa-ef6b27834926
 Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
