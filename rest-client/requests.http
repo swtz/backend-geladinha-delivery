@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "flavio@email.com",
+  "email": "gabriel@email.com",
   "password": "123456"
 }
 
@@ -50,7 +50,7 @@ Content-Type: application/json
 
 ### Delete user
 # @name deleteUser
-DELETE {{baseUrl}}/user/1234
+DELETE {{baseUrl}}/user/b350cb30-5e71-4dc5-aa1b-1aabdd4c5599
 Authorization: Bearer {{JwtToken}}
 
 ### Update user password
