@@ -56,13 +56,6 @@ export class DeliveryService {
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
-    // const isPaid = dto.paid;
-    // delete dto['paid'];
-
-    // if (Object.keys(dto).length === 0 && isPaid == undefined) {
-    //   throw new BadRequestException('Dados não enviados');
-    // }
-
     const delivery = await this.findOneOwnedByOrFail(operator, { id });
 
     if (dto.motoboy) {
@@ -96,12 +89,13 @@ export class DeliveryService {
       delivery.address = newDefaultAddress;
     }
 
-    const updatedDelivery: Delivery = {
-      ...delivery,
-      paid: dto.paid ?? delivery.paid,
-    };
+    delivery.paid = dto.paid ?? delivery.paid;
+    delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
+    delivery.description = dto.description ?? delivery.description;
+    delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
+    delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
 
-    return updatedDelivery;
+    return this.save(delivery);
   }
 
   // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
