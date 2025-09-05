@@ -58,7 +58,7 @@ export class DeliveryService {
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
     const delivery = await this.findOneOwnedByOrFail(operator, { id });
 
-    if (dto.motoboy) {
+    if (dto.motoboy && dto.motoboy !== delivery.motoboy.id) {
       const newMotoboy = await this.userService.findOneMotoboyByOrFail({
         id: dto.motoboy,
       });
@@ -66,7 +66,11 @@ export class DeliveryService {
       delivery.motoboy = newMotoboy;
     }
 
-    if (dto.address && !dto.customer) {
+    if (
+      dto.address &&
+      dto.customer === delivery.customer.id &&
+      dto.address !== delivery.address.id
+    ) {
       const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
         { id: dto.address },
         { id: delivery.customer.id },
@@ -74,9 +78,7 @@ export class DeliveryService {
       delivery.address = newOwnedAddress;
     }
 
-    // e se o usuário tentar a atualizar o endereço e o cliente?
-
-    if (dto.customer) {
+    if (dto.customer && dto.customer !== delivery.customer.id) {
       const newCustomer = await this.customerService.findOneByOrFail({
         id: dto.customer,
       });

@@ -120,14 +120,14 @@ Authorization: Bearer {{JwtToken}}
 
 ### add address
 # @name addAddress
-POST {{baseUrl}}/customer/eb098e64-7c69-49e8-ab7e-0784bbdf60e7/address
+POST {{baseUrl}}/customer/264b4724-92ef-417b-9f2f-a4e11f74dccc/address
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "street": "NOVO ADDRESS",
   "neighborhood": "TRUE",
-  "isDefault": true
+  "isDefault": false
 }
 
 ### remove address
@@ -137,7 +137,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find one customer
 # @name findOneCustomer
-GET {{baseUrl}}/customer/c99ab9a7-2b78-407b-846f-33fea2c7c11b
+GET {{baseUrl}}/customer/264b4724-92ef-417b-9f2f-a4e11f74dccc
 Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
@@ -169,8 +169,8 @@ Content-Type: application/json
 
 {
   "motoboy": "6f9d066f-c826-4ae7-b661-1332d1aca19b",
-  "customer": null,
-  "address": "fd920c2f-61ff-4edc-a6b1-591bd8e5ba04",
+  "customer": "264b4724-92ef-417b-9f2f-a4e11f74dccc",
+  "address": "d6b47fce-15d6-412a-bf7c-e97d4f1acfca",
   "description": "Olá, mundo!",
   "totalPurchase": 22.89,
   "deliveryTax": 8.0,
