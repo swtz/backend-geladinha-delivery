@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gabriel@email.com",
+  "email": "flavio@email.com",
   "password": "123456"
 }
 
@@ -23,10 +23,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Gabriel",
-  "email": "gabriel@email.com",
-  "phone": "48976020116",
-  "role": "motoboy",
+  "name": "Flávio",
+  "email": "flavio@email.com",
+  "phone": "48976020119",
+  "role": "admin",
   "password": "123456",
   "motorcycle": "Suzuki, 2017, 300, Verde",
   "daily": 35
@@ -39,9 +39,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Rodrigo",
-  "email": "rodrigo@email.com",
-  "phone": "48976020112",
+  "name": "Flávio",
+  "email": "flavio@email.com",
+  "phone": "48976020119",
   "role": "motoboy",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
   "daily": 45,
@@ -154,7 +154,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
+  "motoboy": "b350cb30-5e71-4dc5-aa1b-1aabdd4c5599",
   "customer": "643da16e-d81d-413e-b71d-b01728742c97",
   "totalPurchase": 22.89,
   "deliveryTax": 8.0,

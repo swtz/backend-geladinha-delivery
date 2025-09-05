@@ -28,9 +28,9 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /customer/address/:uuid         DELETE      Remover endereço                          JWT            ADMIN/OPERATOR
 
 /delivery/me                    POST        Criar uma entrega                         JWT            ADMIN/OPERATOR
+/delivery/me                    GET         Ver minhas entregas                       JWT            ALL
 /delivery/                      GET         Ver todos os pedidos                      JWT
 /delivery/:boolean              GET         Ver todos os pedidos pagos                JWT
-/delivery/me                    GET         Ver todos os pedidos de um usuário        JWT
 /delivery/me/:uuid              GET         Ver um pedido de um usuário               JWT
 /delivery/me/:uuid              PATCH       Atualizar uma entrega                     JWT
 /delivery/me/:uuid              DELETE      Apagar uma entrega                        JWT

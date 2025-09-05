@@ -7,6 +7,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { AddressService } from 'src/address/address.service';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class DeliveryService {
@@ -131,24 +132,25 @@ export class DeliveryService {
   //   return ownedDelivery;
   // }
 
-  // async findAllOwnedBy(user: User | DeliveryMan) {
-  //   const queryObject =
-  //     user instanceof User
-  //       ? { operator: { id: user.id } }
-  //       : { motoboy: { id: user.id } };
+  async findAllOwned(user: User) {
+    const userRoles = await this.userService.getAllRoleNames({ id: user.id });
+    const isAdmin = userRoles.some(role => role === Role.Admin);
+    const isOperator = userRoles.indexOf(Role.Motoboy) < 0;
+    const queryObject =
+      !isOperator && !isAdmin
+        ? { motoboy: { id: user.id } }
+        : { operator: { id: user.id } };
 
-  //   const deliveries = await this.deliveryRepository.find({
-  //     where: {
-  //       ...queryObject,
-  //     },
-  //     order: {
-  //       createdAt: 'DESC',
-  //     },
-  //     relations: ['operator', 'motoboy'],
-  //   });
+    const deliveries = await this.deliveryRepository.find({
+      where: queryObject,
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: ['operator', 'motoboy', 'customer', 'address'],
+    });
 
-  //   return deliveries;
-  // }
+    return deliveries;
+  }
 
   // async findOneOrFail(deliveryData: Partial<DeliveryEntity>) {
   //   const delivery = await this.findOne(deliveryData);

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
@@ -58,17 +58,13 @@ export class DeliveryController {
   //   return new ResponseDeliveryDto(ownedDelivery);
   // }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('me')
-  // async findAllOwnedBy(@Req() req: AuthenticatedRequest) {
-  //   const ownedDeliveries = await this.deliveryService.findAllOwnedBy(req.user);
-
-  //   const arrayDeliveries = ownedDeliveries.map(
-  //     delivery => new ResponseDeliveryDto(delivery),
-  //   );
-
-  //   return arrayDeliveries;
-  // }
+  @Roles(Role.Admin, Role.Operator, Role.Motoboy)
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const deliveries = await this.deliveryService.findAllOwned(req.user);
+    return deliveries;
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Get()
