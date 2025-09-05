@@ -167,24 +167,24 @@ export class DeliveryService {
     return deliveries;
   }
 
-  // async findOneOrFail(deliveryData: Partial<DeliveryEntity>) {
-  //   const delivery = await this.findOne(deliveryData);
+  async findOneByOrFail(deliveryData: Partial<Delivery>) {
+    const delivery = await this.findOneBy(deliveryData);
 
-  //   if (!delivery) {
-  //     throw new NotFoundException('Entrega não encontrada');
-  //   }
+    if (!delivery) {
+      throw new NotFoundException('Entrega não encontrada');
+    }
 
-  //   return delivery;
-  // }
+    return delivery;
+  }
 
-  // async findOne(deliveryData: Partial<DeliveryEntity>) {
-  //   const delivery = await this.deliveryRepository.findOne({
-  //     where: deliveryData,
-  //     relations: ['operator', 'motoboy'],
-  //   });
+  async findOneBy(deliveryData: Partial<Delivery>) {
+    const delivery = await this.deliveryRepository.findOne({
+      where: deliveryData,
+      relations: ['operator', 'motoboy', 'customer', 'address'],
+    });
 
-  //   return delivery;
-  // }
+    return delivery;
+  }
 
   // async findAll() {
   //   const deliveries = await this.deliveryRepository.find({
