@@ -180,7 +180,7 @@ Content-Type: application/json
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/6393a4f0-edaa-4a44-95de-3b37967278cc
+DELETE {{baseUrl}}/delivery/me/8c30fe8f-fdce-4032-bbf5-7da2e316bd40
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
@@ -200,7 +200,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/false
+GET {{baseUrl}}/delivery/?paid=true
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################

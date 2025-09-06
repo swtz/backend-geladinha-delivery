@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   Param,
   ParseBoolPipe,
@@ -46,16 +47,15 @@ export class DeliveryController {
     return delivery;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Delete('me/:id')
-  // async remove(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const delivery = await this.deliveryService.remove(req.user, { id });
-
-  //   return new ResponseDeliveryDto(delivery);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Delete('me/:id')
+  async remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const delivery = await this.deliveryService.remove(req.user, id);
+    return delivery;
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get()

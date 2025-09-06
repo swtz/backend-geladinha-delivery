@@ -31,7 +31,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /delivery/me                    GET         Ler minhas entregas                       JWT            ALL
 /delivery/me/:uuid              PATCH       Atualizar entrega                         JWT            ADMIN/OPERATOR
 /delivery/:uuid                 GET         Ler entrega                               JWT            ADMIN/OPERATOR
-/delivery/?key=value            GET         Ler todas as entregas                     JWT            ADMIN/OPERATOR
+/delivery?key=value             GET         Ler todas as entregas                     JWT            ADMIN/OPERATOR
 /delivery/me/:uuid              DELETE      Apagar entrega                            JWT            ADMIN/OPERATOR
 
 /voucher/me                     POST        Criar compra/vale                         JWT             ALL

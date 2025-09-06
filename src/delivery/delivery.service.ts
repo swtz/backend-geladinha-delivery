@@ -194,22 +194,11 @@ export class DeliveryService {
     return deliveries;
   }
 
-  // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
-  //   if (!(operator instanceof User)) {
-  //     throw new UnauthorizedException(
-  //       'Somente o operador de caixa pode remover entregas',
-  //     );
-  //   }
-
-  //   const delivery = await this.findOneOwnedByOrFail(deliveryData, operator);
-
-  //   await this.deliveryRepository.delete({
-  //     ...deliveryData,
-  //     operator: { id: operator.id },
-  //   });
-
-  //   return delivery;
-  // }
+  async remove(user: User, id: string) {
+    const delivery = await this.findOneOwnedByOrFail(user, { id });
+    await this.deliveryRepository.delete({ id });
+    return delivery;
+  }
 
   async save(delivery: Partial<Delivery>) {
     const created = await this.deliveryRepository
