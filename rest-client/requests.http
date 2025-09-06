@@ -10,8 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gabriel@email.com",
-  "password": "123456"
+  "email": "renato@email.com",
+  "password": "1234567"
 }
 
 ################### USER ###################
@@ -175,7 +175,7 @@ Content-Type: application/json
   "totalPurchase": 22.89,
   "deliveryTax": 8.0,
   "paymentMethod": "CARTÃO",
-  "paid": false
+  "paid": true
 }
 
 ### Delete delivery

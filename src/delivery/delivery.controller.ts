@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
+  ParseBoolPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -54,6 +57,24 @@ export class DeliveryController {
   //   return new ResponseDeliveryDto(delivery);
   // }
 
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAll(
+    @Query('paid', new DefaultValuePipe(false), ParseBoolPipe) paid: boolean,
+    @Query('customer') customer: string,
+    @Query('motoboy') motoboy: string,
+    @Query('operator') operator: string,
+    // paymentMethod (?)
+  ) {
+    const deliveries = await this.deliveryService.findAll({
+      customer,
+      motoboy,
+      operator,
+      paid,
+    });
+    return deliveries;
+  }
+
   @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -68,28 +89,4 @@ export class DeliveryController {
     const delivery = await this.deliveryService.findOneByOrFail({ id });
     return delivery;
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get()
-  // async findAll() {
-  //   const deliveries = await this.deliveryService.findAll();
-
-  //   const arrayDeliveries = deliveries.map(
-  //     delivery => new ResponseDeliveryDto(delivery),
-  //   );
-
-  //   return arrayDeliveries;
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get(':bool')
-  // async findAllPaid(@Param('bool', ParseBoolPipe) bool: boolean) {
-  //   const deliveries = await this.deliveryService.findAllPaid(bool);
-
-  //   const arrayDeliveries = deliveries.map(
-  //     delivery => new ResponseDeliveryDto(delivery),
-  //   );
-
-  //   return arrayDeliveries;
-  // }
 }

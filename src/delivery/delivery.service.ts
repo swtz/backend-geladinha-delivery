@@ -100,23 +100,6 @@ export class DeliveryService {
     return this.save(delivery);
   }
 
-  // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
-  //   if (!(operator instanceof User)) {
-  //     throw new UnauthorizedException(
-  //       'Somente o operador de caixa pode remover entregas',
-  //     );
-  //   }
-
-  //   const delivery = await this.findOneOwnedByOrFail(deliveryData, operator);
-
-  //   await this.deliveryRepository.delete({
-  //     ...deliveryData,
-  //     operator: { id: operator.id },
-  //   });
-
-  //   return delivery;
-  // }
-
   async findOneOwnedByOrFail(user: User, deliveryData: Partial<Delivery>) {
     const delivery = await this.findOneOwnedBy(user, deliveryData);
 
@@ -186,23 +169,46 @@ export class DeliveryService {
     return delivery;
   }
 
-  // async findAll() {
-  //   const deliveries = await this.deliveryRepository.find({
-  //     order: { createdAt: 'DESC' },
-  //     relations: ['operator', 'motoboy'],
+  async findAll({
+    customer,
+    motoboy,
+    operator,
+    paid,
+  }: {
+    customer: string;
+    motoboy: string;
+    operator: string;
+    paid: boolean;
+  }) {
+    const deliveries = await this.deliveryRepository.find({
+      where: {
+        customer: { name: customer },
+        motoboy: { name: motoboy },
+        operator: { name: operator },
+        paid,
+      },
+      order: { createdAt: 'DESC' },
+      relations: ['operator', 'motoboy', 'customer', 'address'],
+    });
+
+    return deliveries;
+  }
+
+  // async remove(operator: User, deliveryData: Partial<DeliveryEntity>) {
+  //   if (!(operator instanceof User)) {
+  //     throw new UnauthorizedException(
+  //       'Somente o operador de caixa pode remover entregas',
+  //     );
+  //   }
+
+  //   const delivery = await this.findOneOwnedByOrFail(deliveryData, operator);
+
+  //   await this.deliveryRepository.delete({
+  //     ...deliveryData,
+  //     operator: { id: operator.id },
   //   });
 
-  //   return deliveries;
-  // }
-
-  // async findAllPaid(paid: boolean) {
-  //   const paidDeliveries = await this.deliveryRepository.find({
-  //     where: { paid },
-  //     order: { createdAt: 'DESC' },
-  //     relations: ['operator', 'motoboy'],
-  //   });
-
-  //   return paidDeliveries;
+  //   return delivery;
   // }
 
   async save(delivery: Partial<Delivery>) {

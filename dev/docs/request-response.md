@@ -22,18 +22,17 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /customer/                      POST        Criar cliente com endereço                JWT            ADMIN/OPERATOR
 /customer/:uuid                 GET         Ler cliente                               JWT            ADMIN/OPERATOR
 /customer/:uuid                 PATCH       Atualizar cliente e/ou endereço           JWT            ADMIN/OPERATOR
-/customer/:uuid                 DELETE      Remover cliente                           JWT            ADMIN/OPERATOR
+/customer/:uuid                 DELETE      Apagar cliente                            JWT            ADMIN/OPERATOR
 /customer/:uuid/address         GET         Ler todos os endereços de um cliente      JWT            ADMIN/OPERATOR
 /customer/:uuid/address         POST        Adicionar endereço                        JWT            ADMIN/OPERATOR
-/customer/address/:uuid         DELETE      Remover endereço                          JWT            ADMIN/OPERATOR
+/customer/address/:uuid         DELETE      Apagar endereço                           JWT            ADMIN/OPERATOR
 
 /delivery/me                    POST        Criar entrega                             JWT            ADMIN/OPERATOR
 /delivery/me                    GET         Ler minhas entregas                       JWT            ALL
 /delivery/me/:uuid              PATCH       Atualizar entrega                         JWT            ADMIN/OPERATOR
 /delivery/:uuid                 GET         Ler entrega                               JWT            ADMIN/OPERATOR
-/delivery/                      GET         Ver todos os pedidos                      JWT
-/delivery/:boolean              GET         Ver todos os pedidos pagos                JWT
-/delivery/me/:uuid              DELETE      Apagar uma entrega                        JWT
+/delivery/?key=value            GET         Ler todas as entregas                     JWT            ADMIN/OPERATOR
+/delivery/me/:uuid              DELETE      Apagar entrega                            JWT            ADMIN/OPERATOR
 
 /voucher/me                     POST        Criar compra/vale                         JWT             ALL
 /voucher/me/user/:uuid          POST        Criar compra/vale para usuário            JWT             ADMIN/OPERATOR
