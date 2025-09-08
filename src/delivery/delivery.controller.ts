@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -20,6 +19,7 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -60,10 +60,12 @@ export class DeliveryController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
-    @Query('paid', new DefaultValuePipe(false), ParseBoolPipe) paid: boolean,
+    @Query('paid', new ParseBoolPipe({ optional: true })) paid: boolean,
     @Query('customer') customer: string,
     @Query('motoboy') motoboy: string,
     @Query('operator') operator: string,
+    @Query('fromDate', new ParseBrDatePipe('06:00')) fromDate: Date,
+    @Query('toDate', new ParseBrDatePipe('18:00')) toDate: Date,
     // paymentMethod (?)
   ) {
     const deliveries = await this.deliveryService.findAll({
@@ -71,6 +73,8 @@ export class DeliveryController {
       motoboy,
       operator,
       paid,
+      fromDate,
+      toDate,
     });
     return deliveries;
   }

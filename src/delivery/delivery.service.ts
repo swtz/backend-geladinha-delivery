@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -174,19 +174,29 @@ export class DeliveryService {
     motoboy,
     operator,
     paid,
+    fromDate,
+    toDate,
   }: {
     customer: string;
     motoboy: string;
     operator: string;
     paid: boolean;
+    fromDate: Date;
+    toDate: Date;
   }) {
+    const queryObject = {
+      customer: { name: customer },
+      motoboy: { name: motoboy },
+      operator: { name: operator },
+      paid,
+    };
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      queryObject['createdAt'] = Between(fromDate, toDate);
+    }
+
     const deliveries = await this.deliveryRepository.find({
-      where: {
-        customer: { name: customer },
-        motoboy: { name: motoboy },
-        operator: { name: operator },
-        paid,
-      },
+      where: queryObject,
       order: { createdAt: 'DESC' },
       relations: ['operator', 'motoboy', 'customer', 'address'],
     });

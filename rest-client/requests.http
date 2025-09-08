@@ -154,27 +154,20 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "b350cb30-5e71-4dc5-aa1b-1aabdd4c5599",
-  "customer": "643da16e-d81d-413e-b71d-b01728742c97",
-  "totalPurchase": 22.89,
+  "motoboy": "6f9d066f-c826-4ae7-b661-1332d1aca19b",
+  "customer": "264b4724-92ef-417b-9f2--a4e11f74dccc",
+  "totalPurchase": 149.98,
   "deliveryTax": 8.0,
-  "paymentMethod": "PIX"
+  "paymentMethod": "DINHEIRO"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/8c30fe8f-fdce-4032-bbf5-7da2e316bd40
+PATCH {{baseUrl}}/delivery/me/fe340f19-76f5-4d0e-adaf-8a7f39f28d4c
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "6f9d066f-c826-4ae7-b661-1332d1aca19b",
-  "customer": "264b4724-92ef-417b-9f2f-a4e11f74dccc",
-  "address": "d6b47fce-15d6-412a-bf7c-e97d4f1acfca",
-  "description": "Olá, mundo!",
-  "totalPurchase": 22.89,
-  "deliveryTax": 8.0,
-  "paymentMethod": "CARTÃO",
   "paid": true
 }
 
