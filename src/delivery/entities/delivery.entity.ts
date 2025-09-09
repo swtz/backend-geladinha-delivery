@@ -5,10 +5,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PaymentMethod } from './payment-method.entity';
+import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 
 @Entity()
 export class Delivery {
@@ -24,9 +28,6 @@ export class Delivery {
   @Column({ type: 'double' })
   deliveryTax: number;
 
-  @Column()
-  paymentMethod: string;
-
   @Column({ default: false })
   paid: boolean;
 
@@ -35,6 +36,10 @@ export class Delivery {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => PaymentMethod, paymentMethod => paymentMethod.deliveries)
+  @JoinTable()
+  paymentMethods: PaymentMethodEnum[];
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   operator: User;

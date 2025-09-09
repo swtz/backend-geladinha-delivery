@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -9,6 +10,7 @@ import {
   paymentMethods,
   PaymentMethod as PaymentMethodEnum,
 } from '../enums/payment-methods.enum';
+import { Delivery } from './delivery.entity';
 
 @Entity()
 export class PaymentMethod {
@@ -23,4 +25,7 @@ export class PaymentMethod {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => Delivery, delivery => delivery.paymentMethods)
+  deliveries: Delivery[];
 }
