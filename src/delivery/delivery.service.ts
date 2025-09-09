@@ -13,6 +13,7 @@ import { UserService } from 'src/user/user.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { AddressService } from 'src/address/address.service';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { PaymentMethodService } from './services/payment-method.service';
 
 @Injectable()
 export class DeliveryService {
@@ -21,6 +22,7 @@ export class DeliveryService {
   constructor(
     @InjectRepository(Delivery)
     private readonly deliveryRepository: Repository<Delivery>,
+    private readonly paymentMethodService: PaymentMethodService,
     private readonly userService: UserService,
     private readonly customerService: CustomerService,
     private readonly addressService: AddressService,
@@ -40,17 +42,22 @@ export class DeliveryService {
       { isDefault: true },
       { id: dto.customer },
     );
+    const paymentMethod = await this.paymentMethodService.findOneOrCreate(
+      dto.paymentMethod,
+    );
 
-    const delivery = this.deliveryRepository.create({
+    const created = await this.deliveryRepository.save({
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
-      paymentMethod: dto.paymentMethod,
       operator,
       motoboy,
       customer,
       address: defaultAddress,
     });
+    const delivery = await this.findOneByOrFail({ id: created.id });
+
+    delivery.paymentMethods.push(paymentMethod);
 
     return this.save(delivery);
   }
@@ -94,7 +101,7 @@ export class DeliveryService {
     delivery.paid = dto.paid ?? delivery.paid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
     delivery.description = dto.description ?? delivery.description;
-    delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
+    // delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
     delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
 
     return this.save(delivery);
@@ -124,7 +131,13 @@ export class DeliveryService {
         ...deliveryData,
         ...queryObject,
       },
-      relations: ['operator', 'motoboy', 'customer', 'address'],
+      relations: [
+        'operator',
+        'motoboy',
+        'customer',
+        'address',
+        'paymentMethods',
+      ],
     });
 
     return delivery;
@@ -144,7 +157,13 @@ export class DeliveryService {
       order: {
         createdAt: 'DESC',
       },
-      relations: ['operator', 'motoboy', 'customer', 'address'],
+      relations: [
+        'operator',
+        'motoboy',
+        'customer',
+        'address',
+        'paymentMethods',
+      ],
     });
 
     return deliveries;
@@ -163,7 +182,13 @@ export class DeliveryService {
   async findOneBy(deliveryData: Partial<Delivery>) {
     const delivery = await this.deliveryRepository.findOne({
       where: deliveryData,
-      relations: ['operator', 'motoboy', 'customer', 'address'],
+      relations: [
+        'operator',
+        'motoboy',
+        'customer',
+        'address',
+        'paymentMethods',
+      ],
     });
 
     return delivery;
@@ -198,7 +223,13 @@ export class DeliveryService {
     const deliveries = await this.deliveryRepository.find({
       where: queryObject,
       order: { createdAt: 'DESC' },
-      relations: ['operator', 'motoboy', 'customer', 'address'],
+      relations: [
+        'operator',
+        'motoboy',
+        'customer',
+        'address',
+        'paymentMethods',
+      ],
     });
 
     return deliveries;

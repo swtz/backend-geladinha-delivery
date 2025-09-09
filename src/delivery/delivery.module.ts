@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { CustomerModule } from 'src/customer/customer.module';
 import { AddressModule } from 'src/address/address.module';
 import { PaymentMethod } from './entities/payment-method.entity';
+import { PaymentMethodService } from './services/payment-method.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { PaymentMethod } from './entities/payment-method.entity';
     AddressModule,
   ],
   controllers: [DeliveryController],
-  providers: [DeliveryService],
+  providers: [DeliveryService, PaymentMethodService],
 })
 export class DeliveryModule {}

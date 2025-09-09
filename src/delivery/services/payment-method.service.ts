@@ -2,8 +2,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 import { Repository } from 'typeorm';
-import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
+@Injectable()
 export class PaymentMethodService {
   private readonly logger = new Logger(PaymentMethodService.name);
 

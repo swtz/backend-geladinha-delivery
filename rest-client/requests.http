@@ -159,16 +159,16 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "6f9d066f-c826-4ae7-b661-1332d1aca19b",
-  "customer": "264b4724-92ef-417b-9f2--a4e11f74dccc",
+  "motoboy": "502536e3-abc7-4072-9641-36ef858094ee",
+  "customer": "643da16e-d81d-413e-b71d-b01728742c97",
   "totalPurchase": 149.98,
   "deliveryTax": 8.0,
-  "paymentMethod": "DINHEIRO"
+  "paymentMethod": "pix"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/fe340f19-76f5-4d0e-adaf-8a7f39f28d4c
+PATCH {{baseUrl}}/delivery/me/8c4fafc0-dd5a-40eb-9e99-fe48dcba4518
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 

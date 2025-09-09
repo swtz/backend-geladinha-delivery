@@ -1,10 +1,12 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
+import { PaymentMethod } from '../enums/payment-methods.enum';
 
 export class CreateDeliveryDto {
   @IsOptional()
@@ -23,9 +25,8 @@ export class CreateDeliveryDto {
   @IsNotEmpty({ message: 'Campo valor da entrega não pode estar vazio' })
   deliveryTax: number;
 
-  @IsString({ message: 'Formato inválido' })
-  @IsNotEmpty({ message: 'Campo método de pagamento não pode estar vazio' })
-  paymentMethod: string;
+  @IsEnum(PaymentMethod, { message: 'Método de pagamento inválido' })
+  paymentMethod: PaymentMethod;
 
   @IsUUID('4', { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
