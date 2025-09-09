@@ -12,7 +12,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PaymentMethod } from './payment-method.entity';
-import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 
 @Entity()
 export class Delivery {
@@ -39,7 +38,7 @@ export class Delivery {
 
   @ManyToMany(() => PaymentMethod, paymentMethod => paymentMethod.deliveries)
   @JoinTable()
-  paymentMethods: PaymentMethodEnum[];
+  paymentMethods: PaymentMethod[];
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   operator: User;
