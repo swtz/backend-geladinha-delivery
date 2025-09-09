@@ -5,8 +5,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -36,9 +34,10 @@ export class Delivery {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => PaymentMethod, paymentMethod => paymentMethod.deliveries)
-  @JoinTable()
-  paymentMethods: PaymentMethod[];
+  @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {
+    onDelete: 'SET NULL',
+  })
+  paymentMethod: PaymentMethod;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   operator: User;

@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,6 +26,6 @@ export class PaymentMethod {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => Delivery, delivery => delivery.paymentMethods)
+  @OneToMany(() => Delivery, delivery => delivery.paymentMethod)
   deliveries: Delivery[];
 }

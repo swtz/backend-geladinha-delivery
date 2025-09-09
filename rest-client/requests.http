@@ -163,7 +163,7 @@ Content-Type: application/json
   "customer": "643da16e-d81d-413e-b71d-b01728742c97",
   "totalPurchase": 149.98,
   "deliveryTax": 8.0,
-  "paymentMethod": "pix"
+  "paymentMethod": "credit"
 }
 
 ### Update delivery

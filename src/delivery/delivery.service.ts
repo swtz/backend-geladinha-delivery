@@ -57,7 +57,7 @@ export class DeliveryService {
     });
     const delivery = await this.findOneByOrFail({ id: created.id });
 
-    delivery.paymentMethods.push(paymentMethod);
+    delivery.paymentMethod = paymentMethod;
 
     return this.save(delivery);
   }
@@ -136,7 +136,7 @@ export class DeliveryService {
         'motoboy',
         'customer',
         'address',
-        'paymentMethods',
+        'paymentMethod',
       ],
     });
 
@@ -162,7 +162,7 @@ export class DeliveryService {
         'motoboy',
         'customer',
         'address',
-        'paymentMethods',
+        'paymentMethod',
       ],
     });
 
@@ -187,7 +187,7 @@ export class DeliveryService {
         'motoboy',
         'customer',
         'address',
-        'paymentMethods',
+        'paymentMethod',
       ],
     });
 
@@ -228,7 +228,7 @@ export class DeliveryService {
         'motoboy',
         'customer',
         'address',
-        'paymentMethods',
+        'paymentMethod',
       ],
     });
 
