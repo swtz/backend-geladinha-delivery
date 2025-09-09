@@ -98,10 +98,20 @@ export class DeliveryService {
       delivery.address = newDefaultAddress;
     }
 
+    if (
+      dto.paymentMethod &&
+      dto.paymentMethod !== delivery.paymentMethod.name
+    ) {
+      const newPaymentMethod = await this.paymentMethodService.findOneOrCreate(
+        dto.paymentMethod,
+      );
+
+      delivery.paymentMethod = newPaymentMethod;
+    }
+
     delivery.paid = dto.paid ?? delivery.paid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
     delivery.description = dto.description ?? delivery.description;
-    // delivery.paymentMethod = dto.paymentMethod ?? delivery.paymentMethod;
     delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
 
     return this.save(delivery);

@@ -168,12 +168,13 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/8c4fafc0-dd5a-40eb-9e99-fe48dcba4518
+PATCH {{baseUrl}}/delivery/me/402018f0-c010-41fb-adb2-b6b33c83eba8
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "paid": true
+  "paid": true,
+  "paymentMethod": "pix"
 }
 
 ### Delete delivery
@@ -188,7 +189,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find delivery
 # @name findDelivery
-GET {{baseUrl}}/delivery/6508e2d1-de81-4062-b4aa-ef6b27834926
+GET {{baseUrl}}/delivery/8c4fafc0-dd5a-40eb-9e99-fe48dcba4518
 Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
