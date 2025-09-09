@@ -26,6 +26,13 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAll() {
+    const customers = await this.customerService.findAll();
+    return customers;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('find')
   async findOne(
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,

@@ -21,6 +21,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 
 /customer/                      POST        Criar cliente com endereço                JWT            ADMIN/OPERATOR
 /customer/find?key=value        GET         Ler cliente                               JWT            ADMIN/OPERATOR
+/customer/                      GET         Ler todos os clientes                     JWT            ADMIN/OPERATOR
 /customer/:uuid                 PATCH       Atualizar cliente e/ou endereço           JWT            ADMIN/OPERATOR
 /customer/:uuid                 DELETE      Apagar cliente                            JWT            ADMIN/OPERATOR
 /customer/:uuid/address         GET         Ler todos os endereços de um cliente      JWT            ADMIN/OPERATOR

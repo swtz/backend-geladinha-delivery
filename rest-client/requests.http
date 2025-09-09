@@ -137,7 +137,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### find one customer
 # @name findOneCustomer
-GET {{baseUrl}}/customer/find?id=643da16e-d81d-413e-b71d-b01728742c97
+GET {{baseUrl}}/customer/find?id=8dcb3628-9f2e-4a61-8f67-fa7ad8008e16
+Authorization: Bearer {{JwtToken}}
+
+### find all customers
+# @name findAllCustomers
+GET {{baseUrl}}/customer
 Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
@@ -181,8 +186,8 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery/me
 Authorization: Bearer {{JwtToken}}
 
-### Read delivery
-# @name readDelivery
+### Find delivery
+# @name findDelivery
 GET {{baseUrl}}/delivery/6508e2d1-de81-4062-b4aa-ef6b27834926
 Authorization: Bearer {{JwtToken}}
 

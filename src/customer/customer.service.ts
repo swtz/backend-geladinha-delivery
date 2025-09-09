@@ -90,6 +90,13 @@ export class CustomerService {
     return this.findOneByOrFail({ id });
   }
 
+  findAll() {
+    return this.customerRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['addresses'],
+    });
+  }
+
   async findOneByOrFail(customerData: Partial<Customer>) {
     const customer = await this.findOneBy(customerData);
 
