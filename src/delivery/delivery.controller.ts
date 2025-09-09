@@ -20,6 +20,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
+import { END_TIME, START_TIME } from 'src/common/operation-time';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -64,8 +65,8 @@ export class DeliveryController {
     @Query('customer') customer: string,
     @Query('motoboy') motoboy: string,
     @Query('operator') operator: string,
-    @Query('fromDate', new ParseBrDatePipe('06:00')) fromDate: Date,
-    @Query('toDate', new ParseBrDatePipe('18:00')) toDate: Date,
+    @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
+    @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
     // paymentMethod (?)
   ) {
     const deliveries = await this.deliveryService.findAll({
