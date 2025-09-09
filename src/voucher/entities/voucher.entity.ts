@@ -30,6 +30,6 @@ export class Voucher {
   })
   user: User;
 
-  @ManyToOne(() => User, { nullable: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   createdBy: User;
 }

@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
@@ -24,10 +26,16 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  @Get('find')
+  async findOne(
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('phone', new DefaultValuePipe('')) phone: string | undefined,
+  ) {
+    phone = id ? undefined : phone;
+
     const customer = await this.customerService.findOneByOrFail({
       id,
+      phone,
     });
     return customer;
   }
