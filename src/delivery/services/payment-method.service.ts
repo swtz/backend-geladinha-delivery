@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
+import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 import { Repository } from 'typeorm';
 import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 
@@ -11,11 +12,26 @@ export class PaymentMethodService {
     private readonly paymentMethodRepository: Repository<PaymentMethod>,
   ) {}
 
-  async findOneByOrFail(paymentMethodData: Partial<PaymentMethod>) {
-    const paymentMethod = await this.paymentMethodRepository.findOne({
+  async findOneOrCreate(name: PaymentMethodEnum) {
+    const paymentMethod = await this.findOneBy({ name });
+
+    if (!paymentMethod) {
+      const created = await this.save({ name });
+      return this.findOneByOrFail({ id: created.id });
+    }
+
+    return paymentMethod;
+  }
+
+  findOneBy(paymentMethodData: Partial<PaymentMethod>) {
+    return this.paymentMethodRepository.findOne({
       where: paymentMethodData,
       relations: ['deliveries'],
     });
+  }
+
+  async findOneByOrFail(paymentMethodData: Partial<PaymentMethod>) {
+    const paymentMethod = await this.findOneBy(paymentMethodData);
 
     if (!paymentMethod) {
       throw new NotFoundException('Método de pagamento não existe');
