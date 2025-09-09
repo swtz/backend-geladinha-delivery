@@ -33,6 +33,7 @@ export class UserController {
     return user;
   }
 
+  @Roles(Role.Operator, Role.Admin)
   @UseGuards(JwtAuthGuard)
   @Get('motoboy')
   async findAllMotoboy() {

@@ -58,6 +58,7 @@ export class DeliveryController {
     return delivery;
   }
 
+  @Roles(Role.Operator, Role.Motoboy, Role.Admin)
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
