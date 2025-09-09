@@ -1,11 +1,10 @@
-import { parse } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
+import { parse } from 'date-fns';
 
 @Injectable()
 export class ParseBrDatePipe implements PipeTransform {
@@ -15,8 +14,8 @@ export class ParseBrDatePipe implements PipeTransform {
     this.hour = hour;
   }
 
-  transform(value: string, metadata: ArgumentMetadata) {
-    if (!value) {
+  transform(value: string, { type }: ArgumentMetadata) {
+    if (!value || type !== 'query') {
       return undefined;
     }
 
@@ -31,8 +30,6 @@ export class ParseBrDatePipe implements PipeTransform {
   }
 
   validateDate(date: string, hour: string) {
-    return parse(`${date} ${hour}`, 'dd/MM/yyyy HH:mm', new Date(), {
-      locale: ptBR,
-    });
+    return parse(`${date} ${hour}`, 'dd/MM/yyyy HH:mm', new Date());
   }
 }

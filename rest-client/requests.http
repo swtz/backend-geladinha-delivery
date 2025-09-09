@@ -188,7 +188,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=8/9/2025&toDate=8/9/2025
+GET {{baseUrl}}/delivery?fromDate=5/9/2025&toDate=5/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
