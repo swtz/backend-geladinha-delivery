@@ -216,7 +216,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['roles', 'vouchers'],
+      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
     });
 
     return motoboys;
@@ -242,7 +242,7 @@ export class UserService {
   async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations: ['roles', 'vouchers'],
+      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
     });
 
     if (!motoboy) {

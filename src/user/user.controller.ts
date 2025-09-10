@@ -39,7 +39,10 @@ export class UserController {
   @Get('motoboy')
   async findAllMotoboy() {
     const motoboys = await this.userService.findAllMotoboy();
-    return motoboys;
+    const parsedMotoboys = motoboys.map(
+      motoboy => new ResponseUserDto(motoboy),
+    );
+    return parsedMotoboys;
   }
 
   @UseGuards(JwtAuthGuard)
