@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -53,7 +54,10 @@ export class CustomerController {
     const addresses = await this.customerService.findAddressesByCustomer({
       id,
     });
-    return addresses;
+    const parsedAddresses = addresses.map(
+      address => new ResponseAddressDto(address),
+    );
+    return parsedAddresses;
   }
 
   @UseGuards(JwtAuthGuard)
