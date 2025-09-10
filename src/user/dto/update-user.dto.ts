@@ -6,6 +6,9 @@ export class UpdateUserDto extends PartialType(
   OmitType(CreateUserDto, ['password']),
 ) {
   @IsOptional()
-  @IsNumber({}, { message: 'Campo gorjeta precisa ser um número' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Campo gorjeta precisa ser um número' },
+  )
   tip?: number;
 }

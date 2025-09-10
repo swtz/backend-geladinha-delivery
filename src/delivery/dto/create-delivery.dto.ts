@@ -15,13 +15,16 @@ export class CreateDeliveryDto {
   description?: string;
 
   @IsNumber(
-    {},
+    { maxDecimalPlaces: 2 },
     { message: 'Campo valor total da compra precisa ser um número' },
   )
   @IsNotEmpty({ message: 'Campo valor total da compra não pode estar vazio' })
   totalPurchase: number;
 
-  @IsNumber({}, { message: 'Campo valor da entrega precisa ser um número' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Campo valor da entrega precisa ser um número' },
+  )
   @IsNotEmpty({ message: 'Campo valor da entrega não pode estar vazio' })
   deliveryTax: number;
 

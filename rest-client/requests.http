@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "claudio@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -161,9 +161,9 @@ Content-Type: application/json
 {
   "motoboy": "502536e3-abc7-4072-9641-36ef858094ee",
   "customer": "643da16e-d81d-413e-b71d-b01728742c97",
-  "totalPurchase": 149.98,
+  "totalPurchase": 9.99,
   "deliveryTax": 8.0,
-  "paymentMethod": "credit"
+  "paymentMethod": "pix"
 }
 
 ### Update delivery
@@ -194,7 +194,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?motoboy=Claudio
+GET {{baseUrl}}/delivery?fromDate=10/9/2025&toDate=10/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

@@ -35,6 +35,9 @@ export class CreateUserDto {
   motorcycle?: string;
 
   @IsOptional()
-  @IsNumber({}, { message: 'Valor da diária precisa ser um número' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Valor da diária precisa ser um número' },
+  )
   daily?: number;
 }

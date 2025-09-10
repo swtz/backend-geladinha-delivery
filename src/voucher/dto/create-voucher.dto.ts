@@ -7,7 +7,10 @@ import {
 } from 'class-validator';
 
 export class CreateVoucherDto {
-  @IsNumber({}, { message: 'Campo quantidade precisa ser um número' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Campo quantidade precisa ser um número' },
+  )
   @IsNotEmpty({ message: 'Campo quantidade não pode estar vazio' })
   amount: number;
 
