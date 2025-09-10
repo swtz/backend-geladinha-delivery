@@ -253,7 +253,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher
 # @name readOneVoucher
-GET {{baseUrl}}/voucher/87e39325-c784-440d-946a-c115d85d8ec7
+GET {{baseUrl}}/voucher/79cf0dd3-904f-42c8-9afc-5d3b49309b2e
 Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers by user

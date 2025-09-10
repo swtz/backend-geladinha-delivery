@@ -1,5 +1,6 @@
 import { Role } from 'src/common/role/roles.enum';
 import { DeliveryMan, User } from '../entities/user.entity';
+import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 
 export class ResponseUserDto {
   readonly id: string;
@@ -9,24 +10,7 @@ export class ResponseUserDto {
   readonly motorcycle?: string;
   readonly tip?: number | null;
   readonly daily?: number;
-  readonly vouchers:
-    | {
-        amount: number;
-        description: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        user: {
-          id: string;
-          name: string;
-          phone: string;
-        };
-        createdBy: {
-          id: string;
-          name: string;
-          phone: string;
-        } | null;
-      }[]
-    | null;
+  readonly vouchers: ResponseVoucherDto[] | null;
   readonly roles: Role[];
 
   constructor(user: User | DeliveryMan) {
@@ -44,6 +28,7 @@ export class ResponseUserDto {
       user.vouchers !== null
         ? user.vouchers.map(voucher => {
             return {
+              id: voucher.id,
               amount: voucher.amount,
               description: voucher.description,
               createdAt: voucher.createdAt,

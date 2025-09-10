@@ -17,6 +17,7 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { ResponseVoucherDto } from './dto/response-voucher.dto';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
@@ -28,14 +29,20 @@ export class VoucherController {
   @Roles(Role.Admin, Role.Operator)
   async findByUser(@Param('id', ParseUUIDPipe) id: string) {
     const vouchers = await this.voucherService.findByUser(id);
-    return vouchers;
+    const parsedVouchers = vouchers.map(
+      voucher => new ResponseVoucherDto(voucher),
+    );
+    return parsedVouchers;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const vouchers = await this.voucherService.findAllOwned(req.user);
-    return vouchers;
+    const parsedVouchers = vouchers.map(
+      voucher => new ResponseVoucherDto(voucher),
+    );
+    return parsedVouchers;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -43,7 +50,7 @@ export class VoucherController {
   @Roles(Role.Admin, Role.Operator)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const voucher = await this.voucherService.findOneByOrFail({ id });
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,7 +60,7 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
   ) {
     const voucher = await this.voucherService.create(dto, req.user);
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,7 +76,7 @@ export class VoucherController {
       req.user,
       id,
     );
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -80,7 +87,7 @@ export class VoucherController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const voucher = await this.voucherService.update(dto, req.user, id);
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -96,7 +103,7 @@ export class VoucherController {
       req.user,
       id,
     );
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -106,6 +113,6 @@ export class VoucherController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const voucher = await this.voucherService.remove(id, req.user);
-    return voucher;
+    return new ResponseVoucherDto(voucher);
   }
 }
