@@ -18,6 +18,7 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { ResponseUserDto } from './dto/response-user.dto';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -30,7 +31,7 @@ export class UserController {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
     });
-    return user;
+    return new ResponseUserDto(user);
   }
 
   @Roles(Role.Operator, Role.Admin)
@@ -46,14 +47,14 @@ export class UserController {
   @Roles(Role.Admin)
   async create(@Body() dto: CreateUserDto) {
     const user = await this.userService.create(dto);
-    return user;
+    return new ResponseUserDto(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   async update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
     const user = await this.userService.update(req.user, dto);
-    return user;
+    return new ResponseUserDto(user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,7 +64,7 @@ export class UserController {
     @Body() dto: UpdatePasswordDto,
   ) {
     const user = await this.userService.updatePassword(req.user.id, dto);
-    return user;
+    return new ResponseUserDto(user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -71,6 +72,6 @@ export class UserController {
   @Roles(Role.Admin)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.remove(id);
-    return user;
+    return new ResponseUserDto(user);
   }
 }

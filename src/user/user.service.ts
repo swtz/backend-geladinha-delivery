@@ -235,7 +235,7 @@ export class UserService {
   async findOneBy(userData: Partial<User>) {
     return this.userRepository.findOne({
       where: userData,
-      relations: ['roles', 'vouchers'],
+      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
     });
   }
 
