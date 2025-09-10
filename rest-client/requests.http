@@ -98,18 +98,18 @@ Content-Type: application/json
 
 ### Update customer
 # @name updateCustomer
-PATCH {{baseUrl}}/customer/643da16e-d81d-413e-b71d-b01728742c97
+PATCH {{baseUrl}}/customer/71950dc0-045c-44a2-92fc-fed75b2eea47
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "address": {
-    "id": "20576940-ad80-42d3-9953-b4e5ebec50d7",
+    "id": "e0d0de76-1a76-4c09-b688-db76a3c5003e",
     "city": "KKKKKK",
     "number": null,
     "complement": null,
     "referencePoint": null,
-    "isDefault": true
+    "isDefault": false
   }
 }
 
@@ -120,7 +120,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### add address
 # @name addAddress
-POST {{baseUrl}}/customer/264b4724-92ef-417b-9f2f-a4e11f74dccc/address
+POST {{baseUrl}}/customer/71950dc0-045c-44a2-92fc-fed75b2eea47/address
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -132,7 +132,7 @@ Content-Type: application/json
 
 ### remove address
 # @name removeAddress
-DELETE {{baseUrl}}/customer/address/75366fb8-7df5-4424-9858-8a3f5e6371bc
+DELETE {{baseUrl}}/customer/address/e0d0de76-1a76-4c09-b688-db76a3c5003e
 Authorization: Bearer {{JwtToken}}
 
 ### find one customer

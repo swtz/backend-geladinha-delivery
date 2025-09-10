@@ -12,11 +12,6 @@ export class ResponseAddressDto {
   readonly stateCode: string;
   readonly location: string | null;
   readonly isDefault: boolean;
-  readonly customer: {
-    id: string;
-    name: string;
-    phone: string;
-  };
 
   constructor(address: Address) {
     this.id = address.id;
@@ -30,10 +25,5 @@ export class ResponseAddressDto {
     this.stateCode = address.stateCode;
     this.location = address.location;
     this.isDefault = address.isDefault;
-    this.customer = {
-      id: address.customer.id,
-      name: address.customer.name,
-      phone: address.customer.phone,
-    };
   }
 }

@@ -27,26 +27,7 @@ export class ResponseUserDto {
     this.vouchers =
       user.vouchers !== null
         ? user.vouchers.map(voucher => {
-            return {
-              id: voucher.id,
-              amount: voucher.amount,
-              description: voucher.description,
-              createdAt: voucher.createdAt,
-              updatedAt: voucher.updatedAt,
-              user: {
-                id: voucher.user.id,
-                name: voucher.user.name,
-                phone: voucher.user.phone,
-              },
-              createdBy:
-                voucher.createdBy !== null
-                  ? {
-                      id: voucher.createdBy.id,
-                      name: voucher.createdBy.name,
-                      phone: voucher.createdBy.phone,
-                    }
-                  : null,
-            };
+            return new ResponseVoucherDto(voucher);
           })
         : null;
     this.roles = user.roles.map(role => role.name);

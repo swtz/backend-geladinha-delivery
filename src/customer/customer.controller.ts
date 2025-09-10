@@ -20,6 +20,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
+import { ResponseCustomerDto } from './dto/response-customer.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -30,7 +31,10 @@ export class CustomerController {
   @Get()
   async findAll() {
     const customers = await this.customerService.findAll();
-    return customers;
+    const parsedCustomers = customers.map(
+      customer => new ResponseCustomerDto(customer),
+    );
+    return parsedCustomers;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,7 +49,7 @@ export class CustomerController {
       id,
       phone,
     });
-    return customer;
+    return new ResponseCustomerDto(customer);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -67,7 +71,7 @@ export class CustomerController {
     @Body('address') address: CreateAddressDto,
   ) {
     const customer = await this.customerService.create({ ...dto, address });
-    return customer;
+    return new ResponseCustomerDto(customer);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -78,14 +82,14 @@ export class CustomerController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const customer = await this.customerService.update({ ...dto, address }, id);
-    return customer;
+    return new ResponseCustomerDto(customer);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const customer = await this.customerService.remove(id);
-    return customer;
+    return new ResponseCustomerDto(customer);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -95,13 +99,13 @@ export class CustomerController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const customer = await this.customerService.addAddress(dto, id);
-    return customer;
+    return new ResponseCustomerDto(customer);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('address/:id')
   async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
     const address = await this.customerService.removeAddress(id);
-    return address;
+    return new ResponseAddressDto(address);
   }
 }
