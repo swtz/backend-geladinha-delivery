@@ -212,12 +212,12 @@ export class DeliveryService {
     fromDate,
     toDate,
   }: {
-    customer: string;
-    motoboy: string;
-    operator: string;
-    paid: boolean;
-    fromDate: Date;
-    toDate: Date;
+    customer?: string;
+    motoboy?: string;
+    operator?: string;
+    paid?: boolean;
+    fromDate?: Date;
+    toDate?: Date;
   }) {
     const queryObject = {
       customer: { name: customer },

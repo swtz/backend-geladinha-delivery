@@ -18,5 +18,6 @@ import { PaymentMethodService } from './services/payment-method.service';
   ],
   controllers: [DeliveryController],
   providers: [DeliveryService, PaymentMethodService],
+  exports: [DeliveryService],
 })
 export class DeliveryModule {}
