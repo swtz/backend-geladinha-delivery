@@ -10,8 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "renato@email.com",
-  "password": "1234567"
+  "email": "neo@email.com",
+  "password": "123456"
 }
 
 ################### USER ###################
@@ -189,12 +189,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find delivery
 # @name findDelivery
-GET {{baseUrl}}/delivery/8c4fafc0-dd5a-40eb-9e99-fe48dcba4518
+GET {{baseUrl}}/delivery/f4e53371-317c-4848-8549-663865864bdf
 Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=10/9/2025&toDate=10/9/2025
+GET {{baseUrl}}/delivery?fromDate=9/9/2025&toDate=9/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

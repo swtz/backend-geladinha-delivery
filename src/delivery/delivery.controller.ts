@@ -21,6 +21,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
+import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -34,7 +35,7 @@ export class DeliveryController {
     @Body() dto: CreateDeliveryDto,
   ) {
     const delivery = await this.deliveryService.create(dto, req.user);
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,7 +46,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.update(dto, req.user, id);
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -55,7 +56,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.remove(req.user, id);
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 
   @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -78,7 +79,10 @@ export class DeliveryController {
       fromDate,
       toDate,
     });
-    return deliveries;
+    const parsedDeliveries = deliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
+    return parsedDeliveries;
   }
 
   @Roles(Role.Admin, Role.Operator, Role.Motoboy)
@@ -86,13 +90,16 @@ export class DeliveryController {
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const deliveries = await this.deliveryService.findAllOwned(req.user);
-    return deliveries;
+    const parsedDeliveries = deliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
+    return parsedDeliveries;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
     const delivery = await this.deliveryService.findOneByOrFail({ id });
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 }

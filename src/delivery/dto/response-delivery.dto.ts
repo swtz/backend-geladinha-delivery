@@ -1,45 +1,70 @@
-// import { DeliveryEntity } from '../entities/delivery.entity';
+import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
+import { Delivery } from '../entities/delivery.entity';
+import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 
-// export class ResponseDeliveryDto {
-//   readonly id: string;
-//   readonly name: string;
-//   readonly paymentMethod: string;
-//   readonly totalPurchase: number;
-//   readonly deliveryTax: number;
-//   readonly paid: boolean;
-//   readonly createdAt: Date;
-//   readonly updatedAt: Date;
-//   readonly operator: {
-//     id: string;
-//     name: string;
-//     email: string;
-//   } | null;
-//   readonly motoboy: {
-//     id: string;
-//     name: string;
-//     phone: string;
-//     motorcycle: string;
-//   } | null;
+export class ResponseDeliveryDto {
+  readonly id: string;
+  readonly description?: string | null;
+  readonly totalPurchase: number;
+  readonly deliveryTax: number;
+  readonly paymentMethod: string | null;
+  readonly paid: boolean;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly operator: {
+    id: string;
+    name: string;
+    phone: string;
+  } | null;
+  readonly motoboy: {
+    id: string;
+    name: string;
+    phone: string;
+    motorcycle: string;
+    tip?: number | null;
+  } | null;
+  readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
+  readonly address: ResponseAddressDto | null;
 
-//   constructor(delivery: DeliveryEntity) {
-//     this.id = delivery.id;
-//     this.name = delivery.name;
-//     this.paymentMethod = delivery.paymentMethod;
-//     this.totalPurchase = delivery.totalPurchase;
-//     this.deliveryTax = delivery.deliveryTax;
-//     this.paid = delivery.paid;
-//     this.createdAt = delivery.createdAt;
-//     this.updatedAt = delivery.updatedAt;
-//     this.operator = {
-//       id: delivery.operator?.id,
-//       name: delivery.operator?.name,
-//       email: delivery.operator?.email,
-//     };
-//     this.motoboy = {
-//       id: delivery.motoboy?.id,
-//       name: delivery.motoboy?.name,
-//       phone: delivery.motoboy?.phone,
-//       motorcycle: delivery.motoboy?.motorcycle,
-//     };
-//   }
-// }
+  constructor(delivery: Delivery) {
+    this.id = delivery.id;
+    this.description = delivery.description;
+    this.totalPurchase = delivery.totalPurchase;
+    this.deliveryTax = delivery.deliveryTax;
+    this.paymentMethod =
+      delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
+    this.paid = delivery.paid;
+    this.createdAt = delivery.createdAt;
+    this.updatedAt = delivery.updatedAt;
+    this.operator =
+      delivery.operator !== null
+        ? {
+            id: delivery.operator.id,
+            name: delivery.operator.name,
+            phone: delivery.operator.phone,
+          }
+        : null;
+    this.motoboy =
+      delivery.motoboy !== null
+        ? {
+            id: delivery.motoboy.id,
+            name: delivery.motoboy.name,
+            phone: delivery.motoboy.phone,
+            motorcycle: delivery.motoboy.motorcycle,
+            tip: delivery.motoboy.tip,
+          }
+        : null;
+    this.customer =
+      delivery.customer !== null
+        ? {
+            id: delivery.customer.id,
+            name: delivery.customer.name,
+            phone: delivery.customer.phone,
+          }
+        : null;
+    this.address =
+      delivery.address !== null
+        ? new ResponseAddressDto(delivery.address)
+        : null;
+  }
+}
