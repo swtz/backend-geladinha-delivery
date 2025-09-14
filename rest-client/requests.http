@@ -194,7 +194,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?motoboy=Gabriel
+GET {{baseUrl}}/delivery
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -270,5 +270,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout?motoboy=Gabriel&fromDate=5/9/2025
+GET {{baseUrl}}/payout?motoboy=Gabriel
 Authorization: Bearer {{JwtToken}}
