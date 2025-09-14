@@ -30,6 +30,9 @@ export class Payout {
   @Column('double')
   total: number;
 
+  @Column({ default: false })
+  isClosed: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 
