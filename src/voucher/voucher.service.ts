@@ -35,10 +35,7 @@ export class VoucherService {
     entity.vouchers.push(created);
 
     await this.userService.save(entity);
-    return {
-      ...created,
-      entity,
-    };
+    return this.findOneOwnedByOrFail({ id: created.id }, entity);
   }
 
   async createForEntity(dto: CreateVoucherDto, user: User, id: string) {
