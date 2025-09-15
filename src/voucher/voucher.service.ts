@@ -12,6 +12,7 @@ import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { setDecimalPlaces } from 'src/common/set-decimal-places';
 
 @Injectable()
 export class VoucherService {
@@ -192,6 +193,26 @@ export class VoucherService {
     });
 
     return vouchers;
+  }
+
+  async sum(user?: User, fromDate?: Date, toDate?: Date) {
+    const queryObject = {};
+
+    if (user) {
+      queryObject['user'] = { id: user.id };
+    }
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      queryObject['createdAt'] = Between(fromDate, toDate);
+    }
+
+    const total = await this.voucherRepository.sum('amount', queryObject);
+
+    if (!total) {
+      return 0;
+    }
+
+    return setDecimalPlaces(total, 2);
   }
 
   async remove(id: string, user: User) {

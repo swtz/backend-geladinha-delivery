@@ -11,6 +11,7 @@ import {
 import { parseBrDate } from 'src/common/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { VoucherService } from 'src/voucher/voucher.service';
 
 @Injectable()
 export class PayoutService {
@@ -19,6 +20,7 @@ export class PayoutService {
     private readonly payoutRepository: Repository<Payout>,
     private readonly deliveryService: DeliveryService,
     private readonly userService: UserService,
+    private readonly voucherService: VoucherService,
   ) {}
 
   async preview(fromDate: Date, toDate: Date, motoboyData: string) {
@@ -34,13 +36,18 @@ export class PayoutService {
     const motoboy = await this.userService.findOneMotoboyByOrFail({
       name: motoboyData,
     });
+    const vouchers = await this.voucherService.findAllOwned(
+      motoboy,
+      fromDate || currentFromDate,
+      toDate || currentToDate,
+    );
 
     // vou precisar criar um método com operadores AND do SQL
     // para garantir que a consulta leve em conta todos os parâmetros fornecidos
     // fazer testes para garantir a necessidade de criar esse outro método
     const deliveries = await this.deliveryService.findAll({
-      fromDate: fromDate !== undefined ? fromDate : currentFromDate,
-      toDate: toDate !== undefined ? toDate : currentToDate,
+      fromDate: fromDate || currentFromDate,
+      toDate: toDate || currentToDate,
       motoboy: motoboy.name,
     });
 
@@ -52,8 +59,7 @@ export class PayoutService {
       total: 0,
       isClosed: false,
       motoboy,
-      // criar método para filtrar voucher com base no mesmo período das entregas
-      vouchers: motoboy.vouchers,
+      vouchers,
     };
 
     if (deliveries.length > 1) {
@@ -61,31 +67,25 @@ export class PayoutService {
       // gerar → totalDeliveries + tips
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
-
-      // delivery.deliveryTax + tip
       payout.totalDeliveries = delivery.deliveryTax;
 
-      // gerar → totalDeliveries
       if (motoboy.tip !== null) {
         payout.totalDeliveries += motoboy.tip;
       }
     }
 
-    // daily + totalDeliveries = subtotal
     payout.motoboyDaily = motoboy.daily;
     payout.subtotal = setDecimalPlaces(
       payout.motoboyDaily + payout.totalDeliveries,
       2,
     );
 
-    // gerar totalSpending (vouchers.amount)
-    motoboy.vouchers.forEach(voucher => {
-      payout.totalSpending += voucher.amount;
-    });
-    payout.totalSpending = setDecimalPlaces(payout.totalSpending, 2);
+    payout.totalSpending = await this.voucherService.sum(
+      motoboy,
+      fromDate || currentFromDate,
+      toDate || currentToDate,
+    );
 
-    // subTotal - totalSpending
-    // total (suporta valores negativos)
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
     return payout;
