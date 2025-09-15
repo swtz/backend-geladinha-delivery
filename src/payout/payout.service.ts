@@ -63,15 +63,21 @@ export class PayoutService {
     };
 
     if (deliveries.length > 1) {
-      // uso dos recursos SQL de soma
-      // gerar → totalDeliveries + tips
+      payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol(
+        motoboy,
+        fromDate || currentFromDate,
+        toDate || currentToDate,
+      );
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
-      payout.totalDeliveries = delivery.deliveryTax;
 
-      if (motoboy.tip !== null) {
-        payout.totalDeliveries += motoboy.tip;
-      }
+      payout.totalDeliveries = delivery.deliveryTax;
+    }
+
+    // campo DeliveryMan.tip ainda não está pronto,
+    // pois não está relacionado com uma entrega
+    if (motoboy.tip !== null) {
+      payout.totalDeliveries += motoboy.tip;
     }
 
     payout.motoboyDaily = motoboy.daily;

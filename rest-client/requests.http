@@ -194,7 +194,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=15/9/2025&toDate=15/9/2025
+GET {{baseUrl}}/delivery?motoboy=Claudio&fromDate=30/8/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -217,7 +217,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/6f9d066f-c826-4ae7-b661-1332d1aca19b
+POST {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -259,7 +259,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers by user
 # @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
+GET {{baseUrl}}/voucher/user/502536e3-abc7-4072-9641-36ef858094ee
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -271,5 +271,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout?motoboy=Claudio&fromDate=30/8/2025&toDate=30/8/2025
+GET {{baseUrl}}/payout?motoboy=Rodrigo
 Authorization: Bearer {{JwtToken}}

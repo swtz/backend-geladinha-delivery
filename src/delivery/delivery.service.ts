@@ -14,6 +14,7 @@ import { CustomerService } from 'src/customer/customer.service';
 import { AddressService } from 'src/address/address.service';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { PaymentMethodService } from './services/payment-method.service';
+import { setDecimalPlaces } from 'src/common/set-decimal-places';
 
 @Injectable()
 export class DeliveryService {
@@ -243,6 +244,26 @@ export class DeliveryService {
     });
 
     return deliveries;
+  }
+
+  async sumDeliveryTaxCol(user?: User, fromDate?: Date, toDate?: Date) {
+    const queryObject = {};
+
+    if (user) {
+      queryObject['motoboy'] = { id: user.id };
+    }
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      queryObject['createdAt'] = Between(fromDate, toDate);
+    }
+
+    const total = await this.deliveryRepository.sum('deliveryTax', queryObject);
+
+    if (!total) {
+      return 0;
+    }
+
+    return setDecimalPlaces(total, 2);
   }
 
   async remove(user: User, id: string) {
