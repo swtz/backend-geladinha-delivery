@@ -194,7 +194,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery
+GET {{baseUrl}}/delivery?fromDate=15/9/2025&toDate=15/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -222,7 +222,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 14.99
+  "amount": 14.99,
+  "description": "monster lata"
 }
 
 ### Update voucher
@@ -270,5 +271,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout?motoboy=Gabriel
+GET {{baseUrl}}/payout?motoboy=Rodrigo
 Authorization: Bearer {{JwtToken}}
