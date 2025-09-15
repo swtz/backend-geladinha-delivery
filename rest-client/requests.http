@@ -271,5 +271,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Rodrigo
+GET {{baseUrl}}/payout/preview?motoboy=Rodrigo&fromDate=9/9/2025&toDate=9/9/2025
 Authorization: Bearer {{JwtToken}}

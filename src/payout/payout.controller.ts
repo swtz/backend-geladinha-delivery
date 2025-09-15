@@ -3,6 +3,7 @@ import { PayoutService } from './payout.service';
 import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ResponsePayoutDto } from './dto/response-payout.dto';
 
 @Controller('payout')
 export class PayoutController {
@@ -16,6 +17,6 @@ export class PayoutController {
     @Query('motoboy') motoboy: string,
   ) {
     const payout = await this.payoutService.preview(fromDate, toDate, motoboy);
-    return payout;
+    return new ResponsePayoutDto(payout);
   }
 }
