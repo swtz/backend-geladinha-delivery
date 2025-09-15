@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
@@ -176,11 +176,17 @@ export class VoucherService {
     return vouchers;
   }
 
-  async findAllOwned(user: User) {
+  async findAllOwned(user: User, fromDate?: Date, toDate?: Date) {
+    const queryDate = {
+      user: { id: user.id },
+    };
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      queryDate['createdAt'] = Between(fromDate, toDate);
+    }
+
     const vouchers = await this.voucherRepository.find({
-      where: {
-        user: { id: user.id },
-      },
+      where: queryDate,
       order: { createdAt: 'DESC' },
       relations: ['user', 'createdBy'],
     });
