@@ -9,5 +9,6 @@ import { UserModule } from 'src/user/user.module';
   imports: [TypeOrmModule.forFeature([Voucher]), UserModule],
   controllers: [VoucherController],
   providers: [VoucherService],
+  exports: [VoucherService],
 })
 export class VoucherModule {}

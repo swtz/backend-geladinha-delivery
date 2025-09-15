@@ -159,11 +159,11 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "502536e3-abc7-4072-9641-36ef858094ee",
-  "customer": "643da16e-d81d-413e-b71d-b01728742c97",
-  "totalPurchase": 9.99,
-  "deliveryTax": 8.0,
-  "paymentMethod": "pix"
+  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
+  "customer": "4881a485-dcfc-445f-af8e-2413a51dbcc5",
+  "totalPurchase": 16.97,
+  "deliveryTax": 5.0,
+  "paymentMethod": "debit"
 }
 
 ### Update delivery
@@ -194,7 +194,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=9/9/2025&toDate=9/9/2025
+GET {{baseUrl}}/delivery?motoboy=Claudio&fromDate=30/8/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -217,12 +217,13 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/2e8593a1-a1be-4125-8a4c-018eb0c2cffb
+POST {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 14.99
+  "amount": 14.99,
+  "description": "monster lata"
 }
 
 ### Update voucher
@@ -258,10 +259,17 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers by user
 # @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
+GET {{baseUrl}}/voucher/user/502536e3-abc7-4072-9641-36ef858094ee
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
 # @name readAllOwnedVouchers
 GET {{baseUrl}}/voucher/me
+Authorization: Bearer {{JwtToken}}
+
+################### PAYOUT ###################
+
+### Preview motoboy payout
+# @name previewPayout
+GET {{baseUrl}}/payout/preview?motoboy=Rodrigo&fromDate=9/9/2025&toDate=9/9/2025
 Authorization: Bearer {{JwtToken}}

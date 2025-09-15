@@ -1,3 +1,4 @@
+import { Payout } from 'src/payout/entities/payout.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -32,4 +33,10 @@ export class Voucher {
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   createdBy: User;
+
+  @ManyToOne(() => Payout, payout => payout.vouchers, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  payout: Payout;
 }
