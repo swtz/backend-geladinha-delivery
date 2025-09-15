@@ -10,6 +10,7 @@ import {
 } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/parse-br-date';
 import { UserService } from 'src/user/user.service';
+import { setDecimalPlaces } from 'src/common/set-decimal-places';
 
 @Injectable()
 export class PayoutService {
@@ -72,19 +73,20 @@ export class PayoutService {
 
     // daily + totalDeliveries = subtotal
     payout.motoboyDaily = motoboy.daily;
-    payout.subtotal = payout.motoboyDaily + payout.totalDeliveries;
+    payout.subtotal = setDecimalPlaces(
+      payout.motoboyDaily + payout.totalDeliveries,
+      2,
+    );
 
     // gerar totalSpending (vouchers.amount)
     motoboy.vouchers.forEach(voucher => {
       payout.totalSpending += voucher.amount;
     });
-    const totalSpending = +payout.totalSpending.toFixed(2);
-    payout.totalSpending = totalSpending;
+    payout.totalSpending = setDecimalPlaces(payout.totalSpending, 2);
 
     // subTotal - totalSpending
     // total (suporta valores negativos)
-    const tempTotal = payout.subtotal - totalSpending;
-    payout.total = +tempTotal.toFixed(2);
+    payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
     return payout;
   }
