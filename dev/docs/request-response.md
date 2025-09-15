@@ -1,6 +1,6 @@
 # Request <-> Response
 
-http://localhost:3000/deliveries -> 80 HTTP ou 443 HTTPS
+http://localhost:3000/delivery -> 80 HTTP ou 443 HTTPS
 
 O http é o esquema (HTTP, HTTPS, FTP, etc), localhost é o host (google.com,
 iamsolame.shop, etc), 3000 é a porta TCP usada para a conexão, e /deliveries é o
@@ -39,7 +39,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /voucher/me/user/:uuid          POST        Criar compra/vale para usuário            JWT             ADMIN/OPERATOR
 /voucher/:uuid                  GET         Ler compra/vale de um usuário             JWT             ADMIN/OPERATOR
 /voucher/user/:uuid             GET         Ler todas as compras/vales de um usuário  JWT             ADMIN/OPERATOR
-/voucher/me                     GET         Ler todas as compras/vales                JWT             ALL
+/voucher/me                     GET         Ler minhas compras/vales                  JWT             ALL
 /voucher/me/:uuid               PATCH       Atualizar compra/vale                     JWT             ALL
 /voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário       JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale                    JWT             ALL
