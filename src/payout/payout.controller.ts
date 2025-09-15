@@ -9,7 +9,7 @@ export class PayoutController {
   constructor(private readonly payoutService: PayoutService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('preview')
   async preview(
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
