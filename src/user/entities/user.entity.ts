@@ -1,4 +1,5 @@
 import { Role } from 'src/common/role/entities/role.entity';
+import { Tip } from 'src/tip/entities/tip.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
   ChildEntity,
@@ -55,8 +56,8 @@ export class DeliveryMan extends User {
   @Column()
   motorcycle: string;
 
-  @Column('double', { nullable: true })
-  tip: number;
+  @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
+  tips: Tip[];
 
   @Column('double')
   daily: number;

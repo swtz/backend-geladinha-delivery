@@ -1,7 +1,9 @@
+import { DeliveryMan } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -19,4 +21,9 @@ export class Tip {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => DeliveryMan, deliveryMan => deliveryMan.tips, {
+    onDelete: 'CASCADE',
+  })
+  motoboy: DeliveryMan;
 }
