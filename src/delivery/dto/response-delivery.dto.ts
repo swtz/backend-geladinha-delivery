@@ -9,6 +9,7 @@ export class ResponseDeliveryDto {
   readonly deliveryTax: number;
   readonly paymentMethod: string | null;
   readonly paid: boolean;
+  readonly tip: number | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly operator: {
@@ -21,7 +22,6 @@ export class ResponseDeliveryDto {
     name: string;
     phone: string;
     motorcycle: string;
-    tip?: number | null;
   } | null;
   readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
   readonly address: ResponseAddressDto | null;
@@ -34,6 +34,7 @@ export class ResponseDeliveryDto {
     this.paymentMethod =
       delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
     this.paid = delivery.paid;
+    this.tip = delivery.tip !== null ? delivery.tip.amount : null;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
     this.operator =
@@ -51,7 +52,6 @@ export class ResponseDeliveryDto {
             name: delivery.motoboy.name,
             phone: delivery.motoboy.phone,
             motorcycle: delivery.motoboy.motorcycle,
-            // tip: delivery.motoboy.tip,
           }
         : null;
     this.customer =

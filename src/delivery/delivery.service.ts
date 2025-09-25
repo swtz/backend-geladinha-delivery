@@ -48,16 +48,11 @@ export class DeliveryService {
     const paymentMethod = await this.paymentMethodService.findOneOrCreate(
       dto.paymentMethod,
     );
-    const tip = await this.tipService.create(dto.tip);
-
-    motoboy.tips.push(tip);
-    await this.userService.saveDeliveryMan(motoboy);
 
     const created = await this.deliveryRepository.save({
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
-      tip,
       operator,
       motoboy,
       customer,
@@ -66,6 +61,15 @@ export class DeliveryService {
     const delivery = await this.findOneByOrFail({ id: created.id });
 
     delivery.paymentMethod = paymentMethod;
+
+    if (dto.tip) {
+      const tip = await this.tipService.create(dto.tip);
+
+      delivery.tip = tip;
+      motoboy.tips.push(tip);
+
+      await this.userService.saveDeliveryMan(motoboy);
+    }
 
     return this.save(delivery);
   }
