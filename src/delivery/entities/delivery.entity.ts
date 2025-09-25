@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PaymentMethod } from './payment-method.entity';
+import { Tip } from 'src/tip/entities/tip.entity';
 
 @Entity()
 export class Delivery {
@@ -33,6 +35,9 @@ export class Delivery {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
+  tip: Tip;
 
   @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {
     onDelete: 'SET NULL',
