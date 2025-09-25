@@ -8,6 +8,7 @@ import { VoucherModule } from './voucher/voucher.module';
 import { CustomerModule } from './customer/customer.module';
 import { AddressModule } from './address/address.module';
 import { PayoutModule } from './payout/payout.module';
+import { TipModule } from './tip/tip.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { PayoutModule } from './payout/payout.module';
     }),
     AddressModule,
     PayoutModule,
+    TipModule,
   ],
 })
 export class AppModule {}
