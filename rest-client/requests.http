@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "cassio@email.com",
   "password": "123456"
 }
 
@@ -159,11 +159,12 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
-  "customer": "4881a485-dcfc-445f-af8e-2413a51dbcc5",
-  "totalPurchase": 16.97,
-  "deliveryTax": 5.0,
-  "paymentMethod": "debit"
+  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
+  "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
+  "totalPurchase": 18.99,
+  "deliveryTax": 6.0,
+  "paymentMethod": "money",
+  "tip": 2.0
 }
 
 ### Update delivery

@@ -76,9 +76,9 @@ export class PayoutService {
 
     // campo DeliveryMan.tip ainda não está pronto,
     // pois não está relacionado com uma entrega
-    if (motoboy.tip !== null) {
-      payout.totalDeliveries += motoboy.tip;
-    }
+    // if (motoboy.tip !== null) {
+    //   payout.totalDeliveries += motoboy.tip;
+    // }
 
     payout.motoboyDaily = motoboy.daily;
     payout.subtotal = setDecimalPlaces(

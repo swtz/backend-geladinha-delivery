@@ -51,6 +51,7 @@ export class DeliveryService {
     const tip = await this.tipService.create(dto.tip);
 
     motoboy.tips.push(tip);
+    await this.userService.saveDeliveryMan(motoboy);
 
     const created = await this.deliveryRepository.save({
       description: dto.description,

@@ -34,7 +34,7 @@ export class VoucherService {
 
     entity.vouchers.push(created);
 
-    await this.userService.save(entity);
+    await this.userService.saveUser(entity);
     return this.findOneOwnedByOrFail({ id: created.id }, entity);
   }
 
@@ -65,7 +65,7 @@ export class VoucherService {
 
     entity.vouchers.push(created);
 
-    await this.userService.save(entity);
+    await this.userService.saveUser(entity);
 
     const voucher = await this.findOneByOrFail({ id: created.id });
 

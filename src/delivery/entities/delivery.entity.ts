@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -37,6 +38,7 @@ export class Delivery {
   updatedAt: Date;
 
   @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn()
   tip: Tip;
 
   @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {

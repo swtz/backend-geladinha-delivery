@@ -76,7 +76,7 @@ export class UserService {
 
     user.roles.push(role);
 
-    return this.save(user);
+    return this.saveUser(user);
   }
 
   async createUserMotoboy(dto: CreateUserDto, newUser: NewUser) {
@@ -172,7 +172,7 @@ export class UserService {
       entity.forceLogout = true;
     }
 
-    return this.save(entity);
+    return this.saveUser(entity);
   }
 
   async updateUserMotoboy(
@@ -209,13 +209,19 @@ export class UserService {
     user.password = hashedPassword;
     user.forceLogout = true;
 
-    return this.save(user);
+    return this.saveUser(user);
   }
 
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
+      relations: [
+        'roles',
+        'tips',
+        'vouchers',
+        'vouchers.user',
+        'vouchers.createdBy',
+      ],
     });
 
     return motoboys;
@@ -281,8 +287,12 @@ export class UserService {
     return user;
   }
 
-  save(user: User) {
+  saveUser(user: User) {
     return this.userRepository.save(user);
+  }
+
+  saveDeliveryMan(user: DeliveryMan) {
+    return this.deliveryManRepository.save(user);
   }
 
   async getUserAndEntityAuth(user: User, id: string) {
