@@ -6,5 +6,6 @@ import { Tip } from './entities/tip.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Tip])],
   providers: [TipService],
+  exports: [TipService],
 })
 export class TipModule {}

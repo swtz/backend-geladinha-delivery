@@ -8,6 +8,7 @@ import { CustomerModule } from 'src/customer/customer.module';
 import { AddressModule } from 'src/address/address.module';
 import { PaymentMethod } from './entities/payment-method.entity';
 import { PaymentMethodService } from './services/payment-method.service';
+import { TipModule } from 'src/tip/tip.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PaymentMethodService } from './services/payment-method.service';
     UserModule,
     CustomerModule,
     AddressModule,
+    TipModule,
   ],
   controllers: [DeliveryController],
   providers: [DeliveryService, PaymentMethodService],

@@ -15,6 +15,7 @@ import { AddressService } from 'src/address/address.service';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { PaymentMethodService } from './services/payment-method.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { TipService } from 'src/tip/tip.service';
 
 @Injectable()
 export class DeliveryService {
@@ -27,6 +28,7 @@ export class DeliveryService {
     private readonly userService: UserService,
     private readonly customerService: CustomerService,
     private readonly addressService: AddressService,
+    private readonly tipService: TipService,
   ) {}
 
   async create(dto: CreateDeliveryDto, user: User) {
@@ -46,11 +48,15 @@ export class DeliveryService {
     const paymentMethod = await this.paymentMethodService.findOneOrCreate(
       dto.paymentMethod,
     );
+    const tip = await this.tipService.create(dto.tip);
+
+    motoboy.tips.push(tip);
 
     const created = await this.deliveryRepository.save({
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
+      tip,
       operator,
       motoboy,
       customer,

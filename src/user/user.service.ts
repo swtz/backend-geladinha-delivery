@@ -241,7 +241,13 @@ export class UserService {
   async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
+      relations: [
+        'roles',
+        'tips',
+        'vouchers',
+        'vouchers.user',
+        'vouchers.createdBy',
+      ],
     });
 
     if (!motoboy) {

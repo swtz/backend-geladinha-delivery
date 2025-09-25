@@ -31,6 +31,12 @@ export class CreateDeliveryDto {
   @IsEnum(PaymentMethod, { message: 'Método de pagamento inválido' })
   paymentMethod: PaymentMethod;
 
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Campo gorjeta precisa ser um número' },
+  )
+  tip: number;
+
   @IsUUID('4', { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
   motoboy: string;
