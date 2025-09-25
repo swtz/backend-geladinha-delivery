@@ -51,7 +51,7 @@ export class ResponseDeliveryDto {
             name: delivery.motoboy.name,
             phone: delivery.motoboy.phone,
             motorcycle: delivery.motoboy.motorcycle,
-            tip: delivery.motoboy.tip,
+            // tip: delivery.motoboy.tip,
           }
         : null;
     this.customer =

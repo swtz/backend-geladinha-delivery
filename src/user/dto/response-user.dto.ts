@@ -8,7 +8,7 @@ export class ResponseUserDto {
   readonly phone: string;
   readonly email: string;
   readonly motorcycle?: string;
-  readonly tip?: number | null;
+  // readonly tip?: number | null;
   readonly daily?: number;
   readonly vouchers: ResponseVoucherDto[] | null;
   readonly roles: Role[];
@@ -16,7 +16,7 @@ export class ResponseUserDto {
   constructor(user: User | DeliveryMan) {
     if (user instanceof DeliveryMan) {
       this.motorcycle = user.motorcycle;
-      this.tip = user.tip;
+      // this.tip = user.tip;
       this.daily = user.daily;
     }
 

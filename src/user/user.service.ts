@@ -188,7 +188,6 @@ export class UserService {
 
     motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
     motoboy.daily = dto.daily ?? motoboy.daily;
-    motoboy.tip = dto.tip ?? motoboy.tip;
 
     return motoboy;
   }

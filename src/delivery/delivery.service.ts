@@ -148,6 +148,7 @@ export class DeliveryService {
         'customer',
         'address',
         'paymentMethod',
+        'tip',
       ],
     });
 
@@ -174,6 +175,7 @@ export class DeliveryService {
         'customer',
         'address',
         'paymentMethod',
+        'tip',
       ],
     });
 
@@ -199,6 +201,7 @@ export class DeliveryService {
         'customer',
         'address',
         'paymentMethod',
+        'tip',
       ],
     });
 
@@ -240,6 +243,7 @@ export class DeliveryService {
         'customer',
         'address',
         'paymentMethod',
+        'tip',
       ],
     });
 
