@@ -49,7 +49,7 @@ export class DeliveryService {
       dto.paymentMethod,
     );
 
-    const created = await this.deliveryRepository.save({
+    const created = await this.save({
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,

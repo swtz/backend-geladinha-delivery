@@ -161,10 +161,10 @@ Content-Type: application/json
 {
   "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 18.99,
+  "totalPurchase": 29.98,
   "deliveryTax": 6.0,
-  "paymentMethod": "money",
-  "tip": 2.0
+  "paymentMethod": "pix",
+  "tip": 5.0
 }
 
 ### Update delivery
