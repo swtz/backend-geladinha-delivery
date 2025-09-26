@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +19,23 @@ export class TipService {
 
   create(amount: number) {
     return this.save({ amount });
+  }
+
+  async findOneByOrFail(tipData: Partial<Tip>) {
+    const tip = await this.findOneBy(tipData);
+
+    if (!tip) {
+      throw new NotFoundException('Gorjeta não encontrada');
+    }
+
+    return tip;
+  }
+
+  findOneBy(tipData: Partial<Tip>) {
+    return this.tipRepository.findOne({
+      where: tipData,
+      relations: ['motoboy'],
+    });
   }
 
   async save(tip: Partial<Tip>) {
