@@ -23,6 +23,10 @@ export class TipService {
   }
 
   async update(dto: UpdateTipDto) {
+    if (!dto.id || !dto.amount) {
+      throw new BadRequestException('Dados não enviados');
+    }
+
     const tip = await this.findOneByOrFail({ id: dto.id });
 
     tip.amount = dto.amount;

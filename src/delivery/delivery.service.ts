@@ -121,6 +121,12 @@ export class DeliveryService {
       delivery.paymentMethod = newPaymentMethod;
     }
 
+    if (dto.tip && dto.tip.amount !== delivery.tip.amount) {
+      const newTip = await this.tipService.update(dto.tip);
+
+      delivery.tip = newTip;
+    }
+
     delivery.paid = dto.paid ?? delivery.paid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
     delivery.description = dto.description ?? delivery.description;
