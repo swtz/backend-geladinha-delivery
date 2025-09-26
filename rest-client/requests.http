@@ -44,8 +44,7 @@ Content-Type: application/json
   "phone": "48976020119",
   "role": "motoboy",
   "motorcycle": "Yamaha, 250, 2017, Vermelha",
-  "daily": 45,
-  "tip": 2.5
+  "daily": 45
 }
 
 ### Delete user
@@ -174,13 +173,12 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "paid": false,
+  "isPaid": true,
   "tip": {
     "id": "b8410fc5-971e-4fef-9e26-8b711190672d",
     "amount": 8.99
   }
 }
-### b8410fc5-971e-4fef-9e26-8b711190672d
 
 ### Delete delivery
 # @name deleteDelivery
@@ -202,9 +200,11 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery?motoboy=Claudio&fromDate=30/8/2025
 Authorization: Bearer {{JwtToken}}
 
-### Find all paid deliveries
+### Find all isPaid
+ deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/?paid=true
+GET {{baseUrl}}/delivery/?isPaid
+=true
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################

@@ -127,7 +127,7 @@ export class DeliveryService {
       delivery.tip = newTip;
     }
 
-    delivery.paid = dto.paid ?? delivery.paid;
+    delivery.isPaid = dto.isPaid ?? delivery.isPaid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
     delivery.description = dto.description ?? delivery.description;
     delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
@@ -229,14 +229,14 @@ export class DeliveryService {
     customer,
     motoboy,
     operator,
-    paid,
+    isPaid,
     fromDate,
     toDate,
   }: {
     customer?: string;
     motoboy?: string;
     operator?: string;
-    paid?: boolean;
+    isPaid?: boolean;
     fromDate?: Date;
     toDate?: Date;
   }) {
@@ -244,7 +244,7 @@ export class DeliveryService {
       customer: { name: customer },
       motoboy: { name: motoboy },
       operator: { name: operator },
-      paid,
+      isPaid,
     };
 
     if (fromDate !== undefined && toDate !== undefined) {

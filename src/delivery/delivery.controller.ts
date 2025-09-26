@@ -69,7 +69,7 @@ export class DeliveryController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
-    @Query('paid', new ParseBoolPipe({ optional: true })) paid: boolean,
+    @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
     @Query('customer') customer: string,
     @Query('motoboy') motoboy: string,
     @Query('operator') operator: string,
@@ -81,7 +81,7 @@ export class DeliveryController {
       customer,
       motoboy,
       operator,
-      paid,
+      isPaid,
       fromDate,
       toDate,
     });

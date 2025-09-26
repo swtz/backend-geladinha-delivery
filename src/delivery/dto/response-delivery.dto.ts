@@ -8,7 +8,7 @@ export class ResponseDeliveryDto {
   readonly totalPurchase: number;
   readonly deliveryTax: number;
   readonly paymentMethod: string | null;
-  readonly paid: boolean;
+  readonly isPaid: boolean;
   readonly tip: {
     id: string;
     amount: number;
@@ -36,7 +36,7 @@ export class ResponseDeliveryDto {
     this.deliveryTax = delivery.deliveryTax;
     this.paymentMethod =
       delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
-    this.paid = delivery.paid;
+    this.isPaid = delivery.isPaid;
     this.tip =
       delivery.tip !== null
         ? {

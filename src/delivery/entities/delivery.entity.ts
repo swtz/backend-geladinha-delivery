@@ -29,7 +29,7 @@ export class Delivery {
   deliveryTax: number;
 
   @Column({ default: false })
-  paid: boolean;
+  isPaid: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

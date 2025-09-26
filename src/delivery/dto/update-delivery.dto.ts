@@ -13,7 +13,7 @@ export class UpdateDeliveryDto extends PartialType(
 ) {
   @IsOptional()
   @IsBoolean({ message: 'Campo pago precisa ser verdadeiro/falso' })
-  paid?: boolean;
+  isPaid?: boolean;
 
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
