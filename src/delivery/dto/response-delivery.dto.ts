@@ -9,7 +9,10 @@ export class ResponseDeliveryDto {
   readonly deliveryTax: number;
   readonly paymentMethod: string | null;
   readonly paid: boolean;
-  readonly tip: number | null;
+  readonly tip: {
+    id: string;
+    amount: number;
+  } | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly operator: {
@@ -34,7 +37,13 @@ export class ResponseDeliveryDto {
     this.paymentMethod =
       delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
     this.paid = delivery.paid;
-    this.tip = delivery.tip !== null ? delivery.tip.amount : null;
+    this.tip =
+      delivery.tip !== null
+        ? {
+            id: delivery.tip.id,
+            amount: delivery.tip.amount,
+          }
+        : null;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
     this.operator =

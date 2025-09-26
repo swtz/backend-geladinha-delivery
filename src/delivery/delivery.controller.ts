@@ -22,6 +22,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
+import { UpdateTipDto } from 'src/tip/dto/update-tip.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -43,9 +44,14 @@ export class DeliveryController {
   async update(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateDeliveryDto,
+    @Body('tip') tip: UpdateTipDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const delivery = await this.deliveryService.update(dto, req.user, id);
+    const delivery = await this.deliveryService.update(
+      { ...dto, tip },
+      req.user,
+      id,
+    );
     return new ResponseDeliveryDto(delivery);
   }
 
