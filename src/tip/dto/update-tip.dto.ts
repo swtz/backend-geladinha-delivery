@@ -1,8 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { IsUUID } from 'class-validator';
-import { CreateTipDto } from './create-tip.dto';
+import { IsNumber, IsUUID } from 'class-validator';
 
-export class UpdateTipDto extends PartialType(CreateTipDto) {
+export class UpdateTipDto {
   @IsUUID('4', { message: 'Formato inválido' })
   id: string;
+
+  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Número inválido' })
+  amount: number;
 }

@@ -7,6 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateTipDto } from './dto/update-tip.dto';
 
 @Injectable()
 export class TipService {
@@ -19,6 +20,14 @@ export class TipService {
 
   create(amount: number) {
     return this.save({ amount });
+  }
+
+  async update(dto: UpdateTipDto) {
+    const tip = await this.findOneByOrFail({ id: dto.id });
+
+    tip.amount = dto.amount;
+
+    return this.save(tip);
   }
 
   async findOneByOrFail(tipData: Partial<Tip>) {
