@@ -53,6 +53,12 @@ export class TipService {
     });
   }
 
+  async remove(id: string) {
+    const tip = await this.findOneByOrFail({ id });
+    await this.tipRepository.delete(tip);
+    return tip;
+  }
+
   async save(tip: Partial<Tip>) {
     const created = await this.tipRepository.save(tip).catch((err: unknown) => {
       if (err instanceof Error) {
