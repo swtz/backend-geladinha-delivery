@@ -167,13 +167,12 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/46198580-f3ac-45f6-bd70-765fe28dfaa4
+PATCH {{baseUrl}}/delivery/me/2561b119-86d7-485d-883c-8b8066c265f6
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
-  "tip": 0.0
+  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80"
 }
 
 ### Delete delivery
@@ -193,7 +192,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?motoboy=Claudio&fromDate=30/8/2025
+GET {{baseUrl}}/delivery?fromDate=29/9/2025&toDate=29/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -216,12 +215,12 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/502536e3-abc7-4072-9641-36ef858094ee
+POST {{baseUrl}}/voucher/me/user/df2293b6-ca41-4d66-a05c-f4b98d914c80
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 14.99,
+  "amount": 10,
   "description": "monster lata"
 }
 
@@ -270,5 +269,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Rodrigo&fromDate=9/9/2025&toDate=9/9/2025
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}

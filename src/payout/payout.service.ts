@@ -54,6 +54,12 @@ export class PayoutService {
     const payout = {
       totalDeliveries: 0,
       motoboyDaily: 0,
+      motoboyTips:
+        deliveries.reduce((prev, delivery) => {
+          if (delivery.tip !== null) {
+            return (prev += delivery.tip.amount);
+          }
+        }, 0) ?? 0,
       subtotal: 0,
       totalSpending: 0,
       total: 0,
@@ -74,15 +80,9 @@ export class PayoutService {
       payout.totalDeliveries = delivery.deliveryTax;
     }
 
-    // campo DeliveryMan.tip ainda não está pronto,
-    // pois não está relacionado com uma entrega
-    // if (motoboy.tip !== null) {
-    //   payout.totalDeliveries += motoboy.tip;
-    // }
-
     payout.motoboyDaily = motoboy.daily;
     payout.subtotal = setDecimalPlaces(
-      payout.motoboyDaily + payout.totalDeliveries,
+      payout.motoboyDaily + payout.totalDeliveries + payout.motoboyTips,
       2,
     );
 
