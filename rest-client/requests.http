@@ -160,24 +160,20 @@ Content-Type: application/json
 {
   "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 29.98,
-  "deliveryTax": 6.0,
-  "paymentMethod": "pix",
-  "tip": 5.0
+  "totalPurchase": 65.89,
+  "deliveryTax": 9.0,
+  "paymentMethod": "money"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/612e8d88-754c-4c27-bf73-6702539ee52b
+PATCH {{baseUrl}}/delivery/me/2561b119-86d7-485d-883c-8b8066c265f6
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "isPaid": true,
-  "tip": {
-    "id": "b8410fc5-971e-4fef-9e26-8b711190672d",
-    "amount": 8.99
-  }
+  "tip": 9.99
 }
 
 ### Delete delivery
@@ -200,11 +196,9 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/delivery?motoboy=Claudio&fromDate=30/8/2025
 Authorization: Bearer {{JwtToken}}
 
-### Find all isPaid
- deliveries
+### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/?isPaid
-=true
+GET {{baseUrl}}/delivery/?isPaid=true
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################

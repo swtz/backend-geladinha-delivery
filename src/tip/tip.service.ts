@@ -7,7 +7,6 @@ import {
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateTipDto } from './dto/update-tip.dto';
 
 @Injectable()
 export class TipService {
@@ -22,14 +21,14 @@ export class TipService {
     return this.save({ amount });
   }
 
-  async update(dto: UpdateTipDto) {
-    if (!dto.id || !dto.amount) {
+  async update(id: string, amount: number) {
+    if (id === undefined || amount === undefined) {
       throw new BadRequestException('Dados não enviados');
     }
 
-    const tip = await this.findOneByOrFail({ id: dto.id });
+    const tip = await this.findOneByOrFail({ id });
 
-    tip.amount = dto.amount;
+    tip.amount = amount;
 
     return this.save(tip);
   }
@@ -46,7 +45,10 @@ export class TipService {
 
   findOneBy(tipData: Partial<Tip>) {
     return this.tipRepository.findOne({
-      where: tipData,
+      where: {
+        ...tipData,
+        motoboy: { id: tipData.motoboy?.id },
+      },
       relations: ['motoboy'],
     });
   }

@@ -121,10 +121,25 @@ export class DeliveryService {
       delivery.paymentMethod = newPaymentMethod;
     }
 
-    if (dto.tip && dto.tip.amount !== delivery.tip.amount) {
-      const newTip = await this.tipService.update(dto.tip);
+    if (dto.tip) {
+      if (delivery.tip === null) {
+        const tip = await this.tipService.create(dto.tip);
 
-      delivery.tip = newTip;
+        delivery.tip = tip;
+        delivery.motoboy.tips.push(tip);
+
+        await this.userService.saveDeliveryMan(delivery.motoboy);
+      }
+
+      if (dto.tip !== delivery.tip.amount) {
+        const tip = await this.tipService.findOneByOrFail({
+          id: delivery.tip.id,
+          motoboy: delivery.motoboy,
+        });
+        const newTip = await this.tipService.update(tip.id, dto.tip);
+
+        delivery.tip = newTip;
+      }
     }
 
     delivery.isPaid = dto.isPaid ?? delivery.isPaid;
@@ -162,6 +177,7 @@ export class DeliveryService {
       relations: [
         'operator',
         'motoboy',
+        'motoboy.tips',
         'customer',
         'address',
         'paymentMethod',
