@@ -82,6 +82,16 @@ export class DeliveryService {
         id: dto.motoboy,
       });
 
+      if (delivery.tip !== null) {
+        const newTip = await this.tipService.create(delivery.tip.amount);
+        await this.tipService.remove(delivery.tip.id);
+
+        newMotoboy.tips.push(newTip);
+        delivery.tip = newTip;
+
+        await this.userService.saveDeliveryMan(newMotoboy);
+      }
+
       delivery.motoboy = newMotoboy;
     }
 
@@ -121,7 +131,7 @@ export class DeliveryService {
       delivery.paymentMethod = newPaymentMethod;
     }
 
-    if (dto.tip) {
+    if (dto.tip || dto.tip === 0) {
       if (delivery.tip === null) {
         const tip = await this.tipService.create(dto.tip);
 

@@ -167,13 +167,13 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/2561b119-86d7-485d-883c-8b8066c265f6
+PATCH {{baseUrl}}/delivery/me/46198580-f3ac-45f6-bd70-765fe28dfaa4
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "isPaid": true,
-  "tip": 9.99
+  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
+  "tip": 0.0
 }
 
 ### Delete delivery

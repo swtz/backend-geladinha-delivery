@@ -55,7 +55,7 @@ export class TipService {
 
   async remove(id: string) {
     const tip = await this.findOneByOrFail({ id });
-    await this.tipRepository.delete(tip);
+    await this.tipRepository.delete({ id });
     return tip;
   }
 
