@@ -63,11 +63,7 @@ export class DeliveryService {
     delivery.paymentMethod = paymentMethod;
 
     if (dto.tip) {
-      const tip = await this.tipService.create(dto.tip);
-
-      delivery.tip = tip;
-      motoboy.tips.push(tip);
-
+      await this.tipService.createReplaceAndPush(dto.tip, delivery, motoboy);
       await this.userService.saveDeliveryMan(motoboy);
     }
 
@@ -83,12 +79,12 @@ export class DeliveryService {
       });
 
       if (delivery.tip !== null) {
-        const newTip = await this.tipService.create(delivery.tip.amount);
         await this.tipService.remove(delivery.tip.id);
-
-        newMotoboy.tips.push(newTip);
-        delivery.tip = newTip;
-
+        await this.tipService.createReplaceAndPush(
+          delivery.tip.amount,
+          delivery,
+          newMotoboy,
+        );
         await this.userService.saveDeliveryMan(newMotoboy);
       }
 
@@ -133,10 +129,11 @@ export class DeliveryService {
 
     if (dto.tip || dto.tip === 0) {
       if (delivery.tip === null) {
-        const tip = await this.tipService.create(dto.tip);
-
-        delivery.tip = tip;
-        delivery.motoboy.tips.push(tip);
+        await this.tipService.createReplaceAndPush(
+          dto.tip,
+          delivery,
+          delivery.motoboy,
+        );
 
         await this.userService.saveDeliveryMan(delivery.motoboy);
       }

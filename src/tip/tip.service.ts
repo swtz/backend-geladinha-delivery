@@ -7,6 +7,8 @@ import {
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Delivery } from 'src/delivery/entities/delivery.entity';
+import { DeliveryMan } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class TipService {
@@ -19,6 +21,16 @@ export class TipService {
 
   create(amount: number) {
     return this.save({ amount });
+  }
+
+  async createReplaceAndPush(
+    amount: number,
+    delivery: Delivery,
+    motoboy: DeliveryMan,
+  ) {
+    const tip = await this.create(amount);
+    delivery.tip = tip;
+    motoboy.tips.push(tip);
   }
 
   async update(id: string, amount: number) {
