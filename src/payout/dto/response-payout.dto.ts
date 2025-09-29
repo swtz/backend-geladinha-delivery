@@ -4,6 +4,7 @@ import { Payout } from '../entities/payout.entity';
 export class ResponsePayoutDto {
   readonly totalDeliveries: number;
   readonly motoboyDaily: number;
+  readonly motoboyTips: number;
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
@@ -16,9 +17,14 @@ export class ResponsePayoutDto {
   };
   readonly vouchers: ResponseVoucherDto[];
 
-  constructor(payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt'>) {
+  constructor(
+    payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt'> & {
+      motoboyTips: number;
+    },
+  ) {
     this.totalDeliveries = payout.totalDeliveries;
     this.motoboyDaily = payout.motoboyDaily;
+    this.motoboyTips = payout.motoboyTips;
     this.subtotal = payout.subtotal;
     this.totalSpending = payout.totalSpending;
     this.total = payout.total;
