@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
@@ -15,6 +15,8 @@ import { VoucherService } from 'src/voucher/voucher.service';
 
 @Injectable()
 export class PayoutService {
+  private readonly logger = new Logger(PayoutService.name);
+
   constructor(
     @InjectRepository(Payout)
     private readonly payoutRepository: Repository<Payout>,
@@ -95,5 +97,21 @@ export class PayoutService {
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
     return payout;
+  }
+
+  create() {}
+
+  async save(payout: Partial<Payout>) {
+    const created = await this.payoutRepository
+      .save(payout)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao salvar pagamento do motoboy', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao salvar pagamento do motoboy');
+      });
+
+    return created;
   }
 }
