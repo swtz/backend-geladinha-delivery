@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -123,6 +124,16 @@ export class PayoutService {
   }
 
   async create(payoutData: Partial<Payout>) {
+    const exists = await this.findOneBy(payoutData);
+
+    if (exists) {
+      const motoboyName = exists.motoboy.name;
+
+      throw new ConflictException(
+        `Já existe uma entrega lançada para esse dia.\nMotoboy: ${motoboyName}`,
+      );
+    }
+
     return this.save(payoutData);
   }
 
@@ -152,7 +163,11 @@ export class PayoutService {
 
   findOneBy(payoutData: Partial<Payout>) {
     return this.payoutRepository.findOne({
-      where: payoutData,
+      where: {
+        ...payoutData,
+        workDay: payoutData.workDay,
+        motoboy: { id: payoutData.motoboy?.id },
+      },
       relations: ['motoboy', 'vouchers'],
     });
   }
