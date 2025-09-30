@@ -21,6 +21,9 @@ export class Payout {
   @Column('double')
   motoboyDaily: number;
 
+  @Column('double', { nullable: true })
+  motoboyTips: number;
+
   @Column('double')
   subtotal: number;
 
@@ -38,6 +41,12 @@ export class Payout {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column()
+  weekDay: string;
+
+  @Column('datetime', { unique: true })
+  workDay: Date;
 
   @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE' })
   motoboy: DeliveryMan;
