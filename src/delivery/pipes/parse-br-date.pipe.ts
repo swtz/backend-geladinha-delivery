@@ -4,13 +4,14 @@ import { parseBrDate } from 'src/common/parse-br-date';
 @Injectable()
 export class ParseBrDatePipe implements PipeTransform {
   private readonly hour: string;
+  private readonly paramTypes = ['body', 'query'];
 
   constructor(hour: string) {
     this.hour = hour;
   }
 
   transform(value: string, { type }: ArgumentMetadata) {
-    if (!value || type !== 'query') {
+    if (!value || !this.paramTypes.includes(type)) {
       return undefined;
     }
 
