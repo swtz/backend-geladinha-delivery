@@ -42,10 +42,10 @@ export class Payout {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   weekDay: string;
 
-  @Column('datetime', { unique: true })
+  @Column('datetime', { unique: true, nullable: true })
   workDay: Date;
 
   @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE' })

@@ -53,7 +53,19 @@ export class PayoutService {
       motoboy: motoboy.name,
     });
 
+    const weekDays = [
+      'Domingo',
+      'Segunda',
+      'Terça',
+      'Quarta',
+      'Quinta',
+      'Sexta',
+      'Sábado',
+    ];
+
     const payout = {
+      weekDay: '',
+      workDay: fromDate || currentFromDate,
       totalDeliveries: 0,
       motoboyDaily: 0,
       motoboyTips:
@@ -69,6 +81,12 @@ export class PayoutService {
       motoboy,
       vouchers,
     };
+
+    if (fromDate === undefined) {
+      payout.weekDay = weekDays[currentFromDate.getDay()];
+    } else {
+      payout.weekDay = weekDays[fromDate.getDay()];
+    }
 
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol(
