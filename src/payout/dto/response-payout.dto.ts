@@ -2,9 +2,12 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 
 export class ResponsePayoutDto {
+  readonly id?: string;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
   readonly totalDeliveries: number;
   readonly motoboyDaily: number;
-  readonly motoboyTips: number;
+  readonly motoboyTips?: number;
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
@@ -19,9 +22,15 @@ export class ResponsePayoutDto {
 
   constructor(
     payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt'> & {
-      motoboyTips: number;
+      id?: string;
+      createdAt?: Date;
+      updatedAt?: Date;
+      motoboyTips?: number;
     },
   ) {
+    this.id = payout.id;
+    this.createdAt = payout.createdAt;
+    this.updatedAt = payout.updatedAt;
     this.totalDeliveries = payout.totalDeliveries;
     this.motoboyDaily = payout.motoboyDaily;
     this.motoboyTips = payout.motoboyTips;

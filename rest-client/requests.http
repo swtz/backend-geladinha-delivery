@@ -269,5 +269,10 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme&fromDate=29/9/2025
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
+Authorization: Bearer {{JwtToken}}
+
+### Create motoboy payout
+# @name createPayout
+POST {{baseUrl}}/payout?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}

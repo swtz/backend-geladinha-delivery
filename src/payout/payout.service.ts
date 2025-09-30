@@ -99,7 +99,9 @@ export class PayoutService {
     return payout;
   }
 
-  create() {}
+  async create(payoutData: Partial<Payout>) {
+    return this.save(payoutData);
+  }
 
   async save(payout: Partial<Payout>) {
     const created = await this.payoutRepository

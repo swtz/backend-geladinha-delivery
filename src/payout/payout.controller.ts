@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { PayoutService } from './payout.service';
 import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
@@ -17,6 +17,18 @@ export class PayoutController {
     @Query('motoboy') motoboy: string,
   ) {
     const payout = await this.payoutService.preview(fromDate, toDate, motoboy);
+    return new ResponsePayoutDto(payout);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(
+    @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
+    @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
+    @Query('motoboy') motoboy: string,
+  ) {
+    const preview = await this.payoutService.preview(fromDate, toDate, motoboy);
+    const payout = await this.payoutService.create(preview);
     return new ResponsePayoutDto(payout);
   }
 }
