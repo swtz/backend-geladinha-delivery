@@ -19,6 +19,7 @@ import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan } from 'src/user/entities/user.entity';
+import { weekDays } from 'src/common/enums/weekDays.enum';
 
 @Injectable()
 export class PayoutService {
@@ -40,6 +41,9 @@ export class PayoutService {
     const currentFromDate = parseBrDate(CURRENT_SHORT_DATE, START_TIME);
     const currentToDate = parseBrDate(CURRENT_SHORT_DATE, END_TIME);
 
+    const initDate = fromDate || currentFromDate;
+    const endDate = toDate || currentToDate;
+
     // e se motoboy foi excluído e operator quer consultar o payout?
     // no momento → Payout.motoboy = onDelete: 'CASCADE'
     const motoboy = await this.userService.findOneMotoboyByOrFail({
@@ -47,32 +51,22 @@ export class PayoutService {
     });
     const vouchers = await this.voucherService.findAllOwned(
       motoboy,
-      fromDate || currentFromDate,
-      toDate || currentToDate,
+      initDate,
+      endDate,
     );
 
     // vou precisar criar um método com operadores AND do SQL
     // para garantir que a consulta leve em conta todos os parâmetros fornecidos
     // fazer testes para garantir a necessidade de criar esse outro método
     const deliveries = await this.deliveryService.findAll({
-      fromDate: fromDate || currentFromDate,
-      toDate: toDate || currentToDate,
+      fromDate: initDate,
+      toDate: endDate,
       motoboy: motoboy.name,
     });
 
-    const weekDays = [
-      'Domingo',
-      'Segunda',
-      'Terça',
-      'Quarta',
-      'Quinta',
-      'Sexta',
-      'Sábado',
-    ];
-
     const payout = {
-      weekDay: '',
-      workDay: fromDate || currentFromDate,
+      weekDay: weekDays[initDate.getDay()],
+      workDay: initDate,
       totalDeliveries: 0,
       motoboyDaily: 0,
       motoboyTips:
@@ -89,17 +83,11 @@ export class PayoutService {
       vouchers,
     };
 
-    if (fromDate === undefined) {
-      payout.weekDay = weekDays[currentFromDate.getDay()];
-    } else {
-      payout.weekDay = weekDays[fromDate.getDay()];
-    }
-
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol(
         motoboy,
-        fromDate || currentFromDate,
-        toDate || currentToDate,
+        initDate,
+        endDate,
       );
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
@@ -115,8 +103,8 @@ export class PayoutService {
 
     payout.totalSpending = await this.voucherService.sum(
       motoboy,
-      fromDate || currentFromDate,
-      toDate || currentToDate,
+      initDate,
+      endDate,
     );
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);

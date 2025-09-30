@@ -1,3 +1,4 @@
+import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
@@ -42,8 +43,8 @@ export class Payout {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
-  weekDay: string;
+  @Column({ enum: weekDays })
+  weekDay: WeekDay;
 
   @Column('datetime')
   workDay: Date;
