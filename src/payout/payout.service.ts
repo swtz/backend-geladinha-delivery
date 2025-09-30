@@ -18,6 +18,7 @@ import { parseBrDate } from 'src/common/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
+import { DeliveryMan } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class PayoutService {
@@ -123,8 +124,12 @@ export class PayoutService {
     return payout;
   }
 
-  async create(payoutData: Partial<Payout>) {
-    const exists = await this.findOneBy(payoutData);
+  async create(
+    payoutData: Partial<Omit<Payout, 'workDay'>> & { workDay: Date },
+  ) {
+    const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
+      id: payoutData.motoboy?.id,
+    });
 
     if (exists) {
       const motoboyName = exists.motoboy.name;
@@ -163,10 +168,16 @@ export class PayoutService {
 
   findOneBy(payoutData: Partial<Payout>) {
     return this.payoutRepository.findOne({
+      where: payoutData,
+      relations: ['motoboy', 'vouchers'],
+    });
+  }
+
+  findOneByWorkDayAndMotoboy(workDay: Date, motoboyData: Partial<DeliveryMan>) {
+    return this.payoutRepository.findOne({
       where: {
-        ...payoutData,
-        workDay: payoutData.workDay,
-        motoboy: { id: payoutData.motoboy?.id },
+        workDay,
+        motoboy: motoboyData,
       },
       relations: ['motoboy', 'vouchers'],
     });
