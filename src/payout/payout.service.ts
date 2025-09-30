@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
@@ -133,5 +138,22 @@ export class PayoutService {
       });
 
     return created;
+  }
+
+  async findOneByOrFail(payoutData: Partial<Payout>) {
+    const payout = await this.findOneBy(payoutData);
+
+    if (!payout) {
+      throw new NotFoundException('Pagamento não encontrado');
+    }
+
+    return payout;
+  }
+
+  findOneBy(payoutData: Partial<Payout>) {
+    return this.payoutRepository.findOne({
+      where: payoutData,
+      relations: ['motoboy', 'vouchers'],
+    });
   }
 }
