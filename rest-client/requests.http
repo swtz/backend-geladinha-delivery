@@ -286,3 +286,8 @@ Content-Type: application/json
 # @name readPayout
 GET {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
 Authorization: Bearer {{JwtToken}}
+
+### Update payout
+# @name updatePayout
+PATCH {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
+Authorization: Bearer {{JwtToken}}

@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -46,5 +47,13 @@ export class PayoutController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const payout = await this.payoutService.findOneByOrFail({ id });
     return new ResponsePayoutDto(payout);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Param('id', ParseUUIDPipe) id: string) {
+    const payout = await this.payoutService.update(id);
+    return payout;
+    // return new ResponsePayoutDto(payout);
   }
 }
