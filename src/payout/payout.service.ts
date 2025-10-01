@@ -133,6 +133,19 @@ export class PayoutService {
     return this.save(payoutData);
   }
 
+  async update(id: string) {
+    const payout = await this.findOneByOrFail({ id });
+    const { workDay, motoboy } = payout;
+    const newPayout = await this.preview(workDay, workDay, motoboy.name);
+    console.log(newPayout);
+    // const mergedPayout = {
+    //   ...payout,
+    //   ...newPayout,
+    // };
+
+    // return this.save(mergedPayout);
+  }
+
   async save(payout: Partial<Payout>) {
     const created = await this.payoutRepository
       .save(payout)
