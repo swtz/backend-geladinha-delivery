@@ -1,3 +1,4 @@
+import { User } from 'src/user/entities/user.entity';
 import { Voucher } from '../entities/voucher.entity';
 
 export class ResponseVoucherDto {
@@ -6,16 +7,8 @@ export class ResponseVoucherDto {
   readonly description: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly user: {
-    id: string;
-    name: string;
-    phone: string;
-  };
-  readonly createdBy: {
-    id: string;
-    name: string;
-    phone: string;
-  } | null;
+  readonly user: Pick<User, 'id' | 'name' | 'phone'>;
+  readonly createdBy: Pick<User, 'id' | 'name' | 'phone'> | null;
 
   constructor(voucher: Voucher) {
     this.id = voucher.id;

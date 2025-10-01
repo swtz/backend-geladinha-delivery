@@ -45,6 +45,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale                    JWT             ALL
 
 /payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             A DEFINIR
+/payout?key=value               POST        Criar pagamento do motoboy                JWT             A DEFINIR
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto

@@ -192,7 +192,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=29/9/2025&toDate=29/9/2025
+GET {{baseUrl}}/delivery?fromDate=21/9/2025&toDate=22/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -269,7 +269,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Claudio&fromDate=15/9/2025&toDate=15/9/2025
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -279,7 +279,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "15/9/2025",
-  "toDate": "15/9/2025",
+  "fromDate": "29/9/2025",
+  "toDate": "30/9/2025",
   "motoboy": "Claudio"
 }

@@ -1,6 +1,8 @@
 import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
 import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
+import { DeliveryMan, User } from 'src/user/entities/user.entity';
+import { Tip } from 'src/tip/entities/tip.entity';
 
 export class ResponseDeliveryDto {
   readonly id: string;
@@ -9,23 +11,14 @@ export class ResponseDeliveryDto {
   readonly deliveryTax: number;
   readonly paymentMethod: string | null;
   readonly isPaid: boolean;
-  readonly tip: {
-    id: string;
-    amount: number;
-  } | null;
+  readonly tip: Pick<Tip, 'id' | 'amount'> | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly operator: {
-    id: string;
-    name: string;
-    phone: string;
-  } | null;
-  readonly motoboy: {
-    id: string;
-    name: string;
-    phone: string;
-    motorcycle: string;
-  } | null;
+  readonly operator: Pick<User, 'id' | 'name' | 'phone'> | null;
+  readonly motoboy: Pick<
+    DeliveryMan,
+    'id' | 'name' | 'phone' | 'motorcycle'
+  > | null;
   readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
   readonly address: ResponseAddressDto | null;
 

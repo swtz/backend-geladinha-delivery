@@ -1,5 +1,6 @@
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
+import { DeliveryMan } from 'src/user/entities/user.entity';
 
 export class ResponsePayoutDto {
   readonly id?: string;
@@ -14,12 +15,7 @@ export class ResponsePayoutDto {
   readonly totalSpending: number;
   readonly total: number;
   readonly isClosed: boolean;
-  readonly motoboy: {
-    id: string;
-    name: string;
-    phone: string;
-    motorcycle: string;
-  };
+  readonly motoboy: Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'>;
   readonly vouchers: ResponseVoucherDto[];
 
   constructor(
