@@ -113,10 +113,13 @@ export class PayoutService {
   }
 
   async create(
-    payoutData: Partial<Omit<Payout, 'workDay'>> & { workDay: Date },
+    payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
+      workDay: Date;
+      motoboy: DeliveryMan;
+    },
   ) {
     const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
-      id: payoutData.motoboy?.id,
+      id: payoutData.motoboy.id,
     });
 
     if (exists) {

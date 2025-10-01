@@ -1,16 +1,17 @@
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { DeliveryMan } from 'src/user/entities/user.entity';
+import { WeekDay } from 'src/common/enums/weekDays.enum';
 
 export class ResponsePayoutDto {
   readonly id?: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
-  readonly weekDay?: string;
-  readonly workDay?: Date;
+  readonly weekDay: WeekDay;
+  readonly workDay: Date;
   readonly totalDeliveries: number;
   readonly motoboyDaily: number;
-  readonly motoboyTips?: number;
+  readonly motoboyTips: number;
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
@@ -19,16 +20,10 @@ export class ResponsePayoutDto {
   readonly vouchers: ResponseVoucherDto[];
 
   constructor(
-    payout: Omit<
-      Payout,
-      'id' | 'createdAt' | 'updatedAt' | 'weekDay' | 'workDay'
-    > & {
+    payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt'> & {
       id?: string;
       createdAt?: Date;
       updatedAt?: Date;
-      weekDay?: string;
-      workDay?: Date;
-      motoboyTips?: number;
     },
   ) {
     this.id = payout.id;
