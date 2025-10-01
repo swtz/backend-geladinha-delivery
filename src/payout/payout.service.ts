@@ -135,15 +135,20 @@ export class PayoutService {
 
   async update(id: string) {
     const payout = await this.findOneByOrFail({ id });
-    const { workDay, motoboy } = payout;
-    const newPayout = await this.preview(workDay, workDay, motoboy.name);
-    console.log(newPayout);
-    // const mergedPayout = {
-    //   ...payout,
-    //   ...newPayout,
-    // };
+    const { workDay: initDate, motoboy } = payout;
 
-    // return this.save(mergedPayout);
+    const shortInitDate = initDate.toLocaleString('BR', {
+      dateStyle: 'short',
+    });
+    const endDate = parseBrDate(shortInitDate, END_TIME);
+
+    const newPayout = await this.preview(initDate, endDate, motoboy.name);
+    const mergedPayout = {
+      ...payout,
+      ...newPayout,
+    };
+
+    return this.save(mergedPayout);
   }
 
   async save(payout: Partial<Payout>) {

@@ -53,7 +53,6 @@ export class PayoutController {
   @Patch(':id')
   async update(@Param('id', ParseUUIDPipe) id: string) {
     const payout = await this.payoutService.update(id);
-    return payout;
-    // return new ResponsePayoutDto(payout);
+    return new ResponsePayoutDto(payout);
   }
 }

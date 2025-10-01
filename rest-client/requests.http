@@ -158,7 +158,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
+  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
   "totalPurchase": 65.89,
   "deliveryTax": 9.0,
@@ -215,7 +215,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/df2293b6-ca41-4d66-a05c-f4b98d914c80
+POST {{baseUrl}}/voucher/me/user/297fbea7-7413-429e-9c9a-1124c50ce324
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
