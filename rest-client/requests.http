@@ -167,17 +167,17 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/2561b119-86d7-485d-883c-8b8066c265f6
+PATCH {{baseUrl}}/delivery/me/3f34e129-4036-4a75-ab73-b5231fb8731e
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80"
+  "tip": 4.5
 }
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/8c30fe8f-fdce-4032-bbf5-7da2e316bd40
+DELETE {{baseUrl}}/delivery/me/3f34e129-4036-4a75-ab73-b5231fb8731e
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
@@ -187,7 +187,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find delivery
 # @name findDelivery
-GET {{baseUrl}}/delivery/f4e53371-317c-4848-8549-663865864bdf
+GET {{baseUrl}}/delivery/3f34e129-4036-4a75-ab73-b5231fb8731e
 Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
