@@ -284,10 +284,15 @@ Content-Type: application/json
 
 ### Read payout
 # @name readPayout
-GET {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
+GET {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
 PATCH {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
+Authorization: Bearer {{JwtToken}}
+
+### Remove payout
+# @name removePayout
+DELETE {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
 Authorization: Bearer {{JwtToken}}

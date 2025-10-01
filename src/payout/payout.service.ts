@@ -151,6 +151,12 @@ export class PayoutService {
     return this.save(mergedPayout);
   }
 
+  async remove(id: string) {
+    const payout = await this.findOneByOrFail({ id });
+    await this.payoutRepository.delete({ id });
+    return payout;
+  }
+
   async save(payout: Partial<Payout>) {
     const created = await this.payoutRepository
       .save(payout)

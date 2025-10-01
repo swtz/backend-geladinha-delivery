@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -53,6 +54,13 @@ export class PayoutController {
   @Patch(':id')
   async update(@Param('id', ParseUUIDPipe) id: string) {
     const payout = await this.payoutService.update(id);
+    return new ResponsePayoutDto(payout);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const payout = await this.payoutService.remove(id);
     return new ResponsePayoutDto(payout);
   }
 }
