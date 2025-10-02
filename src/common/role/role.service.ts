@@ -46,7 +46,7 @@ export class RoleService {
   findOneByName(name: Role) {
     return this.roleRepository.findOne({
       where: { name },
-      relations: ['users'],
+      relations: { users: true },
     });
   }
 
