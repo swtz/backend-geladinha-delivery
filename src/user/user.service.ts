@@ -90,30 +90,13 @@ export class UserService {
       ...dto,
       ...newUser,
     };
-    const created = await this.deliveryManRepository
-      .save(newMotoboy)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar o motoboy', err.stack);
-        }
-
-        throw new BadRequestException('Erro ao criar o motoboy');
-      });
+    const created = await this.saveDeliveryMan(newMotoboy);
 
     return this.findOneByOrFail({ id: created.id });
   }
 
   async createUserOperator(newUser: NewUser) {
-    const created = await this.userRepository
-      .save(newUser)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao criar o usuário', err.stack);
-        }
-
-        throw new BadRequestException('Erro ao criar o usuário');
-      });
-
+    const created = await this.saveUser(newUser);
     return this.findOneByOrFail({ id: created.id });
   }
 
@@ -287,12 +270,32 @@ export class UserService {
     return user;
   }
 
-  saveUser(user: User) {
-    return this.userRepository.save(user);
+  async saveUser(user: Partial<User>) {
+    const created = await this.userRepository
+      .save(user)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o usuário', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar o usuário');
+      });
+
+    return created;
   }
 
-  saveDeliveryMan(user: DeliveryMan) {
-    return this.deliveryManRepository.save(user);
+  async saveDeliveryMan(user: Partial<DeliveryMan>) {
+    const created = await this.deliveryManRepository
+      .save(user)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao criar o motoboy', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao criar o motoboy');
+      });
+
+    return created;
   }
 
   async getUserAndEntityAuth(user: User, id: string) {
