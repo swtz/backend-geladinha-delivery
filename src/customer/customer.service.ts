@@ -45,7 +45,7 @@ export class CustomerService {
       where: {
         id: created.id,
       },
-      relations: ['addresses'],
+      relations: { addresses: true },
     });
 
     customer.addresses.push(address);
@@ -93,7 +93,7 @@ export class CustomerService {
   findAll() {
     return this.customerRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['addresses'],
+      relations: { addresses: true },
     });
   }
 
@@ -110,7 +110,7 @@ export class CustomerService {
   async findOneBy(customerData: Partial<Customer>) {
     return this.customerRepository.findOne({
       where: customerData,
-      relations: ['addresses'],
+      relations: { addresses: true },
     });
   }
 
