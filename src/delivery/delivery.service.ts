@@ -16,6 +16,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { PaymentMethodService } from './services/payment-method.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
+import relations from './data/share/relations';
 
 @Injectable()
 export class DeliveryService {
@@ -181,15 +182,7 @@ export class DeliveryService {
         ...deliveryData,
         ...queryObject,
       },
-      relations: [
-        'operator',
-        'motoboy',
-        'motoboy.tips',
-        'customer',
-        'address',
-        'paymentMethod',
-        'tip',
-      ],
+      relations,
     });
 
     return delivery;
@@ -209,14 +202,7 @@ export class DeliveryService {
       order: {
         createdAt: 'DESC',
       },
-      relations: [
-        'operator',
-        'motoboy',
-        'customer',
-        'address',
-        'paymentMethod',
-        'tip',
-      ],
+      relations,
     });
 
     return deliveries;
@@ -235,14 +221,7 @@ export class DeliveryService {
   async findOneBy(deliveryData: Partial<Delivery>) {
     const delivery = await this.deliveryRepository.findOne({
       where: deliveryData,
-      relations: [
-        'operator',
-        'motoboy',
-        'customer',
-        'address',
-        'paymentMethod',
-        'tip',
-      ],
+      relations,
     });
 
     return delivery;
@@ -277,14 +256,7 @@ export class DeliveryService {
     const deliveries = await this.deliveryRepository.find({
       where: queryObject,
       order: { createdAt: 'DESC' },
-      relations: [
-        'operator',
-        'motoboy',
-        'customer',
-        'address',
-        'paymentMethod',
-        'tip',
-      ],
+      relations,
     });
 
     return deliveries;

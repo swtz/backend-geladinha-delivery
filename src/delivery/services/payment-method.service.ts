@@ -32,7 +32,7 @@ export class PaymentMethodService {
   findOneBy(paymentMethodData: Partial<PaymentMethod>) {
     return this.paymentMethodRepository.findOne({
       where: paymentMethodData,
-      relations: ['deliveries'],
+      relations: { deliveries: true },
     });
   }
 
