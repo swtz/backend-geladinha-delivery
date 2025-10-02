@@ -5,5 +5,6 @@ export const operatorRelations = {
 
 export const motoboyRelations = {
   roles: true,
+  tips: true,
   vouchers: { user: true, createdBy: true },
 };
