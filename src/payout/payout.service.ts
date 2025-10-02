@@ -184,7 +184,10 @@ export class PayoutService {
   findOneBy(payoutData: Partial<Payout>) {
     return this.payoutRepository.findOne({
       where: payoutData,
-      relations: ['motoboy', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
+      relations: {
+        motoboy: true,
+        vouchers: { user: true, createdBy: true },
+      },
     });
   }
 
@@ -194,7 +197,10 @@ export class PayoutService {
         workDay,
         motoboy: motoboyData,
       },
-      relations: ['motoboy', 'vouchers'],
+      relations: {
+        motoboy: true,
+        vouchers: true,
+      },
     });
   }
 }

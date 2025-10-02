@@ -275,6 +275,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "fromDate": "1/10/2025",
+  "toDate": "1/10/2025",
   "motoboy": "Gabriel"
 }
 
