@@ -86,7 +86,7 @@ export class AddressService {
   async findOneByOrFail(addressData: Partial<Address>) {
     const address = await this.addressRepository.findOne({
       where: addressData,
-      relations: ['customer'],
+      relations: { customer: true },
     });
 
     if (!address) {
@@ -105,7 +105,7 @@ export class AddressService {
         ...addressData,
         customer: customerData,
       },
-      relations: ['customer'],
+      relations: { customer: true },
     });
 
     if (!address) {
@@ -120,7 +120,7 @@ export class AddressService {
       where: {
         customer: customerData,
       },
-      relations: ['customer'],
+      relations: { customer: true },
     });
 
     return addresses;
