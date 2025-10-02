@@ -61,7 +61,7 @@ export class TipService {
         ...tipData,
         motoboy: { id: tipData.motoboy?.id },
       },
-      relations: ['motoboy'],
+      relations: { motoboy: true },
     });
   }
 
