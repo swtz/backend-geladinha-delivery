@@ -20,6 +20,7 @@ import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { weekDays } from 'src/common/enums/weekDays.enum';
+import voucherRelations from '../voucher/data/relations/voucher';
 
 @Injectable()
 export class PayoutService {
@@ -186,7 +187,7 @@ export class PayoutService {
       where: payoutData,
       relations: {
         motoboy: true,
-        vouchers: { user: true, createdBy: true },
+        vouchers: voucherRelations,
       },
     });
   }

@@ -13,6 +13,7 @@ import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import relations from './data/relations/voucher';
 
 @Injectable()
 export class VoucherService {
@@ -138,7 +139,7 @@ export class VoucherService {
   findOneBy(voucherData: Partial<Voucher>) {
     return this.voucherRepository.findOne({
       where: voucherData,
-      relations: ['user', 'createdBy'],
+      relations,
     });
   }
 
@@ -158,7 +159,7 @@ export class VoucherService {
         ...voucherData,
         user: { id: user.id },
       },
-      relations: ['user', 'createdBy'],
+      relations,
     });
   }
 
@@ -168,7 +169,7 @@ export class VoucherService {
         user: { id },
       },
       order: { createdAt: 'DESC' },
-      relations: ['user', 'createdBy'],
+      relations,
     });
 
     return vouchers;
@@ -186,7 +187,7 @@ export class VoucherService {
     const vouchers = await this.voucherRepository.find({
       where: queryDate,
       order: { createdAt: 'DESC' },
-      relations: ['user', 'createdBy'],
+      relations,
     });
 
     return vouchers;
