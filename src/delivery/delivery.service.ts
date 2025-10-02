@@ -16,7 +16,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { PaymentMethodService } from './services/payment-method.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
-import relations from './data/share/relations';
+import relations from './data/relations/delivery';
 
 @Injectable()
 export class DeliveryService {

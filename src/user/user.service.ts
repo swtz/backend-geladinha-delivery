@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
+import { motoboyRelations, operatorRelations } from './data/relations/user';
 
 type NewUser = {
   name: string;
@@ -198,13 +199,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: [
-        'roles',
-        'tips',
-        'vouchers',
-        'vouchers.user',
-        'vouchers.createdBy',
-      ],
+      relations: motoboyRelations,
     });
 
     return motoboys;
@@ -223,20 +218,14 @@ export class UserService {
   async findOneBy(userData: Partial<User>) {
     return this.userRepository.findOne({
       where: userData,
-      relations: ['roles', 'vouchers', 'vouchers.user', 'vouchers.createdBy'],
+      relations: operatorRelations,
     });
   }
 
   async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations: [
-        'roles',
-        'tips',
-        'vouchers',
-        'vouchers.user',
-        'vouchers.createdBy',
-      ],
+      relations: motoboyRelations,
     });
 
     if (!motoboy) {
