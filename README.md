@@ -40,7 +40,12 @@ GET / POST / PATCH / PUT / DELETE
 /voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário       JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale                    JWT             ALL
 
-/payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             A DEFINIR
+/payout?key=value               POST        Criar pagamento do motoboy                JWT             ADMIN/OPERATOR
+/payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             ALL
+/payout/:uuid                   GET         Ler pagamento do motoboy                  JWT             ALL
+/payout/:uuid                   PATCH       Atualizar pagamento do motoboy            JWT             ADMIN/OPERATOR
+/payout/:uuid/:bool             PATCH       Atualizar status do pagamento             JWT             ADMIN
+/payout/:uuid                   DELETE      Apagar pagamento do motoboy               JWT             ADMIN/OPERATOR
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto
