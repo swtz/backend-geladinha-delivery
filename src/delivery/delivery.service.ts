@@ -17,6 +17,7 @@ import { PaymentMethodService } from './services/payment-method.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
 import relations from './data/relations/delivery';
+import { DeliveryQueryFactory, QueryParams } from './factories/query-factory.';
 
 @Injectable()
 export class DeliveryService {
@@ -227,31 +228,9 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findAll({
-    customer,
-    motoboy,
-    operator,
-    isPaid,
-    fromDate,
-    toDate,
-  }: {
-    customer?: string;
-    motoboy?: string;
-    operator?: string;
-    isPaid?: boolean;
-    fromDate?: Date;
-    toDate?: Date;
-  }) {
-    const queryObject = {
-      customer: { name: customer },
-      motoboy: { name: motoboy },
-      operator: { name: operator },
-      isPaid,
-    };
-
-    if (fromDate !== undefined && toDate !== undefined) {
-      queryObject['createdAt'] = Between(fromDate, toDate);
-    }
+  async findAll(queryParams: QueryParams) {
+    const queryFactory = new DeliveryQueryFactory();
+    const queryObject = queryFactory.factoryMethod(queryParams);
 
     const deliveries = await this.deliveryRepository.find({
       where: queryObject,

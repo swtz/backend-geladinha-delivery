@@ -63,7 +63,7 @@ export class PayoutService {
     const deliveries = await this.deliveryService.findAll({
       fromDate: initDate,
       toDate: endDate,
-      motoboy: motoboy.name,
+      motoboyName: motoboy.name,
     });
 
     const payout = {

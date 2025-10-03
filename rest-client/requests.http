@@ -188,7 +188,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=1/10/2025&toDate=1/10/2025
+GET {{baseUrl}}/delivery?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

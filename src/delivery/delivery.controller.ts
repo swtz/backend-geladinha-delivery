@@ -64,17 +64,17 @@ export class DeliveryController {
   @Get()
   async findAll(
     @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
-    @Query('customer') customer: string,
-    @Query('motoboy') motoboy: string,
-    @Query('operator') operator: string,
+    @Query('customer') customerName: string,
+    @Query('motoboy') motoboyName: string,
+    @Query('operator') operatorName: string,
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
     // paymentMethod (?)
   ) {
     const deliveries = await this.deliveryService.findAll({
-      customer,
-      motoboy,
-      operator,
+      customerName,
+      motoboyName,
+      operatorName,
       isPaid,
       fromDate,
       toDate,

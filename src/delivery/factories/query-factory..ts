@@ -14,7 +14,7 @@ class DeliveryQuery implements Query {
   createdAt?: FindOperator<Date>;
 }
 
-type QueryParams = {
+export type QueryParams = {
   customerName?: string;
   motoboyName?: string;
   operatorName?: string;
@@ -33,7 +33,7 @@ abstract class AbstractFactory {
   abstract factoryMethod(params: QueryParams): Query;
 }
 
-class DeliveryQueryFactory extends AbstractFactory {
+export class DeliveryQueryFactory extends AbstractFactory {
   factoryMethod({
     customerName,
     motoboyName,
@@ -54,21 +54,21 @@ class DeliveryQueryFactory extends AbstractFactory {
   }
 }
 
-const customerName = 'Leonardo';
-const motoboyName = 'Laura';
-const operatorName = 'Maria';
-const isPaid = true;
-const fromDate = undefined;
-const toDate = undefined;
+// const customerName = 'Leonardo';
+// const motoboyName = 'Laura';
+// const operatorName = 'Maria';
+// const isPaid = true;
+// const fromDate = undefined;
+// const toDate = undefined;
 
-const queryFactory = new DeliveryQueryFactory();
-const myObject = queryFactory.factoryMethod({
-  customerName,
-  motoboyName,
-  operatorName,
-  isPaid,
-  fromDate,
-  toDate,
-});
+// const queryFactory = new DeliveryQueryFactory();
+// const myObject = queryFactory.factoryMethod({
+//   customerName,
+//   motoboyName,
+//   operatorName,
+//   isPaid,
+//   fromDate,
+//   toDate,
+// });
 
-console.log(myObject);
+// console.log(myObject);
