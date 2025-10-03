@@ -42,10 +42,10 @@ abstract class AbstractFactory {
     }
   }
 
-  abstract factoryMethod(params: FindAllParams): Query;
+  abstract factoryMethod(params: FindAllParams | SumDeliveryTaxParams): Query;
 }
 
-export class DeliveryQueryFactory extends AbstractFactory {
+export class DeliveryFindAllFactory extends AbstractFactory {
   factoryMethod({
     customerName,
     motoboyName,
@@ -61,6 +61,17 @@ export class DeliveryQueryFactory extends AbstractFactory {
     queryObject.motoboy = { name: motoboyName };
     queryObject.operator = { name: operatorName };
     queryObject.isPaid = isPaid;
+
+    return queryObject;
+  }
+}
+
+export class DeliveryTaxFactory extends AbstractFactory {
+  factoryMethod({ user, fromDate, toDate }: SumDeliveryTaxParams): Query {
+    const queryObject = new DeliveryTaxQuery();
+
+    queryObject.createdAt = this.checkDateValue(fromDate, toDate);
+    queryObject.motoboy = { id: user?.id };
 
     return queryObject;
   }

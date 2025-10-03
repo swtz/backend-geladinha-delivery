@@ -18,7 +18,7 @@ import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
 import relations from './data/relations/delivery';
 import {
-  DeliveryQueryFactory,
+  DeliveryFindAllFactory,
   FindAllParams,
 } from './factories/query-factory.';
 
@@ -232,7 +232,7 @@ export class DeliveryService {
   }
 
   async findAll(queryParams: FindAllParams) {
-    const queryFactory = new DeliveryQueryFactory();
+    const queryFactory = new DeliveryFindAllFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
 
     const deliveries = await this.deliveryRepository.find({
