@@ -17,7 +17,10 @@ import { PaymentMethodService } from './services/payment-method.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
 import relations from './data/relations/delivery';
-import { DeliveryQueryFactory, QueryParams } from './factories/query-factory.';
+import {
+  DeliveryQueryFactory,
+  FindAllParams,
+} from './factories/query-factory.';
 
 @Injectable()
 export class DeliveryService {
@@ -228,7 +231,7 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findAll(queryParams: QueryParams) {
+  async findAll(queryParams: FindAllParams) {
     const queryFactory = new DeliveryQueryFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
 

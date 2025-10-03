@@ -6,7 +6,7 @@ interface Query {
   createdAt?: FindOperator<Date>;
 }
 
-class DeliveryQuery implements Query {
+class DeliveryFindAllQuery implements Query {
   customer?: Partial<Customer>;
   motoboy?: Partial<DeliveryMan>;
   operator?: Partial<User>;
@@ -14,14 +14,26 @@ class DeliveryQuery implements Query {
   createdAt?: FindOperator<Date>;
 }
 
-export type QueryParams = {
+class DeliveryTaxQuery implements Query {
+  motoboy?: Partial<User>;
+  createdAt?: FindOperator<Date> | undefined;
+}
+
+type DateParams = {
+  fromDate?: Date;
+  toDate?: Date;
+};
+
+export type FindAllParams = {
   customerName?: string;
   motoboyName?: string;
   operatorName?: string;
   isPaid?: boolean;
-  fromDate?: Date;
-  toDate?: Date;
-};
+} & DateParams;
+
+export type SumDeliveryTaxParams = {
+  user?: User;
+} & DateParams;
 
 abstract class AbstractFactory {
   checkDateValue(fromDate?: Date, toDate?: Date) {
@@ -30,7 +42,7 @@ abstract class AbstractFactory {
     }
   }
 
-  abstract factoryMethod(params: QueryParams): Query;
+  abstract factoryMethod(params: FindAllParams): Query;
 }
 
 export class DeliveryQueryFactory extends AbstractFactory {
@@ -41,8 +53,8 @@ export class DeliveryQueryFactory extends AbstractFactory {
     isPaid,
     fromDate,
     toDate,
-  }: QueryParams): Query {
-    const queryObject = new DeliveryQuery();
+  }: FindAllParams): Query {
+    const queryObject = new DeliveryFindAllQuery();
 
     queryObject.createdAt = this.checkDateValue(fromDate, toDate);
     queryObject.customer = { name: customerName };
