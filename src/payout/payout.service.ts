@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
@@ -135,6 +136,13 @@ export class PayoutService {
 
   async update(id: string) {
     const payout = await this.findOneByOrFail({ id });
+
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível alterar um pagamento fechado',
+      );
+    }
+
     const { workDay: initDate, motoboy } = payout;
 
     const shortInitDate = initDate.toLocaleString('BR', {
@@ -159,6 +167,13 @@ export class PayoutService {
 
   async remove(id: string) {
     const payout = await this.findOneByOrFail({ id });
+
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível remover um pagamento fechado',
+      );
+    }
+
     await this.payoutRepository.delete({ id });
     return payout;
   }

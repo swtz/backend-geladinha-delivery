@@ -188,7 +188,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?fromDate=21/9/2025&toDate=22/9/2025
+GET {{baseUrl}}/delivery?fromDate=1/10/2025&toDate=1/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -253,7 +253,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers by user
 # @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/502536e3-abc7-4072-9641-36ef858094ee
+GET {{baseUrl}}/voucher/user/297fbea7-7413-429e-9c9a-1124c50ce324
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -265,7 +265,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Gabriel
+GET {{baseUrl}}/payout/preview?motoboy=Gabriel&fromDate=1/10/2025&toDate=1/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -287,7 +287,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
+PATCH {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
@@ -297,5 +297,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Remove payout
 # @name removePayout
-DELETE {{baseUrl}}/payout/5c0254bb-9a81-47e6-a847-84a848e74880
+DELETE {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
 Authorization: Bearer {{JwtToken}}
