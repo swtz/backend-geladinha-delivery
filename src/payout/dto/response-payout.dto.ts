@@ -15,15 +15,16 @@ export class ResponsePayoutDto {
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly isClosed: boolean;
+  readonly isClosed?: boolean;
   readonly motoboy: Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'>;
   readonly vouchers: ResponseVoucherDto[];
 
   constructor(
-    payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt'> & {
+    payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt' | 'isClosed'> & {
       id?: string;
       createdAt?: Date;
       updatedAt?: Date;
+      isClosed?: boolean;
     },
   ) {
     this.id = payout.id;

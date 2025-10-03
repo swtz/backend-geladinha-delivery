@@ -79,7 +79,6 @@ export class PayoutService {
       subtotal: 0,
       totalSpending: 0,
       total: 0,
-      isClosed: false,
       motoboy,
       vouchers,
     };
