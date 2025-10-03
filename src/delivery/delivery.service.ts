@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -19,7 +19,9 @@ import { TipService } from 'src/tip/tip.service';
 import relations from './data/relations/delivery';
 import {
   DeliveryFindAllFactory,
+  DeliveryTaxFactory,
   FindAllParams,
+  SumDeliveryTaxParams,
 } from './factories/query-factory.';
 
 @Injectable()
@@ -244,17 +246,9 @@ export class DeliveryService {
     return deliveries;
   }
 
-  async sumDeliveryTaxCol(user?: User, fromDate?: Date, toDate?: Date) {
-    const queryObject = {};
-
-    if (user) {
-      queryObject['motoboy'] = { id: user.id };
-    }
-
-    if (fromDate !== undefined && toDate !== undefined) {
-      queryObject['createdAt'] = Between(fromDate, toDate);
-    }
-
+  async sumDeliveryTaxCol(queryParams: SumDeliveryTaxParams) {
+    const queryFactory = new DeliveryTaxFactory();
+    const queryObject = queryFactory.factoryMethod(queryParams);
     const total = await this.deliveryRepository.sum('deliveryTax', queryObject);
 
     if (!total) {

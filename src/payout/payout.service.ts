@@ -85,11 +85,11 @@ export class PayoutService {
     };
 
     if (deliveries.length > 1) {
-      payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol(
-        motoboy,
-        initDate,
-        endDate,
-      );
+      payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
+        user: motoboy,
+        fromDate: initDate,
+        toDate: endDate,
+      });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
 

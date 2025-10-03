@@ -156,9 +156,11 @@ Content-Type: application/json
 {
   "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 65.89,
-  "deliveryTax": 9.0,
-  "paymentMethod": "money"
+  "totalPurchase": 55,
+  "deliveryTax": 9,
+  "tip": 1.0,
+  "description": "não buzinar",
+  "paymentMethod": "credit"
 }
 
 ### Update delivery
@@ -265,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Gabriel&fromDate=1/10/2025&toDate=1/10/2025
+GET {{baseUrl}}/payout/preview?motoboy=Gabriel
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
