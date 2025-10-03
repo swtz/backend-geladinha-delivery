@@ -151,6 +151,12 @@ export class PayoutService {
     return this.save(mergedPayout);
   }
 
+  async updateIsClosed(id: string, flag: boolean) {
+    const payout = await this.findOneByOrFail({ id });
+    payout.isClosed = flag;
+    return this.save(payout);
+  }
+
   async remove(id: string) {
     const payout = await this.findOneByOrFail({ id });
     await this.payoutRepository.delete({ id });
