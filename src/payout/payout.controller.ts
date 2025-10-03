@@ -16,7 +16,10 @@ import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ResponsePayoutDto } from './dto/response-payout.dto';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
 export class PayoutController {
   constructor(private readonly payoutService: PayoutService) {}
@@ -32,6 +35,7 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
@@ -51,6 +55,7 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id', ParseUUIDPipe) id: string) {
@@ -58,6 +63,7 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
+  @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard)
   @Patch(':id/:flag')
   async updateIsClosed(
@@ -68,6 +74,7 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {

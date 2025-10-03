@@ -243,7 +243,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/7d90e306-a1c1-4681-9292-0af78c18d642
+DELETE {{baseUrl}}/voucher/me/c17c4d4f-0808-406f-9efa-a6a34e619712
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher
