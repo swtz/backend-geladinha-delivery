@@ -154,10 +154,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
+  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
   "totalPurchase": 22,
-  "deliveryTax": 114.99,
+  "deliveryTax": 50,
   "tip": 1.0,
   "description": "não buzinar",
   "paymentMethod": "debit"
@@ -267,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme&fromDate=6/10/2025&toDate=6/10/2025
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -277,14 +277,14 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "5/10/2025",
-  "toDate": "5/10/2025",
+  "fromDate": "6/10/2025",
+  "toDate": "6/10/2025",
   "motoboy": "Guilherme"
 }
 
 ### Read payout
 # @name readPayout
-GET {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc
+GET {{baseUrl}}/payout/bcd873b2-3d31-474f-ac74-dc371c542a88
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout

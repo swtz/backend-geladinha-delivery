@@ -122,11 +122,7 @@ export class PayoutService {
       },
     );
 
-    if (!yesterdayPayout) {
-      throw new Error('Not Found');
-    }
-
-    if (yesterdayPayout.total < 0) {
+    if (yesterdayPayout && yesterdayPayout.total < 0) {
       payout.total = setDecimalPlaces(payout.total + yesterdayPayout.total, 2);
     }
 
