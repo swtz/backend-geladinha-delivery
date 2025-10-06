@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseBoolPipe,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -18,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ResponsePayoutDto } from './dto/response-payout.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { WeekDay } from 'src/common/enums/weekDays.enum';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -53,6 +55,17 @@ export class PayoutController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const payout = await this.payoutService.findOneByOrFail({ id });
     return new ResponsePayoutDto(payout);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAll(
+    @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
+    weekDay: WeekDay,
+  ) {
+    const payouts = await this.payoutService.findAll({ weekDay });
+    const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
+    return parsedPayouts;
   }
 
   @Roles(Role.Admin, Role.Operator)
