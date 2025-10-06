@@ -29,3 +29,14 @@ abstract class AbstractMethod {
 
   abstract factoryMethod(params: FindAllParams): Query;
 }
+
+export class VoucherFindAllFactory extends AbstractMethod {
+  factoryMethod({ user, fromDate, toDate }: FindAllParams): Query {
+    const queryObject = new VoucherFindAllQuery();
+
+    queryObject.createdAt = this.getDatePeriod(fromDate, toDate);
+    queryObject.user = { id: user?.id };
+
+    return queryObject;
+  }
+}
