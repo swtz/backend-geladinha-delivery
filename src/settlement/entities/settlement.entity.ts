@@ -22,6 +22,15 @@ export class Settlement {
   totalRemainingMotoboy: number;
 
   @Column('double')
+  moneySubtotal: number;
+
+  @Column('double')
+  cardSubtotal: number;
+
+  @Column('double')
+  pixSubtotal: number;
+
+  @Column('double')
   subtotal: number;
 
   @Column({ nullable: true })
