@@ -20,7 +20,7 @@ import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan } from 'src/user/entities/user.entity';
-import { weekDays } from 'src/common/enums/weekDays.enum';
+import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateYesterdayDate } from 'src/common/generate-yesterday-date';
 
@@ -181,33 +181,6 @@ export class PayoutService {
     return this.save(payout);
   }
 
-  async remove(id: string) {
-    const payout = await this.findOneByOrFail({ id });
-
-    if (payout.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível remover um pagamento fechado',
-      );
-    }
-
-    await this.payoutRepository.delete({ id });
-    return payout;
-  }
-
-  async save(payout: Partial<Payout>) {
-    const created = await this.payoutRepository
-      .save(payout)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error('Erro ao salvar pagamento do motoboy', err.stack);
-        }
-
-        throw new BadRequestException('Erro ao salvar pagamento do motoboy');
-      });
-
-    return created;
-  }
-
   async findOneByOrFail(payoutData: Partial<Payout>) {
     const payout = await this.findOneBy(payoutData);
 
@@ -239,5 +212,40 @@ export class PayoutService {
         vouchers: true,
       },
     });
+  }
+
+  findAll(queryParams: { weekDay: WeekDay }) {
+    return this.payoutRepository.find({
+      where: queryParams,
+      order: { createdAt: 'DESC' },
+      relations: { motoboy: true, vouchers: voucherRelations },
+    });
+  }
+
+  async remove(id: string) {
+    const payout = await this.findOneByOrFail({ id });
+
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível remover um pagamento fechado',
+      );
+    }
+
+    await this.payoutRepository.delete({ id });
+    return payout;
+  }
+
+  async save(payout: Partial<Payout>) {
+    const created = await this.payoutRepository
+      .save(payout)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao salvar pagamento do motoboy', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao salvar pagamento do motoboy');
+      });
+
+    return created;
   }
 }
