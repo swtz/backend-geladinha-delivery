@@ -190,7 +190,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?paymentMethod=money
+GET {{baseUrl}}/delivery?fromDate=29/9/2025&toDate=29/9/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

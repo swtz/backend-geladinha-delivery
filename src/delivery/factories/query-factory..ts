@@ -19,7 +19,7 @@ class DeliveryFindAllQuery implements Query {
 
 class DeliveryTaxQuery implements Query {
   motoboy?: Partial<User>;
-  createdAt?: FindOperator<Date> | undefined;
+  createdAt?: FindOperator<Date>;
 }
 
 type DateParams = {
