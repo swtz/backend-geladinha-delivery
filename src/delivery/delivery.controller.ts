@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseBoolPipe,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -22,6 +23,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
+import { PaymentMethod } from './enums/payment-methods.enum';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -69,13 +71,18 @@ export class DeliveryController {
     @Query('operator') operatorName: string,
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    // paymentMethod (?)
+    @Query(
+      'paymentMethod',
+      new ParseEnumPipe(PaymentMethod, { optional: true }),
+    )
+    paymentMethod: PaymentMethod,
   ) {
     const deliveries = await this.deliveryService.findAll({
       customerName,
       motoboyName,
       operatorName,
       isPaid,
+      paymentMethod,
       fromDate,
       toDate,
     });

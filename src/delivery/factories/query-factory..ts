@@ -1,6 +1,8 @@
 import { Customer } from 'src/customer/entities/customer.entity';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { Between, FindOperator } from 'typeorm';
+import { PaymentMethod } from '../entities/payment-method.entity';
+import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 
 interface Query {
   createdAt?: FindOperator<Date>;
@@ -11,6 +13,7 @@ class DeliveryFindAllQuery implements Query {
   motoboy?: Partial<DeliveryMan>;
   operator?: Partial<User>;
   isPaid?: boolean;
+  paymentMethod?: Partial<PaymentMethod>;
   createdAt?: FindOperator<Date>;
 }
 
@@ -29,6 +32,7 @@ export type FindAllParams = {
   motoboyName?: string;
   operatorName?: string;
   isPaid?: boolean;
+  paymentMethod?: PaymentMethodEnum;
 } & DateParams;
 
 export type SumDeliveryTaxParams = {
@@ -51,6 +55,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     motoboyName,
     operatorName,
     isPaid,
+    paymentMethod,
     fromDate,
     toDate,
   }: FindAllParams): Query {
@@ -61,6 +66,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     queryObject.motoboy = { name: motoboyName };
     queryObject.operator = { name: operatorName };
     queryObject.isPaid = isPaid;
+    queryObject.paymentMethod = { name: paymentMethod };
 
     return queryObject;
   }
