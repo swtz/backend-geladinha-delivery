@@ -1,4 +1,5 @@
 import { Payout } from 'src/payout/entities/payout.entity';
+import { Settlement } from 'src/settlement/entities/settlement.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -39,4 +40,10 @@ export class Voucher {
     onDelete: 'SET NULL',
   })
   payout: Payout;
+
+  @ManyToOne(() => Settlement, settlement => settlement.vouchers, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  settlement: Settlement;
 }
