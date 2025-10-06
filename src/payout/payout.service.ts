@@ -214,7 +214,12 @@ export class PayoutService {
     });
   }
 
-  findAll(queryParams: { weekDay: WeekDay }) {
+  findAll(queryParams: {
+    weekDay?: WeekDay;
+    workDay?: Date;
+    motoboy?: { name: string };
+    isClosed?: boolean;
+  }) {
     return this.payoutRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },

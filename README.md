@@ -43,6 +43,7 @@ GET / POST / PATCH / PUT / DELETE
 /payout?key=value               POST        Criar pagamento do motoboy                JWT             ADMIN/OPERATOR
 /payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             ALL
 /payout/:uuid                   GET         Ler pagamento do motoboy                  JWT             ALL
+/payout?key=value               GET         Ler todos os pagamentos do motoboy        JWT             ALL
 /payout/:uuid                   PATCH       Atualizar pagamento do motoboy            JWT             ADMIN/OPERATOR
 /payout/:uuid/:bool             PATCH       Atualizar status do pagamento             JWT             ADMIN
 /payout/:uuid                   DELETE      Apagar pagamento do motoboy               JWT             ADMIN/OPERATOR

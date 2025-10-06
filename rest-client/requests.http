@@ -267,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme
+GET {{baseUrl}}/payout/preview?motoboy=Gabriel
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -277,14 +277,17 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "6/10/2025",
-  "toDate": "6/10/2025",
-  "motoboy": "Guilherme"
+  "motoboy": "Gabriel"
 }
 
 ### Read payout
 # @name readPayout
 GET {{baseUrl}}/payout/bcd873b2-3d31-474f-ac74-dc371c542a88
+Authorization: Bearer {{JwtToken}}
+
+### Read all payouts
+# @name readPayout
+GET {{baseUrl}}/payout?weekDay=Segunda&workDay=6/10/2025&isClosed=true
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout

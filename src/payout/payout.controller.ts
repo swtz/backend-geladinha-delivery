@@ -62,8 +62,16 @@ export class PayoutController {
   async findAll(
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
     weekDay: WeekDay,
+    @Query('workDay', new ParseBrDatePipe(START_TIME)) workDay: Date,
+    @Query('motoboy') motoboyName: string,
+    @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
   ) {
-    const payouts = await this.payoutService.findAll({ weekDay });
+    const payouts = await this.payoutService.findAll({
+      weekDay,
+      workDay,
+      motoboy: { name: motoboyName },
+      isClosed,
+    });
     const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
     return parsedPayouts;
   }
