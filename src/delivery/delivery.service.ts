@@ -22,6 +22,8 @@ import {
   DeliveryTaxFactory,
   FindAllParams,
   SumDeliveryTaxParams,
+  SumTotalPurchaseParams,
+  TotalPurchaseFactory,
 } from './factories/query-factory.';
 
 @Injectable()
@@ -250,6 +252,21 @@ export class DeliveryService {
     const queryFactory = new DeliveryTaxFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
     const total = await this.deliveryRepository.sum('deliveryTax', queryObject);
+
+    if (!total) {
+      return 0;
+    }
+
+    return setDecimalPlaces(total, 2);
+  }
+
+  async sumTotalPurchaseCol(queryParams: SumTotalPurchaseParams) {
+    const queryFactory = new TotalPurchaseFactory();
+    const queryObject = queryFactory.factoryMethod(queryParams);
+    const total = await this.deliveryRepository.sum(
+      'totalPurchase',
+      queryObject,
+    );
 
     if (!total) {
       return 0;

@@ -22,6 +22,12 @@ class DeliveryTaxQuery implements Query {
   createdAt?: FindOperator<Date>;
 }
 
+class TotalPurchaseQuery implements Query {
+  operator?: Partial<User>;
+  paymentMethod?: Partial<PaymentMethod>;
+  createdAt?: FindOperator<Date>;
+}
+
 type DateParams = {
   fromDate?: Date;
   toDate?: Date;
@@ -38,6 +44,10 @@ export type FindAllParams = {
 export type SumDeliveryTaxParams = {
   user?: User;
 } & DateParams;
+
+export type SumTotalPurchaseParams = {
+  paymentMethod?: PaymentMethodEnum;
+} & SumDeliveryTaxParams;
 
 abstract class AbstractFactory {
   checkDateValue(fromDate?: Date, toDate?: Date) {
@@ -78,6 +88,23 @@ export class DeliveryTaxFactory extends AbstractFactory {
 
     queryObject.createdAt = this.checkDateValue(fromDate, toDate);
     queryObject.motoboy = { id: user?.id };
+
+    return queryObject;
+  }
+}
+
+export class TotalPurchaseFactory extends AbstractFactory {
+  factoryMethod({
+    user,
+    fromDate,
+    toDate,
+    paymentMethod,
+  }: SumTotalPurchaseParams): Query {
+    const queryObject = new TotalPurchaseQuery();
+
+    queryObject.createdAt = this.checkDateValue(fromDate, toDate);
+    queryObject.operator = { id: user?.id };
+    queryObject.paymentMethod = { name: paymentMethod };
 
     return queryObject;
   }
