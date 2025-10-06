@@ -156,11 +156,11 @@ Content-Type: application/json
 {
   "motoboy": "297fbea7-7413-429e-9c9a-1124c50ce324",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 55,
-  "deliveryTax": 9,
+  "totalPurchase": 22,
+  "deliveryTax": 114.99,
   "tip": 1.0,
   "description": "não buzinar",
-  "paymentMethod": "credit"
+  "paymentMethod": "debit"
 }
 
 ### Update delivery
@@ -175,7 +175,7 @@ Content-Type: application/json
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/3f34e129-4036-4a75-ab73-b5231fb8731e
+DELETE {{baseUrl}}/delivery/me/8a24f022-f064-4834-b2d6-352b91e3e1b4
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
@@ -213,13 +213,13 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/297fbea7-7413-429e-9c9a-1124c50ce324
+POST {{baseUrl}}/voucher/me/user/df2293b6-ca41-4d66-a05c-f4b98d914c80
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 10,
-  "description": "monster lata"
+  "amount": 80,
+  "description": "snacks"
 }
 
 ### Update voucher
@@ -245,7 +245,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/c17c4d4f-0808-406f-9efa-a6a34e619712
+DELETE {{baseUrl}}/voucher/me/18ef067e-e38d-49b8-a66e-fdf1bf4ea4ed
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher
@@ -267,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme&fromDate=6/10/2025&toDate=6/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -277,27 +277,27 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "1/10/2025",
-  "toDate": "1/10/2025",
-  "motoboy": "Gabriel"
+  "fromDate": "5/10/2025",
+  "toDate": "5/10/2025",
+  "motoboy": "Guilherme"
 }
 
 ### Read payout
 # @name readPayout
-GET {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
+GET {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
+PATCH {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
 # @name updatePayout
-PATCH {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a/true
+PATCH {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc/true
 Authorization: Bearer {{JwtToken}}
 
 ### Remove payout
 # @name removePayout
-DELETE {{baseUrl}}/payout/5851767a-d21f-4ece-a41e-4e00a3a7b79a
+DELETE {{baseUrl}}/payout/c96c855e-6ddb-44e0-a49b-6f53b5593399
 Authorization: Bearer {{JwtToken}}
