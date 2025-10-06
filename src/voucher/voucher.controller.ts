@@ -38,7 +38,7 @@ export class VoucherController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const vouchers = await this.voucherService.findAllOwned(req.user);
+    const vouchers = await this.voucherService.findAllOwned({ user: req.user });
     const parsedVouchers = vouchers.map(
       voucher => new ResponseVoucherDto(voucher),
     );

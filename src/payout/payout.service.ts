@@ -51,11 +51,11 @@ export class PayoutService {
     const motoboy = await this.userService.findOneMotoboyByOrFail({
       name: motoboyData,
     });
-    const vouchers = await this.voucherService.findAllOwned(
-      motoboy,
-      initDate,
-      endDate,
-    );
+    const vouchers = await this.voucherService.findAllOwned({
+      user: motoboy,
+      fromDate: initDate,
+      toDate: endDate,
+    });
 
     // vou precisar criar um método com operadores AND do SQL
     // para garantir que a consulta leve em conta todos os parâmetros fornecidos
@@ -102,11 +102,11 @@ export class PayoutService {
       2,
     );
 
-    payout.totalSpending = await this.voucherService.sum(
-      motoboy,
-      initDate,
-      endDate,
-    );
+    payout.totalSpending = await this.voucherService.sum({
+      user: motoboy,
+      fromDate: initDate,
+      toDate: endDate,
+    });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 

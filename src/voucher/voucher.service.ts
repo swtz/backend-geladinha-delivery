@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
@@ -14,6 +14,10 @@ import { User } from 'src/user/entities/user.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import relations from './data/relations/voucher';
+import {
+  FindAllParams,
+  VoucherFindAllFactory,
+} from './factories/query-factory';
 
 @Injectable()
 export class VoucherService {
@@ -175,17 +179,12 @@ export class VoucherService {
     return vouchers;
   }
 
-  async findAllOwned(user: User, fromDate?: Date, toDate?: Date) {
-    const queryDate = {
-      user: { id: user.id },
-    };
-
-    if (fromDate !== undefined && toDate !== undefined) {
-      queryDate['createdAt'] = Between(fromDate, toDate);
-    }
+  async findAllOwned(queryParams: FindAllParams) {
+    const factory = new VoucherFindAllFactory();
+    const queryObject = factory.factoryMethod(queryParams);
 
     const vouchers = await this.voucherRepository.find({
-      where: queryDate,
+      where: queryObject,
       order: { createdAt: 'DESC' },
       relations,
     });
@@ -193,16 +192,9 @@ export class VoucherService {
     return vouchers;
   }
 
-  async sum(user?: User, fromDate?: Date, toDate?: Date) {
-    const queryObject = {};
-
-    if (user) {
-      queryObject['user'] = { id: user.id };
-    }
-
-    if (fromDate !== undefined && toDate !== undefined) {
-      queryObject['createdAt'] = Between(fromDate, toDate);
-    }
+  async sum(queryParams: FindAllParams) {
+    const factory = new VoucherFindAllFactory();
+    const queryObject = factory.factoryMethod(queryParams);
 
     const total = await this.voucherRepository.sum('amount', queryObject);
 

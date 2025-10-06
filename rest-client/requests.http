@@ -267,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Gabriel
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
