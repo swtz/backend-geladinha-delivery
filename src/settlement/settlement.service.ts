@@ -13,6 +13,7 @@ import {
   START_TIME,
 } from 'src/common/operation-time';
 import { weekDays } from 'src/common/enums/weekDays.enum';
+import { setDecimalPlaces } from 'src/common/set-decimal-places';
 
 @Injectable()
 export class SettlementService {
@@ -61,5 +62,22 @@ export class SettlementService {
       operator,
       vouchers,
     };
+
+    if (deliveries.length > 1) {
+      //
+    } else if (deliveries.length === 1) {
+      //
+    }
+
+    settlement.amountDeliveries = deliveries.length;
+    settlement.totalSpending = await this.voucherService.sum({
+      user: operator,
+      fromDate: initDate,
+      toDate: endDate,
+    });
+    settlement.total = setDecimalPlaces(
+      settlement.subtotal - settlement.totalSpending,
+      2,
+    );
   }
 }
