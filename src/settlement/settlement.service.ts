@@ -45,5 +45,18 @@ export class SettlementService {
       toDate: endDate,
       operatorName: userData.name,
     });
+
+    const settlement = {
+      amountDeliveries: 0,
+      totalRemainingMotoboy: 0,
+      moneySubtotal: 0,
+      cardSubtotal: 0,
+      pixSubtotal: 0,
+      subtotal: 0,
+      totalSpending: 0,
+      total: 0,
+      operator,
+      vouchers,
+    };
   }
 }
