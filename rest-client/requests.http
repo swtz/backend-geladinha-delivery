@@ -165,12 +165,12 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/ba16c61a-681a-40d8-9197-265d73caa0d1
+PATCH {{baseUrl}}/delivery/me/6b07e906-8b27-4f52-999b-2b26742a9f34
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "paymentMethod": "debit"
+  "isPaid": true
 }
 
 ### Delete delivery
@@ -224,12 +224,13 @@ Content-Type: application/json
 
 ### Update voucher
 # @name updateVoucher
-PATCH {{baseUrl}}/voucher/me/cd8fab39-983e-494e-856c-68e3a36a798b
+PATCH {{baseUrl}}/voucher/me/98af2bb8-ab42-4f0c-980c-f9bd6b8df9f8
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 5.5
+  "amount": 30,
+  "description": ""
 }
 
 ### Update voucher for user

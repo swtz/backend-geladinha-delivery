@@ -101,10 +101,20 @@ export class SettlementService {
       toDate: endDate,
     });
 
-    settlement.total = setDecimalPlaces(
-      settlement.subtotal - settlement.totalSpending,
-      2,
-    );
+    settlement.totalRemainingMotoboy =
+      await this.deliveryService.sumTotalPurchaseCol({
+        user: operator,
+        fromDate: initDate,
+        toDate: endDate,
+        isPaid: false,
+      });
+
+    // Criar um campo indicando a quantia correta que o caixa deve fechar,
+    // para evitar que o usuário tenha que recalcular os valores, a fim
+    // de averiguar alguma inconsistência. Ex.: currentValue
+    settlement.total =
+      setDecimalPlaces(settlement.subtotal - settlement.totalSpending, 2) -
+      settlement.totalRemainingMotoboy;
 
     return settlement;
   }
