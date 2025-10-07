@@ -26,7 +26,7 @@ export class SettlementService {
     private readonly userService: UserService,
   ) {}
 
-  async preview(fromDate: Date, toDate: Date, userData: Partial<User>) {
+  async preview(userData: Partial<User>, fromDate?: Date, toDate?: Date) {
     if (!userData) {
       throw new BadRequestException('Informe o nome do operador de caixa');
     }
@@ -71,7 +71,11 @@ export class SettlementService {
       const { name } = delivery.paymentMethod;
 
       switch (name) {
-        case PaymentMethod.Credit || PaymentMethod.Debit: {
+        case PaymentMethod.Credit: {
+          settlement.cardSubtotal = delivery.totalPurchase;
+          break;
+        }
+        case PaymentMethod.Debit: {
           settlement.cardSubtotal = delivery.totalPurchase;
           break;
         }
@@ -98,5 +102,7 @@ export class SettlementService {
       settlement.subtotal - settlement.totalSpending,
       2,
     );
+
+    return settlement;
   }
 }

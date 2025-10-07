@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "cassio@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -156,8 +156,8 @@ Content-Type: application/json
 {
   "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 22,
-  "deliveryTax": 50,
+  "totalPurchase": 10,
+  "deliveryTax": 5.0,
   "tip": 1.0,
   "description": "não buzinar",
   "paymentMethod": "debit"
@@ -175,7 +175,7 @@ Content-Type: application/json
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/8a24f022-f064-4834-b2d6-352b91e3e1b4
+DELETE {{baseUrl}}/delivery/me/0203fa98-98d4-4d1b-ac3b-85ba2f60deb7
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
@@ -304,3 +304,9 @@ Authorization: Bearer {{JwtToken}}
 # @name removePayout
 DELETE {{baseUrl}}/payout/c96c855e-6ddb-44e0-a49b-6f53b5593399
 Authorization: Bearer {{JwtToken}}
+
+################### SETTLEMENT ###################
+
+### Preview settlement
+# @name previewSettlement
+GET {{baseUrl}}/settlement
