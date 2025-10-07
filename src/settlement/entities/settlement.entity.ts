@@ -1,3 +1,4 @@
+import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { User } from 'src/user/entities/user.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
@@ -47,6 +48,12 @@ export class Settlement {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ enum: weekDays })
+  weekDay: WeekDay;
+
+  @Column('datetime')
+  workDay: Date;
 
   @ManyToOne(() => User)
   operator: User;

@@ -12,6 +12,7 @@ import {
   END_TIME,
   START_TIME,
 } from 'src/common/operation-time';
+import { weekDays } from 'src/common/enums/weekDays.enum';
 
 @Injectable()
 export class SettlementService {
@@ -47,6 +48,8 @@ export class SettlementService {
     });
 
     const settlement = {
+      weekDay: weekDays[initDate.getDay()],
+      workDay: initDate,
       amountDeliveries: 0,
       totalRemainingMotoboy: 0,
       moneySubtotal: 0,
