@@ -65,7 +65,11 @@ export class SettlementService {
     };
 
     if (deliveries.length > 1) {
-      //
+      settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
+        user: operator,
+        fromDate: initDate,
+        toDate: endDate,
+      });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
       const { name } = delivery.paymentMethod;
