@@ -14,6 +14,7 @@ import {
 } from 'src/common/operation-time';
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 
 @Injectable()
 export class SettlementService {
@@ -66,7 +67,25 @@ export class SettlementService {
     if (deliveries.length > 1) {
       //
     } else if (deliveries.length === 1) {
-      //
+      const [delivery] = deliveries;
+      const { name } = delivery.paymentMethod;
+
+      switch (name) {
+        case PaymentMethod.Credit || PaymentMethod.Debit: {
+          settlement.cardSubtotal = delivery.totalPurchase;
+          break;
+        }
+        case PaymentMethod.Money: {
+          settlement.moneySubtotal = delivery.totalPurchase;
+          break;
+        }
+        case PaymentMethod.Pix: {
+          settlement.pixSubtotal = delivery.totalPurchase;
+          break;
+        }
+      }
+
+      settlement.subtotal = delivery.totalPurchase;
     }
 
     settlement.amountDeliveries = deliveries.length;
