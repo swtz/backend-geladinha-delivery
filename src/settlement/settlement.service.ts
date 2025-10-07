@@ -75,20 +75,19 @@ export class SettlementService {
         fromDate: initDate,
         toDate: endDate,
       });
+
+      deliveries.forEach(delivery => {
+        const { name } = delivery.paymentMethod;
+        paymentMethodDict[name] += delivery.totalPurchase;
+      });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
       const { name } = delivery.paymentMethod;
 
-      // name === PaymentMethod.Pix → pixSubtotal: deliveryService.sumTotalPurchaseCol(paymentMethod: name)
-      paymentMethodDict[name] = await this.deliveryService.sumTotalPurchaseCol({
-        user: operator,
-        fromDate: initDate,
-        toDate: endDate,
-        paymentMethod: name,
-      });
-
+      paymentMethodDict[name] = delivery.totalPurchase;
       settlement.subtotal = delivery.totalPurchase;
     }
+
     settlement.amountDeliveries = deliveries.length;
 
     settlement.moneySubtotal = paymentMethodDict.money;
@@ -101,6 +100,7 @@ export class SettlementService {
       fromDate: initDate,
       toDate: endDate,
     });
+
     settlement.total = setDecimalPlaces(
       settlement.subtotal - settlement.totalSpending,
       2,

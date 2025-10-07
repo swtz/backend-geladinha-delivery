@@ -160,7 +160,7 @@ Content-Type: application/json
   "deliveryTax": 5.0,
   "tip": 1.0,
   "description": "não buzinar",
-  "paymentMethod": "pix"
+  "paymentMethod": "money"
 }
 
 ### Update delivery
