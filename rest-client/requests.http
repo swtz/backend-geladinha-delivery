@@ -165,17 +165,17 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/3f34e129-4036-4a75-ab73-b5231fb8731e
+PATCH {{baseUrl}}/delivery/me/ba16c61a-681a-40d8-9197-265d73caa0d1
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "tip": 4.5
+  "paymentMethod": "debit"
 }
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/0203fa98-98d4-4d1b-ac3b-85ba2f60deb7
+DELETE {{baseUrl}}/delivery/me/11c97c4f-2997-4996-bc59-28a451f37d71
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries

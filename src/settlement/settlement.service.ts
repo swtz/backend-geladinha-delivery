@@ -14,7 +14,6 @@ import {
 } from 'src/common/operation-time';
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
-import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 
 @Injectable()
 export class SettlementService {
@@ -49,15 +48,21 @@ export class SettlementService {
       operatorName: userData.name,
     });
 
+    const paymentMethodDict = {
+      money: 0,
+      debit: 0,
+      credit: 0,
+      pix: 0,
+    };
     const settlement = {
       weekDay: weekDays[initDate.getDay()],
       workDay: initDate,
       amountDeliveries: 0,
       totalRemainingMotoboy: 0,
+      subtotal: 0,
       moneySubtotal: 0,
       cardSubtotal: 0,
       pixSubtotal: 0,
-      subtotal: 0,
       totalSpending: 0,
       total: 0,
       operator,
@@ -74,29 +79,23 @@ export class SettlementService {
       const [delivery] = deliveries;
       const { name } = delivery.paymentMethod;
 
-      switch (name) {
-        case PaymentMethod.Credit: {
-          settlement.cardSubtotal = delivery.totalPurchase;
-          break;
-        }
-        case PaymentMethod.Debit: {
-          settlement.cardSubtotal = delivery.totalPurchase;
-          break;
-        }
-        case PaymentMethod.Money: {
-          settlement.moneySubtotal = delivery.totalPurchase;
-          break;
-        }
-        case PaymentMethod.Pix: {
-          settlement.pixSubtotal = delivery.totalPurchase;
-          break;
-        }
-      }
+      // name === PaymentMethod.Pix → pixSubtotal: deliveryService.sumTotalPurchaseCol(paymentMethod: name)
+      paymentMethodDict[name] = await this.deliveryService.sumTotalPurchaseCol({
+        user: operator,
+        fromDate: initDate,
+        toDate: endDate,
+        paymentMethod: name,
+      });
 
       settlement.subtotal = delivery.totalPurchase;
     }
-
     settlement.amountDeliveries = deliveries.length;
+
+    settlement.moneySubtotal = paymentMethodDict.money;
+    settlement.cardSubtotal =
+      paymentMethodDict.debit + paymentMethodDict.credit;
+    settlement.pixSubtotal = paymentMethodDict.pix;
+
     settlement.totalSpending = await this.voucherService.sum({
       user: operator,
       fromDate: initDate,
