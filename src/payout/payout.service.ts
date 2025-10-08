@@ -13,6 +13,7 @@ import { DeliveryService } from 'src/delivery/delivery.service';
 import {
   CURRENT_SHORT_DATE,
   END_TIME,
+  IS_ANOTHER_DAY,
   START_TIME,
 } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/parse-br-date';
@@ -41,11 +42,18 @@ export class PayoutService {
       throw new BadRequestException('Informe o nome do motoboy');
     }
 
-    const currentFromDate = parseBrDate(CURRENT_SHORT_DATE, START_TIME);
-    const currentToDate = parseBrDate(CURRENT_SHORT_DATE, END_TIME);
+    const dateObject = {
+      initDate: fromDate || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
+      endDate: toDate || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+    };
 
-    const initDate = fromDate || currentFromDate;
-    const endDate = toDate || currentToDate;
+    if (IS_ANOTHER_DAY) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        END_TIME,
+      );
+    }
 
     // e se motoboy foi excluído e operator quer consultar o payout?
     // no momento → Payout.motoboy = onDelete: 'CASCADE'
@@ -54,22 +62,22 @@ export class PayoutService {
     });
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
     });
 
     // vou precisar criar um método com operadores AND do SQL
     // para garantir que a consulta leve em conta todos os parâmetros fornecidos
     // fazer testes para garantir a necessidade de criar esse outro método
     const deliveries = await this.deliveryService.findAll({
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
       motoboyName: motoboy.name,
     });
 
     const payout = {
-      weekDay: weekDays[initDate.getDay()],
-      workDay: initDate,
+      weekDay: weekDays[dateObject.initDate.getDay()],
+      workDay: dateObject.initDate,
       totalDeliveries: 0,
       motoboyDaily: 0,
       motoboyTips:
@@ -88,8 +96,8 @@ export class PayoutService {
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
         user: motoboy,
-        fromDate: initDate,
-        toDate: endDate,
+        fromDate: dateObject.initDate,
+        toDate: dateObject.endDate,
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
@@ -105,13 +113,17 @@ export class PayoutService {
 
     payout.totalSpending = await this.voucherService.sum({
       user: motoboy,
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
     });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
-    const yesterday = generateRelativeDate('yesterday', initDate, START_TIME);
+    const yesterday = generateRelativeDate(
+      'yesterday',
+      dateObject.initDate,
+      START_TIME,
+    );
     const yesterdayPayout = await this.findOneByWorkDayAndMotoboy(yesterday, {
       id: motoboy.id,
     });
