@@ -22,7 +22,7 @@ import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateYesterdayDate } from 'src/common/generate-yesterday-date';
+import { generateYesterdayDate } from 'src/common/generate-date';
 
 @Injectable()
 export class PayoutService {
