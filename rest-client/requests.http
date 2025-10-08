@@ -218,8 +218,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 80,
-  "description": "snacks"
+  "amount": 50,
+  "description": "gasolina"
 }
 
 ### Update voucher
@@ -268,7 +268,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Gabriel
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -278,7 +278,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "Gabriel"
+  "fromDate": "7/10/2025",
+  "toDate": "7/10/2025",
+  "motoboy": "Guilherme"
 }
 
 ### Read payout
@@ -288,7 +290,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout?weekDay=Segunda&workDay=6/10/2025&isClosed=true
+GET {{baseUrl}}/payout
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout

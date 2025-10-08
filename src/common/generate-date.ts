@@ -1,11 +1,12 @@
-export function generateYesterdayDate(date: Date = new Date()) {
-  const auxDate = new Date(date);
-  const yesterday = auxDate.setDate(date.getDate() - 1);
-  return new Date(yesterday);
-}
-
-export function generateTomorrowDate(date: Date = new Date()) {
-  const auxDate = new Date(date);
-  const tomorrow = auxDate.setDate(date.getDate() + 1);
-  return new Date(tomorrow);
+export function generateRelativeDate(
+  day: 'yesterday' | 'tomorrow',
+  date: Date = new Date(),
+  hour?: number,
+) {
+  const relativeDay =
+    day === 'yesterday' ? date.getDate() - 1 : date.getDate() + 1;
+  const timestamp = new Date(date).setDate(relativeDay);
+  const newDate = new Date(timestamp);
+  newDate.setHours(hour || date.getHours());
+  return newDate;
 }

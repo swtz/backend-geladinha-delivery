@@ -22,7 +22,7 @@ import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateYesterdayDate } from 'src/common/generate-date';
+import { generateRelativeDate } from 'src/common/generate-date';
 
 @Injectable()
 export class PayoutService {
@@ -111,16 +111,10 @@ export class PayoutService {
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
-    const yesterday = generateYesterdayDate(fromDate).toLocaleString('pt-BR', {
-      dateStyle: 'short',
+    const yesterday = generateRelativeDate('yesterday', initDate, START_TIME);
+    const yesterdayPayout = await this.findOneByWorkDayAndMotoboy(yesterday, {
+      id: motoboy.id,
     });
-    const parsedYesterday = parseBrDate(yesterday, START_TIME);
-    const yesterdayPayout = await this.findOneByWorkDayAndMotoboy(
-      parsedYesterday,
-      {
-        id: motoboy.id,
-      },
-    );
 
     if (yesterdayPayout && yesterdayPayout.total < 0) {
       payout.total = setDecimalPlaces(payout.total + yesterdayPayout.total, 2);
