@@ -3,10 +3,10 @@ import { parseBrDate } from 'src/common/parse-br-date';
 
 @Injectable()
 export class ParseBrDatePipe implements PipeTransform {
-  private readonly hour: string;
+  private readonly hour: number;
   private readonly paramTypes = ['body', 'query'];
 
-  constructor(hour: string) {
+  constructor(hour: number) {
     this.hour = hour;
   }
 
