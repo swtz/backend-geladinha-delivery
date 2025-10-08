@@ -10,10 +10,12 @@ import { parseBrDate } from 'src/common/parse-br-date';
 import {
   CURRENT_SHORT_DATE,
   END_TIME,
+  IS_ANOTHER_DAY,
   START_TIME,
 } from 'src/common/operation-time';
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { generateRelativeDate } from 'src/common/generate-date';
 
 @Injectable()
 export class SettlementService {
@@ -30,21 +32,28 @@ export class SettlementService {
       throw new BadRequestException('Informe o nome do operador de caixa');
     }
 
-    const currentFromDate = parseBrDate(CURRENT_SHORT_DATE, START_TIME);
-    const currentToDate = parseBrDate(CURRENT_SHORT_DATE, END_TIME);
+    const dateObject = {
+      initDate: fromDate || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
+      endDate: toDate || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+    };
 
-    const initDate = fromDate || currentFromDate;
-    const endDate = toDate || currentToDate;
+    if (IS_ANOTHER_DAY) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        END_TIME,
+      );
+    }
 
     const operator = await this.userService.findOneByOrFail(userData);
     const vouchers = await this.voucherService.findAllOwned({
       user: operator,
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
     });
     const deliveries = await this.deliveryService.findAll({
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
       operatorName: userData.name,
     });
 
@@ -55,8 +64,8 @@ export class SettlementService {
       pix: 0,
     };
     const settlement = {
-      weekDay: weekDays[initDate.getDay()],
-      workDay: initDate,
+      weekDay: weekDays[dateObject.initDate.getDay()],
+      workDay: dateObject.initDate,
       amountDeliveries: 0,
       totalRemainingMotoboy: 0,
       subtotal: 0,
@@ -72,8 +81,8 @@ export class SettlementService {
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
         user: operator,
-        fromDate: initDate,
-        toDate: endDate,
+        fromDate: dateObject.initDate,
+        toDate: dateObject.endDate,
       });
 
       deliveries.forEach(delivery => {
@@ -97,15 +106,15 @@ export class SettlementService {
 
     settlement.totalSpending = await this.voucherService.sum({
       user: operator,
-      fromDate: initDate,
-      toDate: endDate,
+      fromDate: dateObject.initDate,
+      toDate: dateObject.endDate,
     });
 
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
         user: operator,
-        fromDate: initDate,
-        toDate: endDate,
+        fromDate: dateObject.initDate,
+        toDate: dateObject.endDate,
         isPaid: false,
       });
 

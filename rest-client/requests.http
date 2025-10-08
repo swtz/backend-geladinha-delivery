@@ -165,7 +165,7 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/6b07e906-8b27-4f52-999b-2b26742a9f34
+PATCH {{baseUrl}}/delivery/me/34bb2f0c-a759-4d51-9d63-15b5a48e2f9d
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -207,8 +207,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 3.5,
-  "description": "caipirão"
+  "amount": 20
 }
 
 ### Create voucher for user
