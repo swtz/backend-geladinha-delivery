@@ -166,11 +166,7 @@ export class PayoutService {
     }
 
     const { workDay: initDate, motoboy } = payout;
-
-    const shortInitDate = initDate.toLocaleString('BR', {
-      dateStyle: 'short',
-    });
-    const endDate = parseBrDate(shortInitDate, END_TIME);
+    const endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
 
     const newPayout = await this.preview(initDate, endDate, motoboy.name);
     const mergedPayout = {
