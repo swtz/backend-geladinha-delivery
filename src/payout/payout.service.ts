@@ -66,9 +66,6 @@ export class PayoutService {
       toDate: dateObject.endDate,
     });
 
-    // vou precisar criar um método com operadores AND do SQL
-    // para garantir que a consulta leve em conta todos os parâmetros fornecidos
-    // fazer testes para garantir a necessidade de criar esse outro método
     const deliveries = await this.deliveryService.findAll({
       fromDate: dateObject.initDate,
       toDate: dateObject.endDate,
@@ -166,9 +163,24 @@ export class PayoutService {
     }
 
     const { workDay: initDate, motoboy } = payout;
-    const endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    const dateObject = {
+      endDate: new Date(
+        initDate.getFullYear(),
+        initDate.getMonth(),
+        initDate.getDate(),
+        END_TIME,
+      ),
+    };
 
-    const newPayout = await this.preview(initDate, endDate, motoboy.name);
+    if (IS_ANOTHER_DAY) {
+      dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    }
+
+    const newPayout = await this.preview(
+      initDate,
+      dateObject.endDate,
+      motoboy.name,
+    );
     const mergedPayout = {
       ...payout,
       ...newPayout,
