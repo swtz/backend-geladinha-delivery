@@ -156,14 +156,15 @@ Content-Type: application/json
 {
   "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 48.97,
-  "deliveryTax": 8.0,
-  "paymentMethod": "pix"
+  "totalPurchase": 10,
+  "deliveryTax": 5.0,
+  "description": "não buzinar",
+  "paymentMethod": "credit"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/68f1f3f4-8bac-44fa-880a-92a8d8d44d9f
+PATCH {{baseUrl}}/delivery/me/d2a0f2e5-f4bb-4d2c-b85e-1c3c22370ad1
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -205,7 +206,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 20
+  "amount": 10
 }
 
 ### Create voucher for user

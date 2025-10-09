@@ -16,6 +16,7 @@ import {
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { generateRelativeDate } from 'src/common/generate-date';
+import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 
 @Injectable()
 export class SettlementService {
@@ -57,12 +58,6 @@ export class SettlementService {
       operatorName: userData.name,
     });
 
-    const paymentMethodDict = {
-      money: 0,
-      debit: 0,
-      credit: 0,
-      pix: 0,
-    };
     const settlement = {
       weekDay: weekDays[dateObject.initDate.getDay()],
       workDay: dateObject.initDate,
@@ -79,6 +74,15 @@ export class SettlementService {
       vouchers,
     };
 
+    function sumPaymentMethodSubtotal(
+      prefix: PaymentMethod | 'card',
+      value: number,
+    ) {
+      const prop = `${prefix}Subtotal`;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      settlement[prop] = setDecimalPlaces(settlement[prop] + value, 2);
+    }
+
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
         user: operator,
@@ -88,22 +92,20 @@ export class SettlementService {
 
       deliveries.forEach(delivery => {
         const { name } = delivery.paymentMethod;
-        paymentMethodDict[name] += delivery.totalPurchase;
+
+        if (name === PaymentMethod.Credit || name === PaymentMethod.Debit) {
+          sumPaymentMethodSubtotal('card', delivery.totalPurchase);
+        } else {
+          sumPaymentMethodSubtotal(name, delivery.totalPurchase);
+        }
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
       const { name } = delivery.paymentMethod;
 
-      paymentMethodDict[name] = delivery.totalPurchase;
+      sumPaymentMethodSubtotal(name, delivery.totalPurchase);
       settlement.subtotal = delivery.totalPurchase;
     }
-
-    settlement.moneySubtotal = setDecimalPlaces(paymentMethodDict.money, 2);
-    settlement.cardSubtotal = setDecimalPlaces(
-      paymentMethodDict.debit + paymentMethodDict.credit,
-      2,
-    );
-    settlement.pixSubtotal = setDecimalPlaces(paymentMethodDict.pix, 2);
 
     settlement.totalSpending = await this.voucherService.sum({
       user: operator,
@@ -122,9 +124,12 @@ export class SettlementService {
     // Criar um campo indicando a quantia correta que o caixa deve fechar,
     // para evitar que o usuário tenha que recalcular os valores, a fim
     // de averiguar alguma inconsistência. Ex.: currentValue
-    settlement.currentTotal =
-      setDecimalPlaces(settlement.subtotal - settlement.totalSpending, 2) -
-      settlement.totalRemainingMotoboy;
+    settlement.currentTotal = setDecimalPlaces(
+      settlement.subtotal -
+        settlement.totalSpending -
+        settlement.totalRemainingMotoboy,
+      2,
+    );
 
     settlement.expectedTotal = setDecimalPlaces(
       settlement.subtotal - settlement.totalSpending,
