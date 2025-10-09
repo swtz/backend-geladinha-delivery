@@ -66,14 +66,15 @@ export class SettlementService {
     const settlement = {
       weekDay: weekDays[dateObject.initDate.getDay()],
       workDay: dateObject.initDate,
-      amountDeliveries: 0,
+      amountDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
       subtotal: 0,
       moneySubtotal: 0,
       cardSubtotal: 0,
       pixSubtotal: 0,
       totalSpending: 0,
-      total: 0,
+      currentTotal: 0,
+      expectedTotal: 0,
       operator,
       vouchers,
     };
@@ -97,8 +98,6 @@ export class SettlementService {
       settlement.subtotal = delivery.totalPurchase;
     }
 
-    settlement.amountDeliveries = deliveries.length;
-
     settlement.moneySubtotal = paymentMethodDict.money;
     settlement.cardSubtotal =
       paymentMethodDict.debit + paymentMethodDict.credit;
@@ -121,9 +120,14 @@ export class SettlementService {
     // Criar um campo indicando a quantia correta que o caixa deve fechar,
     // para evitar que o usuário tenha que recalcular os valores, a fim
     // de averiguar alguma inconsistência. Ex.: currentValue
-    settlement.total =
+    settlement.currentTotal =
       setDecimalPlaces(settlement.subtotal - settlement.totalSpending, 2) -
       settlement.totalRemainingMotoboy;
+
+    settlement.expectedTotal = setDecimalPlaces(
+      settlement.subtotal - settlement.totalSpending,
+      2,
+    );
 
     return settlement;
   }

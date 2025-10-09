@@ -8,7 +8,7 @@ export class SettlementController {
   @Get()
   preview() {
     return this.settlementService.preview({
-      name: 'Cássio Cezimbra',
+      name: 'Neo',
     });
   }
 }
