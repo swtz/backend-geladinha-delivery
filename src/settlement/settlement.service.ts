@@ -98,10 +98,12 @@ export class SettlementService {
       settlement.subtotal = delivery.totalPurchase;
     }
 
-    settlement.moneySubtotal = paymentMethodDict.money;
-    settlement.cardSubtotal =
-      paymentMethodDict.debit + paymentMethodDict.credit;
-    settlement.pixSubtotal = paymentMethodDict.pix;
+    settlement.moneySubtotal = setDecimalPlaces(paymentMethodDict.money, 2);
+    settlement.cardSubtotal = setDecimalPlaces(
+      paymentMethodDict.debit + paymentMethodDict.credit,
+      2,
+    );
+    settlement.pixSubtotal = setDecimalPlaces(paymentMethodDict.pix, 2);
 
     settlement.totalSpending = await this.voucherService.sum({
       user: operator,
