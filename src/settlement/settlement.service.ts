@@ -29,7 +29,7 @@ export class SettlementService {
   ) {}
 
   async preview(userData: Partial<User>, fromDate?: Date, toDate?: Date) {
-    if (!userData) {
+    if (!userData.name) {
       throw new BadRequestException('Informe o nome do operador de caixa');
     }
 

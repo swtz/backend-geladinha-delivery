@@ -47,6 +47,8 @@ GET / POST / PATCH / PUT / DELETE
 /payout/:uuid                   PATCH       Atualizar pagamento do motoboy            JWT             ADMIN/OPERATOR
 /payout/:uuid/:bool             PATCH       Atualizar status do pagamento             JWT             ADMIN
 /payout/:uuid                   DELETE      Apagar pagamento do motoboy               JWT             ADMIN/OPERATOR
+
+/settlement/preview?key=value   GET         Pré-visualizar caixa do televendas        JWT             ADMIN/OPERATOR
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto
