@@ -41,7 +41,10 @@ export class Settlement {
   totalSpending: number;
 
   @Column('double')
-  total: number;
+  currentTotal: number;
+
+  @Column('double')
+  expectedTotal: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -54,6 +57,9 @@ export class Settlement {
 
   @Column('datetime')
   workDay: Date;
+
+  @Column({ default: false })
+  isClosed: boolean;
 
   @ManyToOne(() => User)
   operator: User;
