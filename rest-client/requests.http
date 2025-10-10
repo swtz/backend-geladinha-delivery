@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "guilherme@email.com",
   "password": "123456"
 }
 
@@ -308,5 +308,18 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Neo&fromDate=9/10/2025
+GET {{baseUrl}}/settlement/preview?operatorName=Guilherme
 Authorization: Bearer {{JwtToken}}
+
+### Create settlement
+# @name createSettlement
+POST {{baseUrl}}/settlement
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "fromDate": "9/10/2025",
+  "toDate": "9/10/2025",
+  "operatorName": "Neo"
+  // verificar se User.role !== Role.Motoboy
+}
