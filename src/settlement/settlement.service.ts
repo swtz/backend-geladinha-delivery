@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +25,8 @@ import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 
 @Injectable()
 export class SettlementService {
+  private readonly logger = new Logger(SettlementService.name);
+
   constructor(
     @InjectRepository(Settlement)
     private readonly settlementRepository: Repository<Settlement>,
@@ -137,5 +144,52 @@ export class SettlementService {
     );
 
     return settlement;
+  }
+
+  async create(
+    settlementData: Partial<Omit<Settlement, 'workDay' | 'operator'>> & {
+      workDay: Date;
+      operator: User;
+    },
+  ) {
+    const exists = await this.findOneByWorkDayAndOperator(
+      settlementData.workDay,
+      settlementData.operator,
+    );
+
+    if (exists) {
+      throw new ConflictException(
+        `Já foi criado um caixa para esse dia.\nOperador: ${exists.operator.name}`,
+      );
+    }
+
+    return this.save(settlementData);
+  }
+
+  findOneByWorkDayAndOperator(workDay: Date, operatorData: Partial<User>) {
+    return this.settlementRepository.findOne({
+      where: {
+        workDay,
+        operator: operatorData,
+      },
+      relations: {
+        operator: true,
+        vouchers: true,
+      },
+    });
+  }
+
+  async save(settlement: Partial<Settlement>) {
+    const created = await this.settlementRepository
+      .save(settlement)
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          this.logger.error('Erro ao salvar caixa do televendas', err.stack);
+        }
+
+        throw new BadRequestException('Erro ao salvar caixa do televendas');
+      });
+
+    return created;
   }
 }
