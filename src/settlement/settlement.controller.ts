@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { SettlementService } from './settlement.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
@@ -24,6 +24,22 @@ export class SettlementController {
       fromDate,
       toDate,
     );
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(
+    @Body('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
+    @Body('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
+    @Body('operatorName') operatorName: string,
+  ) {
+    const preview = await this.settlementService.preview(
+      { name: operatorName },
+      fromDate,
+      toDate,
+    );
+    const settlement = await this.settlementService.create(preview);
     return new ResponseSettlementDto(settlement);
   }
 }
