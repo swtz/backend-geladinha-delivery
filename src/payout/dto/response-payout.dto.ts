@@ -9,13 +9,13 @@ export class ResponsePayoutDto {
   readonly updatedAt?: Date;
   readonly weekDay: WeekDay;
   readonly workDay: Date;
+  readonly isClosed?: boolean;
   readonly totalDeliveries: number;
   readonly motoboyDaily: number;
   readonly motoboyTips: number;
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly isClosed?: boolean;
   readonly motoboy: Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'>;
   readonly vouchers: ResponseVoucherDto[];
 

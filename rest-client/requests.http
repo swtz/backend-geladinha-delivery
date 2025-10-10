@@ -308,5 +308,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Neo
+GET {{baseUrl}}/settlement/preview?operatorName=Neo&fromDate=9/10/2025
 Authorization: Bearer {{JwtToken}}

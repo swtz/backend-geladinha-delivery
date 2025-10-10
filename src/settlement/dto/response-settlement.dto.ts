@@ -7,6 +7,8 @@ export class ResponseSettlementDto {
   readonly id?: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
+  readonly weekDay: WeekDay;
+  readonly workDay: Date;
   readonly isClosed?: boolean;
   readonly amountDeliveries: number;
   readonly totalRemainingMotoboy: number;
@@ -18,20 +20,19 @@ export class ResponseSettlementDto {
   readonly totalSpending: number;
   readonly currentTotal: number;
   readonly expectedTotal: number;
-  readonly weekDay: WeekDay;
-  readonly workDay: Date;
   readonly operator: Pick<User, 'id' | 'name' | 'phone'> | null;
   readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(
     settlement: Omit<
       Settlement,
-      'id' | 'createdAt' | 'updatedAt' | 'isClosed'
+      'id' | 'createdAt' | 'updatedAt' | 'isClosed' | 'description'
     > & {
       id?: string;
       createdAt?: Date;
       updatedAt?: Date;
       isClosed?: boolean;
+      description?: string;
     },
   ) {
     this.id = settlement.id;

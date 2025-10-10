@@ -5,6 +5,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
+import { ResponseSettlementDto } from './dto/response-settlement.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -23,6 +24,6 @@ export class SettlementController {
       fromDate,
       toDate,
     );
-    return settlement;
+    return new ResponseSettlementDto(settlement);
   }
 }
