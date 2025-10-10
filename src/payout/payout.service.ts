@@ -146,7 +146,7 @@ export class PayoutService {
       const motoboyName = exists.motoboy.name;
 
       throw new ConflictException(
-        `Já existe uma entrega lançada para esse dia.\nMotoboy: ${motoboyName}`,
+        `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
       );
     }
 
