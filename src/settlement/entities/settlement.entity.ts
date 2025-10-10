@@ -61,7 +61,7 @@ export class Settlement {
   @Column({ default: false })
   isClosed: boolean;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
   operator: User;
 
   @OneToMany(() => Voucher, voucher => voucher.settlement, { nullable: true })
