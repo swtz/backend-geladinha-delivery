@@ -145,9 +145,23 @@ export class SettlementService {
         isPaid: false,
       });
 
-    // Criar um campo indicando a quantia correta que o caixa deve fechar,
-    // para evitar que o usuário tenha que recalcular os valores, a fim
-    // de averiguar alguma inconsistência. Ex.: currentValue
+    if (exists) {
+      settlement.currentTotal = setDecimalPlaces(
+        exists.initValue +
+          settlement.subtotal -
+          settlement.totalSpending -
+          settlement.totalRemainingMotoboy,
+        2,
+      );
+
+      settlement.expectedTotal = setDecimalPlaces(
+        exists.initValue + settlement.subtotal - settlement.totalSpending,
+        2,
+      );
+
+      return settlement;
+    }
+
     settlement.currentTotal += setDecimalPlaces(
       settlement.subtotal -
         settlement.totalSpending -

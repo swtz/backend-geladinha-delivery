@@ -10,8 +10,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "renato@email.com",
-  "password": "1234567"
+  "email": "neo@email.com",
+  "password": "123456"
 }
 
 ################### USER ###################
@@ -156,15 +156,14 @@ Content-Type: application/json
 {
   "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
   "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 24.99,
-  "deliveryTax": 2.0,
-  "tip": 1.0,
-  "paymentMethod": "pix"
+  "totalPurchase": 50,
+  "deliveryTax": 1.0,
+  "paymentMethod": "debit"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/4b5f1ce7-8dc4-4816-8725-e7784a1877f4
+PATCH {{baseUrl}}/delivery/me/54a959c3-515d-4f47-b7db-a596cfc44dbb
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -318,7 +317,15 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "initValue": 185.40,
-  "description": "teste de cálculo",
-  "operatorName": "Renatinho"
+  "initValue": 150,
+  "description": "evitando bugs",
+  "operatorName": "Neo"
 }
+
+### Update settlement
+# @name createSettlement
+PATCH {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+// { description: 'quero alterar a descrição' }
