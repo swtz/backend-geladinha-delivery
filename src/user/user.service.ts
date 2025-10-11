@@ -16,13 +16,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
-
-type NewUser = {
-  name: string;
-  phone: string;
-  email: string;
-  password: string;
-};
+import { NewUser } from './data/types/new-user';
 
 @Injectable()
 export class UserService {
