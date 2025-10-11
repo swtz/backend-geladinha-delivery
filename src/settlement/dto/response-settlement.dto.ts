@@ -46,6 +46,7 @@ export class ResponseSettlementDto {
     this.createdAt = settlement.createdAt;
     this.updatedAt = settlement.updatedAt;
     this.isClosed = settlement.isClosed;
+    this.initValue = settlement.initValue;
     this.amountDeliveries = settlement.amountDeliveries;
     this.totalRemainingMotoboy = settlement.totalRemainingMotoboy;
     this.moneySubtotal = settlement.moneySubtotal;

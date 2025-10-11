@@ -51,6 +51,10 @@ export class SettlementService {
       endDate: toDate || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
     };
 
+    const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {
+      id: operator.id,
+    });
+
     if (IS_ANOTHER_DAY) {
       dateObject.endDate = generateRelativeDate(
         'tomorrow',
@@ -73,6 +77,7 @@ export class SettlementService {
     const settlement = {
       weekDay: weekDays[dateObject.initDate.getDay()],
       workDay: dateObject.initDate,
+      initValue: exists !== null ? exists.initValue : undefined,
       amountDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
       subtotal: 0,
@@ -80,8 +85,9 @@ export class SettlementService {
       cardSubtotal: 0,
       pixSubtotal: 0,
       totalSpending: 0,
-      currentTotal: 0,
-      expectedTotal: 0,
+      currentTotal: exists !== null ? exists.currentTotal : 0,
+      expectedTotal: exists !== null ? exists.expectedTotal : 0,
+      description: exists !== null ? exists.description : undefined,
       operator,
       vouchers,
     };
@@ -136,14 +142,14 @@ export class SettlementService {
     // Criar um campo indicando a quantia correta que o caixa deve fechar,
     // para evitar que o usuário tenha que recalcular os valores, a fim
     // de averiguar alguma inconsistência. Ex.: currentValue
-    settlement.currentTotal = setDecimalPlaces(
+    settlement.currentTotal += setDecimalPlaces(
       settlement.subtotal -
         settlement.totalSpending -
         settlement.totalRemainingMotoboy,
       2,
     );
 
-    settlement.expectedTotal = setDecimalPlaces(
+    settlement.expectedTotal += setDecimalPlaces(
       settlement.subtotal - settlement.totalSpending,
       2,
     );
