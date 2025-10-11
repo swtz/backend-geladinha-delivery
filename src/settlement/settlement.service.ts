@@ -154,7 +154,7 @@ export class SettlementService {
   ) {
     const exists = await this.findOneByWorkDayAndOperator(
       settlementData.workDay,
-      settlementData.operator,
+      { id: settlementData.operator.id },
     );
 
     if (exists) {
