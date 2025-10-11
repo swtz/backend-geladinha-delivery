@@ -3,6 +3,8 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
@@ -22,6 +24,7 @@ import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { generateRelativeDate } from 'src/common/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
+import voucherRelations from '../voucher/data/relations/voucher';
 
 @Injectable()
 export class SettlementService {
@@ -197,6 +200,62 @@ export class SettlementService {
     }
 
     return this.save(settlementData);
+  }
+
+  async update(id: string) {
+    const settlement = await this.findOneByOrFail({ id });
+
+    if (settlement.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível alterar um caixa fechado',
+      );
+    }
+
+    const { workDay: initDate, operator } = settlement;
+    const dateObject = {
+      endDate: new Date(
+        initDate.getFullYear(),
+        initDate.getMonth(),
+        initDate.getDate(),
+        END_TIME,
+      ),
+    };
+
+    if (IS_ANOTHER_DAY) {
+      dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    }
+
+    const newSettlement = await this.preview(
+      { name: operator.name },
+      initDate,
+      dateObject.endDate,
+    );
+    const mergedSettlement = {
+      ...settlement,
+      ...newSettlement,
+    };
+
+    return this.save(mergedSettlement);
+  }
+
+  async findOneByOrFail(settlementData: Partial<Settlement>) {
+    const settlement = await this.findOneBy(settlementData);
+
+    if (!settlement) {
+      throw new NotFoundException('Caixa não encontrado');
+    }
+
+    return settlement;
+  }
+
+  findOneBy(settlementData: Partial<Settlement>) {
+    return this.settlementRepository.findOne({
+      where: settlementData,
+      relations: {
+        operator: true,
+        vouchers: voucherRelations,
+      },
+    });
   }
 
   findOneByWorkDayAndOperator(workDay: Date, operatorData: Partial<User>) {

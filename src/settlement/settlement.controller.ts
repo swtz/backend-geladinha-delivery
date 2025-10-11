@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseFloatPipe,
+  ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -54,6 +57,13 @@ export class SettlementController {
       initValue,
       description,
     );
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Param('id', ParseUUIDPipe) id: string) {
+    const settlement = await this.settlementService.update(id);
     return new ResponseSettlementDto(settlement);
   }
 }
