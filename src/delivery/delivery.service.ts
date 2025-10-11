@@ -278,7 +278,10 @@ export class DeliveryService {
   async remove(user: User, id: string) {
     const delivery = await this.findOneOwnedByOrFail(user, { id });
 
-    await this.tipService.remove(delivery.tip.id);
+    if (delivery.tip !== null) {
+      await this.tipService.remove(delivery.tip.id);
+    }
+
     await this.deliveryRepository.delete({ id });
     return delivery;
   }
