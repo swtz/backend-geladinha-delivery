@@ -266,7 +266,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme
+GET {{baseUrl}}/payout/preview?motoboy=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -320,6 +320,6 @@ Content-Type: application/json
 {
   "fromDate": "9/10/2025",
   "toDate": "9/10/2025",
-  "operatorName": "Neo"
+  "operatorName": "Guilherme"
   // verificar se User.role !== Role.Motoboy
 }

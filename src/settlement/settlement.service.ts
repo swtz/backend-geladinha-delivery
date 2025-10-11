@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
-import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { parseBrDate } from 'src/common/parse-br-date';
 import {
   CURRENT_SHORT_DATE,
@@ -36,6 +36,12 @@ export class SettlementService {
   ) {}
 
   async preview(userData: Partial<User>, fromDate?: Date, toDate?: Date) {
+    const operator = await this.userService.findOneByOrFail(userData);
+
+    if (operator instanceof DeliveryMan) {
+      throw new BadRequestException('Motoboys não possuem caixa para fechar');
+    }
+
     if (!userData.name) {
       throw new BadRequestException('Informe o nome do operador de caixa');
     }
@@ -53,7 +59,6 @@ export class SettlementService {
       );
     }
 
-    const operator = await this.userService.findOneByOrFail(userData);
     const vouchers = await this.voucherService.findAllOwned({
       user: operator,
       fromDate: dateObject.initDate,
