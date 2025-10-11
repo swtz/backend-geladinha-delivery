@@ -308,7 +308,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Renatinho
+GET {{baseUrl}}/settlement/preview?operatorName=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

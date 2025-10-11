@@ -95,6 +95,14 @@ export class SettlementService {
       vouchers,
     };
 
+    const generatePrefix = (name: PaymentMethod) => {
+      const prefix =
+        name === PaymentMethod.Credit || name === PaymentMethod.Debit
+          ? 'card'
+          : name;
+      return prefix;
+    };
+
     function sumPaymentMethodSubtotal(
       prefix: PaymentMethod | 'card',
       value: number,
@@ -113,18 +121,13 @@ export class SettlementService {
 
       deliveries.forEach(delivery => {
         const { name } = delivery.paymentMethod;
-
-        if (name === PaymentMethod.Credit || name === PaymentMethod.Debit) {
-          sumPaymentMethodSubtotal('card', delivery.totalPurchase);
-        } else {
-          sumPaymentMethodSubtotal(name, delivery.totalPurchase);
-        }
+        sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
       const { name } = delivery.paymentMethod;
 
-      sumPaymentMethodSubtotal(name, delivery.totalPurchase);
+      sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
       settlement.subtotal = delivery.totalPurchase;
     }
 
