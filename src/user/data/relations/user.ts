@@ -1,10 +1,4 @@
-export const operatorRelations = {
-  roles: true,
-  tips: true,
-  vouchers: { user: true, createdBy: true },
-};
-
-export const motoboyRelations = {
+export const relations = {
   roles: true,
   tips: true,
   vouchers: { user: true, createdBy: true },
