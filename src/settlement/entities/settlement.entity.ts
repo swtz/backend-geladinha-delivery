@@ -16,6 +16,9 @@ export class Settlement {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column('double')
+  initValue: number;
+
   @Column('int')
   amountDeliveries: number;
 

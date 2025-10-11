@@ -152,10 +152,19 @@ export class SettlementService {
   }
 
   async create(
-    settlementData: Partial<Omit<Settlement, 'workDay' | 'operator'>> & {
+    settlementData: Partial<
+      Omit<
+        Settlement,
+        'workDay' | 'operator' | 'currentTotal' | 'expectedTotal'
+      >
+    > & {
       workDay: Date;
       operator: User;
+      expectedTotal: number;
+      currentTotal: number;
     },
+    initValue: number,
+    description?: string,
   ) {
     const exists = await this.findOneByWorkDayAndOperator(
       settlementData.workDay,
@@ -166,6 +175,19 @@ export class SettlementService {
       throw new ConflictException(
         `Já foi criado um caixa para esse dia.\nOperador: ${exists.operator.name}`,
       );
+    }
+
+    const { currentTotal, expectedTotal } = settlementData;
+
+    settlementData.initValue = initValue;
+    settlementData.currentTotal = setDecimalPlaces(currentTotal + initValue, 2);
+    settlementData.expectedTotal = setDecimalPlaces(
+      expectedTotal + initValue,
+      2,
+    );
+
+    if (description !== undefined) {
+      settlementData.description = description;
     }
 
     return this.save(settlementData);

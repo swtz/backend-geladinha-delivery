@@ -10,6 +10,7 @@ export class ResponseSettlementDto {
   readonly weekDay: WeekDay;
   readonly workDay: Date;
   readonly isClosed?: boolean;
+  readonly initValue?: number;
   readonly amountDeliveries: number;
   readonly totalRemainingMotoboy: number;
   readonly moneySubtotal: number;
@@ -26,13 +27,19 @@ export class ResponseSettlementDto {
   constructor(
     settlement: Omit<
       Settlement,
-      'id' | 'createdAt' | 'updatedAt' | 'isClosed' | 'description'
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'isClosed'
+      | 'description'
+      | 'initValue'
     > & {
       id?: string;
       createdAt?: Date;
       updatedAt?: Date;
       isClosed?: boolean;
       description?: string;
+      initValue?: number;
     },
   ) {
     this.id = settlement.id;

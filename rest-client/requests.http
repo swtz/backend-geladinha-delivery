@@ -308,7 +308,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Guilherme
+GET {{baseUrl}}/settlement/preview?operatorName=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -318,8 +318,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "9/10/2025",
-  "toDate": "9/10/2025",
-  "operatorName": "Guilherme"
-  // verificar se User.role !== Role.Motoboy
+  "initValue": 200,
+  "description": "teste de cálculo",
+  "operatorName": "Neo"
 }
