@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { SettlementService } from './settlement.service';
@@ -19,6 +20,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseSettlementDto } from './dto/response-settlement.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -60,6 +62,16 @@ export class SettlementController {
       description,
     );
     return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const settlements = await this.settlementService.findAllOwned(req.user);
+    const parsedSettlements = settlements.map(
+      item => new ResponseSettlementDto(item),
+    );
+    return parsedSettlements;
   }
 
   @UseGuards(JwtAuthGuard)

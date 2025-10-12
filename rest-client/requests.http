@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "cassio@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -324,6 +324,11 @@ Content-Type: application/json
 ### Read settlement
 # @name readSettlement
 GET {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+Authorization: Bearer {{JwtToken}}
+
+### Read owned settlements
+# @name readOwnedSettlements
+GET {{baseUrl}}/settlement/me
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
