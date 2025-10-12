@@ -293,6 +293,21 @@ export class SettlementService {
     });
   }
 
+  async findAllOwned(user: User) {
+    const settlements = await this.settlementRepository.find({
+      where: {
+        operator: { id: user.id },
+      },
+      order: { workDay: 'DESC' },
+      relations: {
+        operator: true,
+        vouchers: voucherRelations,
+      },
+    });
+
+    return settlements;
+  }
+
   async remove(id: string) {
     const settlement = await this.findOneByOrFail({ id });
 
