@@ -63,6 +63,13 @@ export class SettlementController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const settlement = await this.settlementService.findOneByOrFail({ id });
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
