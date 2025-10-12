@@ -294,7 +294,7 @@ PATCH {{baseUrl}}/payout/bfba3ffb-72bc-4732-9d6a-2fd614d0de1b
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
-# @name updatePayout
+# @name updatePayoutIsClosed
 PATCH {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc/true
 Authorization: Bearer {{JwtToken}}
 
@@ -329,6 +329,11 @@ Authorization: Bearer {{JwtToken}}
 ### Read owned settlements
 # @name readOwnedSettlements
 GET {{baseUrl}}/settlement/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all settlements
+# @name readAllSettlements
+GET {{baseUrl}}/settlement
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement

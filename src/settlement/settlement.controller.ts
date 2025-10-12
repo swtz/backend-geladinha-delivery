@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseBoolPipe,
+  ParseEnumPipe,
   ParseFloatPipe,
   ParseUUIDPipe,
   Patch,
@@ -21,6 +22,7 @@ import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseSettlementDto } from './dto/response-settlement.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { WeekDay } from 'src/common/enums/weekDays.enum';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -79,6 +81,27 @@ export class SettlementController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const settlement = await this.settlementService.findOneByOrFail({ id });
     return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAll(
+    @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
+    weekDay: WeekDay,
+    @Query('workDay', new ParseBrDatePipe(START_TIME)) workDay: Date,
+    @Query('operatorName') operatorName: string,
+    @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
+  ) {
+    const settlements = await this.settlementService.findAll({
+      weekDay,
+      workDay,
+      operator: { name: operatorName },
+      isClosed,
+    });
+    const parsedSettlements = settlements.map(
+      item => new ResponseSettlementDto(item),
+    );
+    return parsedSettlements;
   }
 
   @UseGuards(JwtAuthGuard)
