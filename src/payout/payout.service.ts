@@ -228,6 +228,19 @@ export class PayoutService {
     });
   }
 
+  findAllOwned(user: DeliveryMan) {
+    return this.payoutRepository.find({
+      where: {
+        motoboy: { id: user.id },
+      },
+      order: { workDay: 'DESC' },
+      relations: {
+        motoboy: true,
+        vouchers: voucherRelations,
+      },
+    });
+  }
+
   findAll(queryParams: {
     weekDay?: WeekDay;
     workDay?: Date;
