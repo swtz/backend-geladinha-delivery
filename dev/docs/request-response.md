@@ -55,6 +55,7 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /settlement/                    POST        Criar caixa para um televendas            JWT             ADMIN/OPERATOR
 /settlement/preview?key=value   GET         Pré-visualizar caixa do televendas        JWT             ADMIN/OPERATOR
 /settlement/:uuid               PATCH       Atualizar caixa do televendas             JWT             ADMIN/OPERATOR
+/settlement/:uuid/:bool         PATCH       Atualizar status do caixa                 JWT             ADMIN
 /settlement/:uuid               DELETE      Apagar caixa do televendas                JWT             ADMIN/OPERATOR
 ```
 

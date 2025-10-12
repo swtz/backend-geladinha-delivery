@@ -223,9 +223,7 @@ export class SettlementService {
     const settlement = await this.findOneByOrFail({ id });
 
     if (settlement.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível alterar um caixa fechado',
-      );
+      throw new UnauthorizedException('Caixa fechado. Não é possível alterar');
     }
 
     const { workDay: initDate, operator } = settlement;
@@ -254,6 +252,12 @@ export class SettlementService {
     };
 
     return this.save(mergedSettlement);
+  }
+
+  async updateIsClosed(id: string, flag: boolean) {
+    const settlement = await this.findOneByOrFail({ id });
+    settlement.isClosed = flag;
+    return this.save(settlement);
   }
 
   async findOneByOrFail(settlementData: Partial<Settlement>) {

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
   ParseFloatPipe,
   ParseUUIDPipe,
   Patch,
@@ -68,6 +69,17 @@ export class SettlementController {
     @Body('description') description: string,
   ) {
     const settlement = await this.settlementService.update(id, description);
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/:flag')
+  async updateIsClosed(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('flag', ParseBoolPipe) flag: boolean,
+  ) {
+    const settlement = await this.settlementService.updateIsClosed(id, flag);
     return new ResponseSettlementDto(settlement);
   }
 
