@@ -20,7 +20,7 @@ import {
   IS_ANOTHER_DAY,
   START_TIME,
 } from 'src/common/operation-time';
-import { weekDays } from 'src/common/enums/weekDays.enum';
+import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { generateRelativeDate } from 'src/common/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
@@ -293,8 +293,8 @@ export class SettlementService {
     });
   }
 
-  async findAllOwned(user: User) {
-    const settlements = await this.settlementRepository.find({
+  findAllOwned(user: User) {
+    return this.settlementRepository.find({
       where: {
         operator: { id: user.id },
       },
@@ -304,8 +304,19 @@ export class SettlementService {
         vouchers: voucherRelations,
       },
     });
+  }
 
-    return settlements;
+  findAll(queryParams: {
+    weekDay?: WeekDay;
+    workDay?: Date;
+    operator?: { name: string };
+    isClosed?: boolean;
+  }) {
+    return this.settlementRepository.find({
+      where: queryParams,
+      order: { workDay: 'DESC' },
+      relations: { operator: true, vouchers: voucherRelations },
+    });
   }
 
   async remove(id: string) {

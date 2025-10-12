@@ -236,7 +236,7 @@ export class PayoutService {
   }) {
     return this.payoutRepository.find({
       where: queryParams,
-      order: { createdAt: 'DESC' },
+      order: { workDay: 'DESC' },
       relations: { motoboy: true, vouchers: voucherRelations },
     });
   }
