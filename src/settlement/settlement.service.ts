@@ -289,6 +289,17 @@ export class SettlementService {
     });
   }
 
+  async remove(id: string) {
+    const settlement = await this.findOneByOrFail({ id });
+
+    if (settlement.isClosed) {
+      throw new UnauthorizedException('Caixa fechado.\nNão é possível apagar');
+    }
+
+    await this.settlementRepository.delete({ id });
+    return settlement;
+  }
+
   async save(settlement: Partial<Settlement>) {
     const created = await this.settlementRepository
       .save(settlement)

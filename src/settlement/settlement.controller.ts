@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseFloatPipe,
@@ -67,6 +68,13 @@ export class SettlementController {
     @Body('description') description: string,
   ) {
     const settlement = await this.settlementService.update(id, description);
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const settlement = await this.settlementService.remove(id);
     return new ResponseSettlementDto(settlement);
   }
 }

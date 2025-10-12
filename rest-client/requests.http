@@ -317,10 +317,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "11/10/2025",
-  "initValue": 150,
-  "description": "evitando bugs",
-  "operatorName": "Neo"
+  "initValue": 50,
+  "operatorName": "Igor"
 }
 
 ### Update settlement
@@ -332,3 +330,8 @@ Content-Type: application/json
 { 
   "description": "" 
 }
+
+### Delete settlement
+# @name deleteSettlement
+DELETE {{baseUrl}}/settlement/1e7472a5-b5c4-4e2f-859e-85427443c8e2
+Authorization: Bearer {{JwtToken}}
