@@ -317,6 +317,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "fromDate": "11/10/2025",
   "initValue": 150,
   "description": "evitando bugs",
   "operatorName": "Neo"
@@ -328,4 +329,6 @@ PATCH {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
-// { description: 'quero alterar a descrição' }
+{ 
+  "description": "" 
+}

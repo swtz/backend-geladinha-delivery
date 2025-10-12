@@ -6,7 +6,7 @@
 Ler   Criar   Atualizar    Apagar
 GET / POST / PATCH / PUT / DELETE
 
-/auth/login                     POST        autenticar usuário                        Aberta         PUBLIC
+/auth/login                     POST        Autenticar usuário                        Aberta         PUBLIC
 
 /user/                          POST        Criar usuário                             JWT            ADMIN
 /user/me                        GET         Ler usuário                               JWT            ALL
@@ -40,7 +40,7 @@ GET / POST / PATCH / PUT / DELETE
 /voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário       JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale                    JWT             ALL
 
-/payout?key=value               POST        Criar pagamento do motoboy                JWT             ADMIN/OPERATOR
+/payout/                        POST        Criar pagamento para um motoboy           JWT             ADMIN/OPERATOR
 /payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             ALL
 /payout/:uuid                   GET         Ler pagamento do motoboy                  JWT             ALL
 /payout?key=value               GET         Ler todos os pagamentos do motoboy        JWT             ALL
@@ -48,7 +48,9 @@ GET / POST / PATCH / PUT / DELETE
 /payout/:uuid/:bool             PATCH       Atualizar status do pagamento             JWT             ADMIN
 /payout/:uuid                   DELETE      Apagar pagamento do motoboy               JWT             ADMIN/OPERATOR
 
+/settlement/                    POST        Criar caixa para um televendas            JWT             ADMIN/OPERATOR
 /settlement/preview?key=value   GET         Pré-visualizar caixa do televendas        JWT             ADMIN/OPERATOR
+/settlement/:uuid               PATCH       Atualizar caixa do televendas             JWT             ADMIN/OPERATOR
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto

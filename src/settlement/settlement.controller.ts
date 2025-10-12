@@ -62,8 +62,11 @@ export class SettlementController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Param('id', ParseUUIDPipe) id: string) {
-    const settlement = await this.settlementService.update(id);
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('description') description: string,
+  ) {
+    const settlement = await this.settlementService.update(id, description);
     return new ResponseSettlementDto(settlement);
   }
 }

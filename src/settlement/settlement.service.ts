@@ -219,7 +219,7 @@ export class SettlementService {
     return this.save(settlementData);
   }
 
-  async update(id: string) {
+  async update(id: string, description?: string) {
     const settlement = await this.findOneByOrFail({ id });
 
     if (settlement.isClosed) {
@@ -250,6 +250,7 @@ export class SettlementService {
     const mergedSettlement = {
       ...settlement,
       ...newSettlement,
+      description: description ?? settlement.description,
     };
 
     return this.save(mergedSettlement);
