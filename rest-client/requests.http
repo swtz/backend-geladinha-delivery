@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "gabriel@email.com",
   "password": "123456"
 }
 
@@ -281,6 +281,11 @@ Content-Type: application/json
 ### Read payout
 # @name readPayout
 GET {{baseUrl}}/payout/bfba3ffb-72bc-4732-9d6a-2fd614d0de1b
+Authorization: Bearer {{JwtToken}}
+
+### Read owned payouts
+# @name readOwnedPayouts
+GET {{baseUrl}}/payout/me
 Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts

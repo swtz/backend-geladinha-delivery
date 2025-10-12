@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PayoutService } from './payout.service';
@@ -20,6 +21,7 @@ import { ResponsePayoutDto } from './dto/response-payout.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -48,6 +50,15 @@ export class PayoutController {
     const preview = await this.payoutService.preview(fromDate, toDate, motoboy);
     const payout = await this.payoutService.create(preview);
     return new ResponsePayoutDto(payout);
+  }
+
+  @Roles(Role.Motoboy)
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const payouts = await this.payoutService.findAllOwned(req.user);
+    const parsedPayouts = payouts.map(item => new ResponsePayoutDto(item));
+    return parsedPayouts;
   }
 
   @UseGuards(JwtAuthGuard)

@@ -20,7 +20,7 @@ import { parseBrDate } from 'src/common/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
-import { DeliveryMan } from 'src/user/entities/user.entity';
+import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/generate-date';
@@ -228,7 +228,7 @@ export class PayoutService {
     });
   }
 
-  findAllOwned(user: DeliveryMan) {
+  findAllOwned(user: User) {
     return this.payoutRepository.find({
       where: {
         motoboy: { id: user.id },
