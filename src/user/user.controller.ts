@@ -19,6 +19,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -48,15 +49,22 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @Roles(Role.Admin)
-  async create(@Body() dto: CreateUserDto) {
-    const user = await this.userService.create(dto);
+  async create(
+    @Body() dto: CreateUserDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ) {
+    const user = await this.userService.create({ ...dto, phone });
     return new ResponseUserDto(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
-  async update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
-    const user = await this.userService.update(req.user, dto);
+  async update(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateUserDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ) {
+    const user = await this.userService.update(req.user, { ...dto, phone });
     return new ResponseUserDto(user);
   }
 

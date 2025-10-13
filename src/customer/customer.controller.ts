@@ -70,8 +70,13 @@ export class CustomerController {
   async create(
     @Body() dto: CreateCustomerDto,
     @Body('address') address: CreateAddressDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const customer = await this.customerService.create({ ...dto, address });
+    const customer = await this.customerService.create({
+      ...dto,
+      address,
+      phone,
+    });
     return new ResponseCustomerDto(customer);
   }
 
