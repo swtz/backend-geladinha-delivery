@@ -11,6 +11,7 @@ import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class CustomerService {
@@ -121,14 +122,15 @@ export class CustomerService {
   }
 
   async save(customer: Partial<Customer>) {
+    const http400 = generateBadRequestException('Erro ao salvar cliente');
     const created = await this.customerRepository
       .save(customer)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar cliente', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar cliente');
+        throw http400;
       });
 
     return created;

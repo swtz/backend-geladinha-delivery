@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,6 +20,7 @@ import {
   SumTotalPurchaseParams,
   TotalPurchaseFactory,
 } from './factories/query-factory.';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class DeliveryService {
@@ -287,13 +283,14 @@ export class DeliveryService {
   }
 
   async save(delivery: Partial<Delivery>) {
+    const http400 = generateBadRequestException('Erro ao salvar a entrega');
     const created = await this.deliveryRepository
       .save(delivery)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar a entrega', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
-        throw new BadRequestException('Erro ao criar a entrega');
+        throw http400;
       });
 
     return created;
