@@ -47,8 +47,8 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /payout/                        POST        Criar pagamento para um motoboy           JWT             ADMIN/OPERATOR
 /payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy       JWT             ALL
 /payout/me                      GET         Ler meus pagamentos                       JWT             MOTOBOY
-/payout/:uuid                   GET         Ler pagamento do motoboy                  JWT             ALL
 /payout?key=value               GET         Ler todos os pagamentos do motoboy        JWT             ALL
+/payout/:uuid                   GET         Ler pagamento do motoboy                  JWT             ALL
 /payout/:uuid                   PATCH       Atualizar pagamento do motoboy            JWT             ADMIN/OPERATOR
 /payout/:uuid/:bool             PATCH       Atualizar status do pagamento             JWT             ADMIN
 /payout/:uuid                   DELETE      Apagar pagamento do motoboy               JWT             ADMIN/OPERATOR
@@ -56,8 +56,8 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /settlement/                    POST        Criar caixa para um televendas            JWT             ADMIN/OPERATOR
 /settlement/preview?key=value   GET         Pré-visualizar caixa do televendas        JWT             ADMIN/OPERATOR
 /settlement/me                  GET         Ler meus caixas                           JWT             ADMIN/OPERATOR
-/settlement/:uuid               GET         Ler caixa do televendas                   JWT             ADMIN/OPERATOR
 /settlement?key=value           GET         Ler todos os caixas do televendas         JWT             ADMIN/OPERATOR
+/settlement/:uuid               GET         Ler caixa do televendas                   JWT             ADMIN/OPERATOR
 /settlement/:uuid               PATCH       Atualizar caixa do televendas             JWT             ADMIN/OPERATOR
 /settlement/:uuid/:bool         PATCH       Atualizar status do caixa                 JWT             ADMIN
 /settlement/:uuid               DELETE      Apagar caixa do televendas                JWT             ADMIN/OPERATOR

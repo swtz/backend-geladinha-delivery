@@ -18,6 +18,7 @@ import {
   FindAllParams,
   VoucherFindAllFactory,
 } from './factories/query-factory';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class VoucherService {
@@ -244,14 +245,15 @@ export class VoucherService {
   }
 
   async save(voucher: Partial<Voucher>) {
+    const http400 = generateBadRequestException('Erro ao salvar a compra/vale');
     const created = await this.voucherRepository
       .save(voucher)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar a compra/vale', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar a compra/vale');
+        throw http400;
       });
 
     return created;

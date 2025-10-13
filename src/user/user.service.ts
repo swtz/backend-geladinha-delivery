@@ -17,6 +17,7 @@ import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
 import { NewUser } from './data/types/new-user';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class UserService {
@@ -254,28 +255,30 @@ export class UserService {
   }
 
   async saveUser(user: Partial<User>) {
+    const http400 = generateBadRequestException('Erro ao criar o usuário');
     const created = await this.userRepository
       .save(user)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar o usuário', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar o usuário');
+        throw http400;
       });
 
     return created;
   }
 
   async saveDeliveryMan(user: Partial<DeliveryMan>) {
+    const http400 = generateBadRequestException('Erro ao criar o motoboy');
     const created = await this.deliveryManRepository
       .save(user)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar o motoboy', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar o motoboy');
+        throw http400;
       });
 
     return created;
