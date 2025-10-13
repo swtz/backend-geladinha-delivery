@@ -2,7 +2,7 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { formatPhone } from 'src/common/utils/format-phone';
 
 @Injectable()
-export class FormatBrPhonePipe implements PipeTransform {
+export class ParseBrPhonePipe implements PipeTransform {
   private readonly paramTypes = ['body'];
 
   transform(value: string, { type }: ArgumentMetadata) {

@@ -21,6 +21,7 @@ import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { ResponseCustomerDto } from './dto/response-customer.dto';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -79,9 +80,13 @@ export class CustomerController {
   async update(
     @Body() dto: UpdateCustomerDto,
     @Body('address') address: UpdateAddressDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const customer = await this.customerService.update({ ...dto, address }, id);
+    const customer = await this.customerService.update(
+      { ...dto, address, phone },
+      id,
+    );
     return new ResponseCustomerDto(customer);
   }
 
