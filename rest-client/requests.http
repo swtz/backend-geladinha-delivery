@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "joao@email.com",
+  "email": "cassio@email.com",
   "password": "123456"
 }
 
@@ -102,10 +102,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "phone": "",
+  "phone": null,
   "address": {
     "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
-    "postalCode": "88955000"
+    "postalCode": null
   }
 }
 

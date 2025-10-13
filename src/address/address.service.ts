@@ -11,6 +11,7 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { formatBrPostalCode } from 'src/common/utils/format-br-postal-code';
 
 @Injectable()
 export class AddressService {
@@ -28,7 +29,9 @@ export class AddressService {
       complement: dto.complement,
       referencePoint: dto.referencePoint,
       neighborhood: dto.neighborhood,
-      postalCode: dto.postalCode,
+      postalCode: dto.postalCode
+        ? formatBrPostalCode(dto.postalCode)
+        : undefined,
       city: dto.city,
       stateCode: dto.stateCode,
       location: dto.location,
@@ -57,7 +60,9 @@ export class AddressService {
       dto.referencePoint ?? ownedAddress.referencePoint;
     ownedAddress.street = dto.street ?? ownedAddress.street;
     ownedAddress.number = dto.number ?? ownedAddress.number;
-    ownedAddress.postalCode = dto.postalCode ?? ownedAddress.postalCode;
+    ownedAddress.postalCode = dto.postalCode
+      ? formatBrPostalCode(dto.postalCode)
+      : ownedAddress.postalCode;
     ownedAddress.location = dto.location ?? ownedAddress.location;
     ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
     ownedAddress.isDefault = !dto.isDefault
