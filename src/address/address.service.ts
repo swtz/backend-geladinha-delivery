@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class AddressService {
@@ -133,14 +134,15 @@ export class AddressService {
   }
 
   async save(address: Partial<Address>) {
+    const http400 = generateBadRequestException('Erro ao salvar endereço');
     const created = await this.addressRepository
       .save(address)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar endereço', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar endereço');
+        throw http400;
       });
 
     return created;

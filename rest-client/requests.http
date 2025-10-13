@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "gabriel@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -103,7 +103,7 @@ Content-Type: application/json
 
 {
   "address": {
-    "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
+    // "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
     "isDefault": true
   }
 }
