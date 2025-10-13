@@ -2,12 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 import { Repository } from 'typeorm';
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class PaymentMethodService {
@@ -47,14 +43,17 @@ export class PaymentMethodService {
   }
 
   async save(paymentMethodData: Partial<PaymentMethod>) {
+    const http400 = generateBadRequestException(
+      'Erro ao criar método de pagamento',
+    );
     const created = await this.paymentMethodRepository
       .save(paymentMethodData)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao criar método de pagamento', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao criar método de pagamento');
+        throw http400;
       });
 
     return created;

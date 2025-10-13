@@ -25,6 +25,7 @@ import { setDecimalPlaces } from 'src/common/set-decimal-places';
 import { generateRelativeDate } from 'src/common/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class SettlementService {
@@ -331,14 +332,17 @@ export class SettlementService {
   }
 
   async save(settlement: Partial<Settlement>) {
+    const http400 = generateBadRequestException(
+      'Erro ao salvar caixa do televendas',
+    );
     const created = await this.settlementRepository
       .save(settlement)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao salvar caixa do televendas', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao salvar caixa do televendas');
+        throw http400;
       });
 
     return created;

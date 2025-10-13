@@ -24,6 +24,7 @@ import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/generate-date';
+import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class PayoutService {
@@ -268,14 +269,17 @@ export class PayoutService {
   }
 
   async save(payout: Partial<Payout>) {
+    const http400 = generateBadRequestException(
+      'Erro ao salvar pagamento do motoboy',
+    );
     const created = await this.payoutRepository
       .save(payout)
       .catch((err: unknown) => {
         if (err instanceof Error) {
-          this.logger.error('Erro ao salvar pagamento do motoboy', err.stack);
+          this.logger.error(http400.message, err.stack);
         }
 
-        throw new BadRequestException('Erro ao salvar pagamento do motoboy');
+        throw http400;
       });
 
     return created;
