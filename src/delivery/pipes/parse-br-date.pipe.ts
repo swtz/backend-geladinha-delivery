@@ -1,5 +1,5 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { parseBrDate } from 'src/common/parse-br-date';
+import { parseBrDate } from 'src/common/utils/parse-br-date';
 
 @Injectable()
 export class ParseBrDatePipe implements PipeTransform {

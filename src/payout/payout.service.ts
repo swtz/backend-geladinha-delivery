@@ -16,14 +16,14 @@ import {
   IS_ANOTHER_DAY,
   START_TIME,
 } from 'src/common/operation-time';
-import { parseBrDate } from 'src/common/parse-br-date';
+import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
-import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateRelativeDate } from 'src/common/generate-date';
+import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()

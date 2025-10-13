@@ -9,7 +9,7 @@ import { CustomerService } from 'src/customer/customer.service';
 import { AddressService } from 'src/address/address.service';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { PaymentMethodService } from './services/payment-method.service';
-import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { TipService } from 'src/tip/tip.service';
 import relations from './data/relations/delivery';
 import {

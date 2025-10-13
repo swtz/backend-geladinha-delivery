@@ -13,7 +13,7 @@ import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
-import { parseBrDate } from 'src/common/parse-br-date';
+import { parseBrDate } from 'src/common/utils/parse-br-date';
 import {
   CURRENT_SHORT_DATE,
   END_TIME,
@@ -21,8 +21,8 @@ import {
   START_TIME,
 } from 'src/common/operation-time';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
-import { setDecimalPlaces } from 'src/common/set-decimal-places';
-import { generateRelativeDate } from 'src/common/generate-date';
+import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
+import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';

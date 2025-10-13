@@ -102,9 +102,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "phone": "55((48))-98888-8888",
   "address": {
-    // "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
-    "isDefault": true
+    "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
+    "postalCode": "88955000"
   }
 }
 

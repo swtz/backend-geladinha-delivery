@@ -12,7 +12,7 @@ import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
-import { setDecimalPlaces } from 'src/common/set-decimal-places';
+import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import relations from './data/relations/voucher';
 import {
   FindAllParams,
