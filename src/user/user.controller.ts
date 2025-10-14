@@ -8,12 +8,10 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
@@ -26,7 +24,6 @@ import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async findOne(@Req() req: AuthenticatedRequest) {
     const user = await this.userService.findOneByOrFail({
@@ -36,7 +33,6 @@ export class UserController {
   }
 
   @Roles(Role.Operator, Role.Admin)
-  @UseGuards(JwtAuthGuard)
   @Get('motoboy')
   async findAllMotoboy() {
     const motoboys = await this.userService.findAllMotoboy();
@@ -46,7 +42,6 @@ export class UserController {
     return parsedMotoboys;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @Roles(Role.Admin)
   async create(
@@ -57,7 +52,6 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me')
   async update(
     @Req() req: AuthenticatedRequest,
@@ -68,7 +62,6 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me/password')
   async updatePassword(
     @Req() req: AuthenticatedRequest,
@@ -78,7 +71,6 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @Roles(Role.Admin)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
