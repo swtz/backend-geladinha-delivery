@@ -8,10 +8,8 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -24,7 +22,6 @@ import { ResponseVoucherDto } from './dto/response-voucher.dto';
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('user/:id')
   @Roles(Role.Admin, Role.Operator)
   async findByUser(@Param('id', ParseUUIDPipe) id: string) {
@@ -35,7 +32,6 @@ export class VoucherController {
     return parsedVouchers;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const vouchers = await this.voucherService.findAllOwned({ user: req.user });
@@ -45,7 +41,6 @@ export class VoucherController {
     return parsedVouchers;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @Roles(Role.Admin, Role.Operator)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -53,7 +48,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('me')
   async create(
     @Body() dto: CreateVoucherDto,
@@ -63,7 +57,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('me/user/:id')
   @Roles(Role.Admin, Role.Operator)
   async createForEntity(
@@ -79,7 +72,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me/:id')
   async update(
     @Body() dto: UpdateVoucherDto,
@@ -90,7 +82,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me/user/:id')
   @Roles(Role.Admin, Role.Operator)
   async updateForEntity(
@@ -106,7 +97,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('me/:id')
   async remove(
     @Req() req: AuthenticatedRequest,

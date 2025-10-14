@@ -9,13 +9,11 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
@@ -28,7 +26,6 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     const customers = await this.customerService.findAll();
@@ -38,7 +35,6 @@ export class CustomerController {
     return parsedCustomers;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('find')
   async findOne(
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
@@ -53,7 +49,6 @@ export class CustomerController {
     return new ResponseCustomerDto(customer);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id/address')
   async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
     const addresses = await this.customerService.findAddressesByCustomer({
@@ -65,7 +60,6 @@ export class CustomerController {
     return parsedAddresses;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() dto: CreateCustomerDto,
@@ -80,7 +74,6 @@ export class CustomerController {
     return new ResponseCustomerDto(customer);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Body() dto: UpdateCustomerDto,
@@ -95,14 +88,12 @@ export class CustomerController {
     return new ResponseCustomerDto(customer);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const customer = await this.customerService.remove(id);
     return new ResponseCustomerDto(customer);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post(':id/address')
   async addAddress(
     @Body() dto: CreateAddressDto,
@@ -112,7 +103,6 @@ export class CustomerController {
     return new ResponseCustomerDto(customer);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('address/:id')
   async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
     const address = await this.customerService.removeAddress(id);

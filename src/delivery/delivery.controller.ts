@@ -11,10 +11,8 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -30,7 +28,6 @@ import { PaymentMethod } from './enums/payment-methods.enum';
 export class DeliveryController {
   constructor(private readonly deliveryService: DeliveryService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('me')
   async create(
     @Req() req: AuthenticatedRequest,
@@ -40,7 +37,6 @@ export class DeliveryController {
     return new ResponseDeliveryDto(delivery);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me/:id')
   async update(
     @Req() req: AuthenticatedRequest,
@@ -51,7 +47,6 @@ export class DeliveryController {
     return new ResponseDeliveryDto(delivery);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('me/:id')
   async remove(
     @Req() req: AuthenticatedRequest,
@@ -62,7 +57,6 @@ export class DeliveryController {
   }
 
   @Roles(Role.Operator, Role.Motoboy, Role.Admin)
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
     @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
@@ -93,7 +87,6 @@ export class DeliveryController {
   }
 
   @Roles(Role.Admin, Role.Operator, Role.Motoboy)
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const deliveries = await this.deliveryService.findAllOwned(req.user);
@@ -103,7 +96,6 @@ export class DeliveryController {
     return parsedDeliveries;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
     const delivery = await this.deliveryService.findOneByOrFail({ id });

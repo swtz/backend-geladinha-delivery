@@ -12,12 +12,10 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { SettlementService } from './settlement.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseSettlementDto } from './dto/response-settlement.dto';
@@ -29,7 +27,6 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 export class SettlementController {
   constructor(private readonly settlementService: SettlementService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('preview')
   async preview(
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
@@ -44,7 +41,6 @@ export class SettlementController {
     return new ResponseSettlementDto(settlement);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
@@ -66,7 +62,6 @@ export class SettlementController {
     return new ResponseSettlementDto(settlement);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const settlements = await this.settlementService.findAllOwned(req.user);
@@ -76,14 +71,12 @@ export class SettlementController {
     return parsedSettlements;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const settlement = await this.settlementService.findOneByOrFail({ id });
     return new ResponseSettlementDto(settlement);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
@@ -104,7 +97,6 @@ export class SettlementController {
     return parsedSettlements;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -115,7 +107,6 @@ export class SettlementController {
   }
 
   @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard)
   @Patch(':id/:flag')
   async updateIsClosed(
     @Param('id', ParseUUIDPipe) id: string,
@@ -125,7 +116,6 @@ export class SettlementController {
     return new ResponseSettlementDto(settlement);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const settlement = await this.settlementService.remove(id);
