@@ -17,8 +17,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const defaultMessage = 'Internal Server Error';
     const defaultError = 'Internal Server Error';
 
-    const messages: string[] = [defaultMessage];
-    const errorName = defaultError;
+    let messages: string[] = [defaultMessage];
+    let errorName = defaultError;
+
+    if (isHttpException) {
+      const responseData = exception.getResponse();
+
+      if (typeof responseData === 'string') {
+        messages = [responseData];
+      }
+
+      if (typeof responseData === 'object' && responseData !== null) {
+        const { message, error } = responseData as Record<string, any>;
+
+        if (Array.isArray(message)) {
+          messages = message as string[];
+        } else if (typeof message === 'string') {
+          messages = [message];
+        }
+
+        if (typeof error === 'string') {
+          errorName = error;
+        }
+      }
+    }
 
     return response.status(status).json({
       message: messages,
