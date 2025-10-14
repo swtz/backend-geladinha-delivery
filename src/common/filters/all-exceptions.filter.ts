@@ -3,10 +3,13 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
     const isHttpException = exception instanceof HttpException;
@@ -40,6 +43,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
           errorName = error;
         }
       }
+    }
+
+    if (!(exception instanceof HttpException)) {
+      this.logger.error(
+        'Unexpected internal error',
+        (exception as Error).stack || 'sem stack',
+      );
+    } else {
+      this.logger.warn(`${status} - ${errorName}: ${messages.join(' | ')}`);
     }
 
     return response.status(status).json({
