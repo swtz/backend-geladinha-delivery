@@ -8,6 +8,7 @@
 # @name authLogin
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
+Origin: google.com
 
 {
   "email": "neo@email.com",
