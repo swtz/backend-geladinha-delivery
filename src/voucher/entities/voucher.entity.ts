@@ -15,7 +15,7 @@ export class Voucher {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('double')
+  @Column('float')
   amount: number;
 
   @Column({ nullable: true })

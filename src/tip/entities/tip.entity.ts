@@ -13,7 +13,7 @@ export class Tip {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('double')
+  @Column('float')
   amount: number;
 
   @CreateDateColumn()

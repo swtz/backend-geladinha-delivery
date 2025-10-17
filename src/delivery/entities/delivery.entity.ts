@@ -22,10 +22,10 @@ export class Delivery {
   @Column({ length: 150, nullable: true })
   description: string;
 
-  @Column({ type: 'double' })
+  @Column()
   totalPurchase: number;
 
-  @Column({ type: 'double' })
+  @Column()
   deliveryTax: number;
 
   @Column({ default: false })

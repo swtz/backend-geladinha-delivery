@@ -59,6 +59,6 @@ export class DeliveryMan extends User {
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
   tips: Tip[];
 
-  @Column('double')
+  @Column('float')
   daily: number;
 }

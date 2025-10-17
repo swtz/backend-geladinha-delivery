@@ -16,22 +16,22 @@ export class Payout {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('double')
+  @Column('float')
   totalDeliveries: number;
 
-  @Column('double')
+  @Column('float')
   motoboyDaily: number;
 
-  @Column('double')
+  @Column('float')
   motoboyTips: number;
 
-  @Column('double')
+  @Column('float')
   subtotal: number;
 
-  @Column('double')
+  @Column('float')
   totalSpending: number;
 
-  @Column('double')
+  @Column('float')
   total: number;
 
   @Column({ default: false })

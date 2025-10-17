@@ -16,37 +16,37 @@ export class Settlement {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('double')
+  @Column('float')
   initValue: number;
 
   @Column('int')
   amountDeliveries: number;
 
-  @Column('double')
+  @Column('float')
   totalRemainingMotoboy: number;
 
-  @Column('double')
+  @Column('float')
   moneySubtotal: number;
 
-  @Column('double')
+  @Column('float')
   cardSubtotal: number;
 
-  @Column('double')
+  @Column('float')
   pixSubtotal: number;
 
-  @Column('double')
+  @Column('float')
   subtotal: number;
 
   @Column({ nullable: true })
   description: string;
 
-  @Column('double')
+  @Column('float')
   totalSpending: number;
 
-  @Column('double')
+  @Column('float')
   currentTotal: number;
 
-  @Column('double')
+  @Column('float')
   expectedTotal: number;
 
   @CreateDateColumn()
