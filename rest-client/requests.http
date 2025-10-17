@@ -104,13 +104,8 @@ Content-Type: application/json
 {
   "name": "Rogério",
   "address" : {
-    "id": "aaa628e2-f2c1-4925-80fb-cfb65a8651b0",
-    "street": "Avenida Y",
-    "neighborhood": "25 de março",
-    "postalCode": "88955-000",
-    "city": "Gaivota",
-    "stateCode": "SC",
-    "location": "19.8987, -155.6659"
+    "id": "e1daf5f8-425b-4576-a3a9-640a5a5e860e",
+    "isDefault": true
   }
 }
 
@@ -133,7 +128,7 @@ Content-Type: application/json
 
 ### remove address
 # @name removeAddress
-DELETE {{baseUrl}}/customer/address/8a52220f-5818-4458-8c66-60f2669449a1
+DELETE {{baseUrl}}/customer/address/aaa628e2-f2c1-4925-80fb-cfb65a8651b0
 Authorization: Bearer {{JwtToken}}
 
 ### find one customer

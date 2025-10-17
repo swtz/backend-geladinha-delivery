@@ -149,9 +149,12 @@ export class CustomerService {
     const address = await this.addressService.create(dto, dto.isDefault);
 
     if (dto.isDefault) {
-      void customer.addresses.map(async address => {
-        await this.addressService.save({ ...address, isDefault: false });
-      });
+      const ownedAddress = await this.addressService.findOneOwnedOrFail(
+        { isDefault: true },
+        { id },
+      );
+
+      await this.addressService.save({ ...ownedAddress, isDefault: false });
     }
 
     customer.addresses.push(address);
