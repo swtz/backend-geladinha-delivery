@@ -3,6 +3,7 @@ export function formatPhone(parsedPhone: string) {
     .replaceAll('(', '')
     .replaceAll(')', '')
     .replaceAll('-', '')
+    .replaceAll('/', '')
     .trim()
     .split(' ')
     .join('');

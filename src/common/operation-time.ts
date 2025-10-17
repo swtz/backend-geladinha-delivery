@@ -1,4 +1,4 @@
-export const START_TIME = 9;
+export const START_TIME = 8;
 export const END_TIME = 4;
 export const CURRENT_SHORT_DATE = new Date().toLocaleString('BR', {
   dateStyle: 'short',

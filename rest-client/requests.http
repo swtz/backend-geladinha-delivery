@@ -143,7 +143,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
 # @name findAddressesByCustomer
-GET {{baseUrl}}/customer/643da16e-d81d-413e-b71d-b01728742c97/address
+GET {{baseUrl}}/customer/258ced07-07db-45c6-978b-e757c82353a9/address
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
@@ -155,16 +155,18 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "df2293b6-ca41-4d66-a05c-f4b98d914c80",
-  "customer": "ff40fb9a-643d-42d2-ae82-bd80bc44ab1f",
-  "totalPurchase": 50,
-  "deliveryTax": 1.0,
-  "paymentMethod": "debit"
+  "motoboy": "79984dcf-4463-424a-916a-ff4fb46027d5",
+  "customer": "258ced07-07db-45c6-978b-e757c82353a9",
+  "description": "desligar o farol",
+  "totalPurchase": 80,
+  "deliveryTax": 5,
+  "tip": 1,
+  "paymentMethod": "pix"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/54a959c3-515d-4f47-b7db-a596cfc44dbb
+PATCH {{baseUrl}}/delivery/me/f1e0ea26-225f-46ba-8591-cb347c793c53
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -194,7 +196,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery/?isPaid=true
+GET {{baseUrl}}/delivery?isPaid=true
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################
@@ -211,13 +213,12 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/df2293b6-ca41-4d66-a05c-f4b98d914c80
+POST {{baseUrl}}/voucher/me/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "amount": 50,
-  "description": "gasolina"
+  "amount": 15
 }
 
 ### Update voucher
@@ -266,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Neo
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme&fromDate=18/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -281,7 +282,7 @@ Content-Type: application/json
 
 ### Read payout
 # @name readPayout
-GET {{baseUrl}}/payout/bfba3ffb-72bc-4732-9d6a-2fd614d0de1b
+GET {{baseUrl}}/payout/7ed2374c-7548-4d78-a0cb-e767f19faa09
 Authorization: Bearer {{JwtToken}}
 
 ### Read owned payouts
