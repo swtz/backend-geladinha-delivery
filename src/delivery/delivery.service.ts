@@ -55,7 +55,7 @@ export class DeliveryService {
     );
 
     const tip = dto.tip
-      ? await this.tipService.create_new(dto.tip, motoboy)
+      ? await this.tipService.create(dto.tip, motoboy)
       : undefined;
 
     const created = {
@@ -127,27 +127,18 @@ export class DeliveryService {
       delivery.paymentMethod = newPaymentMethod;
     }
 
-    // if (dto.tip || dto.tip === 0) {
-    //   if (delivery.tip === null) {
-    //     await this.tipService.createReplaceAndPush(
-    //       dto.tip,
-    //       delivery,
-    //       delivery.motoboy,
-    //     );
+    if (dto.tip || dto.tip === 0) {
+      if (delivery.tip === null) {
+        delivery.tip = await this.tipService.create(dto.tip, delivery.motoboy);
+      }
 
-    //     await this.userService.saveDeliveryMan(delivery.motoboy);
-    //   }
-
-    //   if (dto.tip !== delivery.tip.amount) {
-    //     const tip = await this.tipService.findOneByOrFail({
-    //       id: delivery.tip.id,
-    //       motoboy: delivery.motoboy,
-    //     });
-    //     const newTip = await this.tipService.update(tip.id, dto.tip);
-
-    //     delivery.tip = newTip;
-    //   }
-    // }
+      if (dto.tip !== delivery.tip.amount) {
+        delivery.tip = await this.tipService.update({
+          id: delivery.tip.id,
+          amount: dto.tip,
+        });
+      }
+    }
 
     delivery.isPaid = dto.isPaid ?? delivery.isPaid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;

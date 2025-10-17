@@ -7,7 +7,6 @@ import {
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { generateBadRequestException } from 'src/common/generate-exception';
 
@@ -20,22 +19,8 @@ export class TipService {
     private readonly tipRepository: Repository<Tip>,
   ) {}
 
-  create_new(amount: number, motoboy: DeliveryMan) {
+  create(amount: number, motoboy: DeliveryMan) {
     return this.save({ amount, motoboy });
-  }
-
-  create(amount: number) {
-    return this.save({ amount });
-  }
-
-  async createReplaceAndPush(
-    amount: number,
-    delivery: Delivery,
-    motoboy: DeliveryMan,
-  ) {
-    const tip = await this.create(amount);
-    delivery.tip = tip;
-    motoboy.tips.push(tip);
   }
 
   async update(tipData: Partial<Tip>) {
