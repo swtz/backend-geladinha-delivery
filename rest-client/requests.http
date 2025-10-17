@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "João",
-  "email": "joao@email.com",
-  "phone": "((48))976020119",
-  "role": "motoboy",
+  "name": "Neo",
+  "email": "neo@email.com",
+  "phone": "(48) 99988-4468",
+  "role": "operator",
   "password": "123456",
   "motorcycle": "Suzuki, 2017, 300, Verde",
-  "daily": 35
+  "daily": 30
 }
 
 ### Update user
@@ -59,8 +59,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "currentPassword": "123456",
-  "newPassword": "1234567"
+  "currentPassword": "1234567",
+  "newPassword": "123456"
 }
 
 ### Read one user
@@ -82,16 +82,16 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Valdenir",
+  "name": "Frederico",
   "phone": "48988550043",
   "address": {
     "street": "Travessa Tesourinhas",
-    "number": "888",
+    "number": "25",
     "neighborhood": "Maçaricos",
     "postalCode": "88955-000",
     "city": "Gaivota",
     "stateCode": "SC",
-    "location": "19.8987° N, 155.6659° W"
+    "location": "19.8987, -155.6659"
   }
 }
 

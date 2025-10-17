@@ -44,6 +44,7 @@ export class UserController {
 
   @Post()
   @Roles(Role.Admin)
+  // @Public()
   async create(
     @Body() dto: CreateUserDto,
     @Body('phone', ParseBrPhonePipe) phone: string,

@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumberString,
   IsOptional,
   IsPostalCode,
   IsString,
@@ -17,7 +18,7 @@ export class CreateAddressDto {
   street: string;
 
   @IsOptional()
-  @IsString({ message: 'Formato inválido' })
+  @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
   @IsNotEmpty({ message: 'Campo número não pode estar vazio' })
   @MaxLength(16, { message: 'Campo número pode ter no máximo 16 caracteres' })
   number?: string;
