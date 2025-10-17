@@ -23,24 +23,10 @@ export class AddressService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  create(dto: CreateAddressDto, isDefault = true) {
+  create(dto: CreateAddressDto, isDefault = true, customer?: Customer) {
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
-    const newAddress = {
-      street: dto.street,
-      number: dto.number,
-      complement: dto.complement,
-      referencePoint: dto.referencePoint,
-      neighborhood: dto.neighborhood,
-      postalCode: dto.postalCode
-        ? formatBrPostalCode(dto.postalCode)
-        : undefined,
-      city: dto.city,
-      stateCode: dto.stateCode,
-      location: dto.location,
-      isDefault,
-    };
-
+    const newAddress = this.generateAddress(dto, isDefault, customer);
     return this.save(newAddress);
   }
 
@@ -85,6 +71,33 @@ export class AddressService {
     });
 
     return this.save(ownedAddress);
+  }
+
+  generateAddress(
+    dto: CreateAddressDto,
+    isDefault = true,
+    customer?: Customer,
+  ) {
+    const address: Partial<Address> = {
+      street: dto.street,
+      number: dto.number,
+      complement: dto.complement,
+      referencePoint: dto.referencePoint,
+      neighborhood: dto.neighborhood,
+      postalCode: dto.postalCode
+        ? formatBrPostalCode(dto.postalCode)
+        : undefined,
+      city: dto.city,
+      stateCode: dto.stateCode,
+      location: dto.location,
+      isDefault,
+    };
+
+    if (customer) {
+      return { ...address, customer };
+    }
+
+    return address;
   }
 
   async findOneByOrFail(addressData: Partial<Address>) {

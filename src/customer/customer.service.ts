@@ -146,8 +146,6 @@ export class CustomerService {
       );
     }
 
-    const address = await this.addressService.create(dto, dto.isDefault);
-
     if (dto.isDefault) {
       const ownedAddress = await this.addressService.findOneOwnedOrFail(
         { isDefault: true },
@@ -157,8 +155,7 @@ export class CustomerService {
       await this.addressService.save({ ...ownedAddress, isDefault: false });
     }
 
-    customer.addresses.push(address);
-    await this.save(customer);
+    await this.addressService.create(dto, dto.isDefault, customer);
 
     return this.findOneByOrFail({ id });
   }

@@ -82,11 +82,11 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Josefino",
+  "name": "José",
   "phone": "(48) 98855-0061",
   "address": {
-    "street": "Tr        ês                 ",
-    "complement": "Aqu         i            ",
+    "street": "Avenida Carambolas",
+    "complement": "logo ali",
     "neighborhood": "25 de março",
     "postalCode": "88955-000",
     "city": "Gaivota",
@@ -116,13 +116,13 @@ Authorization: Bearer {{JwtToken}}
 
 ### add address
 # @name addAddress
-POST {{baseUrl}}/customer/874cb730-aa1e-4bc5-b8f4-736c4ccdeb34/address
+POST {{baseUrl}}/customer/0e8421a6-183a-4f04-906b-6b06dade5637/address
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "street": "Avenida X",
-  "neighborhood": "Cícero",
+  "street": "Avenida Y",
+  "neighborhood": "Maloca",
   "isDefault": true
 }
 
@@ -143,7 +143,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
 # @name findAddressesByCustomer
-GET {{baseUrl}}/customer/874cb730-aa1e-4bc5-b8f4-736c4ccdeb34/address
+GET {{baseUrl}}/customer/0e8421a6-183a-4f04-906b-6b06dade5637/address
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################
