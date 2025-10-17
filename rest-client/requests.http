@@ -99,15 +99,15 @@ Content-Type: application/json
 
 ### Update customer
 # @name updateCustomer
-PATCH {{baseUrl}}/customer/8dcb3628-9f2e-4a61-8f67-fa7ad8008e16
+PATCH {{baseUrl}}/customer/874cb730-aa1e-4bc5-b8f4-736c4ccdeb34
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "phone": null,
-  "address": {
-    "id": "0ed77530-8f3c-4d69-beec-1235a7e96ef7",
-    "postalCode": null
+  "name": "Rogério",
+  "address" : {
+    "id": "e1d5cf37-c34d-484f-b082-b732e0c127df",
+    "number": "500"
   }
 }
 

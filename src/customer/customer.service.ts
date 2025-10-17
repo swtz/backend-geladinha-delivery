@@ -46,14 +46,14 @@ export class CustomerService {
   }
 
   async update(dto: UpdateCustomerDto, id: string) {
-    const existsCustomerData = dto.name || dto.phone;
+    const existsCustomerData = Object.values(dto).filter(Boolean);
     const customer = await this.findOneByOrFail({ id });
 
-    if (!existsCustomerData && dto.address === undefined) {
+    if (existsCustomerData.length === 0 && dto.address === undefined) {
       throw new BadRequestException('Dados não enviados');
     }
 
-    if (existsCustomerData) {
+    if (existsCustomerData.length > 0) {
       if (dto.phone && dto.phone !== customer.phone) {
         await this.failIfPhoneExists(dto.phone);
         customer.phone = dto.phone;
