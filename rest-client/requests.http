@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -217,7 +217,7 @@ Content-Type: application/json
 
 ### Create voucher for user
 # @name createVoucherForUser
-POST {{baseUrl}}/voucher/me/user/697dc575-09d7-408f-a325-eb40f4390e43
+POST {{baseUrl}}/voucher/me/user/687dc575-09d7-408f-a325-eb40f4390e43
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -238,12 +238,12 @@ Content-Type: application/json
 
 ### Update voucher for user
 # @name updateVoucherForUser
-PATCH {{baseUrl}}/voucher/me/user/6ef22e5d-870f-4d60-98e3-d816722e87d0
+PATCH {{baseUrl}}/voucher/me/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "801ed52f-a011-4663-aa4f-8e6bfeef88d9",
+  "id": "92bf056d-122d-47b3-970d-ba15445cf385",
   "amount": 25.5
 }
 

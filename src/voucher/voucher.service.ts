@@ -102,11 +102,7 @@ export class VoucherService {
       );
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail({
-      id: entityId,
-    });
-
-    return this.update(dto, motoboy, voucher.id);
+    return this.update(dto, authFlags.entity, voucher.id);
   }
 
   async update(dto: UpdateVoucherDto, user: User, voucherId: string) {
