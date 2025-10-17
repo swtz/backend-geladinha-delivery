@@ -104,10 +104,13 @@ Content-Type: application/json
 {
   "name": "Rogério",
   "address" : {
-    "id": "e1d5cf37-c34d-484f-b082-b732e0c127df",
-    "number": "5",
-    "complement": "ao lado da padaria",
-    "referencePoint": "ao lado"
+    "id": "aaa628e2-f2c1-4925-80fb-cfb65a8651b0",
+    "street": "Avenida Y",
+    "neighborhood": "25 de março",
+    "postalCode": "88955-000",
+    "city": "Gaivota",
+    "stateCode": "SC",
+    "location": "19.8987, -155.6659"
   }
 }
 

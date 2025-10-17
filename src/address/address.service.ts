@@ -24,14 +24,7 @@ export class AddressService {
   ) {}
 
   create(dto: CreateAddressDto, isDefault = true) {
-    trimWhiteSpacesFromDto(
-      dto,
-      4,
-      'number',
-      'stateCode',
-      'neighborhood',
-      'location',
-    );
+    trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
     const newAddress = {
       street: dto.street,
@@ -63,14 +56,7 @@ export class AddressService {
       },
     );
 
-    trimWhiteSpacesFromDto(
-      dto,
-      4,
-      'number',
-      'stateCode',
-      'neighborhood',
-      'location',
-    );
+    trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
     ownedAddress.city = dto.city ?? ownedAddress.city;
     ownedAddress.complement = dto.complement ?? ownedAddress.complement;
@@ -88,24 +74,17 @@ export class AddressService {
       ? ownedAddress.isDefault
       : dto.isDefault;
 
-    const nullableValues = {
-      complement: dto.complement,
-      referencePoint: dto.referencePoint,
-      number: dto.number,
-    };
-    const updatedValues = {};
-
-    Object.keys(nullableValues).forEach(key => {
-      if (nullableValues[key] === null) {
-        updatedValues[key] = '';
+    Object.keys(dto).forEach(key => {
+      if (dto[key] === null) {
+        ownedAddress[key] = '';
 
         if (key === 'number') {
-          updatedValues[key] = 'S/N';
+          ownedAddress[key] = 'S/N';
         }
       }
     });
 
-    return this.save({ ...ownedAddress, ...updatedValues });
+    return this.save(ownedAddress);
   }
 
   async findOneByOrFail(addressData: Partial<Address>) {
