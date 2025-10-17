@@ -70,14 +70,7 @@ export class DeliveryService {
       address: defaultAddress,
     };
 
-    const delivery = await this.save(created);
-
-    // if (dto.tip) {
-    //   await this.tipService.createReplaceAndPush(dto.tip, delivery, motoboy);
-    //   await this.userService.saveDeliveryMan(motoboy);
-    // }
-
-    return this.save(delivery);
+    return this.save(created);
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
@@ -89,13 +82,10 @@ export class DeliveryService {
       });
 
       if (delivery.tip !== null) {
-        await this.tipService.remove(delivery.tip.id);
-        await this.tipService.createReplaceAndPush(
-          delivery.tip.amount,
-          delivery,
-          newMotoboy,
-        );
-        await this.userService.saveDeliveryMan(newMotoboy);
+        await this.tipService.update({
+          id: delivery.tip.id,
+          motoboy: newMotoboy,
+        });
       }
 
       delivery.motoboy = newMotoboy;
@@ -137,27 +127,27 @@ export class DeliveryService {
       delivery.paymentMethod = newPaymentMethod;
     }
 
-    if (dto.tip || dto.tip === 0) {
-      if (delivery.tip === null) {
-        await this.tipService.createReplaceAndPush(
-          dto.tip,
-          delivery,
-          delivery.motoboy,
-        );
+    // if (dto.tip || dto.tip === 0) {
+    //   if (delivery.tip === null) {
+    //     await this.tipService.createReplaceAndPush(
+    //       dto.tip,
+    //       delivery,
+    //       delivery.motoboy,
+    //     );
 
-        await this.userService.saveDeliveryMan(delivery.motoboy);
-      }
+    //     await this.userService.saveDeliveryMan(delivery.motoboy);
+    //   }
 
-      if (dto.tip !== delivery.tip.amount) {
-        const tip = await this.tipService.findOneByOrFail({
-          id: delivery.tip.id,
-          motoboy: delivery.motoboy,
-        });
-        const newTip = await this.tipService.update(tip.id, dto.tip);
+    //   if (dto.tip !== delivery.tip.amount) {
+    //     const tip = await this.tipService.findOneByOrFail({
+    //       id: delivery.tip.id,
+    //       motoboy: delivery.motoboy,
+    //     });
+    //     const newTip = await this.tipService.update(tip.id, dto.tip);
 
-        delivery.tip = newTip;
-      }
-    }
+    //     delivery.tip = newTip;
+    //   }
+    // }
 
     delivery.isPaid = dto.isPaid ?? delivery.isPaid;
     delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;

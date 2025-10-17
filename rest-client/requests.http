@@ -23,12 +23,12 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Neo",
-  "email": "neo@email.com",
-  "phone": "(48) 99988-4468",
-  "role": "operator",
+  "name": "Gabriel",
+  "email": "gabriel@email.com",
+  "phone": "(48) 99988-4469",
+  "role": "motoboy",
   "password": "123456",
-  "motorcycle": "Suzuki, 2017, 300, Verde",
+  "motorcycle": "Yamaha, 2017, 300, Vermelha",
   "daily": 30
 }
 
@@ -165,16 +165,17 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/f1e0ea26-225f-46ba-8591-cb347c793c53
+PATCH {{baseUrl}}/delivery/me/22f25a0c-9731-4f1e-b7e9-6798bd84369e
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "motoboy": "074e9c52-772e-42ac-a033-800c9a502b66",
   "isPaid": true
 }
 
 ### Delete delivery
-# @name dele.teDelivery
+# @name deleteDelivery
 DELETE {{baseUrl}}/delivery/me/11c97c4f-2997-4996-bc59-28a451f37d71
 Authorization: Bearer {{JwtToken}}
 
@@ -266,7 +267,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Guilherme
+GET {{baseUrl}}/payout/preview?motoboy=Gabriel
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout

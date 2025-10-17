@@ -38,14 +38,15 @@ export class TipService {
     motoboy.tips.push(tip);
   }
 
-  async update(id: string, amount: number) {
-    if (id === undefined || amount === undefined) {
-      throw new BadRequestException('Dados não enviados');
+  async update(tipData: Partial<Tip>) {
+    if (!tipData.id) {
+      throw new BadRequestException('O ID da gorjeta é obrigatório');
     }
 
-    const tip = await this.findOneByOrFail({ id });
+    const tip = await this.findOneByOrFail({ id: tipData.id });
 
-    tip.amount = amount;
+    tip.amount = tipData.amount ?? tip.amount;
+    tip.motoboy = tipData.motoboy ?? tip.motoboy;
 
     return this.save(tip);
   }
