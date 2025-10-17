@@ -82,14 +82,12 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Rogério",
-  "phone": "48/98855/0044",
+  "name": "Josefino",
+  "phone": "(48) 98855-0060",
   "address": {
-    "street": "Travessa Maçaricos",
-    "number": "252",
-    "complement": "fundos da casa",
-    "referencePoint": "2 quadras após o mercadinho",
-    "neighborhood": "Próspera",
+    "street": "Tr        ês                 ",
+    "complement": "Aqu         i            ",
+    "neighborhood": "25 de março",
     "postalCode": "88955-000",
     "city": "Gaivota",
     "stateCode": "SC",

@@ -12,6 +12,7 @@ import { Customer } from 'src/customer/entities/customer.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { formatBrPostalCode } from 'src/common/utils/format-br-postal-code';
+import { trimWhiteSpacesFromDto } from 'src/common/utils/trim-white-spaces-from-dto';
 
 @Injectable()
 export class AddressService {
@@ -23,6 +24,8 @@ export class AddressService {
   ) {}
 
   create(dto: CreateAddressDto, isDefault = true) {
+    trimWhiteSpacesFromDto(dto, 4, 'stateCode', 'neighborhood', 'location');
+
     const newAddress = {
       street: dto.street,
       number: dto.number,
@@ -52,6 +55,8 @@ export class AddressService {
         id: customerId,
       },
     );
+
+    trimWhiteSpacesFromDto(dto, 4, 'stateCode', 'neighborhood', 'location');
 
     ownedAddress.city = dto.city ?? ownedAddress.city;
     ownedAddress.complement = dto.complement ?? ownedAddress.complement;
