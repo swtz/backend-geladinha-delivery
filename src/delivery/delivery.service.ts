@@ -54,18 +54,18 @@ export class DeliveryService {
       dto.paymentMethod,
     );
 
-    const created = await this.save({
+    const created = {
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
+      paymentMethod,
       operator,
       motoboy,
       customer,
       address: defaultAddress,
-    });
-    const delivery = await this.findOneByOrFail({ id: created.id });
+    };
 
-    delivery.paymentMethod = paymentMethod;
+    const delivery = await this.save(created);
 
     if (dto.tip) {
       await this.tipService.createReplaceAndPush(dto.tip, delivery, motoboy);
