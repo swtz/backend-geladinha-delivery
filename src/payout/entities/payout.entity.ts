@@ -46,7 +46,7 @@ export class Payout {
   @Column({ enum: weekDays })
   weekDay: WeekDay;
 
-  @Column('datetime')
+  @Column()
   workDay: Date;
 
   @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE' })

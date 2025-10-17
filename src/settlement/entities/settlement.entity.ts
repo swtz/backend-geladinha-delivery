@@ -58,7 +58,7 @@ export class Settlement {
   @Column({ enum: weekDays })
   weekDay: WeekDay;
 
-  @Column('datetime')
+  @Column()
   workDay: Date;
 
   @Column({ default: false })
