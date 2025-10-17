@@ -164,18 +164,23 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/e60ff51b-7cf7-4d0e-b232-84c136e021ca
+PATCH {{baseUrl}}/delivery/me/58405f94-ec9b-4dee-bc86-6d5a0502bc8c
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "isPaid": true,
-  "tip": 2
+  "paymentMethod": "money"
 }
+
+### Delete tip
+# @name deleteTip
+DELETE {{baseUrl}}/tip/beda2c00-b20a-45e8-9513-6335ca173918
+Authorization: Bearer {{JwtToken}}
 
 ### Delete delivery
 # @name deleteDelivery
-DELETE {{baseUrl}}/delivery/me/11c97c4f-2997-4996-bc59-28a451f37d71
+DELETE {{baseUrl}}/delivery/me/e60ff51b-7cf7-4d0e-b232-84c136e021ca
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned deliveries
