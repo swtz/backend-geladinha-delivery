@@ -329,7 +329,7 @@ Content-Type: application/json
 
 {
   "initValue": 50,
-  "operatorName": "Igor"
+  "operatorName": "Neo"
 }
 
 ### Read settlement

@@ -35,12 +35,10 @@ export class VoucherService {
     const voucher = {
       amount: dto.amount,
       description: dto.description,
+      user: entity,
     };
     const created = await this.save(voucher);
 
-    entity.vouchers.push(created);
-
-    await this.userService.saveUser(entity);
     return this.findOneOwnedByOrFail({ id: created.id }, entity);
   }
 
