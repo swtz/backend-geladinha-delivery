@@ -82,12 +82,14 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Frederico",
-  "phone": "48988550043",
+  "name": "Rogério",
+  "phone": "48/98855/0044",
   "address": {
-    "street": "Travessa Tesourinhas",
-    "number": "25",
-    "neighborhood": "Maçaricos",
+    "street": "Travessa Maçaricos",
+    "number": "252",
+    "complement": "fundos da casa",
+    "referencePoint": "2 quadras após o mercadinho",
+    "neighborhood": "Próspera",
     "postalCode": "88955-000",
     "city": "Gaivota",
     "stateCode": "SC",
@@ -116,14 +118,14 @@ Authorization: Bearer {{JwtToken}}
 
 ### add address
 # @name addAddress
-POST {{baseUrl}}/customer/71950dc0-045c-44a2-92fc-fed75b2eea47/address
+POST {{baseUrl}}/customer/874cb730-aa1e-4bc5-b8f4-736c4ccdeb34/address
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "street": "NOVO ADDRESS",
-  "neighborhood": "TRUE",
-  "isDefault": false
+  "street": "Avenida X",
+  "neighborhood": "Cícero",
+  "isDefault": true
 }
 
 ### remove address
@@ -143,7 +145,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all address by customer
 # @name findAddressesByCustomer
-GET {{baseUrl}}/customer/258ced07-07db-45c6-978b-e757c82353a9/address
+GET {{baseUrl}}/customer/874cb730-aa1e-4bc5-b8f4-736c4ccdeb34/address
 Authorization: Bearer {{JwtToken}}
 
 ################### DELIVERY ###################

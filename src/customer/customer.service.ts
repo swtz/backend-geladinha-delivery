@@ -35,21 +35,12 @@ export class CustomerService {
 
   async create(dto: CreateCustomerDto) {
     await this.failIfPhoneExists(dto.phone);
-
-    const newCustomer = {
+    const address = await this.addressService.create(dto.address);
+    const customer = {
       name: dto.name,
       phone: dto.phone,
+      addresses: [address],
     };
-    const address = await this.addressService.create(dto.address);
-    const created = await this.save(newCustomer);
-    const customer = await this.customerRepository.findOneOrFail({
-      where: {
-        id: created.id,
-      },
-      relations: { addresses: true },
-    });
-
-    customer.addresses.push(address);
 
     return this.save(customer);
   }
