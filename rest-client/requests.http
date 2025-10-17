@@ -83,7 +83,7 @@ Content-Type: application/json
 
 {
   "name": "Josefino",
-  "phone": "(48) 98855-0060",
+  "phone": "(48) 98855-0061",
   "address": {
     "street": "Tr        ês                 ",
     "complement": "Aqu         i            ",
@@ -105,7 +105,9 @@ Content-Type: application/json
   "name": "Rogério",
   "address" : {
     "id": "e1d5cf37-c34d-484f-b082-b732e0c127df",
-    "number": "500"
+    "number": "5",
+    "complement": "ao lado da padaria",
+    "referencePoint": "ao lado"
   }
 }
 

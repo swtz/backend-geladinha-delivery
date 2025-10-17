@@ -11,7 +11,13 @@ export function trimWhiteSpacesFromDto(
     let parsedValue = '';
 
     if (typeof value === 'string' && !excludedFields.includes(field)) {
-      parsedValue = value.trim().split(' ').join('');
+      const partialValue = value.trim().split(' ');
+
+      if (partialValue.length === 1) {
+        parsedValue = partialValue.join('');
+      } else {
+        parsedValue = value.trim();
+      }
 
       if (parsedValue.length < minLength) {
         throw new BadRequestException('O campo não pode conter apenas espaços');

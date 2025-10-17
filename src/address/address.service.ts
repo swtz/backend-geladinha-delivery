@@ -24,7 +24,14 @@ export class AddressService {
   ) {}
 
   create(dto: CreateAddressDto, isDefault = true) {
-    trimWhiteSpacesFromDto(dto, 4, 'stateCode', 'neighborhood', 'location');
+    trimWhiteSpacesFromDto(
+      dto,
+      4,
+      'number',
+      'stateCode',
+      'neighborhood',
+      'location',
+    );
 
     const newAddress = {
       street: dto.street,
@@ -56,7 +63,14 @@ export class AddressService {
       },
     );
 
-    trimWhiteSpacesFromDto(dto, 4, 'stateCode', 'neighborhood', 'location');
+    trimWhiteSpacesFromDto(
+      dto,
+      4,
+      'number',
+      'stateCode',
+      'neighborhood',
+      'location',
+    );
 
     ownedAddress.city = dto.city ?? ownedAddress.city;
     ownedAddress.complement = dto.complement ?? ownedAddress.complement;
