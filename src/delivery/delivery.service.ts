@@ -54,10 +54,15 @@ export class DeliveryService {
       dto.paymentMethod,
     );
 
+    const tip = dto.tip
+      ? await this.tipService.create_new(dto.tip, motoboy)
+      : undefined;
+
     const created = {
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
+      tip,
       paymentMethod,
       operator,
       motoboy,
@@ -67,10 +72,10 @@ export class DeliveryService {
 
     const delivery = await this.save(created);
 
-    if (dto.tip) {
-      await this.tipService.createReplaceAndPush(dto.tip, delivery, motoboy);
-      await this.userService.saveDeliveryMan(motoboy);
-    }
+    // if (dto.tip) {
+    //   await this.tipService.createReplaceAndPush(dto.tip, delivery, motoboy);
+    //   await this.userService.saveDeliveryMan(motoboy);
+    // }
 
     return this.save(delivery);
   }

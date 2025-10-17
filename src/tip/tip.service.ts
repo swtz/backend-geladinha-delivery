@@ -20,6 +20,10 @@ export class TipService {
     private readonly tipRepository: Repository<Tip>,
   ) {}
 
+  create_new(amount: number, motoboy: DeliveryMan) {
+    return this.save({ amount, motoboy });
+  }
+
   create(amount: number) {
     return this.save({ amount });
   }
