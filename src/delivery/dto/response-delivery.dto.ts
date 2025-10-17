@@ -30,13 +30,12 @@ export class ResponseDeliveryDto {
     this.paymentMethod =
       delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
     this.isPaid = delivery.isPaid;
-    this.tip =
-      delivery.tip !== null
-        ? {
-            id: delivery.tip.id,
-            amount: delivery.tip.amount,
-          }
-        : null;
+    this.tip = delivery.tip
+      ? {
+          id: delivery.tip.id,
+          amount: delivery.tip.amount,
+        }
+      : null;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
     this.operator =

@@ -159,19 +159,18 @@ Content-Type: application/json
   "customer": "258ced07-07db-45c6-978b-e757c82353a9",
   "totalPurchase": 45.5,
   "deliveryTax": 6.5,
-  "tip": 2.5,
   "paymentMethod": "credit"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/58405f94-ec9b-4dee-bc86-6d5a0502bc8c
+PATCH {{baseUrl}}/delivery/me/e60ff51b-7cf7-4d0e-b232-84c136e021ca
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "isPaid": true,
-  "tip": 0
+  "tip": 2
 }
 
 ### Delete delivery
