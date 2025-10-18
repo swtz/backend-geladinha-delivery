@@ -39,12 +39,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "João",
-  "email": "joao@email.com",
-  "phone": "5 4 9 7602 - 0119",
-  "role": "motoboy",
-  "motorcycle": "Yamaha, 250, 2017, Vermelha",
-  "daily": 45
+  "motorcycle": "Suzuki, 2017, 650, Verde Limão",
+  "phone": "48999884476"
 }
 
 ### Delete user

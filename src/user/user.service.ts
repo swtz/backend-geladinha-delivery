@@ -113,8 +113,8 @@ export class UserService {
     }
 
     const entity = authFlags.isLoggedUserMotoboy
-      ? await this.updateUserMotoboy(!!existsMotoboyData, dto, authFlags.entity)
-      : authFlags.entity;
+      ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
+      : user;
 
     if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
       throw new BadRequestException('Dados não enviados');
@@ -131,6 +131,7 @@ export class UserService {
     if (dto.phone && dto.phone !== entity.phone) {
       await this.failIfPhoneExists(dto.phone);
       entity.phone = dto.phone;
+      entity.forceLogout = true;
     }
 
     if (
@@ -143,10 +144,11 @@ export class UserService {
       entity.forceLogout = true;
     }
 
-    return this.saveUser(entity);
+    const updated = await this.saveUser(entity);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
-  async updateUserMotoboy(
+  async updateMotoboyFields(
     existsMotoboyData: boolean,
     dto: UpdateUserDto,
     user: User,
