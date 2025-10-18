@@ -63,6 +63,7 @@ export class UserService {
       phone: dto.phone,
       email: dto.email,
       password: hashedPassword,
+      roles: [role],
     };
 
     const user =
@@ -70,9 +71,9 @@ export class UserService {
         ? await this.createUserMotoboy(dto, newUser)
         : await this.createUserOperator(newUser);
 
-    user.roles.push(role);
+    const created = await this.saveUser(user);
 
-    return this.saveUser(user);
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async createUserMotoboy(dto: CreateUserDto, newUser: NewUser) {
