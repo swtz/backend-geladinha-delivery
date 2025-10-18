@@ -200,7 +200,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery?isPaid=true
+GET {{baseUrl}}/delivery?isPaid=false
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################
@@ -319,7 +319,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Neo
+GET {{baseUrl}}/settlement/preview?operatorName=Neo&fromDate=17/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

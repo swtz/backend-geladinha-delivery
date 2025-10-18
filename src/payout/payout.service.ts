@@ -56,8 +56,6 @@ export class PayoutService {
       );
     }
 
-    // e se motoboy foi excluído e operator quer consultar o payout?
-    // no momento → Payout.motoboy = onDelete: 'CASCADE'
     const motoboy = await this.userService.findOneMotoboyByOrFail({
       name: motoboyData,
     });

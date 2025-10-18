@@ -146,34 +146,30 @@ export class SettlementService {
         isPaid: false,
       });
 
+    const currentTotal = setDecimalPlaces(
+      settlement.subtotal -
+        settlement.totalSpending -
+        settlement.totalRemainingMotoboy,
+      2,
+    );
+    const expectedTotal = currentTotal + settlement.totalRemainingMotoboy;
+
     if (exists) {
       settlement.currentTotal = setDecimalPlaces(
-        exists.initValue +
-          settlement.subtotal -
-          settlement.totalSpending -
-          settlement.totalRemainingMotoboy,
+        exists.initValue + currentTotal,
         2,
       );
 
       settlement.expectedTotal = setDecimalPlaces(
-        exists.initValue + settlement.subtotal - settlement.totalSpending,
+        exists.initValue + expectedTotal,
         2,
       );
 
       return settlement;
     }
 
-    settlement.currentTotal += setDecimalPlaces(
-      settlement.subtotal -
-        settlement.totalSpending -
-        settlement.totalRemainingMotoboy,
-      2,
-    );
-
-    settlement.expectedTotal += setDecimalPlaces(
-      settlement.subtotal - settlement.totalSpending,
-      2,
-    );
+    settlement.currentTotal += currentTotal;
+    settlement.expectedTotal += expectedTotal;
 
     return settlement;
   }
