@@ -66,33 +66,25 @@ export class UserService {
       roles: [role],
     };
 
-    const user =
-      dto.role === RoleEnum.Motoboy
-        ? await this.createUserMotoboy(dto, newUser)
-        : await this.createUserOperator(newUser);
-
-    const created = await this.saveUser(user);
-
-    return this.findOneByOrFail({ id: created.id });
-  }
-
-  async createUserMotoboy(dto: CreateUserDto, newUser: NewUser) {
-    if (!dto.motorcycle && !dto.daily) {
-      throw new BadRequestException(
+    if (dto.role === RoleEnum.Motoboy) {
+      const http400 = generateBadRequestException(
         'Campo motocicleta e diária são obrigatórios para o motoboy',
       );
+
+      if (!dto.motorcycle && !dto.daily) {
+        throw http400;
+      }
+
+      const newMotoboy = {
+        ...newUser,
+        motorcycle: dto.motorcycle,
+        daily: dto.daily,
+      };
+
+      const created = await this.saveDeliveryMan(newMotoboy);
+      return this.findOneByOrFail({ id: created.id });
     }
 
-    const newMotoboy = {
-      ...dto,
-      ...newUser,
-    };
-    const created = await this.saveDeliveryMan(newMotoboy);
-
-    return this.findOneByOrFail({ id: created.id });
-  }
-
-  async createUserOperator(newUser: NewUser) {
     const created = await this.saveUser(newUser);
     return this.findOneByOrFail({ id: created.id });
   }
