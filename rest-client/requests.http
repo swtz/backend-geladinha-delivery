@@ -195,7 +195,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery
+GET {{baseUrl}}/delivery?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -271,7 +271,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?motoboy=Gabriel
+GET {{baseUrl}}/payout/preview?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -281,6 +281,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "fromDate": "17/10/2025",
   "motoboy": "Guilherme"
 }
 
@@ -296,12 +297,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout
+GET {{baseUrl}}/payout?motoboy=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/bfba3ffb-72bc-4732-9d6a-2fd614d0de1b
+PATCH {{baseUrl}}/payout/7ed2374c-7548-4d78-a0cb-e767f19faa09
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed

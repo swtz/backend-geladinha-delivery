@@ -73,17 +73,19 @@ export class PayoutService {
       motoboyName: motoboy.name,
     });
 
+    const motoboyTips = deliveries.reduce((prev, item) => {
+      if (item.tip !== null) {
+        return (prev += item.tip.amount);
+      }
+      return prev;
+    }, 0);
+
     const payout = {
       weekDay: weekDays[dateObject.initDate.getDay()],
       workDay: dateObject.initDate,
       totalDeliveries: 0,
       motoboyDaily: 0,
-      motoboyTips:
-        deliveries.reduce((prev, delivery) => {
-          if (delivery.tip !== null) {
-            return (prev += delivery.tip.amount);
-          }
-        }, 0) ?? 0,
+      motoboyTips,
       subtotal: 0,
       totalSpending: 0,
       total: 0,
