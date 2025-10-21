@@ -40,7 +40,7 @@ export class PayoutService {
 
   async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
     if (Object.keys(motoboyData).length === 0) {
-      throw new BadRequestException('Informe o nome ou o telefone do motoboy');
+      throw new BadRequestException('Informe os dados para consulta');
     }
 
     const dateObject = {

@@ -30,36 +30,29 @@ export class SettlementController {
 
   @Get('preview')
   async preview(
-    @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
-    @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Query('optName') optName: string,
-    @Query('optPhone', ParseBrPhonePipe) optPhone: string,
+    @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
+    @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
-    const qo =
-      optName === undefined && optPhone === undefined
-        ? {}
-        : { name: optName, phone: optPhone };
-    const settlement = await this.settlementService.preview(
-      qo,
-      fromDate,
-      toDate,
-    );
+    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const settlement = await this.settlementService.preview(qo, from, to);
     return new ResponseSettlementDto(settlement);
   }
 
   @Post()
   async create(
-    @Body('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
-    @Body('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Body('operatorName') operatorName: string,
+    @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
+    @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Body('name') name: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Body('initValue', ParseFloatPipe) initValue: number,
     @Body('description') description: string,
   ) {
-    const preview = await this.settlementService.preview(
-      { name: operatorName },
-      fromDate,
-      toDate,
-    );
+    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const preview = await this.settlementService.preview(qo, from, to);
     const settlement = await this.settlementService.create(
       preview,
       initValue,

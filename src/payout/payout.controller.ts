@@ -46,8 +46,8 @@ export class PayoutController {
     @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
     @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
     @Body('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
-    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
     const preview = await this.payoutService.preview(from, to, qo);

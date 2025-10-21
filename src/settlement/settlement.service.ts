@@ -39,7 +39,7 @@ export class SettlementService {
     private readonly userService: UserService,
   ) {}
 
-  async preview(userData: Partial<User>, fromDate?: Date, toDate?: Date) {
+  async preview(userData: Partial<User>, from?: Date, to?: Date) {
     const operator = await this.userService.findOneByOrFail(userData);
 
     if (operator instanceof DeliveryMan) {
@@ -47,14 +47,12 @@ export class SettlementService {
     }
 
     if (Object.keys(userData).length === 0) {
-      throw new BadRequestException(
-        'Informe o nome ou o telefone do operador de caixa',
-      );
+      throw new BadRequestException('Informe os dados para consulta');
     }
 
     const dateObject = {
-      initDate: fromDate || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
-      endDate: toDate || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
     };
 
     const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {
