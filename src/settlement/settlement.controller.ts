@@ -21,6 +21,7 @@ import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseSettlementDto } from './dto/response-settlement.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -31,10 +32,15 @@ export class SettlementController {
   async preview(
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Query('operatorName') operatorName: string,
+    @Query('optName') optName: string,
+    @Query('optPhone', ParseBrPhonePipe) optPhone: string,
   ) {
+    const qo =
+      optName === undefined && optPhone === undefined
+        ? {}
+        : { name: optName, phone: optPhone };
     const settlement = await this.settlementService.preview(
-      { name: operatorName },
+      qo,
       fromDate,
       toDate,
     );

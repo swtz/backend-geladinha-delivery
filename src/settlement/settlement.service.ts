@@ -46,8 +46,10 @@ export class SettlementService {
       throw new BadRequestException('Motoboys não possuem caixa para fechar');
     }
 
-    if (!userData.name) {
-      throw new BadRequestException('Informe o nome do operador de caixa');
+    if (Object.keys(userData).length === 0) {
+      throw new BadRequestException(
+        'Informe o nome ou o telefone do operador de caixa',
+      );
     }
 
     const dateObject = {
