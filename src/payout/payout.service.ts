@@ -68,7 +68,7 @@ export class PayoutService {
     const deliveries = await this.deliveryService.findAll({
       fromDate: dateObject.initDate,
       toDate: dateObject.endDate,
-      motoboyName: motoboy.name,
+      mtbName: motoboy.name,
     });
 
     const motoboyTips = deliveries.reduce((prev, item) => {

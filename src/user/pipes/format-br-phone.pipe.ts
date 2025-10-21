@@ -3,7 +3,7 @@ import { formatPhone } from 'src/common/utils/format-phone';
 
 @Injectable()
 export class ParseBrPhonePipe implements PipeTransform {
-  private readonly paramTypes = ['body'];
+  private readonly paramTypes = ['body', 'query'];
 
   transform(value: string, { type }: ArgumentMetadata) {
     if (!value || !this.paramTypes.includes(type)) {

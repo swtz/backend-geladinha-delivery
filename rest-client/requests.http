@@ -211,12 +211,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?motoboy=Guilherme
+GET {{baseUrl}}/delivery?optPhone=48999884468
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery?isPaid=false
+GET {{baseUrl}}/delivery?isPaid=true
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################

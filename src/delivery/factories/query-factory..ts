@@ -37,9 +37,12 @@ type DateParams = {
 };
 
 export type FindAllParams = {
-  customerName?: string;
-  motoboyName?: string;
-  operatorName?: string;
+  cstName?: string;
+  mtbName?: string;
+  optName?: string;
+  cstPhone?: string;
+  mtbPhone?: string;
+  optPhone?: string;
   isPaid?: boolean;
   paymentMethod?: PaymentMethodEnum;
 } & DateParams;
@@ -65,9 +68,12 @@ abstract class AbstractFactory {
 
 export class DeliveryFindAllFactory extends AbstractFactory {
   factoryMethod({
-    customerName,
-    motoboyName,
-    operatorName,
+    cstName,
+    mtbName,
+    optName,
+    cstPhone,
+    mtbPhone,
+    optPhone,
     isPaid,
     paymentMethod,
     fromDate,
@@ -76,9 +82,9 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     const queryObject = new DeliveryFindAllQuery();
 
     queryObject.createdAt = this.checkDateValue(fromDate, toDate);
-    queryObject.customer = { name: customerName };
-    queryObject.motoboy = { name: motoboyName };
-    queryObject.operator = { name: operatorName };
+    queryObject.customer = { name: cstName, phone: cstPhone };
+    queryObject.motoboy = { name: mtbName, phone: mtbPhone };
+    queryObject.operator = { name: optName, phone: optPhone };
     queryObject.isPaid = isPaid;
     queryObject.paymentMethod = { name: paymentMethod };
 

@@ -22,6 +22,7 @@ import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
 import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -60,9 +61,12 @@ export class DeliveryController {
   @Get()
   async findAll(
     @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
-    @Query('customer') customerName: string,
-    @Query('motoboy') motoboyName: string,
-    @Query('operator') operatorName: string,
+    @Query('cstName') cstName: string,
+    @Query('mtbName') mtbName: string,
+    @Query('optName') optName: string,
+    @Query('cstPhone', ParseBrPhonePipe) cstPhone: string,
+    @Query('mtbPhone', ParseBrPhonePipe) mtbPhone: string,
+    @Query('optPhone', ParseBrPhonePipe) optPhone: string,
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
     @Query(
@@ -72,9 +76,12 @@ export class DeliveryController {
     paymentMethod: PaymentMethod,
   ) {
     const deliveries = await this.deliveryService.findAll({
-      customerName,
-      motoboyName,
-      operatorName,
+      cstName,
+      mtbName,
+      optName,
+      cstPhone,
+      mtbPhone,
+      optPhone,
       isPaid,
       paymentMethod,
       fromDate,

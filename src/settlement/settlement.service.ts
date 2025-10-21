@@ -75,7 +75,7 @@ export class SettlementService {
     const deliveries = await this.deliveryService.findAll({
       fromDate: dateObject.initDate,
       toDate: dateObject.endDate,
-      operatorName: userData.name,
+      optName: userData.name,
     });
 
     const settlement = {

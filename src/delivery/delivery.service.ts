@@ -220,7 +220,6 @@ export class DeliveryService {
   async findAll(queryParams: FindAllParams) {
     const queryFactory = new DeliveryFindAllFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
-
     const deliveries = await this.deliveryRepository.find({
       where: queryObject,
       order: { createdAt: 'DESC' },
