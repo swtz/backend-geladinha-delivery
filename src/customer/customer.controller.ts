@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -37,15 +36,13 @@ export class CustomerController {
 
   @Get('find')
   async findOne(
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('phone', new DefaultValuePipe('')) phone: string | undefined,
   ) {
-    phone = id ? undefined : phone;
-
-    const customer = await this.customerService.findOneByOrFail({
-      id,
-      phone,
-    });
+    const qo =
+      !name && !phone && !id ? { name: 'unknown' } : { name, phone, id };
+    const customer = await this.customerService.findOneByOrFail(qo);
     return new ResponseCustomerDto(customer);
   }
 

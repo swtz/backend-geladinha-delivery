@@ -149,7 +149,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find one customer
 # @name findOneCustomer
-GET {{baseUrl}}/customer/find?id=8dcb3628-9f2e-4a61-8f67-fa7ad8008e16
+GET {{baseUrl}}/customer/find
 Authorization: Bearer {{JwtToken}}
 
 ### find all customers
