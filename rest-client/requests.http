@@ -32,15 +32,25 @@ Content-Type: application/json
   "daily": 30
 }
 
-### Update user
+### Update my user
 # @name updateUser
 PATCH {{baseUrl}}/user/me
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "motorcycle": "Suzuki, 2017, 650, Verde Limão"
+}
+
+### Update user
+# @name updateUser
+PATCH {{baseUrl}}/user/ce5a04fb-7618-4c54-a4d5-2dd9d91dd1ec
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
   "motorcycle": "Suzuki, 2017, 650, Verde Limão",
-  "phone": "48999884476"
+  "phone": "48999884479"
 }
 
 ### Delete user

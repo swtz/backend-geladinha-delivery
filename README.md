@@ -13,7 +13,8 @@ GET / POST / PATCH / PUT / DELETE
 /user/motoboy                   GET         Ler todos os motoboys                     JWT             ALL
 /user/:uuid                     GET         Ler usuário                               JWT             ADMIN/OPERATOR
 /user?key=value                 GET         Ler todos os usuários                     JWT             ADMIN/OPERATOR
-/user/me                        PATCH       Atualizar usuário                         JWT             ALL
+/user/me                        PATCH       Atualizar meu usuário                     JWT             ALL
+/user/:uuid                     PATCH       Atualizar usuário                         JWT             ADMIN/OPERATOR
 /user/me/password               PATCH       Atualizar senha                           JWT             ALL
 /user/:uuid                     DELETE      Apagar usuário                            JWT             ADMIN
 

@@ -70,13 +70,25 @@ export class UserController {
   }
 
   @Patch('me')
-  async update(
+  async updateMe(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateUserDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
     const user = await this.userService.update(req.user, { ...dto, phone });
     return new ResponseUserDto(user);
+  }
+
+  @Roles(Role.Operator, Role.Admin)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateUserDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ) {
+    const user = await this.userService.findOneByOrFail({ id });
+    const updated = await this.userService.update(user, { ...dto, phone });
+    return new ResponseUserDto(updated);
   }
 
   @Patch('me/password')
