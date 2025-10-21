@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "neo@email.com",
   "password": "123456"
 }
 
@@ -62,6 +62,11 @@ Content-Type: application/json
 ### Read one user
 # @name readOneUser
 GET {{baseUrl}}/user/me
+Authorization: Bearer {{JwtToken}}
+
+### Read all users
+# @name readAllUsers
+GET {{baseUrl}}/user?role=motoboy
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -245,7 +250,7 @@ Content-Type: application/json
 
 ### Delete one voucher
 # @name deleteOneVoucher
-DELETE {{baseUrl}}/voucher/me/18ef067e-e38d-49b8-a66e-fdf1bf4ea4ed
+DELETE {{baseUrl}}/voucher/me/c78832de-4eb8-4efa-acc9-1d39cdb2baa1
 Authorization: Bearer {{JwtToken}}
 
 ### Read one voucher

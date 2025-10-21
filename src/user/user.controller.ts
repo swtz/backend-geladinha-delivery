@@ -4,9 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -40,6 +42,14 @@ export class UserController {
       motoboy => new ResponseUserDto(motoboy),
     );
     return parsedMotoboys;
+  }
+
+  @Roles(Role.Operator, Role.Admin)
+  @Get()
+  async findAll(@Query('role', new ParseEnumPipe(Role)) role: Role) {
+    const users = await this.userService.findAll({ role });
+    const parsedUsers = users.map(user => new ResponseUserDto(user));
+    return parsedUsers;
   }
 
   @Post()
