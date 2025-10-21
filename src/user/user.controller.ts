@@ -34,7 +34,6 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  @Roles(Role.Operator, Role.Admin)
   @Get('motoboy')
   async findAllMotoboy() {
     const motoboys = await this.userService.findAllMotoboy();
