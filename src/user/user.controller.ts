@@ -27,7 +27,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  async findOne(@Req() req: AuthenticatedRequest) {
+  async findMe(@Req() req: AuthenticatedRequest) {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
     });
@@ -42,6 +42,13 @@ export class UserController {
       motoboy => new ResponseUserDto(motoboy),
     );
     return parsedMotoboys;
+  }
+
+  @Roles(Role.Operator, Role.Admin)
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.userService.findOneByOrFail({ id });
+    return new ResponseUserDto(user);
   }
 
   @Roles(Role.Operator, Role.Admin)

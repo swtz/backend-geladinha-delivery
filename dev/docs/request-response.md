@@ -13,9 +13,10 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /auth/login                     POST        Autenticar usuário                        Aberta          PUBLIC
 
 /user                           POST        Criar usuário                             JWT             ADMIN
-/user/me                        GET         Ler usuário                               JWT             ALL
-/user?key=value                 GET         Ler todos os usuários                     JWT             ADMIN/OPERATOR
+/user/me                        GET         Ler meu usuário                           JWT             ALL
 /user/motoboy                   GET         Ler todos os motoboys                     JWT             ALL
+/user/:uuid                     GET         Ler usuário                               JWT             ADMIN/OPERATOR
+/user?key=value                 GET         Ler todos os usuários                     JWT             ADMIN/OPERATOR
 /user/me                        PATCH       Atualizar usuário                         JWT             ALL
 /user/me/password               PATCH       Atualizar senha                           JWT             ALL
 /user/:uuid                     DELETE      Apagar usuário                            JWT             ADMIN

@@ -59,9 +59,14 @@ Content-Type: application/json
   "newPassword": "123456"
 }
 
+### Read my user
+# @name readMyUser
+GET {{baseUrl}}/user/me
+Authorization: Bearer {{JwtToken}}
+
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/me
+GET {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
