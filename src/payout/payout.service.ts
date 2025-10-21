@@ -38,18 +38,14 @@ export class PayoutService {
     private readonly voucherService: VoucherService,
   ) {}
 
-  async preview(
-    fromDate: Date,
-    toDate: Date,
-    motoboyData: Partial<DeliveryMan>,
-  ) {
+  async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
     if (Object.keys(motoboyData).length === 0) {
       throw new BadRequestException('Informe o nome ou o telefone do motoboy');
     }
 
     const dateObject = {
-      initDate: fromDate || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
-      endDate: toDate || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
     };
 
     if (IS_ANOTHER_DAY) {

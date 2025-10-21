@@ -29,25 +29,25 @@ export class PayoutController {
 
   @Get('preview')
   async preview(
-    @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
-    @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
+    @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
+    @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const payout = await this.payoutService.preview(fromDate, toDate, qo);
+    const payout = await this.payoutService.preview(from, to, qo);
     return new ResponsePayoutDto(payout);
   }
 
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
-    @Body('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
+    @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
+    @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
     @Body('mtbName') mtbName: string,
   ) {
-    const preview = await this.payoutService.preview(fromDate, toDate, {
+    const preview = await this.payoutService.preview(from, to, {
       name: mtbName,
     });
     const payout = await this.payoutService.create(preview);
