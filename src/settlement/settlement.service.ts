@@ -306,7 +306,7 @@ export class SettlementService {
   findAll(queryParams: {
     weekDay?: WeekDay;
     workDay?: Date;
-    operator?: { name: string };
+    operator?: Partial<User>;
     isClosed?: boolean;
   }) {
     return this.settlementRepository.find({
