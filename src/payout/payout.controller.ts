@@ -45,11 +45,12 @@ export class PayoutController {
   async create(
     @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
     @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
-    @Body('mtbName') mtbName: string,
+    @Body('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
-    const preview = await this.payoutService.preview(from, to, {
-      name: mtbName,
-    });
+    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const preview = await this.payoutService.preview(from, to, qo);
     const payout = await this.payoutService.create(preview);
     return new ResponsePayoutDto(payout);
   }
