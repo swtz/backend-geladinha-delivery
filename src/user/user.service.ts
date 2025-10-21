@@ -194,6 +194,16 @@ export class UserService {
     return motoboys;
   }
 
+  async findAll({ role }: { role?: RoleEnum }) {
+    return this.userRepository.find({
+      where: {
+        roles: { name: role },
+      },
+      order: { createdAt: 'DESC' },
+      relations,
+    });
+  }
+
   async findOneByOrFail(userData: Partial<User>) {
     const user = await this.findOneBy(userData);
 
