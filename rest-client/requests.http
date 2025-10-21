@@ -313,7 +313,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout?motoboy=Guilherme
+GET {{baseUrl}}/payout
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout

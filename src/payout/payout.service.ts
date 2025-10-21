@@ -241,7 +241,7 @@ export class PayoutService {
   findAll(queryParams: {
     weekDay?: WeekDay;
     workDay?: Date;
-    motoboy?: { name: string };
+    motoboy?: Partial<DeliveryMan>;
     isClosed?: boolean;
   }) {
     return this.payoutRepository.find({
