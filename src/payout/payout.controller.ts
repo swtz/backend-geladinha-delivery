@@ -20,6 +20,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -30,9 +31,14 @@ export class PayoutController {
   async preview(
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Query('motoboy') motoboy: string,
+    @Query('mtbName') mtbName: string,
+    @Query('mtbPhone', ParseBrPhonePipe) mtbPhone: string,
   ) {
-    const payout = await this.payoutService.preview(fromDate, toDate, motoboy);
+    const qo =
+      mtbName === undefined && mtbPhone === undefined
+        ? {}
+        : { name: mtbName, phone: mtbPhone };
+    const payout = await this.payoutService.preview(fromDate, toDate, qo);
     return new ResponsePayoutDto(payout);
   }
 
@@ -41,9 +47,11 @@ export class PayoutController {
   async create(
     @Body('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Body('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Body('motoboy') motoboy: string,
+    @Body('mtbName') mtbName: string,
   ) {
-    const preview = await this.payoutService.preview(fromDate, toDate, motoboy);
+    const preview = await this.payoutService.preview(fromDate, toDate, {
+      name: mtbName,
+    });
     const payout = await this.payoutService.create(preview);
     return new ResponsePayoutDto(payout);
   }

@@ -38,9 +38,13 @@ export class PayoutService {
     private readonly voucherService: VoucherService,
   ) {}
 
-  async preview(fromDate: Date, toDate: Date, motoboyData: string) {
-    if (!motoboyData) {
-      throw new BadRequestException('Informe o nome do motoboy');
+  async preview(
+    fromDate: Date,
+    toDate: Date,
+    motoboyData: Partial<DeliveryMan>,
+  ) {
+    if (Object.keys(motoboyData).length === 0) {
+      throw new BadRequestException('Informe o nome ou o telefone do motoboy');
     }
 
     const dateObject = {
@@ -56,9 +60,7 @@ export class PayoutService {
       );
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail({
-      name: motoboyData,
-    });
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
       fromDate: dateObject.initDate,
@@ -177,11 +179,9 @@ export class PayoutService {
       dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
     }
 
-    const newPayout = await this.preview(
-      initDate,
-      dateObject.endDate,
-      motoboy.name,
-    );
+    const newPayout = await this.preview(initDate, dateObject.endDate, {
+      id: motoboy.id,
+    });
     const mergedPayout = {
       ...payout,
       ...newPayout,
