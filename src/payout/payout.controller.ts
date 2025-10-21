@@ -31,13 +31,11 @@ export class PayoutController {
   async preview(
     @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
     @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
-    @Query('mtbName') mtbName: string,
-    @Query('mtbPhone', ParseBrPhonePipe) mtbPhone: string,
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
-    const qo =
-      mtbName === undefined && mtbPhone === undefined
-        ? {}
-        : { name: mtbName, phone: mtbPhone };
+    const qo = !name && !phone && !id ? {} : { name, phone, id };
     const payout = await this.payoutService.preview(fromDate, toDate, qo);
     return new ResponsePayoutDto(payout);
   }
