@@ -67,8 +67,8 @@ export class DeliveryController {
     @Query('cstPhone', ParseBrPhonePipe) cstPhone: string,
     @Query('mtbPhone', ParseBrPhonePipe) mtbPhone: string,
     @Query('optPhone', ParseBrPhonePipe) optPhone: string,
-    @Query('fromDate', new ParseBrDatePipe(START_TIME)) fromDate: Date,
-    @Query('toDate', new ParseBrDatePipe(END_TIME)) toDate: Date,
+    @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
+    @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
     @Query(
       'paymentMethod',
       new ParseEnumPipe(PaymentMethod, { optional: true }),
@@ -84,8 +84,8 @@ export class DeliveryController {
       optPhone,
       isPaid,
       paymentMethod,
-      fromDate,
-      toDate,
+      from,
+      to,
     });
     const parsedDeliveries = deliveries.map(
       delivery => new ResponseDeliveryDto(delivery),

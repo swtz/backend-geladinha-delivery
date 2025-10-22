@@ -59,14 +59,14 @@ export class PayoutService {
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
-      fromDate: dateObject.initDate,
-      toDate: dateObject.endDate,
+      from: dateObject.initDate,
+      to: dateObject.endDate,
     });
 
     const deliveries = await this.deliveryService.findAll({
-      fromDate: dateObject.initDate,
-      toDate: dateObject.endDate,
-      mtbName: motoboy.name,
+      from: dateObject.initDate,
+      to: dateObject.endDate,
+      userData: motoboyData,
     });
 
     const motoboyTips = deliveries.reduce((prev, item) => {
@@ -92,8 +92,8 @@ export class PayoutService {
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
         user: motoboy,
-        fromDate: dateObject.initDate,
-        toDate: dateObject.endDate,
+        from: dateObject.initDate,
+        to: dateObject.endDate,
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
@@ -109,8 +109,8 @@ export class PayoutService {
 
     payout.totalSpending = await this.voucherService.sum({
       user: motoboy,
-      fromDate: dateObject.initDate,
-      toDate: dateObject.endDate,
+      from: dateObject.initDate,
+      to: dateObject.endDate,
     });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
