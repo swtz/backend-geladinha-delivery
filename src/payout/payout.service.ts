@@ -115,17 +115,22 @@ export class PayoutService {
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
-    const yesterday = generateRelativeDate(
-      'yesterday',
-      dateObject.initDate,
-      START_TIME,
-    );
-    const yesterdayPayout = await this.findOneByWorkDayAndMotoboy(yesterday, {
+    const lastPayouts = await this.findAll({
+      isClosed: true,
+      motoboy: { id: motoboy.id },
+    });
+
+    if (lastPayouts.length === 0) {
+      return payout;
+    }
+
+    const { workDay } = lastPayouts[0];
+    const lastPayout = await this.findOneByWorkDayAndMotoboy(workDay, {
       id: motoboy.id,
     });
 
-    if (yesterdayPayout && yesterdayPayout.total < 0) {
-      payout.total = setDecimalPlaces(payout.total + yesterdayPayout.total, 2);
+    if (lastPayout && lastPayout.total < 0) {
+      payout.total = setDecimalPlaces(payout.total + lastPayout.total, 2);
     }
 
     return payout;
