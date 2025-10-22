@@ -14,6 +14,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { PlaceModule } from './place/place.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
         };
       },
     }),
+    PlaceModule,
   ],
   providers: [
     {

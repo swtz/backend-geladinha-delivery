@@ -211,7 +211,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?paymentMethod=pix
+GET {{baseUrl}}/delivery?type=customer&id=258ced07-07db-45c6-978b-e757c82353a9
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
