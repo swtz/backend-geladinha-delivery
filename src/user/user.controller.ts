@@ -52,7 +52,9 @@ export class UserController {
 
   @Roles(Role.Operator, Role.Admin)
   @Get()
-  async findAll(@Query('role', new ParseEnumPipe(Role)) role: Role) {
+  async findAll(
+    @Query('role', new ParseEnumPipe(Role, { optional: true })) role: Role,
+  ) {
     const users = await this.userService.findAll({ role });
     const parsedUsers = users.map(user => new ResponseUserDto(user));
     return parsedUsers;
