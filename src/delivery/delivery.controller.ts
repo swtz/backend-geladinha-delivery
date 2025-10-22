@@ -60,13 +60,10 @@ export class DeliveryController {
   @Roles(Role.Operator, Role.Motoboy, Role.Admin)
   @Get()
   async findAll(
-    @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
-    @Query('cstName') cstName: string,
-    @Query('mtbName') mtbName: string,
-    @Query('optName') optName: string,
-    @Query('cstPhone', ParseBrPhonePipe) cstPhone: string,
-    @Query('mtbPhone', ParseBrPhonePipe) mtbPhone: string,
-    @Query('optPhone', ParseBrPhonePipe) optPhone: string,
+    @Query('type', new ParseEnumPipe(Role, { optional: true })) type: Role,
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
     @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
     @Query(
@@ -74,14 +71,13 @@ export class DeliveryController {
       new ParseEnumPipe(PaymentMethod, { optional: true }),
     )
     paymentMethod: PaymentMethod,
+    @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
   ) {
     const deliveries = await this.deliveryService.findAll({
-      cstName,
-      mtbName,
-      optName,
-      cstPhone,
-      mtbPhone,
-      optPhone,
+      type,
+      name,
+      phone,
+      id,
       isPaid,
       paymentMethod,
       from,

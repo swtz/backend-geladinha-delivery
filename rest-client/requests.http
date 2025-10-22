@@ -211,7 +211,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?optPhone=48999884468
+GET {{baseUrl}}/delivery?type=admin&name=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

@@ -3,6 +3,7 @@ import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { Between, FindOperator } from 'typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
+import { Role } from 'src/common/role/roles.enum';
 
 interface Query {
   isPaid?: boolean;
@@ -37,12 +38,10 @@ type DateParams = {
 };
 
 export type FindAllParams = {
-  cstName?: string;
-  mtbName?: string;
-  optName?: string;
-  cstPhone?: string;
-  mtbPhone?: string;
-  optPhone?: string;
+  type?: Role;
+  name?: string;
+  phone?: string;
+  id?: string;
   userData?: Partial<User>;
   isPaid?: boolean;
   paymentMethod?: PaymentMethodEnum;
@@ -69,12 +68,10 @@ abstract class AbstractFactory {
 
 export class DeliveryFindAllFactory extends AbstractFactory {
   factoryMethod({
-    cstName,
-    mtbName,
-    optName,
-    cstPhone,
-    mtbPhone,
-    optPhone,
+    type,
+    name,
+    phone,
+    id,
     userData,
     isPaid,
     paymentMethod,
@@ -83,11 +80,16 @@ export class DeliveryFindAllFactory extends AbstractFactory {
   }: FindAllParams): Query {
     const queryObject = new DeliveryFindAllQuery();
 
+    if (type) {
+      const key = type === Role.Admin ? 'operator' : type;
+      queryObject[key] = { name, phone, id };
+    } else if (userData) {
+      queryObject.operator = userData;
+    } else {
+      queryObject.operator = { name, phone, id };
+    }
+
     queryObject.createdAt = this.checkDateValue(from, to);
-    queryObject.customer = { name: cstName, phone: cstPhone };
-    queryObject.motoboy = { name: mtbName, phone: mtbPhone };
-    queryObject.operator = { name: optName, phone: optPhone };
-    queryObject.operator = userData;
     queryObject.isPaid = isPaid;
     queryObject.paymentMethod = { name: paymentMethod };
 
