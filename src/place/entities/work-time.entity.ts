@@ -1,3 +1,4 @@
+import { Shift, shifts } from 'src/common/enums/work-shifts.enum';
 import {
   Column,
   CreateDateColumn,
@@ -17,8 +18,8 @@ export class WorkTime {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ enum: ['manhã', 'tarde', 'noite', 'madrugada', 'integral'] })
-  turn: string;
+  @Column({ enum: shifts })
+  shift: Shift;
 
   @Column()
   initHour: number;
