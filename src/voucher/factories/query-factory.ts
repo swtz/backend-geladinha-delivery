@@ -12,8 +12,8 @@ export class VoucherFindAllQuery implements Query {
 }
 
 type DateParams = {
-  fromDate?: Date;
-  toDate?: Date;
+  from?: Date;
+  to?: Date;
 };
 
 export type FindAllParams = {
@@ -21,9 +21,9 @@ export type FindAllParams = {
 } & DateParams;
 
 abstract class AbstractMethod {
-  getDatePeriod(fromDate?: Date, toDate?: Date) {
-    if (fromDate !== undefined && toDate !== undefined) {
-      return Between(fromDate, toDate);
+  getDatePeriod(from?: Date, to?: Date) {
+    if (from !== undefined && to !== undefined) {
+      return Between(from, to);
     }
   }
 
@@ -31,10 +31,10 @@ abstract class AbstractMethod {
 }
 
 export class VoucherFindAllFactory extends AbstractMethod {
-  factoryMethod({ user, fromDate, toDate }: FindAllParams): Query {
+  factoryMethod({ user, from, to }: FindAllParams): Query {
     const queryObject = new VoucherFindAllQuery();
 
-    queryObject.createdAt = this.getDatePeriod(fromDate, toDate);
+    queryObject.createdAt = this.getDatePeriod(from, to);
     queryObject.user = { id: user?.id };
 
     return queryObject;
