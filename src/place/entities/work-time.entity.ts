@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Place } from './place.entity';
 
 @Entity()
 export class WorkTime {
@@ -29,4 +31,7 @@ export class WorkTime {
 
   @Column({ default: false })
   isDefault: boolean;
+
+  @ManyToMany(() => Place, place => place.workTimes)
+  places: Place[];
 }

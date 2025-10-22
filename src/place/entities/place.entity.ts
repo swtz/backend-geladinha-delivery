@@ -2,11 +2,16 @@ import { Address } from 'src/address/entities/address.entity';
 import {
   Column,
   CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { WorkTime } from './work-time.entity';
 
+@Entity()
 export class Place {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -40,6 +45,9 @@ export class Place {
 
   @ManyToOne(() => Address, { onDelete: 'SET NULL' })
   postalBox: Address;
-  // workTime: WorkTime (init, end, isDefault)
+
+  @ManyToMany(() => WorkTime, workTime => workTime.places)
+  @JoinTable()
+  workTimes: WorkTime[];
   // socialMedias: SocialMedias (instagram, facebook, linkedIn, etc)
 }
