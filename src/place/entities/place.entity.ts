@@ -3,13 +3,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { WorkTime } from './work-time.entity';
+import { SocialMedias } from './social-medias.entity';
 
 @Entity()
 export class Place {
@@ -49,5 +52,8 @@ export class Place {
   @ManyToMany(() => WorkTime, workTime => workTime.places)
   @JoinTable()
   workTimes: WorkTime[];
-  // socialMedias: SocialMedias (instagram, facebook, linkedIn, etc)
+
+  @OneToOne(() => SocialMedias, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn()
+  socialMedias: SocialMedias;
 }
