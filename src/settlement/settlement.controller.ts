@@ -83,12 +83,13 @@ export class SettlementController {
     @Query('workDay', new ParseBrDatePipe(START_TIME)) workDay: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
   ) {
     const settlements = await this.settlementService.findAll({
       weekDay,
       workDay,
-      operator: { name, phone },
+      operator: { name, phone, id },
       isClosed,
     });
     const parsedSettlements = settlements.map(
