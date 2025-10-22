@@ -18,28 +18,26 @@ export class ResponseUserDto {
     if (user instanceof DeliveryMan) {
       this.motorcycle = user.motorcycle;
       this.daily = user.daily;
-      this.tips =
-        user.tips !== null
-          ? user.tips.map(tip => {
-              return {
-                id: tip.id,
-                amount: tip.amount,
-                createdAt: tip.createdAt,
-                updatedAt: tip.updatedAt,
-              };
-            })
-          : null;
+      this.tips = user.tips
+        ? user.tips.map(tip => {
+            return {
+              id: tip.id,
+              amount: tip.amount,
+              createdAt: tip.createdAt,
+              updatedAt: tip.updatedAt,
+            };
+          })
+        : null;
     }
     this.id = user.id;
     this.name = user.name;
     this.phone = user.phone;
     this.email = user.email;
-    this.vouchers =
-      user.vouchers !== null
-        ? user.vouchers.map(voucher => {
-            return new ResponseVoucherDto(voucher);
-          })
-        : null;
+    this.vouchers = user.vouchers
+      ? user.vouchers.map(voucher => {
+          return new ResponseVoucherDto(voucher);
+        })
+      : null;
     this.roles = user.roles.map(role => role.name);
   }
 }
