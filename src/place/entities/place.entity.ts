@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { WorkTime } from './work-time.entity';
 import { SocialMedias } from './social-medias.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Place {
@@ -45,6 +46,10 @@ export class Place {
 
   @Column()
   email: string;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  owners: User[];
 
   @ManyToOne(() => Address, { onDelete: 'SET NULL' })
   address: Address;
