@@ -75,8 +75,6 @@ export class PayoutService {
       }
     }
 
-    console.log(dateObject);
-
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
       from: dateObject.initDate,
