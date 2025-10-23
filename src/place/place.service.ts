@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -54,8 +54,31 @@ export class PlaceService {
       owners: [owner],
     };
 
-    const created = this.placeRepository.create(place);
-    return created;
+    const created = await this.save(place);
+    return this.findOneByOrFail({ id: created.id });
+  }
+
+  async findOneByOrFail(placeData: Partial<Place>) {
+    const place = await this.findOneBy(placeData);
+
+    if (!place) {
+      throw new NotFoundException('Esse estabelecimento não existe.');
+    }
+
+    return place;
+  }
+
+  async findOneBy(placeData: Partial<Place>) {
+    return this.placeRepository.findOne({
+      where: placeData,
+      relations: {
+        owners: true,
+        address: true,
+        postalBox: true,
+        workTimes: true,
+        socialMedias: true,
+      },
+    });
   }
 
   async save(placeData: Partial<Place>) {
