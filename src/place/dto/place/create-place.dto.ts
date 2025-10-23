@@ -39,7 +39,7 @@ export class CreatePlaceDto {
   ownerId: string;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  Address: CreateAddressDto;
+  address: CreateAddressDto;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
   postalBox: CreateAddressDto;
