@@ -63,8 +63,12 @@ export class PayoutService {
       const initShortDate = dateObject.initDate.toLocaleString('BR', {
         dateStyle: 'short',
       });
+      const endShortDate = dateObject.endDate.toLocaleString('BR', {
+        dateStyle: 'short',
+      });
 
       dateObject.initDate = parseBrDate(initShortDate, initHour);
+      dateObject.endDate = parseBrDate(endShortDate, endHour);
 
       if (endHour < initHour) {
         dateObject.endDate = generateRelativeDate(
