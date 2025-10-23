@@ -46,6 +46,11 @@ Content-Type: application/json
   }
 }
 
+### Find place
+# @name findOnePlace
+GET {{baseUrl}}/place/0471bb6a-88cd-414a-83bb-7aca9edabfaf
+Authorization: Bearer {{JwtToken}}
+
 ################### USER ###################
 
 ### Create user

@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { CreatePlaceDto } from './dto/place/create-place.dto';
@@ -21,6 +29,12 @@ export class PlaceController {
       { ...dto, address, postalBox, workTime },
       req.user,
     );
+    return place;
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const place = await this.placeService.findOneByOrFail({ id });
     return place;
   }
 }
