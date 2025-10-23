@@ -3,6 +3,7 @@ import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { CreatePlaceDto } from './dto/place/create-place.dto';
 
 @Injectable()
 export class PlaceService {
@@ -12,6 +13,15 @@ export class PlaceService {
     @InjectRepository(Place)
     private readonly placeRepository: Repository<Place>,
   ) {}
+
+  create(dto: CreatePlaceDto) {
+    // validar documentos
+    // criar endereço
+    // criar caixa postal
+    // criar um work time
+    // criar um social medias (ainda não)
+    // depois cria-se o objeto
+  }
 
   async save(placeData: Partial<Place>) {
     const http400 = generateBadRequestException(
