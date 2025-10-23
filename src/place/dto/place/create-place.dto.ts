@@ -6,7 +6,6 @@ import {
   IsNotEmptyObject,
   IsPhoneNumber,
   IsString,
-  IsUUID,
 } from 'class-validator';
 
 export class CreatePlaceDto {
@@ -35,8 +34,8 @@ export class CreatePlaceDto {
   @IsEmail({}, { message: 'Email inválido' })
   email: string;
 
-  @IsUUID('4', { message: 'Formato inválido' })
-  ownerId: string;
+  // @IsUUID('4', { message: 'Formato inválido' })
+  // ownerId: string;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
   address: CreateAddressDto;

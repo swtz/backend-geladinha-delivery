@@ -26,25 +26,25 @@ export class Place {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column()
   businessName: string;
 
-  @Column()
+  @Column({ unique: true })
   cnpj: string;
 
-  @Column()
+  @Column({ unique: true })
   cpf: string;
 
-  @Column()
+  @Column({ unique: true })
   phone: string;
 
   @Column({ nullable: true })
   secondPhone: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @ManyToMany(() => User)
