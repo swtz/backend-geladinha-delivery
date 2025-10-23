@@ -14,7 +14,6 @@ import {
   CURRENT_SHORT_DATE,
   END_TIME,
   IS_ANOTHER_DAY,
-  START_TIME,
 } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
@@ -43,9 +42,11 @@ export class PayoutService {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+    const { initHour, endHour } = motoboy.workTime;
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
 
     if (IS_ANOTHER_DAY) {
@@ -56,7 +57,6 @@ export class PayoutService {
       );
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
       from: dateObject.initDate,
