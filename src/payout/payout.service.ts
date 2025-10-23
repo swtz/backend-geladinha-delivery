@@ -142,10 +142,7 @@ export class PayoutService {
       return payout;
     }
 
-    const { workDay } = lastPayouts[0];
-    const lastPayout = await this.findOneByWorkDayAndMotoboy(workDay, {
-      id: motoboy.id,
-    });
+    const lastPayout = lastPayouts[0];
 
     if (lastPayout && lastPayout.total < 0) {
       payout.total = setDecimalPlaces(payout.total + lastPayout.total, 2);
