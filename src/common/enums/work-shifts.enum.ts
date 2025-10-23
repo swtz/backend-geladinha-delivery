@@ -3,6 +3,7 @@ export enum Shift {
   Second = 'manhã',
   Third = 'tarde',
   Forth = 'noite',
+  Fifth = 'personalizado',
 }
 
 export const shifts = Object.values(Shift);

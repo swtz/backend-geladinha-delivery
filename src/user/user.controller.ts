@@ -20,6 +20,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
+import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -65,9 +66,10 @@ export class UserController {
   // @Public()
   async create(
     @Body() dto: CreateUserDto,
+    @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const user = await this.userService.create({ ...dto, phone });
+    const user = await this.userService.create({ ...dto, phone, workTime });
     return new ResponseUserDto(user);
   }
 

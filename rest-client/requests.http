@@ -23,14 +23,27 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Gabriel",
-  "email": "gabriel@email.com",
-  "phone": "(48) 99988-4469",
-  "role": "motoboy",
+  "name": "Márcio",
+  "phone": "48999558877",
+  "email": "marcio@email.com",
+  "role": "operator",
   "password": "123456",
-  "motorcycle": "Yamaha, 2017, 300, Vermelha",
-  "daily": 30
+  "workTime": {
+    "shift": "personalizado",
+    "initHour": 18,
+    "endHour": 4
+  }
 }
+
+# {
+#   "name": "Gabriel",
+#   "email": "gabriel@email.com",
+#   "phone": "(48) 99988-4469",
+#   "role": "motoboy",
+#   "password": "123456",
+#   "motorcycle": "Yamaha, 2017, 300, Vermelha",
+#   "daily": 30
+# }
 
 ### Update my user
 # @name updateUser
