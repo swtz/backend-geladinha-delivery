@@ -1,4 +1,5 @@
 import { Role } from 'src/common/role/entities/role.entity';
+import { WorkTime } from 'src/place/entities/work-time.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
@@ -49,6 +51,9 @@ export class User {
   @ManyToMany(() => Role, role => role.users)
   @JoinTable()
   roles: Role[];
+
+  @ManyToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
+  workTime: WorkTime;
 }
 
 @ChildEntity()
