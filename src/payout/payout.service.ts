@@ -14,6 +14,7 @@ import {
   CURRENT_SHORT_DATE,
   END_TIME,
   IS_ANOTHER_DAY,
+  START_TIME,
 } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
@@ -43,19 +44,38 @@ export class PayoutService {
     }
 
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
-    const { initHour, endHour } = motoboy.workTime;
+
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
     };
 
-    if (IS_ANOTHER_DAY) {
+    if (END_TIME < START_TIME) {
       dateObject.endDate = generateRelativeDate(
         'tomorrow',
         dateObject.initDate,
         END_TIME,
       );
     }
+
+    if (motoboy.workTime) {
+      const { initHour, endHour } = motoboy.workTime;
+      const initShortDate = dateObject.initDate.toLocaleString('BR', {
+        dateStyle: 'short',
+      });
+
+      dateObject.initDate = parseBrDate(initShortDate, initHour);
+
+      if (endHour < initHour) {
+        dateObject.endDate = generateRelativeDate(
+          'tomorrow',
+          dateObject.initDate,
+          endHour,
+        );
+      }
+    }
+
+    console.log(dateObject);
 
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
