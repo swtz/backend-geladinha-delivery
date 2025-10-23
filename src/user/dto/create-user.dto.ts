@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
   IsOptional,
   IsPhoneNumber,
@@ -9,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Role } from 'src/common/role/roles.enum';
+import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
 
 export class CreateUserDto {
   @IsString({ message: 'Formato inválido' })
@@ -40,4 +42,8 @@ export class CreateUserDto {
     { message: 'Valor da diária precisa ser um número' },
   )
   daily?: number;
+
+  @IsOptional()
+  @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
+  workTime?: CreateWorkTimeDto;
 }

@@ -43,12 +43,14 @@ export class PayoutService {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+
     const dateObject = {
       initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
       endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
     };
 
-    if (IS_ANOTHER_DAY) {
+    if (END_TIME < START_TIME) {
       dateObject.endDate = generateRelativeDate(
         'tomorrow',
         dateObject.initDate,
@@ -56,7 +58,23 @@ export class PayoutService {
       );
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+    if (motoboy.workTime) {
+      const { initHour, endHour } = motoboy.workTime;
+      const initShortDate = dateObject.initDate.toLocaleString('BR', {
+        dateStyle: 'short',
+      });
+
+      dateObject.initDate = parseBrDate(initShortDate, initHour);
+
+      if (endHour < initHour) {
+        dateObject.endDate = generateRelativeDate(
+          'tomorrow',
+          dateObject.initDate,
+          endHour,
+        );
+      }
+    }
+
     const vouchers = await this.voucherService.findAllOwned({
       user: motoboy,
       from: dateObject.initDate,
@@ -115,17 +133,22 @@ export class PayoutService {
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
-    const yesterday = generateRelativeDate(
-      'yesterday',
-      dateObject.initDate,
-      START_TIME,
-    );
-    const yesterdayPayout = await this.findOneByWorkDayAndMotoboy(yesterday, {
+    const lastPayouts = await this.findAll({
+      isClosed: true,
+      motoboy: { id: motoboy.id },
+    });
+
+    if (lastPayouts.length === 0) {
+      return payout;
+    }
+
+    const { workDay } = lastPayouts[0];
+    const lastPayout = await this.findOneByWorkDayAndMotoboy(workDay, {
       id: motoboy.id,
     });
 
-    if (yesterdayPayout && yesterdayPayout.total < 0) {
-      payout.total = setDecimalPlaces(payout.total + yesterdayPayout.total, 2);
+    if (lastPayout && lastPayout.total < 0) {
+      payout.total = setDecimalPlaces(payout.total + lastPayout.total, 2);
     }
 
     return payout;

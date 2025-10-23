@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "neo@email.com",
+  "email": "orochi@email.com",
   "password": "123456"
 }
 
@@ -23,14 +23,29 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Gabriel",
-  "email": "gabriel@email.com",
-  "phone": "(48) 99988-4469",
+  "name": "Sérgio",
+  "phone": "48999558878",
+  "email": "sergio@email.com",
   "role": "motoboy",
   "password": "123456",
+  "workTime": {
+    "shift": "personalizado",
+    "initHour": 18,
+    "endHour": 4
+  },
   "motorcycle": "Yamaha, 2017, 300, Vermelha",
   "daily": 30
 }
+
+# {
+#   "name": "Gabriel",
+#   "email": "gabriel@email.com",
+#   "phone": "(48) 99988-4469",
+#   "role": "motoboy",
+#   "password": "123456",
+#   "motorcycle": "Yamaha, 2017, 300, Vermelha",
+#   "daily": 30
+# }
 
 ### Update my user
 # @name updateUser
@@ -211,12 +226,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?type=admin&name=Neo
+GET {{baseUrl}}/delivery?type=customer&id=258ced07-07db-45c6-978b-e757c82353a9
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
 # @name findAllPaidDeliveries
-GET {{baseUrl}}/delivery?isPaid=true
+GET {{baseUrl}}/delivery?isPaid=false
 Authorization: Bearer {{JwtToken}}
 
 ################### VOUCHER ###################
@@ -287,7 +302,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Gabriel
+GET {{baseUrl}}/payout/preview?name=Sérgio&from=22-10-2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -323,7 +338,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
 # @name updatePayoutIsClosed
-PATCH {{baseUrl}}/payout/654c94d4-c252-40db-8814-77a7510e71bc/true
+PATCH {{baseUrl}}/payout/7ed2374c-7548-4d78-a0cb-e767f19faa09/true
 Authorization: Bearer {{JwtToken}}
 
 ### Remove payout
