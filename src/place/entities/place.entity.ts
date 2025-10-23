@@ -35,9 +35,12 @@ export class Place {
   cnpj: string;
 
   @Column()
-  phone: string;
+  cpf: string;
 
   @Column()
+  phone: string;
+
+  @Column({ nullable: true })
   secondPhone: string;
 
   @Column()
