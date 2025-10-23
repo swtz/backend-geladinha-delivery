@@ -3,7 +3,7 @@ import { Shift } from 'src/common/enums/work-shifts.enum';
 
 export class CreateWorkTimeDto {
   @IsEnum(Shift, { message: 'Turno inválido' })
-  shift: string;
+  shift: Shift;
 
   @IsNumber({}, { message: 'Número inválido' })
   initHour: number;
