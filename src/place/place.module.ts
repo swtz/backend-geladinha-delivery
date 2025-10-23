@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Place } from './entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { SocialMedias } from './entities/social-medias.entity';
+import { WorkTimeService } from './services/work-time.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Place, WorkTime, SocialMedias])],
   controllers: [PlaceController],
-  providers: [PlaceService],
+  providers: [PlaceService, WorkTimeService],
+  exports: [PlaceService, WorkTimeService],
 })
 export class PlaceModule {}

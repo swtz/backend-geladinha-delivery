@@ -17,6 +17,7 @@ import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { WorkTimeService } from 'src/place/services/work-time.service';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,7 @@ export class UserService {
     private readonly deliveryManRepository: Repository<DeliveryMan>,
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
+    private readonly workTimeService: WorkTimeService,
   ) {}
 
   async failIfEmailExists(email: string) {
@@ -63,6 +65,9 @@ export class UserService {
       email: dto.email,
       password: hashedPassword,
       roles: [role],
+      workTime: dto.workTime
+        ? await this.workTimeService.create(dto.workTime)
+        : undefined,
     };
 
     if (dto.role === RoleEnum.Motoboy) {
