@@ -41,6 +41,7 @@ export class PlaceService {
     // criar um social medias (ainda não)
     // depois cria-se o objeto
     const place: PlaceType = {
+      code: process.env.DEFAULT_PLACE_CODE,
       name: dto.name,
       businessName: dto.businessName,
       cnpj,
