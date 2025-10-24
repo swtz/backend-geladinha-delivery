@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { WorkTime } from './work-time.entity';
 import { SocialMedias } from './social-medias.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Place {
@@ -25,23 +26,33 @@ export class Place {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
+  code: string;
+
+  @Column({ unique: true })
   name: string;
 
   @Column()
   businessName: string;
 
-  @Column()
+  @Column({ unique: true })
   cnpj: string;
 
-  @Column()
+  @Column({ unique: true })
+  cpf: string;
+
+  @Column({ unique: true })
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   secondPhone: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  owners: User[];
 
   @ManyToOne(() => Address, { onDelete: 'SET NULL' })
   address: Address;

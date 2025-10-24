@@ -1,9 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 
 @Injectable()
 export class WorkTimeService {
@@ -14,6 +20,30 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
+  async findOneOrCreate(shift: Shift, dto?: CreateWorkTimeDto) {
+    const workTime = await this.findOneBy({ shift });
+
+    if (dto) {
+      if (shift === Shift.Fifth) {
+        const created = await this.create(dto);
+        return this.findOneByOrFail({ id: created.id });
+      }
+
+      if (!workTime) {
+        const created = await this.create(dto);
+        return this.findOneByOrFail({ id: created.id });
+      }
+    }
+
+    if (!workTime) {
+      throw new BadRequestException(
+        'Horário de serviço não encontrado.\nDados não enviados',
+      );
+    }
+
+    return workTime;
+  }
+
   create(dto: CreateWorkTimeDto) {
     const workTime = {
       shift: dto.shift,
@@ -23,6 +53,31 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async findOneByOrFail(workTimeData: Partial<WorkTime>) {
+    const workTime = await this.findOneBy(workTimeData);
+
+    if (!workTime) {
+      throw new NotFoundException('Esse horário de serviço não existe');
+    }
+
+    return workTime;
+  }
+
+  async findOneBy(workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.findOne({
+      where: workTimeData,
+      relations: {
+        places: { workTimes: true },
+      },
+    });
+  }
+
+  async remove(id: string) {
+    const workTime = await this.findOneByOrFail({ id });
+    await this.workTimeRepository.delete({ id });
+    return workTime;
   }
 
   async save(workTimeData: Partial<WorkTime>) {

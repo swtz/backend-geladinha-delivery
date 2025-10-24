@@ -6,6 +6,7 @@ import { Payout } from './entities/payout.entity';
 import { DeliveryModule } from 'src/delivery/delivery.module';
 import { UserModule } from 'src/user/user.module';
 import { VoucherModule } from 'src/voucher/voucher.module';
+import { PlaceModule } from 'src/place/place.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { VoucherModule } from 'src/voucher/voucher.module';
     DeliveryModule,
     UserModule,
     VoucherModule,
+    PlaceModule,
   ],
   controllers: [PayoutController],
   providers: [PayoutService],
