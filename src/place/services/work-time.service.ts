@@ -1,9 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 
 @Injectable()
 export class WorkTimeService {
@@ -13,6 +19,30 @@ export class WorkTimeService {
     @InjectRepository(WorkTime)
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
+
+  async findOneOrCreate(shift: Shift, dto?: CreateWorkTimeDto) {
+    const workTime = await this.findOneBy({ shift });
+
+    if (dto) {
+      if (shift === Shift.Fifth) {
+        const created = await this.create(dto);
+        return this.findOneByOrFail({ id: created.id });
+      }
+
+      if (!workTime) {
+        const created = await this.create(dto);
+        return this.findOneByOrFail({ id: created.id });
+      }
+    }
+
+    if (!workTime) {
+      throw new BadRequestException(
+        'Horário de serviço não encontrado.\nDados não enviados',
+      );
+    }
+
+    return workTime;
+  }
 
   create(dto: CreateWorkTimeDto) {
     const workTime = {
