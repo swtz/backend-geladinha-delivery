@@ -74,6 +74,12 @@ export class WorkTimeService {
     });
   }
 
+  async remove(id: string) {
+    const workTime = await this.findOneByOrFail({ id });
+    await this.workTimeRepository.delete({ id });
+    return workTime;
+  }
+
   async save(workTimeData: Partial<WorkTime>) {
     const http400 = generateBadRequestException(
       'Erro ao salvar o horário de serviço',

@@ -143,7 +143,7 @@ export class PlaceService {
       });
     }
 
-    // return this.workTimeService.remove(id);
+    return this.workTimeService.remove(id);
   }
 
   async save(placeData: Partial<Place>) {
