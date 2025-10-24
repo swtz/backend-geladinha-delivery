@@ -52,7 +52,7 @@ GET {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
-# @name findOnePlace
+# @name AddWorkTime
 POST {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644/work-time
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
@@ -63,6 +63,11 @@ Content-Type: application/json
   "endHour": 13,
   "isDefault": false
 }
+
+### Remove work time
+# @name removeWorkTime
+DELETE {{baseUrl}}/place/work-time/d041edae-5e4b-4836-97bc-39bd56783184
+Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
 
