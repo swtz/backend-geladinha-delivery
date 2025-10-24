@@ -68,6 +68,9 @@ export class WorkTimeService {
   async findOneBy(workTimeData: Partial<WorkTime>) {
     return this.workTimeRepository.findOne({
       where: workTimeData,
+      relations: {
+        places: { workTimes: true },
+      },
     });
   }
 
