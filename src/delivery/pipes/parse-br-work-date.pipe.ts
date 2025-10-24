@@ -9,7 +9,10 @@ export class ParseBrWorkDatePipe implements PipeTransform {
   constructor(private readonly placeService: PlaceService) {}
 
   async transform(value: string, { type, data }: ArgumentMetadata) {
-    const place = await this.placeService.findOneBy({ cpf: 'XXX.XXX.XXX-XX' });
+    const code = process.env.DEFAULT_PLACE_CODE || undefined;
+    const place = await this.placeService.findOneBy({
+      code,
+    });
 
     if (!place || !value || !this.paramTypes.includes(type)) {
       return undefined;
@@ -23,7 +26,6 @@ export class ParseBrWorkDatePipe implements PipeTransform {
     const parsedValue = value.split('-').join('/');
 
     if (data === 'from') {
-      console.log(parseBrDate(parsedValue, initHour));
       return parseBrDate(parsedValue, initHour);
     }
 

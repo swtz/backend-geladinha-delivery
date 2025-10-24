@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "LOCAL Comercio de bebidas - PJ",
-  "businessName": "Deck Lagoinha",
-  "cnpj": "XXX.XXX.XXX/0001-XX",
-  "cpf": "XXX.XXX.XXX-XX",
-  "phone": "48999887755",
-  "secondPhone": "48999887766",
-  "email": "deck@email.com",
+  "name": "Aonde Comercio de bebidas - PJ",
+  "businessName": "Deck Central",
+  "cnpj": "YYY.YYY.YYY/0001-YY",
+  "cpf": "YYY.YYY.YYY-YY",
+  "phone": "48999887766",
+  "secondPhone": "48999887777",
+  "email": "deckcentral@email.com",
   "address": {
     "street": "Rua Dois",
     "neighborhood": "Valência"
@@ -60,18 +60,18 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Sérgio",
-  "phone": "48999558878",
-  "email": "sergio@email.com",
+  "name": "Fernando",
+  "phone": "48999558880",
+  "email": "fernando@email.com",
   "role": "motoboy",
   "password": "123456",
   "workTime": {
     "shift": "personalizado",
-    "initHour": 18,
+    "initHour": 23,
     "endHour": 4
   },
-  "motorcycle": "Yamaha, 2017, 300, Vermelha",
-  "daily": 30
+  "motorcycle": "Yamaha, 2017, 300, Preta",
+  "daily": 15
 }
 
 # {
@@ -339,7 +339,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Guilherme
+GET {{baseUrl}}/payout/preview?name=Fernando&from=17/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
