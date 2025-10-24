@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
@@ -23,6 +23,22 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async findOneByOrFail(workTimeData: Partial<WorkTime>) {
+    const workTime = await this.findOneBy(workTimeData);
+
+    if (!workTime) {
+      throw new NotFoundException('Esse horário de serviço não existe');
+    }
+
+    return workTime;
+  }
+
+  async findOneBy(workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.findOne({
+      where: workTimeData,
+    });
   }
 
   async save(workTimeData: Partial<WorkTime>) {
