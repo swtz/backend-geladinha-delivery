@@ -14,7 +14,6 @@ import {
   CURRENT_SHORT_DATE,
   END_TIME,
   IS_ANOTHER_DAY,
-  START_TIME,
 } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
@@ -25,6 +24,7 @@ import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { PlaceService } from 'src/place/place.service';
 
 @Injectable()
 export class PayoutService {
@@ -36,6 +36,7 @@ export class PayoutService {
     private readonly deliveryService: DeliveryService,
     private readonly userService: UserService,
     private readonly voucherService: VoucherService,
+    private readonly placeService: PlaceService,
   ) {}
 
   async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
@@ -44,17 +45,27 @@ export class PayoutService {
     }
 
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+    const place = await this.placeService.findOneBy({
+      code: process.env.DEFAULT_PLACE_CODE,
+    });
 
+    if (!place) {
+      throw new NotFoundException(
+        'Nenhum estabelecimento definido como padrão',
+      );
+    }
+
+    const workTime = place.workTimes.filter(item => Boolean(item.isDefault))[0];
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, workTime.initHour),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, workTime.endHour),
     };
 
-    if (END_TIME < START_TIME) {
+    if (workTime.endHour < workTime.initHour) {
       dateObject.endDate = generateRelativeDate(
         'tomorrow',
         dateObject.initDate,
-        END_TIME,
+        workTime.endHour,
       );
     }
 
