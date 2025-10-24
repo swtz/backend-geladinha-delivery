@@ -3,7 +3,11 @@ export enum Shift {
   Second = 'manhã',
   Third = 'tarde',
   Forth = 'noite',
-  Fifth = 'personalizado',
+  Custom = 'personalizado',
+  Default = 'padrão',
+  WeekDay = 'semana',
+  Weekend = 'final-de-semana',
+  Holiday = 'feriado',
 }
 
 export const shifts = Object.values(Shift);

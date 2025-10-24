@@ -24,7 +24,15 @@ export class WorkTimeService {
     const workTime = await this.findOneBy({ shift });
 
     if (dto) {
-      if (shift === Shift.Fifth) {
+      if (
+        [
+          Shift.Custom,
+          Shift.Default,
+          Shift.WeekDay,
+          Shift.Weekend,
+          Shift.Holiday,
+        ].includes(shift)
+      ) {
         const created = await this.create(dto);
         return this.findOneByOrFail({ id: created.id });
       }
