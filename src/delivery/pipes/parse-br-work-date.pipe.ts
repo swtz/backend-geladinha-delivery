@@ -10,6 +10,13 @@ export class ParseBrWorkDatePipe implements PipeTransform {
 
   async transform(value: string, { type, data }: ArgumentMetadata) {
     const code = process.env.DEFAULT_PLACE_CODE || undefined;
+
+    // se as Places forem deletadas:
+    // criar uma Place sem o código
+    // verificar se `code === undefined`
+    // retorna place === null || Place
+    // ou seja, será que ele pega a primeira que existe?
+    // Se pegar, pode haver algum bug escondido aqui
     const place = await this.placeService.findOneBy({
       code,
     });
@@ -18,19 +25,19 @@ export class ParseBrWorkDatePipe implements PipeTransform {
       return undefined;
     }
 
-    const { workTimes } = place;
-    const { initHour, endHour } = workTimes.filter(item =>
-      Boolean(item.isDefault),
-    )[0];
+    const workTimes = place.workTimes.filter(item => item.isDefault === true);
 
-    const parsedValue = value.split('-').join('/');
+    if (workTimes.length > 0) {
+      const { initHour, endHour } = workTimes[0];
+      const parsedValue = value.split('-').join('/');
 
-    if (data === 'from') {
-      return parseBrDate(parsedValue, initHour);
-    }
+      if (data === 'from') {
+        return parseBrDate(parsedValue, initHour);
+      }
 
-    if (data === 'to') {
-      return parseBrDate(parsedValue, endHour);
+      if (data === 'to') {
+        return parseBrDate(parsedValue, endHour);
+      }
     }
 
     return undefined;

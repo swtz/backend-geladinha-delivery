@@ -55,17 +55,20 @@ export class PayoutService {
       );
     }
 
-    const workTime = place.workTimes.filter(item => Boolean(item.isDefault))[0];
+    const workTimes = place.workTimes.filter(item => item.isDefault === true);
+    const initHour = workTimes.length > 0 ? workTimes[0].initHour : 7;
+    const endHour = workTimes.length > 0 ? workTimes[0].endHour : 17;
+
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, workTime.initHour),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, workTime.endHour),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
 
-    if (workTime.endHour < workTime.initHour) {
+    if (endHour < initHour) {
       dateObject.endDate = generateRelativeDate(
         'tomorrow',
         dateObject.initDate,
-        workTime.endHour,
+        endHour,
       );
     }
 

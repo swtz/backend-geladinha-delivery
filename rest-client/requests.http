@@ -339,7 +339,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Fernando&from=17/10/2025
+GET {{baseUrl}}/payout/preview?name=Fernando
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
