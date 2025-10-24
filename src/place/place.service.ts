@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +13,7 @@ import { AddressService } from 'src/address/address.service';
 import { WorkTimeService } from './services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { PlaceType } from './types/place';
+import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
 
 @Injectable()
 export class PlaceService {
@@ -80,6 +86,40 @@ export class PlaceService {
         socialMedias: true,
       },
     });
+  }
+
+  async addWorkTime(dto: CreateWorkTimeDto, id: string) {
+    if (dto.isDefault === undefined || dto.isDefault === null) {
+      throw new BadRequestException(
+        'Campo horário padrão não pode estar vazio',
+      );
+    }
+
+    const place = await this.findOneByOrFail({ id });
+
+    if (place.workTimes.length >= 5) {
+      throw new BadRequestException(
+        'Só é possível cadastrar 5 horários por estabelecimento',
+      );
+    }
+
+    if (dto.isDefault) {
+      const workTimes = place.workTimes.filter(item => item.isDefault === true);
+
+      if (workTimes.length > 0) {
+        const defaultWorkTime = workTimes[0];
+        await this.workTimeService.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+    }
+
+    const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
+    place.workTimes.push(workTime);
+    await this.save(place);
+
+    return this.findOneByOrFail({ id });
   }
 
   async save(placeData: Partial<Place>) {
