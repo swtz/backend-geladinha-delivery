@@ -48,8 +48,21 @@ Content-Type: application/json
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/0471bb6a-88cd-414a-83bb-7aca9edabfaf
+GET {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644
 Authorization: Bearer {{JwtToken}}
+
+### Add work time
+# @name findOnePlace
+POST {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644/work-time
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "shift": "manhã",
+  "initHour": 9,
+  "endHour": 13,
+  "isDefault": false
+}
 
 ################### USER ###################
 
