@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNotEmptyObject,
+  IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
@@ -34,8 +35,12 @@ export class CreatePlaceDto {
   @IsEmail({}, { message: 'Email inválido' })
   email: string;
 
-  // @IsUUID('4', { message: 'Formato inválido' })
-  // ownerId: string;
+  @IsOptional()
+  @IsString({ message: 'Formato inválido' })
+  @IsNotEmpty({
+    message: 'Campo código do estabelecimento não pode estar vazio',
+  })
+  code?: string;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
   address: CreateAddressDto;
