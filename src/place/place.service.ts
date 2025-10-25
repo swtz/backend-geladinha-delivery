@@ -111,6 +111,9 @@ export class PlaceService {
       await this.workTimeService.save({ ...workTime, isDefault: false });
     }
 
+    // create WorkTime using dto.shift if NOT EXISTS
+    // caso exista, informa-se ao usuário que é possível atualizar
+    // os dados do WorkTime
     const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
     place.workTimes.push(workTime);
     await this.save(place);

@@ -39,7 +39,12 @@ export class WorkTimeService {
       }
 
       if (!workTime) {
-        const created = await this.create(dto);
+        if (dto.isDefault) {
+          throw new BadRequestException(
+            'Esse turno não pode ser usado como padrão',
+          );
+        }
+        const created = await this.create({ ...dto, isDefault: false });
         return this.findOneByOrFail({ id: created.id });
       }
     }

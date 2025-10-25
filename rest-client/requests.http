@@ -24,25 +24,25 @@ Content-Type: application/json
 
 {
   "name": "Aonde Comercio de bebidas - PJ",
-  "businessName": "Deck Central",
-  "cnpj": "YYY.YYY.YYY/0001-YY",
-  "cpf": "YYY.YYY.YYY-YY",
-  "phone": "48999887766",
-  "secondPhone": "48999887777",
-  "email": "deckcentral@email.com",
+  "businessName": "Deck da Zona Leste",
+  "cnpj": "YYY.YYY.YYY/0001-AA",
+  "cpf": "YYY.YYY.YYY-AA",
+  "phone": "48999887769",
+  "secondPhone": "48999887779",
+  "email": "deckzonaleste@email.com",
   "address": {
-    "street": "Rua Dois",
-    "neighborhood": "Valência"
+    "street": "Rua 13",
+    "neighborhood": "Quarta linha"
   },
   "postalBox": {
     "street": "Rua Quinze",
     "neighborhood": "Docas"
   },
   "workTime": {
-    "shift": "personalizado",
-    "initHour": 18,
-    "endHour": 4,
-    "isDefault": true 
+  "shift": "madrugada",
+  "initHour": 0,
+  "endHour": 6,
+  "isDefault": true
   }
 }
 
@@ -58,10 +58,10 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "manhã",
-  "initHour": 9,
-  "endHour": 13,
-  "isDefault": false
+  "shift": "madrugada",
+  "initHour": 0,
+  "endHour": 6,
+  "isDefault": true
 }
 
 ### Remove work time
