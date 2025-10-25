@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -99,6 +100,18 @@ export class WorkTimeService {
     }
 
     return workTime;
+  }
+
+  failIfShiftExistsInPlace(place: Place, shift: Shift) {
+    const { workTimes } = place;
+
+    if (shift !== Shift.Custom) {
+      const workTime = workTimes.find(item => item.shift === shift);
+
+      if (workTime) {
+        throw new ConflictException('O Estabelecimento já possui esse horário');
+      }
+    }
   }
 
   async remove(id: string) {

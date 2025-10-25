@@ -58,9 +58,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "madrugada",
-  "initHour": 0,
-  "endHour": 6,
+  "shift": "tarde",
+  "initHour": 13,
+  "endHour": 17,
   "isDefault": true
 }
 

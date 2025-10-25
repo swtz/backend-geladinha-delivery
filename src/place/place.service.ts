@@ -100,6 +100,8 @@ export class PlaceService {
 
     const place = await this.findOneByOrFail({ id });
 
+    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
+
     if (place.workTimes.length >= 99) {
       throw new BadRequestException(
         'Só é possível cadastrar 5 horários por estabelecimento',
@@ -107,17 +109,24 @@ export class PlaceService {
     }
 
     if (dto.isDefault) {
-      const workTime = this.workTimeService.findDefaultFromPlace(place);
-      await this.workTimeService.save({ ...workTime, isDefault: false });
+      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
+
+      const workTime = await this.workTimeService.findOneOrCreate(
+        dto.shift,
+        dto,
+      );
+
+      await this.workTimeService.save({ ...defaultWorkTime, isDefault: false });
+      place.workTimes.push(workTime);
+
+      await this.save(place);
+      return this.findOneByOrFail({ id });
     }
 
-    // create WorkTime using dto.shift if NOT EXISTS
-    // caso exista, informa-se ao usuário que é possível atualizar
-    // os dados do WorkTime
     const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
     place.workTimes.push(workTime);
-    await this.save(place);
 
+    await this.save(place);
     return this.findOneByOrFail({ id });
   }
 
