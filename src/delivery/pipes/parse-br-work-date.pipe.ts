@@ -18,7 +18,7 @@ export class ParseBrWorkDatePipe implements PipeTransform {
   ) {}
 
   async transform(value: string, { type, data }: ArgumentMetadata) {
-    const code = process.env.DEFAULT_PLACE_CODE || undefined;
+    const code = process.env.DEFAULT_PLACE_CODE;
 
     // se as Places forem deletadas:
     // criar uma Place sem o código
@@ -26,6 +26,9 @@ export class ParseBrWorkDatePipe implements PipeTransform {
     // retorna place === null || Place
     // ou seja, será que ele pega a primeira que existe?
     // Se pegar, pode haver algum bug escondido aqui
+
+    // 25/10 → sim, pega o primeiro
+    // teria de checar se DEFAULT_PLACE_CODE !== undefined
     const place = await this.placeService.findOneBy({
       code,
     });

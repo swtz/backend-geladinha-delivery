@@ -102,7 +102,7 @@ export class PlaceService {
 
     this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
-    if (place.workTimes.length >= 99) {
+    if (place.workTimes.length >= 5) {
       throw new BadRequestException(
         'Só é possível cadastrar 5 horários por estabelecimento',
       );
