@@ -1,12 +1,16 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { PlaceService } from 'src/place/place.service';
+import { WorkTimeService } from 'src/place/services/work-time.service';
 
 @Injectable()
 export class ParseBrWorkDatePipe implements PipeTransform {
   private readonly paramTypes = ['body', 'query'];
 
-  constructor(private readonly placeService: PlaceService) {}
+  constructor(
+    private readonly placeService: PlaceService,
+    private readonly workTimeService: WorkTimeService,
+  ) {}
 
   async transform(value: string, { type, data }: ArgumentMetadata) {
     const code = process.env.DEFAULT_PLACE_CODE || undefined;
@@ -25,19 +29,16 @@ export class ParseBrWorkDatePipe implements PipeTransform {
       return undefined;
     }
 
-    const workTimes = place.workTimes.filter(item => item.isDefault === true);
+    const workTime = this.workTimeService.findDefaultFromPlace(place);
+    const { initHour, endHour } = workTime;
+    const parsedValue = value.split('-').join('/');
 
-    if (workTimes.length > 0) {
-      const { initHour, endHour } = workTimes[0];
-      const parsedValue = value.split('-').join('/');
+    if (data === 'from') {
+      return parseBrDate(parsedValue, initHour);
+    }
 
-      if (data === 'from') {
-        return parseBrDate(parsedValue, initHour);
-      }
-
-      if (data === 'to') {
-        return parseBrDate(parsedValue, endHour);
-      }
+    if (data === 'to') {
+      return parseBrDate(parsedValue, endHour);
     }
 
     return undefined;

@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { Place } from '../entities/place.entity';
 
 @Injectable()
 export class WorkTimeService {
@@ -80,6 +81,19 @@ export class WorkTimeService {
         places: { workTimes: true },
       },
     });
+  }
+
+  findDefaultFromPlace(place: Place) {
+    const { workTimes } = place;
+    const workTime = workTimes.find(item => item.isDefault === true);
+
+    if (!workTime) {
+      throw new NotFoundException(
+        'Estabelecimento sem horário padrão definido',
+      );
+    }
+
+    return workTime;
   }
 
   async remove(id: string) {

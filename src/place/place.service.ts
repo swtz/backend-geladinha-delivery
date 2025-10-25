@@ -100,22 +100,15 @@ export class PlaceService {
 
     const place = await this.findOneByOrFail({ id });
 
-    if (place.workTimes.length >= 5) {
+    if (place.workTimes.length >= 99) {
       throw new BadRequestException(
         'Só é possível cadastrar 5 horários por estabelecimento',
       );
     }
 
     if (dto.isDefault) {
-      const workTimes = place.workTimes.filter(item => item.isDefault === true);
-
-      if (workTimes.length > 0) {
-        const defaultWorkTime = workTimes[0];
-        await this.workTimeService.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
+      const workTime = this.workTimeService.findDefaultFromPlace(place);
+      await this.workTimeService.save({ ...workTime, isDefault: false });
     }
 
     const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
