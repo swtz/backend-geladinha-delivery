@@ -95,6 +95,18 @@ export class WorkTimeService {
     return workTime;
   }
 
+  failIfNotDefaultFromPlace(place: Place) {
+    const workTime = this.findDefaultFromPlace(place);
+
+    if (!workTime) {
+      throw new NotFoundException(
+        'Estabelecimento sem horário padrão definido',
+      );
+    }
+
+    return workTime;
+  }
+
   failIfShiftExistsInPlace(place: Place, shift: Shift) {
     const { workTimes } = place;
 
