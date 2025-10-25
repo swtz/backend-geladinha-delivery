@@ -39,29 +39,29 @@ Content-Type: application/json
     "neighborhood": "Docas"
   },
   "workTime": {
-  "shift": "madrugada",
-  "initHour": 0,
-  "endHour": 6,
-  "isDefault": true
+  "shift": "manhã",
+  "initHour": 7,
+  "endHour": 11,
+  "isDefault": false
   }
 }
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644
+GET {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
 # @name AddWorkTime
-POST {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644/work-time
+POST {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5/work-time
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "tarde",
-  "initHour": 13,
-  "endHour": 17,
-  "isDefault": true
+  "shift": "madrugada",
+  "initHour": 0,
+  "endHour": 6,
+  "isDefault": false
 }
 
 ### Remove work time

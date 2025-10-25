@@ -92,13 +92,6 @@ export class WorkTimeService {
   findDefaultFromPlace(place: Place) {
     const { workTimes } = place;
     const workTime = workTimes.find(item => item.isDefault === true);
-
-    if (!workTime) {
-      throw new NotFoundException(
-        'Estabelecimento sem horário padrão definido',
-      );
-    }
-
     return workTime;
   }
 

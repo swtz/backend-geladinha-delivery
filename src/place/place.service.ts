@@ -110,13 +110,18 @@ export class PlaceService {
 
     if (dto.isDefault) {
       const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
-
       const workTime = await this.workTimeService.findOneOrCreate(
         dto.shift,
         dto,
       );
 
-      await this.workTimeService.save({ ...defaultWorkTime, isDefault: false });
+      if (defaultWorkTime) {
+        await this.workTimeService.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+
       place.workTimes.push(workTime);
 
       await this.save(place);

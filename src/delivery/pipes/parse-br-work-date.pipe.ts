@@ -1,4 +1,9 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  Injectable,
+  NotFoundException,
+  PipeTransform,
+} from '@nestjs/common';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { PlaceService } from 'src/place/place.service';
 import { WorkTimeService } from 'src/place/services/work-time.service';
@@ -30,6 +35,13 @@ export class ParseBrWorkDatePipe implements PipeTransform {
     }
 
     const workTime = this.workTimeService.findDefaultFromPlace(place);
+
+    if (!workTime) {
+      throw new NotFoundException(
+        'Estabelecimento sem horário padrão definido',
+      );
+    }
+
     const { initHour, endHour } = workTime;
     const parsedValue = value.split('-').join('/');
 
