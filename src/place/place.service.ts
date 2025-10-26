@@ -14,6 +14,7 @@ import { WorkTimeService } from './services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { PlaceType } from './types/place';
 import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
+import { UpdatePlaceDto } from './dto/place/update-place.dto';
 
 @Injectable()
 export class PlaceService {
@@ -66,6 +67,46 @@ export class PlaceService {
 
     const created = await this.save(place);
     return this.findOneByOrFail({ id: created.id });
+  }
+
+  async update(id: string, dto: UpdatePlaceDto) {
+    const place = await this.findOneByOrFail({ id });
+
+    // unique
+    place.name = dto.name ?? place.name;
+    place.phone = dto.phone ?? place.phone;
+    place.email = dto.email ?? place.email;
+    place.cpf = dto.cpf ?? place.cpf;
+    place.cnpj = dto.cnpj ?? place.cnpj;
+    place.secondPhone = dto.secondPhone ?? place.secondPhone;
+
+    // custom
+    place.businessName = dto.businessName ?? place.businessName;
+    place.code = dto.code ?? place.code;
+
+    // entities
+    // place.address
+    // if dto.address → dto.address.id ? findOne : create
+    if (dto.address) {
+      if (dto.address.id) {
+        place.address = await this.addressService.findOneByOrFail({ id });
+      } else {
+        place.address = await this.addressService.create(dto.address);
+      }
+    }
+    // place.postalBox
+    if (dto.postalBox) {
+      if (dto.postalBox.id) {
+        place.postalBox = await this.addressService.findOneByOrFail({ id });
+      } else {
+        place.postalBox = await this.addressService.create(dto.postalBox);
+      }
+    }
+    // place.owners
+    // place.workTimes
+
+    const updated = await this.save(place);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneByOrFail(placeData: Partial<Place>) {

@@ -23,7 +23,11 @@ export class AddressService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  create(dto: CreateAddressDto, isDefault = true, customer?: Customer) {
+  create(
+    dto: CreateAddressDto | UpdateAddressDto,
+    isDefault = true,
+    customer?: Customer,
+  ) {
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
     const newAddress = this.generateAddress(dto, isDefault, customer);
@@ -74,7 +78,7 @@ export class AddressService {
   }
 
   generateAddress(
-    dto: CreateAddressDto,
+    dto: CreateAddressDto | UpdateAddressDto,
     isDefault = true,
     customer?: Customer,
   ) {
