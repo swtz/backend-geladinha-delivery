@@ -69,6 +69,13 @@ Content-Type: application/json
 DELETE {{baseUrl}}/place/work-time/d041edae-5e4b-4836-97bc-39bd56783184
 Authorization: Bearer {{JwtToken}}
 
+################### PLACE ###################
+
+### Find all work times
+# @name findAllWorkTimes
+GET {{baseUrl}}/work-time?shift=personalizado&isDefault=true
+Authorization: Bearer {{JwtToken}}
+
 ################### USER ###################
 
 ### Create user

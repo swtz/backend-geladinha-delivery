@@ -91,10 +91,13 @@ export class WorkTimeService {
 
     if (dto.isDefault && place) {
       const defaultWorkTime = this.findDefaultFromPlace(place);
-      await this.workTimeRepository.save({
-        ...defaultWorkTime,
-        isDefault: false,
-      });
+
+      if (defaultWorkTime) {
+        await this.workTimeRepository.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
     }
 
     const created = await this.save(workTime);
