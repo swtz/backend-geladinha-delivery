@@ -11,12 +11,12 @@ import {
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
-import { CreatePlaceDto } from './dto/place/create-place.dto';
+import { CreatePlaceDto } from './dto/create-place.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
-import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
-import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
-import { UpdatePlaceDto } from './dto/place/update-place.dto';
+import { UpdatePlaceDto } from './dto/update-place.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Controller('place')
 export class PlaceController {

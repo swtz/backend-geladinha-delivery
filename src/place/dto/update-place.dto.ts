@@ -2,7 +2,7 @@ import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreatePlaceDto } from './create-place.dto';
 import { IsNotEmptyObject, IsOptional, IsUUID } from 'class-validator';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
-import { UpdateWorkTimeDto } from '../work-time/update-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 export class UpdatePlaceDto extends OmitType(PartialType(CreatePlaceDto), [
   'address',

@@ -1,5 +1,4 @@
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
-import { CreateWorkTimeDto } from '../work-time/create-work-time.dto';
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
+import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 
 export class CreatePlaceDto {
   @IsString({ message: 'Formato inválido' })

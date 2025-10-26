@@ -14,10 +14,10 @@ import {
   sharedShifts,
   Shift,
 } from 'src/common/enums/work-shifts.enum';
-import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
-import { UpdateWorkTimeDto } from 'src/place/dto/work-time/update-work-time.dto';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
+import { CreateWorkTimeDto } from './dto/create-work-time.dto';
+import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 
 @Injectable()
 export class WorkTimeService {

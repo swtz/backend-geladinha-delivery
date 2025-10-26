@@ -20,8 +20,8 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
-import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
-import { UpdateWorkTimeDto } from 'src/place/dto/work-time/update-work-time.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)

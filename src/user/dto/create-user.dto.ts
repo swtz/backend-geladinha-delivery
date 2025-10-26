@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Role } from 'src/common/role/roles.enum';
-import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 
 export class CreateUserDto {
   @IsString({ message: 'Formato inválido' })
