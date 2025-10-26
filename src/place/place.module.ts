@@ -7,13 +7,14 @@ import { WorkTime } from './entities/work-time.entity';
 import { SocialMedias } from './entities/social-medias.entity';
 import { WorkTimeService } from './services/work-time.service';
 import { AddressModule } from 'src/address/address.module';
+import { WorkTimeController } from './controllers/work-time.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Place, WorkTime, SocialMedias]),
     AddressModule,
   ],
-  controllers: [PlaceController],
+  controllers: [PlaceController, WorkTimeController],
   providers: [PlaceService, WorkTimeService],
   exports: [PlaceService, WorkTimeService],
 })
