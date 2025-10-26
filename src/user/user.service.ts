@@ -152,6 +152,17 @@ export class UserService {
       entity.forceLogout = true;
     }
 
+    if (dto.workTime) {
+      if (entity.workTime && dto.workTime.shift === entity.workTime.shift) {
+        await this.workTimeService.update(entity.workTime.id, dto.workTime);
+      } else {
+        entity.workTime = await this.workTimeService.findOneOrCreate(
+          dto.workTime.shift,
+          dto.workTime,
+        );
+      }
+    }
+
     const updated = await this.saveUser(entity);
     return this.findOneByOrFail({ id: updated.id });
   }
