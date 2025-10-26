@@ -11,7 +11,11 @@ import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { Shift } from 'src/common/enums/work-shifts.enum';
+import {
+  personalShifts,
+  sharedShifts,
+  Shift,
+} from 'src/common/enums/work-shifts.enum';
 import { Place } from '../entities/place.entity';
 import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 
@@ -28,15 +32,7 @@ export class WorkTimeService {
     const workTime = await this.findOneBy({ shift });
 
     if (dto) {
-      if (
-        [
-          Shift.Custom,
-          Shift.Default,
-          Shift.WeekDay,
-          Shift.Weekend,
-          Shift.Holiday,
-        ].includes(shift)
-      ) {
+      if (personalShifts.includes(shift)) {
         const created = await this.create(dto);
         return this.findOneByOrFail({ id: created.id });
       }
@@ -75,11 +71,7 @@ export class WorkTimeService {
   async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
     const workTime = await this.findOneByOrFail({ id });
 
-    if (
-      [Shift.Fist, Shift.Second, Shift.Third, Shift.Forth].includes(
-        workTime.shift,
-      )
-    ) {
+    if (sharedShifts.includes(workTime.shift)) {
       throw new UnauthorizedException(
         'Turno compartilhado não pode ser atualizado',
       );
