@@ -25,7 +25,7 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { PlaceService } from 'src/place/place.service';
-import { WorkTimeService } from 'src/place/services/work-time.service';
+import { WorkTimeService } from 'src/work-time/work-time.service';
 
 @Injectable()
 export class PayoutService {

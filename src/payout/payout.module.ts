@@ -6,6 +6,7 @@ import { Payout } from './entities/payout.entity';
 import { DeliveryModule } from 'src/delivery/delivery.module';
 import { UserModule } from 'src/user/user.module';
 import { VoucherModule } from 'src/voucher/voucher.module';
+import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { PlaceModule } from 'src/place/place.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { PlaceModule } from 'src/place/place.module';
     UserModule,
     VoucherModule,
     PlaceModule,
+    WorkTimeModule,
   ],
   controllers: [PayoutController],
   providers: [PayoutService],

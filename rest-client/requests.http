@@ -73,7 +73,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time?shift=personalizado&isDefault=true
+GET {{baseUrl}}/work-time
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################

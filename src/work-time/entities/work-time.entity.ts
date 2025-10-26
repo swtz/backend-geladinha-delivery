@@ -1,4 +1,5 @@
 import { Shift, shifts } from 'src/common/enums/work-shifts.enum';
+import { Place } from 'src/place/entities/place.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Place } from './place.entity';
 
 @Entity()
 export class WorkTime {

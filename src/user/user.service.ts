@@ -17,7 +17,7 @@ import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { WorkTimeService } from 'src/place/services/work-time.service';
+import { WorkTimeService } from 'src/work-time/work-time.service';
 
 @Injectable()
 export class UserService {

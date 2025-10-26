@@ -7,17 +7,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
-import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import {
   personalShifts,
   sharedShifts,
   Shift,
 } from 'src/common/enums/work-shifts.enum';
-import { Place } from '../entities/place.entity';
-import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
+import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/place/dto/work-time/update-work-time.dto';
+import { Place } from 'src/place/entities/place.entity';
+import { WorkTime } from './entities/work-time.entity';
 
 @Injectable()
 export class WorkTimeService {

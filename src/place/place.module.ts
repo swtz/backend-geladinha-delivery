@@ -3,19 +3,20 @@ import { PlaceService } from './place.service';
 import { PlaceController } from './place.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Place } from './entities/place.entity';
-import { WorkTime } from './entities/work-time.entity';
 import { SocialMedias } from './entities/social-medias.entity';
-import { WorkTimeService } from './services/work-time.service';
 import { AddressModule } from 'src/address/address.module';
-import { WorkTimeController } from './controllers/work-time.controller';
+import { WorkTimeModule } from 'src/work-time/work-time.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Place, WorkTime, SocialMedias]),
+    TypeOrmModule.forFeature([Place, SocialMedias]),
     AddressModule,
+    WorkTimeModule,
+    UserModule,
   ],
-  controllers: [PlaceController, WorkTimeController],
-  providers: [PlaceService, WorkTimeService],
-  exports: [PlaceService, WorkTimeService],
+  controllers: [PlaceController],
+  providers: [PlaceService],
+  exports: [PlaceService],
 })
 export class PlaceModule {}

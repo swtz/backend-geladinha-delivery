@@ -10,11 +10,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreatePlaceDto } from './dto/place/create-place.dto';
 import { AddressService } from 'src/address/address.service';
-import { WorkTimeService } from './services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { PlaceType } from './types/place';
 import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
 import { UpdatePlaceDto } from './dto/place/update-place.dto';
+import { WorkTimeService } from 'src/work-time/work-time.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PlaceService {
@@ -25,6 +26,7 @@ export class PlaceService {
     private readonly placeRepository: Repository<Place>,
     private readonly addressService: AddressService,
     private readonly workTimeService: WorkTimeService,
+    private readonly userService: UserService,
   ) {}
 
   async create(dto: CreatePlaceDto, user: User) {
@@ -84,6 +86,13 @@ export class PlaceService {
     place.businessName = dto.businessName ?? place.businessName;
     place.code = dto.code ?? place.code;
 
+    // place.owners
+    if (dto.ownerId) {
+      const owner = await this.userService.findOneByOrFail({ id: dto.ownerId });
+      place.owners.push(owner);
+    }
+    //
+
     // entities
     // place.address
     // if dto.address → dto.address.id ? findOne : create
@@ -94,6 +103,7 @@ export class PlaceService {
         place.address = await this.addressService.create(dto.address);
       }
     }
+
     // place.postalBox
     if (dto.postalBox) {
       if (dto.postalBox.id) {
@@ -102,7 +112,7 @@ export class PlaceService {
         place.postalBox = await this.addressService.create(dto.postalBox);
       }
     }
-    // place.owners
+
     // place.workTimes
 
     const updated = await this.save(place);

@@ -5,8 +5,8 @@ import {
   ParseEnumPipe,
   Query,
 } from '@nestjs/common';
-import { WorkTimeService } from '../services/work-time.service';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { WorkTimeService } from './work-time.service';
 
 @Controller('work-time')
 export class WorkTimeController {

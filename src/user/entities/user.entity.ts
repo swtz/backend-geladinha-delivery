@@ -1,7 +1,7 @@
 import { Role } from 'src/common/role/entities/role.entity';
-import { WorkTime } from 'src/place/entities/work-time.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
+import { WorkTime } from 'src/work-time/entities/work-time.entity';
 import {
   ChildEntity,
   Column,

@@ -4,13 +4,13 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeliveryMan, User } from './entities/user.entity';
 import { CommonModule } from 'src/common/common.module';
-import { PlaceModule } from 'src/place/place.module';
+import { WorkTimeModule } from 'src/work-time/work-time.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, DeliveryMan]),
     CommonModule,
-    PlaceModule,
+    WorkTimeModule,
   ],
   controllers: [UserController],
   providers: [UserService],
