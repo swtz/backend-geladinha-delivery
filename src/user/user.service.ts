@@ -66,10 +66,10 @@ export class UserService {
       password: hashedPassword,
       roles: [role],
       workTime: dto.workTime
-        ? await this.workTimeService.findOneOrCreate(
-            dto.workTime.shift,
-            dto.workTime,
-          )
+        ? await this.workTimeService.findOneOrCreate(dto.workTime.shift, {
+            ...dto.workTime,
+            isDefault: false,
+          })
         : undefined,
     };
 
@@ -153,12 +153,20 @@ export class UserService {
     }
 
     if (dto.workTime) {
-      if (entity.workTime && dto.workTime.shift === entity.workTime.shift) {
-        await this.workTimeService.update(entity.workTime.id, dto.workTime);
+      if (!dto.workTime.shift) {
+        throw new BadRequestException('Informe o turno do horário');
+      } else if (
+        entity.workTime &&
+        dto.workTime.shift === entity.workTime.shift
+      ) {
+        entity.workTime = await this.workTimeService.update(
+          entity.workTime.id,
+          { ...dto.workTime, isDefault: false },
+        );
       } else {
         entity.workTime = await this.workTimeService.findOneOrCreate(
           dto.workTime.shift,
-          dto.workTime,
+          { ...dto.workTime, isDefault: false },
         );
       }
     }

@@ -21,6 +21,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/place/dto/work-time/create-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/place/dto/work-time/update-work-time.dto';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -88,11 +89,16 @@ export class UserController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
+    @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
     const user = await this.userService.findOneByOrFail({ id });
-    const updated = await this.userService.update(user, { ...dto, phone });
-    return new ResponseUserDto(updated);
+    const updated = await this.userService.update(user, {
+      ...dto,
+      phone,
+      workTime,
+    });
+    return updated;
   }
 
   @Patch('me/password')

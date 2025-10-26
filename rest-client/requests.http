@@ -114,13 +114,19 @@ Content-Type: application/json
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/ce5a04fb-7618-4c54-a4d5-2dd9d91dd1ec
+PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "motorcycle": "Suzuki, 2017, 650, Verde Limão",
-  "phone": "48999884479"
+  "phone": "48999884489",
+  "workTime": {
+    "shift": "personalizado",
+    "initHour": 14,
+    "endHour": 20,
+    "isDefault": true
+  }
 }
 
 ### Delete user
@@ -151,7 +157,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=motoboy
+GET {{baseUrl}}/user?role=operator
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys

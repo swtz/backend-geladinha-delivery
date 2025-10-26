@@ -28,7 +28,10 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
-  async findOneOrCreate(shift: Shift, dto?: CreateWorkTimeDto) {
+  async findOneOrCreate(
+    shift: Shift,
+    dto?: CreateWorkTimeDto | UpdateWorkTimeDto,
+  ) {
     const workTime = await this.findOneBy({ shift });
 
     if (dto) {
@@ -57,7 +60,7 @@ export class WorkTimeService {
     return workTime;
   }
 
-  create(dto: CreateWorkTimeDto) {
+  create(dto: CreateWorkTimeDto | UpdateWorkTimeDto) {
     const workTime = {
       shift: dto.shift,
       initHour: dto.initHour,
@@ -77,12 +80,10 @@ export class WorkTimeService {
       );
     }
 
-    const newWorkTime = {
-      shift: dto.shift ?? workTime.shift,
-      initHour: dto.initHour ?? workTime.initHour,
-      endHour: dto.endHour ?? workTime.endHour,
-      isDefault: dto.isDefault ?? workTime.isDefault,
-    };
+    workTime.shift = dto.shift ?? workTime.shift;
+    workTime.initHour = dto.initHour ?? workTime.initHour;
+    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
     if (dto.isDefault && !place) {
       throw new BadRequestException('Informe um estabelecimento');
@@ -96,7 +97,7 @@ export class WorkTimeService {
       });
     }
 
-    const created = await this.save(newWorkTime);
+    const created = await this.save(workTime);
 
     return this.findOneByOrFail({ id: created.id });
   }
