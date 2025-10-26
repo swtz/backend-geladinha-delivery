@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkTime } from '../entities/work-time.entity';
@@ -12,6 +13,7 @@ import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from '../entities/place.entity';
+import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 
 @Injectable()
 export class WorkTimeService {
@@ -68,6 +70,43 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
+    const workTime = await this.findOneByOrFail({ id });
+
+    if (
+      [Shift.Fist, Shift.Second, Shift.Third, Shift.Forth].includes(
+        workTime.shift,
+      )
+    ) {
+      throw new UnauthorizedException(
+        'Turno compartilhado não pode ser atualizado',
+      );
+    }
+
+    const newWorkTime = {
+      shift: dto.shift ?? workTime.shift,
+      initHour: dto.initHour ?? workTime.initHour,
+      endHour: dto.endHour ?? workTime.endHour,
+      isDefault: dto.isDefault ?? workTime.isDefault,
+    };
+
+    if (dto.isDefault && !place) {
+      throw new BadRequestException('Informe um estabelecimento');
+    }
+
+    if (dto.isDefault && place) {
+      const defaultWorkTime = this.findDefaultFromPlace(place);
+      await this.workTimeRepository.save({
+        ...defaultWorkTime,
+        isDefault: false,
+      });
+    }
+
+    const created = await this.save(newWorkTime);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async findOneByOrFail(workTimeData: Partial<WorkTime>) {

@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Aonde Comercio de bebidas - PJ",
-  "businessName": "Deck da Zona Leste",
-  "cnpj": "YYY.YYY.YYY/0001-AA",
-  "cpf": "YYY.YYY.YYY-AA",
-  "phone": "48999887769",
-  "secondPhone": "48999887779",
-  "email": "deckzonaleste@email.com",
+  "name": "Aonde Comercio de bebidas - PF",
+  "code": "first",
+  "businessName": "Deckzynn",
+  "cnpj": "YYY.YYY.YYY/0001-AB",
+  "cpf": "YYY.YYY.YYY-AB",
+  "phone": "48999887789",
+  "email": "deckzynn@email.com",
   "address": {
     "street": "Rua 13",
     "neighborhood": "Quarta linha"
@@ -39,10 +39,10 @@ Content-Type: application/json
     "neighborhood": "Docas"
   },
   "workTime": {
-  "shift": "manhã",
-  "initHour": 7,
-  "endHour": 11,
-  "isDefault": false
+  "shift": "final-de-semana",
+  "initHour": 9,
+  "endHour": 19,
+  "isDefault": true
   }
 }
 
@@ -78,13 +78,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Fernando",
-  "phone": "48999558880",
-  "email": "fernando@email.com",
+  "name": "Anthos",
+  "phone": "48999558881",
+  "email": "anthos@email.com",
   "role": "motoboy",
   "password": "123456",
   "workTime": {
-    "shift": "personalizado",
+    "shift": "madrugada",
     "initHour": 23,
     "endHour": 4
   },
@@ -357,7 +357,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Fernando
+GET {{baseUrl}}/payout/preview?name=Anthos
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
