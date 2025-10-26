@@ -151,6 +151,14 @@ export class WorkTimeService {
     }
   }
 
+  async findAll(queryParams: Partial<WorkTime>) {
+    return this.workTimeRepository.find({
+      where: queryParams,
+      order: { createdAt: 'DESC' },
+      relations: { places: true },
+    });
+  }
+
   async remove(id: string) {
     const workTime = await this.findOneByOrFail({ id });
     await this.workTimeRepository.delete({ id });
