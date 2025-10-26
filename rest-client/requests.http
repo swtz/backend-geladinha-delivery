@@ -46,6 +46,19 @@ Content-Type: application/json
   }
 }
 
+### Update place
+# @name updateUser
+PATCH {{baseUrl}}/place/me/f4970f08-da92-4a29-88f9-26c079c325d5
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "workTime": {
+    "initHour": 9,
+    "endHour": 19
+  }
+}
+
 ### Find place
 # @name findOnePlace
 GET {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5

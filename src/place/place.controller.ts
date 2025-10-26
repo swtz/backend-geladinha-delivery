@@ -16,7 +16,7 @@ import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
-import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { UpdateDefaultWorkTimeDto } from 'src/work-time/dto/update-default-work-time.dto';
 
 @Controller('place')
 export class PlaceController {
@@ -44,7 +44,7 @@ export class PlaceController {
     @Body() dto: UpdatePlaceDto,
     @Body('address') address: UpdateAddressDto,
     @Body('postalBox') postalBox: UpdateAddressDto,
-    @Body('workTime') workTime: UpdateWorkTimeDto,
+    @Body('workTime') workTime: UpdateDefaultWorkTimeDto,
   ) {
     const place = await this.placeService.update(id, {
       ...dto,

@@ -114,6 +114,11 @@ export class PlaceService {
     }
 
     // place.workTimes
+    if (dto.workTime) {
+      const defaultWorkTime =
+        this.workTimeService.failIfNotDefaultFromPlace(place);
+      await this.workTimeService.update(defaultWorkTime.id, dto.workTime);
+    }
 
     const updated = await this.save(place);
     return this.findOneByOrFail({ id: updated.id });
