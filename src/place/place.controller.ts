@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Req,
 } from '@nestjs/common';
@@ -13,13 +14,16 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { CreatePlaceDto } from './dto/place/create-place.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
+import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
+import { UpdatePlaceDto } from './dto/place/update-place.dto';
 
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
   @Post('me')
-  async created(
+  async create(
     @Req() req: AuthenticatedRequest,
     @Body() dto: CreatePlaceDto,
     @Body('address') address: CreateAddressDto,
@@ -30,6 +34,24 @@ export class PlaceController {
       { ...dto, address, postalBox, workTime },
       req.user,
     );
+    return place;
+  }
+
+  @Patch('me/:id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdatePlaceDto,
+    @Body('address') address: UpdateAddressDto,
+    @Body('postalBox') postalBox: UpdateAddressDto,
+    @Body('workTime') workTime: UpdateWorkTimeDto,
+  ) {
+    const place = await this.placeService.update(id, {
+      ...dto,
+      address,
+      postalBox,
+      workTime,
+    });
     return place;
   }
 

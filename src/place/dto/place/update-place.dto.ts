@@ -2,10 +2,12 @@ import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreatePlaceDto } from './create-place.dto';
 import { IsNotEmptyObject, IsOptional, IsUUID } from 'class-validator';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { UpdateWorkTimeDto } from '../work-time/update-work-time.dto';
 
 export class UpdatePlaceDto extends OmitType(PartialType(CreatePlaceDto), [
   'address',
   'postalBox',
+  'workTime',
 ]) {
   @IsOptional()
   @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
@@ -14,6 +16,10 @@ export class UpdatePlaceDto extends OmitType(PartialType(CreatePlaceDto), [
   @IsOptional()
   @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
   postalBox?: UpdateAddressDto;
+
+  @IsOptional()
+  @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
+  workTime?: UpdateWorkTimeDto;
 
   @IsUUID('4', { message: 'Formato inválido' })
   ownerId: string;
