@@ -42,7 +42,10 @@ export class PlaceService {
       : address;
 
     // criar um work time
-    const workTime = await this.workTimeService.create(dto.workTime);
+    const workTime = await this.workTimeService.findOneOrCreate(
+      dto.workTime.shift,
+      dto.workTime,
+    );
 
     // criar um social medias (ainda não)
     // depois cria-se o objeto
@@ -97,6 +100,8 @@ export class PlaceService {
 
     const place = await this.findOneByOrFail({ id });
 
+    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
+
     if (place.workTimes.length >= 5) {
       throw new BadRequestException(
         'Só é possível cadastrar 5 horários por estabelecimento',
@@ -104,21 +109,29 @@ export class PlaceService {
     }
 
     if (dto.isDefault) {
-      const workTimes = place.workTimes.filter(item => item.isDefault === true);
+      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
+      const workTime = await this.workTimeService.findOneOrCreate(
+        dto.shift,
+        dto,
+      );
 
-      if (workTimes.length > 0) {
-        const defaultWorkTime = workTimes[0];
+      if (defaultWorkTime) {
         await this.workTimeService.save({
           ...defaultWorkTime,
           isDefault: false,
         });
       }
+
+      place.workTimes.push(workTime);
+
+      await this.save(place);
+      return this.findOneByOrFail({ id });
     }
 
     const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
     place.workTimes.push(workTime);
-    await this.save(place);
 
+    await this.save(place);
     return this.findOneByOrFail({ id });
   }
 

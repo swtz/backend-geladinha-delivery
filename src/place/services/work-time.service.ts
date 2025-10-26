@@ -1,15 +1,23 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { Shift } from 'src/common/enums/work-shifts.enum';
+import {
+  personalShifts,
+  sharedShifts,
+  Shift,
+} from 'src/common/enums/work-shifts.enum';
+import { Place } from '../entities/place.entity';
+import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 
 @Injectable()
 export class WorkTimeService {
@@ -20,17 +28,25 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
-  async findOneOrCreate(shift: Shift, dto?: CreateWorkTimeDto) {
+  async findOneOrCreate(
+    shift: Shift,
+    dto?: CreateWorkTimeDto | UpdateWorkTimeDto,
+  ) {
     const workTime = await this.findOneBy({ shift });
 
     if (dto) {
-      if (shift === Shift.Fifth) {
+      if (personalShifts.includes(shift)) {
         const created = await this.create(dto);
         return this.findOneByOrFail({ id: created.id });
       }
 
       if (!workTime) {
-        const created = await this.create(dto);
+        if (dto.isDefault) {
+          throw new BadRequestException(
+            'Esse turno não pode ser usado como padrão',
+          );
+        }
+        const created = await this.create({ ...dto, isDefault: false });
         return this.findOneByOrFail({ id: created.id });
       }
     }
@@ -44,7 +60,7 @@ export class WorkTimeService {
     return workTime;
   }
 
-  create(dto: CreateWorkTimeDto) {
+  create(dto: CreateWorkTimeDto | UpdateWorkTimeDto) {
     const workTime = {
       shift: dto.shift,
       initHour: dto.initHour,
@@ -53,6 +69,40 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
+    const workTime = await this.findOneByOrFail({ id });
+
+    if (sharedShifts.includes(workTime.shift)) {
+      throw new UnauthorizedException(
+        'Turno compartilhado não pode ser atualizado',
+      );
+    }
+
+    workTime.shift = dto.shift ?? workTime.shift;
+    workTime.initHour = dto.initHour ?? workTime.initHour;
+    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
+
+    if (dto.isDefault && !place) {
+      throw new BadRequestException('Informe um estabelecimento');
+    }
+
+    if (dto.isDefault && place) {
+      const defaultWorkTime = this.findDefaultFromPlace(place);
+
+      if (defaultWorkTime) {
+        await this.workTimeRepository.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+    }
+
+    const created = await this.save(workTime);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async findOneByOrFail(workTimeData: Partial<WorkTime>) {
@@ -71,6 +121,44 @@ export class WorkTimeService {
       relations: {
         places: { workTimes: true },
       },
+    });
+  }
+
+  findDefaultFromPlace(place: Place) {
+    const { workTimes } = place;
+    const workTime = workTimes.find(item => item.isDefault === true);
+    return workTime;
+  }
+
+  failIfNotDefaultFromPlace(place: Place) {
+    const workTime = this.findDefaultFromPlace(place);
+
+    if (!workTime) {
+      throw new NotFoundException(
+        'Estabelecimento sem horário padrão definido',
+      );
+    }
+
+    return workTime;
+  }
+
+  failIfShiftExistsInPlace(place: Place, shift: Shift) {
+    const { workTimes } = place;
+
+    if (shift !== Shift.Custom) {
+      const workTime = workTimes.find(item => item.shift === shift);
+
+      if (workTime) {
+        throw new ConflictException('O Estabelecimento já possui esse horário');
+      }
+    }
+  }
+
+  async findAll(queryParams: Partial<WorkTime>) {
+    return this.workTimeRepository.find({
+      where: queryParams,
+      order: { createdAt: 'DESC' },
+      relations: { places: true },
     });
   }
 

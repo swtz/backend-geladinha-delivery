@@ -1,10 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { InternalServerErrorException, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { parseCorsWhitelist } from './common/utils/parse-cors-whitelist';
 
 async function bootstrap() {
+  const code = process.env.DEFAULT_PLACE_CODE;
+
+  if (!code) {
+    throw new InternalServerErrorException(
+      'DEFAULT_PLACE_CODE not found in .env file',
+    );
+  }
+
   const app = await NestFactory.create(AppModule);
 
   app.use(

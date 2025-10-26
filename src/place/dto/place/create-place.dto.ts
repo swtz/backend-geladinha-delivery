@@ -29,6 +29,7 @@ export class CreatePlaceDto {
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   phone: string;
 
+  @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   secondPhone?: string;
 

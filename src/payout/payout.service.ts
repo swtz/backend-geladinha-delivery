@@ -25,6 +25,7 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { PlaceService } from 'src/place/place.service';
+import { WorkTimeService } from 'src/place/services/work-time.service';
 
 @Injectable()
 export class PayoutService {
@@ -37,6 +38,7 @@ export class PayoutService {
     private readonly userService: UserService,
     private readonly voucherService: VoucherService,
     private readonly placeService: PlaceService,
+    private readonly workTimeService: WorkTimeService,
   ) {}
 
   async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
@@ -55,9 +57,8 @@ export class PayoutService {
       );
     }
 
-    const workTimes = place.workTimes.filter(item => item.isDefault === true);
-    const initHour = workTimes.length > 0 ? workTimes[0].initHour : 7;
-    const endHour = workTimes.length > 0 ? workTimes[0].endHour : 17;
+    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const { initHour, endHour } = workTime;
 
     const dateObject = {
       initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),

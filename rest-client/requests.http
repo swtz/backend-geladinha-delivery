@@ -23,46 +23,58 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Aonde Comercio de bebidas - PJ",
-  "businessName": "Deck Central",
-  "cnpj": "YYY.YYY.YYY/0001-YY",
-  "cpf": "YYY.YYY.YYY-YY",
-  "phone": "48999887766",
-  "secondPhone": "48999887777",
-  "email": "deckcentral@email.com",
+  "name": "Aonde Comercio de bebidas - PF",
+  "code": "first",
+  "businessName": "Deckzynn",
+  "cnpj": "YYY.YYY.YYY/0001-AB",
+  "cpf": "YYY.YYY.YYY-AB",
+  "phone": "48999887789",
+  "email": "deckzynn@email.com",
   "address": {
-    "street": "Rua Dois",
-    "neighborhood": "Valência"
+    "street": "Rua 13",
+    "neighborhood": "Quarta linha"
   },
   "postalBox": {
     "street": "Rua Quinze",
     "neighborhood": "Docas"
   },
   "workTime": {
-    "shift": "personalizado",
-    "initHour": 18,
-    "endHour": 4,
-    "isDefault": true 
+  "shift": "final-de-semana",
+  "initHour": 9,
+  "endHour": 19,
+  "isDefault": true
   }
 }
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644
+GET {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
-# @name findOnePlace
-POST {{baseUrl}}/place/5c52c543-9230-481e-8e70-f38c0f332644/work-time
+# @name AddWorkTime
+POST {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5/work-time
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "manhã",
-  "initHour": 9,
-  "endHour": 13,
+  "shift": "madrugada",
+  "initHour": 0,
+  "endHour": 6,
   "isDefault": false
 }
+
+### Remove work time
+# @name removeWorkTime
+DELETE {{baseUrl}}/place/work-time/d041edae-5e4b-4836-97bc-39bd56783184
+Authorization: Bearer {{JwtToken}}
+
+################### PLACE ###################
+
+### Find all work times
+# @name findAllWorkTimes
+GET {{baseUrl}}/work-time?shift=personalizado&isDefault=true
+Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
 
@@ -73,13 +85,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Fernando",
-  "phone": "48999558880",
-  "email": "fernando@email.com",
+  "name": "Anthos",
+  "phone": "48999558881",
+  "email": "anthos@email.com",
   "role": "motoboy",
   "password": "123456",
   "workTime": {
-    "shift": "personalizado",
+    "shift": "madrugada",
     "initHour": 23,
     "endHour": 4
   },
@@ -109,13 +121,19 @@ Content-Type: application/json
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/ce5a04fb-7618-4c54-a4d5-2dd9d91dd1ec
+PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "motorcycle": "Suzuki, 2017, 650, Verde Limão",
-  "phone": "48999884479"
+  "phone": "48999884489",
+  "workTime": {
+    "shift": "personalizado",
+    "initHour": 14,
+    "endHour": 20,
+    "isDefault": true
+  }
 }
 
 ### Delete user
@@ -146,7 +164,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=motoboy
+GET {{baseUrl}}/user?role=operator
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -352,7 +370,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Fernando
+GET {{baseUrl}}/payout/preview?name=Anthos
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout

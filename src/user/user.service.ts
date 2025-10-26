@@ -66,7 +66,10 @@ export class UserService {
       password: hashedPassword,
       roles: [role],
       workTime: dto.workTime
-        ? await this.workTimeService.create(dto.workTime)
+        ? await this.workTimeService.findOneOrCreate(dto.workTime.shift, {
+            ...dto.workTime,
+            isDefault: false,
+          })
         : undefined,
     };
 
@@ -147,6 +150,25 @@ export class UserService {
       const role = await this.roleService.findOneOrCreate(dto.role);
       entity.roles.push(role);
       entity.forceLogout = true;
+    }
+
+    if (dto.workTime) {
+      if (!dto.workTime.shift) {
+        throw new BadRequestException('Informe o turno do horário');
+      } else if (
+        entity.workTime &&
+        dto.workTime.shift === entity.workTime.shift
+      ) {
+        entity.workTime = await this.workTimeService.update(
+          entity.workTime.id,
+          { ...dto.workTime, isDefault: false },
+        );
+      } else {
+        entity.workTime = await this.workTimeService.findOneOrCreate(
+          dto.workTime.shift,
+          { ...dto.workTime, isDefault: false },
+        );
+      }
     }
 
     const updated = await this.saveUser(entity);
