@@ -22,6 +22,7 @@ import { ResponseSettlementDto } from './dto/response-settlement.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { ParseBrWorkDatePipe } from 'src/delivery/pipes/parse-br-work-date.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -30,8 +31,8 @@ export class SettlementController {
 
   @Get('preview')
   async preview(
-    @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
-    @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Query('from', ParseBrWorkDatePipe) from: Date,
+    @Query('to', ParseBrWorkDatePipe) to: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,

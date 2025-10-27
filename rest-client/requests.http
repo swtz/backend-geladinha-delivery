@@ -86,7 +86,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time
+GET {{baseUrl}}/work-time?isDefault=true
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
@@ -129,7 +129,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motorcycle": "Suzuki, 2017, 650, Verde Limão"
+  "workTime": {
+    "shift": "tarde"
+  }
 }
 
 ### Update user
@@ -431,7 +433,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Neo&fromDate=17/10/2025
+GET {{baseUrl}}/settlement/preview?name=Leonardo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

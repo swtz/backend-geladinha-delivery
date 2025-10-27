@@ -98,7 +98,7 @@ export class UserController {
       phone,
       workTime,
     });
-    return updated;
+    return new ResponseUserDto(updated);
   }
 
   @Patch('me/password')

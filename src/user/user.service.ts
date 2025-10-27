@@ -102,7 +102,7 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
-    const existsUserData = dto.name || dto.email || dto.phone;
+    const existsUserData = dto.name || dto.email || dto.phone || dto.workTime;
     const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
     const authFlags = await this.getUserAndEntityAuth(user, user.id);
     const assignRoleError = new BadRequestException(
