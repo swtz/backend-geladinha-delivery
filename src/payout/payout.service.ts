@@ -10,11 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import {
-  CURRENT_SHORT_DATE,
-  END_TIME,
-  IS_ANOTHER_DAY,
-} from 'src/common/operation-time';
+import { CURRENT_SHORT_DATE } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
@@ -42,8 +38,8 @@ export class PayoutService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
-    motoboyData.name = motoboyData.name ?? '';
+  async preview(motoboyData: Partial<DeliveryMan>, from?: Date, to?: Date) {
+    // motoboyData.name = motoboyData.name ?? '';
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
 
     if (Object.keys(motoboyData).length === 0) {
@@ -197,23 +193,29 @@ export class PayoutService {
       );
     }
 
-    const { workDay: initDate, motoboy } = payout;
-    const dateObject = {
-      endDate: new Date(
-        initDate.getFullYear(),
-        initDate.getMonth(),
-        initDate.getDate(),
-        END_TIME,
-      ),
-    };
+    const place = await this.placeService.findOneBy({
+      code: process.env.DEFAULT_PLACE_CODE,
+    });
 
-    if (IS_ANOTHER_DAY) {
-      dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    if (!place) {
+      throw new NotFoundException(
+        'Nenhum estabelecimento definido como padrão',
+      );
     }
 
-    const newPayout = await this.preview(initDate, dateObject.endDate, {
-      id: motoboy.id,
-    });
+    const { workDay: initDate, motoboy } = payout;
+    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const { initHour, endHour } = motoboy.workTime
+      ? motoboy.workTime
+      : workTime;
+
+    let endDate = parseBrDate(CURRENT_SHORT_DATE, endHour);
+
+    if (endHour < initHour) {
+      endDate = generateRelativeDate('tomorrow', initDate, endHour);
+    }
+
+    const newPayout = await this.preview({ id: motoboy.id }, initDate, endDate);
     const mergedPayout = {
       ...payout,
       ...newPayout,
@@ -242,7 +244,7 @@ export class PayoutService {
     return this.payoutRepository.findOne({
       where: payoutData,
       relations: {
-        motoboy: true,
+        motoboy: { workTime: true },
         vouchers: voucherRelations,
       },
     });

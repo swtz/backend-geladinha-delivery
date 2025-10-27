@@ -129,8 +129,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  // se eu mandar o corpo incompleto,
+  // vai dar erro de not-null constraint
+  // na base de dados!
   "workTime": {
-    "shift": "tarde"
+    "shift": "personalizado",
+    "initHour": 18,
+    "endHour": 4
   }
 }
 
@@ -141,8 +146,6 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motorcycle": "Suzuki, 2017, 650, Verde Limão",
-  "phone": "48999884489",
   "workTime": {
     "shift": "personalizado",
     "initHour": 14,
@@ -278,7 +281,7 @@ Content-Type: application/json
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/d284544e-f39f-456c-87ef-2c935894c014
+PATCH {{baseUrl}}/delivery/me/f0397249-bbc5-47ff-b7ec-ded2fd8a6b14
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -384,7 +387,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Gabriel&from=26/10/2025&to=26/10/2025
+GET {{baseUrl}}/payout/preview?name=Guilherme&from=26/10/2025&to=26/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -394,8 +397,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "17/10/2025",
-  "motoboy": "Guilherme"
+  "from": "26-10-2025",
+  "to": "26-10-2025",
+  "name": "Guilherme"
 }
 
 ### Read payout
@@ -415,7 +419,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/7ed2374c-7548-4d78-a0cb-e767f19faa09
+PATCH {{baseUrl}}/payout/041cf109-f7a9-4fd8-9bc4-90ae0f8a86d3
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
@@ -432,7 +436,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&from=26-10-2025&to=26-10-2025
+GET {{baseUrl}}/settlement/preview?name=Orochi&from=26-10-2025&to=26-10-2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -442,13 +446,15 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "from": "26-10-2025",
+  "to": "26-10-2025",
   "initValue": 50,
-  "operatorName": "Neo"
+  "name": "Orochi"
 }
 
 ### Read settlement
 # @name readSettlement
-GET {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+GET {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
 Authorization: Bearer {{JwtToken}}
 
 ### Read owned settlements
@@ -463,12 +469,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
 # @name createSettlement
-PATCH {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+PATCH {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 { 
-  "description": "" 
+  "description": null 
 }
 
 ### Update settlement.isClosed
