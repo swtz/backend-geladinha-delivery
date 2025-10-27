@@ -65,23 +65,16 @@ export class SettlementService {
     }
 
     const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
-    const { initHour, endHour } = workTime;
+    const { initHour, endHour } = operator.workTime
+      ? operator.workTime
+      : workTime;
 
     const dateObject = {
       initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
       endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
 
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        endHour,
-      );
-    }
-
     if (operator.workTime) {
-      const { initHour, endHour } = operator.workTime;
       const initShortDate = dateObject.initDate.toLocaleString('BR', {
         dateStyle: 'short',
       });
@@ -91,15 +84,16 @@ export class SettlementService {
 
       dateObject.initDate = parseBrDate(initShortDate, initHour);
       dateObject.endDate = parseBrDate(endShortDate, endHour);
-
-      if (endHour < initHour) {
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          dateObject.initDate,
-          endHour,
-        );
-      }
     }
+
+    if (endHour < initHour) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        endHour,
+      );
+    }
+
     const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {
       id: operator.id,
     });
@@ -110,9 +104,9 @@ export class SettlementService {
       to: dateObject.endDate,
     });
     const deliveries = await this.deliveryService.findAll({
+      userData,
       from: dateObject.initDate,
       to: dateObject.endDate,
-      userData,
     });
 
     const settlement = {

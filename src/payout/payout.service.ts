@@ -26,6 +26,7 @@ import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { PlaceService } from 'src/place/place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class PayoutService {
@@ -42,11 +43,13 @@ export class PayoutService {
   ) {}
 
   async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
+    motoboyData.name = motoboyData.name ?? '';
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+
     if (Object.keys(motoboyData).length === 0) {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const place = await this.placeService.findOneBy({
       code: process.env.DEFAULT_PLACE_CODE,
     });
@@ -58,23 +61,16 @@ export class PayoutService {
     }
 
     const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
-    const { initHour, endHour } = workTime;
+    const { initHour, endHour } = motoboy.workTime
+      ? motoboy.workTime
+      : workTime;
 
     const dateObject = {
       initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
       endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
 
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        endHour,
-      );
-    }
-
     if (motoboy.workTime) {
-      const { initHour, endHour } = motoboy.workTime;
       const initShortDate = dateObject.initDate.toLocaleString('BR', {
         dateStyle: 'short',
       });
@@ -84,14 +80,14 @@ export class PayoutService {
 
       dateObject.initDate = parseBrDate(initShortDate, initHour);
       dateObject.endDate = parseBrDate(endShortDate, endHour);
+    }
 
-      if (endHour < initHour) {
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          dateObject.initDate,
-          endHour,
-        );
-      }
+    if (endHour < initHour) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        endHour,
+      );
     }
 
     const vouchers = await this.voucherService.findAllOwned({
@@ -103,6 +99,7 @@ export class PayoutService {
     const deliveries = await this.deliveryService.findAll({
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Role.Motoboy,
       userData: motoboyData,
     });
 

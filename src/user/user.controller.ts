@@ -49,7 +49,7 @@ export class UserController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.findOneByOrFail({ id });
-    return new ResponseUserDto(user);
+    return user;
   }
 
   @Roles(Role.Operator, Role.Admin)
