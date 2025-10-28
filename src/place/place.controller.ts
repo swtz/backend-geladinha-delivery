@@ -17,7 +17,10 @@ import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateDefaultWorkTimeDto } from 'src/work-time/dto/update-default-work-time.dto';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Admin)
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
