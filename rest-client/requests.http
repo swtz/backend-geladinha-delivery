@@ -61,7 +61,7 @@ Content-Type: application/json
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/ef0b7e03-404e-4a98-af25-b04ddaa15972
+GET {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
@@ -77,16 +77,16 @@ Content-Type: application/json
   "isDefault": false
 }
 
-### Remove work time
-# @name removeWorkTime
-DELETE {{baseUrl}}/place/work-time/d041edae-5e4b-4836-97bc-39bd56783184
-Authorization: Bearer {{JwtToken}}
-
-################### PLACE ###################
+################### WORK TIME ###################
 
 ### Find all work times
 # @name findAllWorkTimes
 GET {{baseUrl}}/work-time
+Authorization: Bearer {{JwtToken}}
+
+### Remove work time
+# @name removeWorkTime
+DELETE {{baseUrl}}/work-time/b611a4ad-2357-4542-ab0c-9a3c0d3d9c8a
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################

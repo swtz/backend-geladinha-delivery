@@ -1,8 +1,11 @@
 import {
   Controller,
+  Delete,
   Get,
+  Param,
   ParseBoolPipe,
   ParseEnumPipe,
+  ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
 import { Shift } from 'src/common/enums/work-shifts.enum';
@@ -23,5 +26,11 @@ export class WorkTimeController {
   ) {
     const shifts = await this.workTimeService.findAll({ shift, isDefault });
     return shifts;
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const workTime = await this.workTimeService.remove(id);
+    return workTime;
   }
 }

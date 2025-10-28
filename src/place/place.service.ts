@@ -191,30 +191,6 @@ export class PlaceService {
     return this.findOneByOrFail({ id });
   }
 
-  async removeWorkTime(id: string) {
-    const workTime = await this.workTimeService.findOneByOrFail({ id });
-
-    if (workTime.isDefault) {
-      throw new BadRequestException(
-        'Não é possível excluir o horário que está como padrão',
-      );
-    }
-
-    if (workTime.places.length > 0) {
-      const { places } = workTime;
-
-      places.forEach(item => {
-        if (item.workTimes.length === 1) {
-          throw new BadRequestException(
-            `${item.businessName} precisa ter ao menos 1 horário`,
-          );
-        }
-      });
-    }
-
-    return this.workTimeService.remove(id);
-  }
-
   async save(placeData: Partial<Place>) {
     const http400 = generateBadRequestException(
       'Erro ao salvar o estabelecimento',

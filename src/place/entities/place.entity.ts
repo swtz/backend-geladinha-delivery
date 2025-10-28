@@ -60,7 +60,10 @@ export class Place {
   @ManyToOne(() => Address, { onDelete: 'SET NULL' })
   postalBox: Address;
 
-  @ManyToMany(() => WorkTime, workTime => workTime.places)
+  @ManyToMany(() => WorkTime, workTime => workTime.places, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   workTimes: WorkTime[];
 

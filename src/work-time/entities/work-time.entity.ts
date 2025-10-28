@@ -32,6 +32,6 @@ export class WorkTime {
   @Column({ default: false })
   isDefault: boolean;
 
-  @ManyToMany(() => Place, place => place.workTimes)
+  @ManyToMany(() => Place, place => place.workTimes, { onDelete: 'CASCADE' })
   places: Place[];
 }

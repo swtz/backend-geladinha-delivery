@@ -164,6 +164,27 @@ export class WorkTimeService {
 
   async remove(id: string) {
     const workTime = await this.findOneByOrFail({ id });
+
+    if (workTime.isDefault) {
+      throw new UnauthorizedException(
+        'Esse horário de serviço é o padrão em algum estabelecimento',
+      );
+    }
+
+    if (workTime.places.length > 0) {
+      for (const place of workTime.places) {
+        const hasWorkTime = place.workTimes.some(
+          item => item.id === workTime.id,
+        );
+
+        if (hasWorkTime && place.workTimes.length === 1) {
+          throw new UnauthorizedException(
+            `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+          );
+        }
+      }
+    }
+
     await this.workTimeRepository.delete({ id });
     return workTime;
   }
