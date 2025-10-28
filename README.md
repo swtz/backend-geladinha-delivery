@@ -21,10 +21,11 @@ GET / POST / PATCH / PUT / DELETE
 /place/me                       POST        Criar empresa                             JWT             ADMIN
 /place/:uuid                    GET         Ler empresa                               JWT             ADMIN
 /place/me/:uuid                 PATCH       Atualizar empresa                         JWT             ADMIN
-/place/:uuid/work-time          POST        Adicionar horário de serviço              JWT             ADMIN
-/place/work-time/:uuid          DELETE      Apagar horário de serviço                 JWT             ADMIN
+/place/work-time?postId=uuid    POST        Adicionar horário de serviço              JWT             ADMIN
 
+/work-time                      POST        Criar horário de serviço                  JWT             ADMIN
 /work-time?key=value            GET         Ler todos os horários de serviço          JWT             ADMIN
+/work-time/:uuid                DELETE      Apagar horário de serviço                 JWT             ADMIN
 
 /customer                       POST        Criar cliente com endereço                JWT             ADMIN/OPERATOR
 /customer/find?key=value        GET         Ler cliente                               JWT             ADMIN/OPERATOR

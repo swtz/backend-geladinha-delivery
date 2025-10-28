@@ -86,15 +86,15 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "madrugada",
-  "initHour": 0,
-  "endHour": 6,
+  "shift": "personalizado",
+  "initHour": 18,
+  "endHour": 23,
   "isDefault": false
 }
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time
+GET {{baseUrl}}/work-time?shift=personalizado
 Authorization: Bearer {{JwtToken}}
 
 ### Remove work time
