@@ -53,7 +53,7 @@ export class WorkTimeService {
 
     if (!workTime) {
       throw new BadRequestException(
-        'Horário de serviço não encontrado.\nDados não enviados',
+        'Horário de serviço não encontrado.\nDados para criação não enviados',
       );
     }
 

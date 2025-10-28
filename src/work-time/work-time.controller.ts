@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -6,12 +7,14 @@ import {
   ParseBoolPipe,
   ParseEnumPipe,
   ParseUUIDPipe,
+  Post,
   Query,
 } from '@nestjs/common';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTimeService } from './work-time.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -24,8 +27,17 @@ export class WorkTimeController {
     @Query('isDefault', new ParseBoolPipe({ optional: true }))
     isDefault: boolean,
   ) {
-    const shifts = await this.workTimeService.findAll({ shift, isDefault });
-    return shifts;
+    const workTime = await this.workTimeService.findAll({ shift, isDefault });
+    return workTime;
+  }
+
+  @Post()
+  async create(
+    @Body() dto: CreateWorkTimeDto,
+    @Query('placeId', new ParseUUIDPipe({ optional: true })) placeId: string,
+  ) {
+    const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
+    return workTime;
   }
 
   @Delete(':id')

@@ -62,13 +62,4 @@ export class PlaceController {
     const place = await this.placeService.findOneByOrFail({ id });
     return place;
   }
-
-  @Post(':id/work-time')
-  async addWorkTime(
-    @Body() dto: CreateWorkTimeDto,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    const place = await this.placeService.addWorkTime(dto, id);
-    return place;
-  }
 }
