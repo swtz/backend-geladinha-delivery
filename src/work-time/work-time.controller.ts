@@ -32,11 +32,8 @@ export class WorkTimeController {
   }
 
   @Post()
-  async create(
-    @Body() dto: CreateWorkTimeDto,
-    @Query('placeId', new ParseUUIDPipe({ optional: true })) placeId: string,
-  ) {
-    const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
+  async create(@Body() dto: CreateWorkTimeDto) {
+    const workTime = await this.workTimeService.create_new(dto);
     return workTime;
   }
 

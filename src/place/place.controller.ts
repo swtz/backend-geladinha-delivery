@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
@@ -61,5 +62,14 @@ export class PlaceController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const place = await this.placeService.findOneByOrFail({ id });
     return place;
+  }
+
+  @Post('work-time')
+  async addWorkTime(
+    @Body() dto: CreateWorkTimeDto,
+    @Query('placeId', ParseUUIDPipe) placeId: string,
+  ) {
+    const workTime = await this.placeService.addWorkTime(dto, placeId);
+    return workTime;
   }
 }

@@ -34,6 +34,10 @@ export class WorkTimeService {
   ) {
     const workTime = await this.findOneBy({ shift });
 
+    if (workTime && personalShifts.includes(workTime.shift) && !dto) {
+      throw new BadRequestException('Dados para criação não enviados');
+    }
+
     if (dto) {
       if (personalShifts.includes(shift)) {
         const created = await this.create(dto);
@@ -69,6 +73,45 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async create_new(dto: CreateWorkTimeDto, place?: Place) {
+    if (!place) {
+      return this.findOneOrCreate(dto.shift, dto);
+    }
+
+    this.failIfShiftExistsInPlace(place, dto.shift);
+
+    if (place.workTimes.length >= 5) {
+      throw new BadRequestException(
+        'Só é possível cadastrar 5 horários por estabelecimento',
+      );
+    }
+
+    const defaultWorkTime = this.findDefaultFromPlace(place);
+    const workTime = await this.findOneOrCreate(dto.shift, dto);
+
+    if (workTime.places.length > 0) {
+      const currentPlace = workTime.places.find(item => item.id === place.id);
+
+      if (currentPlace) {
+        currentPlace.workTimes.push(workTime);
+      }
+    }
+
+    workTime.places.push(place);
+
+    if (dto.isDefault) {
+      if (defaultWorkTime) {
+        await this.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+    }
+
+    const created = await this.save(workTime);
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {

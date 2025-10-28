@@ -66,7 +66,22 @@ Authorization: Bearer {{JwtToken}}
 
 ### Add work time
 # @name AddWorkTime
-POST {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5/work-time
+POST {{baseUrl}}/place/work-time?placeId=f4970f08-da92-4a29-88f9-26c079c325d5
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "shift": "feriado",
+  "initHour": 9,
+  "endHour": 15,
+  "isDefault": false
+}
+
+################### WORK TIME ###################
+
+### Create work time
+# @name CreateWorkTime
+POST {{baseUrl}}/work-time
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -76,8 +91,6 @@ Content-Type: application/json
   "endHour": 6,
   "isDefault": false
 }
-
-################### WORK TIME ###################
 
 ### Find all work times
 # @name findAllWorkTimes

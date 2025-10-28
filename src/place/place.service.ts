@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -148,47 +143,9 @@ export class PlaceService {
   }
 
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
-    if (dto.isDefault === undefined || dto.isDefault === null) {
-      throw new BadRequestException(
-        'Campo horário padrão não pode estar vazio',
-      );
-    }
-
     const place = await this.findOneByOrFail({ id });
-
-    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
-
-    if (place.workTimes.length >= 5) {
-      throw new BadRequestException(
-        'Só é possível cadastrar 5 horários por estabelecimento',
-      );
-    }
-
-    if (dto.isDefault) {
-      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
-      const workTime = await this.workTimeService.findOneOrCreate(
-        dto.shift,
-        dto,
-      );
-
-      if (defaultWorkTime) {
-        await this.workTimeService.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
-
-      place.workTimes.push(workTime);
-
-      await this.save(place);
-      return this.findOneByOrFail({ id });
-    }
-
-    const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
-    place.workTimes.push(workTime);
-
-    await this.save(place);
-    return this.findOneByOrFail({ id });
+    await this.workTimeService.create_new(dto, place);
+    return this.findOneByOrFail({ id: place.id });
   }
 
   async save(placeData: Partial<Place>) {
