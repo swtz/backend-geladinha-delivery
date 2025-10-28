@@ -1,19 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { CreatePlaceDto } from './dto/place/create-place.dto';
+import { CreatePlaceDto } from './dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
-import { WorkTimeService } from './services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { PlaceType } from './types/place';
-import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
+import { UpdatePlaceDto } from './dto/update-place.dto';
+import { WorkTimeService } from 'src/work-time/work-time.service';
+import { UserService } from 'src/user/user.service';
+import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 
 @Injectable()
 export class PlaceService {
@@ -24,6 +21,7 @@ export class PlaceService {
     private readonly placeRepository: Repository<Place>,
     private readonly addressService: AddressService,
     private readonly workTimeService: WorkTimeService,
+    private readonly userService: UserService,
   ) {}
 
   async create(dto: CreatePlaceDto, user: User) {
@@ -68,6 +66,59 @@ export class PlaceService {
     return this.findOneByOrFail({ id: created.id });
   }
 
+  async update(id: string, dto: UpdatePlaceDto) {
+    const place = await this.findOneByOrFail({ id });
+
+    // unique
+    place.name = dto.name ?? place.name;
+    place.phone = dto.phone ?? place.phone;
+    place.email = dto.email ?? place.email;
+    place.cpf = dto.cpf ?? place.cpf;
+    place.cnpj = dto.cnpj ?? place.cnpj;
+    place.secondPhone = dto.secondPhone ?? place.secondPhone;
+
+    // custom
+    place.businessName = dto.businessName ?? place.businessName;
+    place.code = dto.code ?? place.code;
+
+    // place.owners
+    if (dto.ownerId) {
+      const owner = await this.userService.findOneByOrFail({ id: dto.ownerId });
+      place.owners.push(owner);
+    }
+    //
+
+    // entities
+    // place.address
+    // if dto.address → dto.address.id ? findOne : create
+    if (dto.address) {
+      if (dto.address.id) {
+        place.address = await this.addressService.findOneByOrFail({ id });
+      } else {
+        place.address = await this.addressService.create(dto.address);
+      }
+    }
+
+    // place.postalBox
+    if (dto.postalBox) {
+      if (dto.postalBox.id) {
+        place.postalBox = await this.addressService.findOneByOrFail({ id });
+      } else {
+        place.postalBox = await this.addressService.create(dto.postalBox);
+      }
+    }
+
+    // place.workTimes
+    if (dto.workTime) {
+      const defaultWorkTime =
+        this.workTimeService.failIfNotDefaultFromPlace(place);
+      await this.workTimeService.update(defaultWorkTime.id, dto.workTime);
+    }
+
+    const updated = await this.save(place);
+    return this.findOneByOrFail({ id: updated.id });
+  }
+
   async findOneByOrFail(placeData: Partial<Place>) {
     const place = await this.findOneBy(placeData);
 
@@ -92,71 +143,9 @@ export class PlaceService {
   }
 
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
-    if (dto.isDefault === undefined || dto.isDefault === null) {
-      throw new BadRequestException(
-        'Campo horário padrão não pode estar vazio',
-      );
-    }
-
     const place = await this.findOneByOrFail({ id });
-
-    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
-
-    if (place.workTimes.length >= 5) {
-      throw new BadRequestException(
-        'Só é possível cadastrar 5 horários por estabelecimento',
-      );
-    }
-
-    if (dto.isDefault) {
-      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
-      const workTime = await this.workTimeService.findOneOrCreate(
-        dto.shift,
-        dto,
-      );
-
-      if (defaultWorkTime) {
-        await this.workTimeService.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
-
-      place.workTimes.push(workTime);
-
-      await this.save(place);
-      return this.findOneByOrFail({ id });
-    }
-
-    const workTime = await this.workTimeService.findOneOrCreate(dto.shift, dto);
-    place.workTimes.push(workTime);
-
-    await this.save(place);
-    return this.findOneByOrFail({ id });
-  }
-
-  async removeWorkTime(id: string) {
-    const workTime = await this.workTimeService.findOneByOrFail({ id });
-
-    if (workTime.isDefault) {
-      throw new BadRequestException(
-        'Não é possível excluir o horário que está como padrão',
-      );
-    }
-
-    if (workTime.places.length > 0) {
-      const { places } = workTime;
-
-      places.forEach(item => {
-        if (item.workTimes.length === 1) {
-          throw new BadRequestException(
-            `${item.businessName} precisa ter ao menos 1 horário`,
-          );
-        }
-      });
-    }
-
-    return this.workTimeService.remove(id);
+    await this.workTimeService.create_new(dto, place);
+    return this.findOneByOrFail({ id: place.id });
   }
 
   async save(placeData: Partial<Place>) {

@@ -17,7 +17,7 @@ import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { WorkTimeService } from 'src/place/services/work-time.service';
+import { WorkTimeService } from 'src/work-time/work-time.service';
 
 @Injectable()
 export class UserService {
@@ -102,7 +102,7 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
-    const existsUserData = dto.name || dto.email || dto.phone;
+    const existsUserData = dto.name || dto.email || dto.phone || dto.workTime;
     const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
     const authFlags = await this.getUserAndEntityAuth(user, user.id);
     const assignRoleError = new BadRequestException(

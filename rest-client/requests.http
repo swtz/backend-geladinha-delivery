@@ -46,6 +46,19 @@ Content-Type: application/json
   }
 }
 
+### Update place
+# @name updateUser
+PATCH {{baseUrl}}/place/me/ef0b7e03-404e-4a98-af25-b04ddaa15972
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "workTime": {
+    "initHour": 18,
+    "endHour": 4
+  }
+}
+
 ### Find place
 # @name findOnePlace
 GET {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5
@@ -53,7 +66,22 @@ Authorization: Bearer {{JwtToken}}
 
 ### Add work time
 # @name AddWorkTime
-POST {{baseUrl}}/place/f4970f08-da92-4a29-88f9-26c079c325d5/work-time
+POST {{baseUrl}}/place/work-time?placeId=f4970f08-da92-4a29-88f9-26c079c325d5
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "shift": "feriado",
+  "initHour": 9,
+  "endHour": 15,
+  "isDefault": false
+}
+
+################### WORK TIME ###################
+
+### Create work time
+# @name CreateWorkTime
+POST {{baseUrl}}/work-time
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -64,16 +92,14 @@ Content-Type: application/json
   "isDefault": false
 }
 
-### Remove work time
-# @name removeWorkTime
-DELETE {{baseUrl}}/place/work-time/d041edae-5e4b-4836-97bc-39bd56783184
-Authorization: Bearer {{JwtToken}}
-
-################### PLACE ###################
-
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time?shift=personalizado&isDefault=true
+GET {{baseUrl}}/work-time
+Authorization: Bearer {{JwtToken}}
+
+### Remove work time
+# @name removeWorkTime
+DELETE {{baseUrl}}/work-time/b611a4ad-2357-4542-ab0c-9a3c0d3d9c8a
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
@@ -116,7 +142,14 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motorcycle": "Suzuki, 2017, 650, Verde Limão"
+  // se eu mandar o corpo incompleto,
+  // vai dar erro de not-null constraint
+  // na base de dados!
+  "workTime": {
+    "shift": "personalizado",
+    "initHour": 18,
+    "endHour": 4
+  }
 }
 
 ### Update user
@@ -126,8 +159,6 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motorcycle": "Suzuki, 2017, 650, Verde Limão",
-  "phone": "48999884489",
   "workTime": {
     "shift": "personalizado",
     "initHour": 14,
@@ -159,7 +190,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
+GET {{baseUrl}}/user/924b2100-1474-4311-8cbd-156376cb171f
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
@@ -258,18 +289,17 @@ Content-Type: application/json
   "customer": "258ced07-07db-45c6-978b-e757c82353a9",
   "totalPurchase": 45.5,
   "deliveryTax": 6.5,
-  "paymentMethod": "credit"
+  "paymentMethod": "money"
 }
 
 ### Update delivery
 # @name updateDelivery
-PATCH {{baseUrl}}/delivery/me/58405f94-ec9b-4dee-bc86-6d5a0502bc8c
+PATCH {{baseUrl}}/delivery/me/f0397249-bbc5-47ff-b7ec-ded2fd8a6b14
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "isPaid": true,
-  "paymentMethod": "money"
+  "isPaid": true
 }
 
 ### Delete tip
@@ -294,7 +324,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?type=customer&id=258ced07-07db-45c6-978b-e757c82353a9
+GET {{baseUrl}}/delivery?name=Orochi&from=26-10-2025&to=27-10-2025
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -370,7 +400,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Anthos
+GET {{baseUrl}}/payout/preview?name=Guilherme&from=26/10/2025&to=26/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -380,8 +410,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDate": "17/10/2025",
-  "motoboy": "Guilherme"
+  "from": "26-10-2025",
+  "to": "26-10-2025",
+  "name": "Guilherme"
 }
 
 ### Read payout
@@ -401,7 +432,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/7ed2374c-7548-4d78-a0cb-e767f19faa09
+PATCH {{baseUrl}}/payout/041cf109-f7a9-4fd8-9bc4-90ae0f8a86d3
 Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
@@ -418,7 +449,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?operatorName=Neo&fromDate=17/10/2025
+GET {{baseUrl}}/settlement/preview?name=Orochi&from=26-10-2025&to=26-10-2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -428,13 +459,15 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "from": "26-10-2025",
+  "to": "26-10-2025",
   "initValue": 50,
-  "operatorName": "Neo"
+  "name": "Orochi"
 }
 
 ### Read settlement
 # @name readSettlement
-GET {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+GET {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
 Authorization: Bearer {{JwtToken}}
 
 ### Read owned settlements
@@ -449,12 +482,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
 # @name createSettlement
-PATCH {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+PATCH {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 { 
-  "description": "" 
+  "description": null 
 }
 
 ### Update settlement.isClosed

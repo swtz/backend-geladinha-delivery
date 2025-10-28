@@ -7,17 +7,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WorkTime } from '../entities/work-time.entity';
 import { Repository } from 'typeorm';
-import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import {
   personalShifts,
   sharedShifts,
   Shift,
 } from 'src/common/enums/work-shifts.enum';
-import { Place } from '../entities/place.entity';
-import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
+import { Place } from 'src/place/entities/place.entity';
+import { WorkTime } from './entities/work-time.entity';
+import { CreateWorkTimeDto } from './dto/create-work-time.dto';
+import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 
 @Injectable()
 export class WorkTimeService {
@@ -33,6 +33,10 @@ export class WorkTimeService {
     dto?: CreateWorkTimeDto | UpdateWorkTimeDto,
   ) {
     const workTime = await this.findOneBy({ shift });
+
+    if (workTime && personalShifts.includes(workTime.shift) && !dto) {
+      throw new BadRequestException('Dados para criação não enviados');
+    }
 
     if (dto) {
       if (personalShifts.includes(shift)) {
@@ -53,7 +57,7 @@ export class WorkTimeService {
 
     if (!workTime) {
       throw new BadRequestException(
-        'Horário de serviço não encontrado.\nDados não enviados',
+        'Horário de serviço não encontrado.\nDados para criação não enviados',
       );
     }
 
@@ -69,6 +73,45 @@ export class WorkTimeService {
     };
 
     return this.save(workTime);
+  }
+
+  async create_new(dto: CreateWorkTimeDto, place?: Place) {
+    if (!place) {
+      return this.findOneOrCreate(dto.shift, dto);
+    }
+
+    this.failIfShiftExistsInPlace(place, dto.shift);
+
+    if (place.workTimes.length >= 5) {
+      throw new BadRequestException(
+        'Só é possível cadastrar 5 horários por estabelecimento',
+      );
+    }
+
+    const defaultWorkTime = this.findDefaultFromPlace(place);
+    const workTime = await this.findOneOrCreate(dto.shift, dto);
+
+    if (workTime.places.length > 0) {
+      const currentPlace = workTime.places.find(item => item.id === place.id);
+
+      if (currentPlace) {
+        currentPlace.workTimes.push(workTime);
+      }
+    }
+
+    workTime.places.push(place);
+
+    if (dto.isDefault) {
+      if (defaultWorkTime) {
+        await this.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+    }
+
+    const created = await this.save(workTime);
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
@@ -164,6 +207,27 @@ export class WorkTimeService {
 
   async remove(id: string) {
     const workTime = await this.findOneByOrFail({ id });
+
+    if (workTime.isDefault) {
+      throw new UnauthorizedException(
+        'Esse horário de serviço é o padrão em algum estabelecimento',
+      );
+    }
+
+    if (workTime.places.length > 0) {
+      for (const place of workTime.places) {
+        const hasWorkTime = place.workTimes.some(
+          item => item.id === workTime.id,
+        );
+
+        if (hasWorkTime && place.workTimes.length === 1) {
+          throw new UnauthorizedException(
+            `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+          );
+        }
+      }
+    }
+
     await this.workTimeRepository.delete({ id });
     return workTime;
   }

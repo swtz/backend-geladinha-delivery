@@ -10,11 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import {
-  CURRENT_SHORT_DATE,
-  END_TIME,
-  IS_ANOTHER_DAY,
-} from 'src/common/operation-time';
+import { CURRENT_SHORT_DATE } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
@@ -25,7 +21,8 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { PlaceService } from 'src/place/place.service';
-import { WorkTimeService } from 'src/place/services/work-time.service';
+import { WorkTimeService } from 'src/work-time/work-time.service';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class PayoutService {
@@ -41,12 +38,14 @@ export class PayoutService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async preview(from: Date, to: Date, motoboyData: Partial<DeliveryMan>) {
+  async preview(motoboyData: Partial<DeliveryMan>, from?: Date, to?: Date) {
+    // motoboyData.name = motoboyData.name ?? '';
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+
     if (Object.keys(motoboyData).length === 0) {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const place = await this.placeService.findOneBy({
       code: process.env.DEFAULT_PLACE_CODE,
     });
@@ -58,23 +57,16 @@ export class PayoutService {
     }
 
     const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
-    const { initHour, endHour } = workTime;
+    const { initHour, endHour } = motoboy.workTime
+      ? motoboy.workTime
+      : workTime;
 
     const dateObject = {
       initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
       endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
 
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        endHour,
-      );
-    }
-
     if (motoboy.workTime) {
-      const { initHour, endHour } = motoboy.workTime;
       const initShortDate = dateObject.initDate.toLocaleString('BR', {
         dateStyle: 'short',
       });
@@ -84,14 +76,14 @@ export class PayoutService {
 
       dateObject.initDate = parseBrDate(initShortDate, initHour);
       dateObject.endDate = parseBrDate(endShortDate, endHour);
+    }
 
-      if (endHour < initHour) {
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          dateObject.initDate,
-          endHour,
-        );
-      }
+    if (endHour < initHour) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        endHour,
+      );
     }
 
     const vouchers = await this.voucherService.findAllOwned({
@@ -103,6 +95,7 @@ export class PayoutService {
     const deliveries = await this.deliveryService.findAll({
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Role.Motoboy,
       userData: motoboyData,
     });
 
@@ -200,23 +193,29 @@ export class PayoutService {
       );
     }
 
-    const { workDay: initDate, motoboy } = payout;
-    const dateObject = {
-      endDate: new Date(
-        initDate.getFullYear(),
-        initDate.getMonth(),
-        initDate.getDate(),
-        END_TIME,
-      ),
-    };
+    const place = await this.placeService.findOneBy({
+      code: process.env.DEFAULT_PLACE_CODE,
+    });
 
-    if (IS_ANOTHER_DAY) {
-      dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    if (!place) {
+      throw new NotFoundException(
+        'Nenhum estabelecimento definido como padrão',
+      );
     }
 
-    const newPayout = await this.preview(initDate, dateObject.endDate, {
-      id: motoboy.id,
-    });
+    const { workDay: initDate, motoboy } = payout;
+    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const { initHour, endHour } = motoboy.workTime
+      ? motoboy.workTime
+      : workTime;
+
+    let endDate = parseBrDate(CURRENT_SHORT_DATE, endHour);
+
+    if (endHour < initHour) {
+      endDate = generateRelativeDate('tomorrow', initDate, endHour);
+    }
+
+    const newPayout = await this.preview({ id: motoboy.id }, initDate, endDate);
     const mergedPayout = {
       ...payout,
       ...newPayout,
@@ -245,7 +244,7 @@ export class PayoutService {
     return this.payoutRepository.findOne({
       where: payoutData,
       relations: {
-        motoboy: true,
+        motoboy: { workTime: true },
         vouchers: voucherRelations,
       },
     });

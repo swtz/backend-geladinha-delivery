@@ -37,7 +37,7 @@ export class PayoutController {
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const payout = await this.payoutService.preview(from, to, qo);
+    const payout = await this.payoutService.preview(qo, from, to);
     return new ResponsePayoutDto(payout);
   }
 
@@ -51,7 +51,7 @@ export class PayoutController {
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const preview = await this.payoutService.preview(from, to, qo);
+    const preview = await this.payoutService.preview(qo, from, to);
     const payout = await this.payoutService.create(preview);
     return new ResponsePayoutDto(payout);
   }

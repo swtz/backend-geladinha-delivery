@@ -14,18 +14,15 @@ import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
-import {
-  CURRENT_SHORT_DATE,
-  END_TIME,
-  IS_ANOTHER_DAY,
-  START_TIME,
-} from 'src/common/operation-time';
+import { CURRENT_SHORT_DATE } from 'src/common/operation-time';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { WorkTimeService } from 'src/work-time/work-time.service';
+import { PlaceService } from 'src/place/place.service';
 
 @Injectable()
 export class SettlementService {
@@ -37,9 +34,12 @@ export class SettlementService {
     private readonly deliveryService: DeliveryService,
     private readonly voucherService: VoucherService,
     private readonly userService: UserService,
+    private readonly workTimeService: WorkTimeService,
+    private readonly placeService: PlaceService,
   ) {}
 
   async preview(userData: Partial<User>, from?: Date, to?: Date) {
+    // userData.name = userData.name ?? '';
     const operator = await this.userService.findOneByOrFail(userData);
 
     if (operator instanceof DeliveryMan) {
@@ -50,22 +50,49 @@ export class SettlementService {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
+    const place = await this.placeService.findOneBy({
+      code: process.env.DEFAULT_PLACE_CODE,
+    });
+
+    if (!place) {
+      throw new NotFoundException(
+        'Nenhum estabelecimento definido como padrão',
+      );
+    }
+
+    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const { initHour, endHour } = operator.workTime
+      ? operator.workTime
+      : workTime;
+
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, START_TIME),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, END_TIME),
+      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
+      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
     };
+
+    if (operator.workTime) {
+      const initShortDate = dateObject.initDate.toLocaleString('BR', {
+        dateStyle: 'short',
+      });
+      const endShortDate = dateObject.endDate.toLocaleString('BR', {
+        dateStyle: 'short',
+      });
+
+      dateObject.initDate = parseBrDate(initShortDate, initHour);
+      dateObject.endDate = parseBrDate(endShortDate, endHour);
+    }
+
+    if (endHour < initHour) {
+      dateObject.endDate = generateRelativeDate(
+        'tomorrow',
+        dateObject.initDate,
+        endHour,
+      );
+    }
 
     const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {
       id: operator.id,
     });
-
-    if (IS_ANOTHER_DAY) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        END_TIME,
-      );
-    }
 
     const vouchers = await this.voucherService.findAllOwned({
       user: operator,
@@ -73,9 +100,9 @@ export class SettlementService {
       to: dateObject.endDate,
     });
     const deliveries = await this.deliveryService.findAll({
+      userData,
       from: dateObject.initDate,
       to: dateObject.endDate,
-      userData,
     });
 
     const settlement = {
@@ -223,24 +250,32 @@ export class SettlementService {
       throw new UnauthorizedException('Caixa fechado. Não é possível alterar');
     }
 
-    const { workDay: initDate, operator } = settlement;
-    const dateObject = {
-      endDate: new Date(
-        initDate.getFullYear(),
-        initDate.getMonth(),
-        initDate.getDate(),
-        END_TIME,
-      ),
-    };
+    const place = await this.placeService.findOneBy({
+      code: process.env.DEFAULT_PLACE_CODE,
+    });
 
-    if (IS_ANOTHER_DAY) {
-      dateObject.endDate = generateRelativeDate('tomorrow', initDate, END_TIME);
+    if (!place) {
+      throw new NotFoundException(
+        'Nenhum estabelecimento definido como padrão',
+      );
+    }
+
+    const { workDay: initDate, operator } = settlement;
+    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const { initHour, endHour } = operator.workTime
+      ? operator.workTime
+      : workTime;
+
+    let endDate = parseBrDate(CURRENT_SHORT_DATE, endHour);
+
+    if (endHour < initHour) {
+      endDate = generateRelativeDate('tomorrow', initDate, endHour);
     }
 
     const newSettlement = await this.preview(
-      { name: operator.name },
+      { id: operator.id },
       initDate,
-      dateObject.endDate,
+      endDate,
     );
     const mergedSettlement = {
       ...settlement,

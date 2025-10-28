@@ -11,9 +11,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { WorkTime } from './work-time.entity';
 import { SocialMedias } from './social-medias.entity';
 import { User } from 'src/user/entities/user.entity';
+import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Entity()
 export class Place {
@@ -60,7 +60,10 @@ export class Place {
   @ManyToOne(() => Address, { onDelete: 'SET NULL' })
   postalBox: Address;
 
-  @ManyToMany(() => WorkTime, workTime => workTime.places)
+  @ManyToMany(() => WorkTime, workTime => workTime.places, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   workTimes: WorkTime[];
 
