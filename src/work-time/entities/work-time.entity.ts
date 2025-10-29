@@ -32,6 +32,9 @@ export class WorkTime {
   @Column({ default: false })
   isDefault: boolean;
 
+  @Column({ default: false })
+  isShared: boolean;
+
   @ManyToMany(() => Place, place => place.workTimes, { onDelete: 'CASCADE' })
   places: Place[];
 }
