@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsUUID,
 } from 'class-validator';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 
@@ -24,12 +23,4 @@ export class CreateWorkTimeDto {
   @IsOptional()
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
   isDefault?: boolean;
-
-  @IsOptional()
-  @IsUUID('4', { message: 'Formato inválido' })
-  place?: string;
-
-  @IsOptional()
-  @IsUUID('4', { message: 'Formato inválido' })
-  user?: string;
 }
