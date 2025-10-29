@@ -110,15 +110,15 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Anthos",
-  "phone": "48999558881",
-  "email": "anthos@email.com",
-  "role": "motoboy",
+  "name": "Rogério",
+  "phone": "48999558883",
+  "email": "rogerio@email.com",
+  "role": "operator",
   "password": "123456",
   "workTime": {
     "shift": "madrugada",
     "initHour": 23,
-    "endHour": 4
+    "endHour": 7
   },
   "motorcycle": "Yamaha, 2017, 300, Preta",
   "daily": 15
@@ -189,7 +189,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/924b2100-1474-4311-8cbd-156376cb171f
+GET {{baseUrl}}/user/698139f9-d801-46c3-bae6-54f58c88e01e
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users

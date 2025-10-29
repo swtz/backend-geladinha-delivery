@@ -90,6 +90,11 @@ export class UserService {
     }
 
     const created = await this.saveUser(newUser);
+
+    if (newUser.workTime) {
+      await this.workTimeService.save({ ...newUser.workTime, user: created });
+    }
+
     return this.findOneByOrFail({ id: created.id });
   }
 
