@@ -247,6 +247,14 @@ export class WorkTimeService {
     });
   }
 
+  async findAllOwned(user: User) {
+    return this.workTimeRepository.find({
+      where: { user: { id: user.id } },
+      order: { createdAt: 'DESC' },
+      relations: { places: true, user: true },
+    });
+  }
+
   async remove(id: string) {
     const workTime = await this.findOneByOrFail({ id });
 
