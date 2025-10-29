@@ -18,6 +18,7 @@ import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
+import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 
 @Injectable()
 export class WorkTimeService {
@@ -59,6 +60,25 @@ export class WorkTimeService {
       throw new BadRequestException(
         'Horário de serviço não encontrado.\nDados para criação não enviados',
       );
+    }
+
+    return workTime;
+  }
+
+  async findOneOrCreate_new(dto: CreateWorkTimeDto, isDefault = false) {
+    const workTime = await this.findOneBy({ shift: dto.shift, isShared: true });
+
+    const newWorkTime: NewWorkTimeForRest = {
+      shift: dto.shift,
+      initHour: dto.initHour,
+      endHour: dto.endHour,
+      isDefault,
+      isShared: false,
+    };
+
+    if (!workTime) {
+      const created = await this.save(newWorkTime);
+      return this.findOneByOrFail({ id: created.id });
     }
 
     return workTime;
