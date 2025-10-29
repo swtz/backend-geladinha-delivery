@@ -19,6 +19,7 @@ import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class WorkTimeService {
@@ -168,6 +169,26 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: created.id });
   }
 
+  async findOneBy(workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.findOne({
+      where: workTimeData,
+      relations: {
+        places: { workTimes: true },
+        user: true,
+      },
+    });
+  }
+
+  async findOneOwnedBy(user: User, workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.find({
+      where: { ...workTimeData, user: { id: user.id } },
+      relations: {
+        places: { workTimes: true },
+        user: true,
+      },
+    });
+  }
+
   async findOneByOrFail(workTimeData: Partial<WorkTime>) {
     const workTime = await this.findOneBy(workTimeData);
 
@@ -178,14 +199,14 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async findOneBy(workTimeData: Partial<WorkTime>) {
-    return this.workTimeRepository.findOne({
-      where: workTimeData,
-      relations: {
-        places: { workTimes: true },
-        user: true,
-      },
-    });
+  async findOneOwnedByOrFail(user: User, workTimeData: Partial<WorkTime>) {
+    const workTime = await this.findOneOwnedBy(user, workTimeData);
+
+    if (!workTime) {
+      throw new NotFoundException('Esse horário de serviço não existe');
+    }
+
+    return workTime;
   }
 
   findDefaultFromPlace(place: Place) {
