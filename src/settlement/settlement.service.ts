@@ -60,7 +60,7 @@ export class SettlementService {
       );
     }
 
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;
@@ -261,7 +261,7 @@ export class SettlementService {
     }
 
     const { workDay: initDate, operator } = settlement;
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;

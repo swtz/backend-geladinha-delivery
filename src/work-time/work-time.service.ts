@@ -194,7 +194,7 @@ export class WorkTimeService {
     return workTime;
   }
 
-  failIfNotDefaultFromPlace(place: Place) {
+  findDefaultFromPlaceOrFail(place: Place) {
     const workTime = this.findDefaultFromPlace(place);
 
     if (!workTime) {

@@ -56,7 +56,7 @@ export class PayoutService {
       );
     }
 
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = motoboy.workTime
       ? motoboy.workTime
       : workTime;
@@ -204,7 +204,7 @@ export class PayoutService {
     }
 
     const { workDay: initDate, motoboy } = payout;
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = motoboy.workTime
       ? motoboy.workTime
       : workTime;

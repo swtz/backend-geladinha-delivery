@@ -111,7 +111,7 @@ export class PlaceService {
     // place.workTimes
     if (dto.workTime) {
       const defaultWorkTime =
-        this.workTimeService.failIfNotDefaultFromPlace(place);
+        this.workTimeService.findDefaultFromPlaceOrFail(place);
       await this.workTimeService.update(defaultWorkTime.id, dto.workTime);
     }
 
