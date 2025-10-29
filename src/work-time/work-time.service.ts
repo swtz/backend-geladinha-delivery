@@ -82,6 +82,15 @@ export class WorkTimeService {
       return this.findOneByOrFail({ id: created.id });
     }
 
+    const exists = workTime.places.find(
+      place => place.code === process.env.DEFAULT_PLACE_CODE,
+    );
+
+    if (!exists) {
+      const created = await this.save(newWorkTime);
+      return this.findOneByOrFail({ id: created.id });
+    }
+
     return workTime;
   }
 

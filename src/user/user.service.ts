@@ -66,10 +66,7 @@ export class UserService {
       password: hashedPassword,
       roles: [role],
       workTime: dto.workTime
-        ? await this.workTimeService.findOneOrCreate(dto.workTime.shift, {
-            ...dto.workTime,
-            isDefault: false,
-          })
+        ? await this.workTimeService.findOneOrCreate_new(dto.workTime)
         : undefined,
     };
 
