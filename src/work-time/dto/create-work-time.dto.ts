@@ -23,17 +23,13 @@ export class CreateWorkTimeDto {
 
   @IsOptional()
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
-  isDefault: boolean;
-
-  @IsOptional()
-  @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
-  isShared: boolean;
+  isDefault?: boolean;
 
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  place: string;
+  place?: string;
 
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  user: string;
+  user?: string;
 }
