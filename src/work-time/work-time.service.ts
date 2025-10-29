@@ -97,7 +97,7 @@ export class WorkTimeService {
 
   async create_new(dto: CreateWorkTimeDto, place?: Place) {
     if (!place) {
-      return this.findOneOrCreate(dto.shift, dto);
+      return this.findOneOrCreate_new(dto);
     }
 
     this.failIfShiftExistsInPlace(place, dto.shift);
@@ -183,6 +183,7 @@ export class WorkTimeService {
       where: workTimeData,
       relations: {
         places: { workTimes: true },
+        user: true,
       },
     });
   }
@@ -221,7 +222,7 @@ export class WorkTimeService {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
-      relations: { places: true },
+      relations: { places: true, user: true },
     });
   }
 
