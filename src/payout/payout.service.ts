@@ -156,7 +156,11 @@ export class PayoutService {
 
     const lastPayout = lastPayouts[0];
 
-    if (lastPayout && lastPayout.total < 0) {
+    if (dateObject.initDate.valueOf() <= lastPayout.workDay.valueOf()) {
+      return payout;
+    }
+
+    if (lastPayout.total < 0) {
       payout.total = setDecimalPlaces(payout.total + lastPayout.total, 2);
     }
 
