@@ -13,8 +13,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { PayoutService } from './payout.service';
-import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
-import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponsePayoutDto } from './dto/response-payout.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
@@ -44,8 +42,8 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
-    @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Body('from', ParseBrWorkDatePipe) from: Date,
+    @Body('to', ParseBrWorkDatePipe) to: Date,
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
@@ -74,7 +72,7 @@ export class PayoutController {
   async findAll(
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
     weekDay: WeekDay,
-    @Query('workDay', new ParseBrDatePipe(START_TIME)) workDay: Date,
+    @Query('workDay', ParseBrWorkDatePipe) workDay: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
