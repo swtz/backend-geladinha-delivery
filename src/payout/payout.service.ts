@@ -67,15 +67,8 @@ export class PayoutService {
     };
 
     if (motoboy.workTime) {
-      const initShortDate = dateObject.initDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-      const endShortDate = dateObject.endDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-
-      dateObject.initDate = parseBrDate(initShortDate, initHour);
-      dateObject.endDate = parseBrDate(endShortDate, endHour);
+      dateObject.initDate = parseBrDate(dateObject.initDate, initHour);
+      dateObject.endDate = parseBrDate(dateObject.endDate, endHour);
     }
 
     if (endHour < initHour) {
