@@ -9,11 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import {
-  personalShifts,
-  sharedShifts,
-  Shift,
-} from 'src/common/enums/work-shifts.enum';
+import { personalShifts, Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
@@ -144,19 +140,29 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
+  async update(
+    id: string,
+    dto: UpdateWorkTimeDto,
+    isDefault = false,
+    place?: Place,
+  ) {
     const workTime = await this.findOneByOrFail({ id });
 
-    if (sharedShifts.includes(workTime.shift)) {
+    if (workTime.isShared) {
       throw new UnauthorizedException(
-        'Turno compartilhado não pode ser atualizado',
+        'Um estabelecimento possui esse horário.\n Não foi possível atualizar',
       );
     }
 
-    workTime.shift = dto.shift ?? workTime.shift;
-    workTime.initHour = dto.initHour ?? workTime.initHour;
-    workTime.endHour = dto.endHour ?? workTime.endHour;
-    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
+    if (!place) {
+      workTime.shift = dto.shift ?? workTime.shift;
+      workTime.initHour = dto.initHour ?? workTime.initHour;
+      workTime.endHour = dto.endHour ?? workTime.endHour;
+      workTime.isDefault = isDefault;
+
+      const created = await this.save(workTime);
+      return this.findOneByOrFail({ id: created.id });
+    }
 
     if (dto.isDefault && !place) {
       throw new BadRequestException('Informe um estabelecimento');
@@ -174,7 +180,6 @@ export class WorkTimeService {
     }
 
     const created = await this.save(workTime);
-
     return this.findOneByOrFail({ id: created.id });
   }
 
