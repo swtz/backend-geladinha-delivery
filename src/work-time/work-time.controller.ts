@@ -7,6 +7,7 @@ import {
   ParseBoolPipe,
   ParseEnumPipe,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { WorkTimeService } from './work-time.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
+import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -34,6 +36,15 @@ export class WorkTimeController {
   @Post()
   async create(@Body() dto: CreateWorkTimeDto) {
     const workTime = await this.workTimeService.create_new(dto);
+    return workTime;
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWorkTimeDto,
+  ) {
+    const workTime = await this.workTimeService.update(id, dto);
     return workTime;
   }
 

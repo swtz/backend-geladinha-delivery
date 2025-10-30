@@ -174,6 +174,11 @@ export class UserService {
     }
 
     const updated = await this.saveUser(entity);
+
+    // if (newUser.workTime) {
+    //   await this.workTimeService.save({ ...newUser.workTime, user: created });
+    // }
+
     return this.findOneByOrFail({ id: updated.id });
   }
 

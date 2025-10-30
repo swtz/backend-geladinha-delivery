@@ -91,6 +91,16 @@ Content-Type: application/json
   "endHour": 6
 }
 
+### Update work time
+# @name updateWorkTime
+PATCH {{baseUrl}}/work-time/b905646f-f9f4-4c38-b615-d296a9854b1c
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "shift": "madrugada"
+}
+
 ### Find all work times
 # @name findAllWorkTimes
 GET {{baseUrl}}/work-time
