@@ -24,6 +24,7 @@ GET / POST / PATCH / PUT / DELETE
 /place/work-time?postId=uuid    POST        Adicionar horário de serviço              JWT             ADMIN
 
 /work-time                      POST        Criar horário de serviço                  JWT             ADMIN
+/work-time/me                   GET         Ler meus horários de serviço              JWT             ALL
 /work-time?key=value            GET         Ler todos os horários de serviço          JWT             ADMIN
 /work-time/:uuid                PATCH       Atualizar horário de serviço              JWT             ADMIN
 /work-time/:uuid                DELETE      Apagar horário de serviço                 JWT             ADMIN
