@@ -63,7 +63,11 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async findOneOrCreate_new(dto: CreateWorkTimeDto, isDefault = false) {
+  async findOneOrCreate_new(
+    dto: CreateWorkTimeDto,
+    isDefault = false,
+    isShared = false,
+  ) {
     const workTime = await this.findOneBy({ shift: dto.shift, isShared: true });
 
     const newWorkTime: NewWorkTimeForRest = {
@@ -71,7 +75,7 @@ export class WorkTimeService {
       initHour: dto.initHour,
       endHour: dto.endHour,
       isDefault,
-      isShared: false,
+      isShared,
     };
 
     if (!workTime) {

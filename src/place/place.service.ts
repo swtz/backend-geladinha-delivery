@@ -40,11 +40,11 @@ export class PlaceService {
       : address;
 
     // criar um work time
-    const workTime = await this.workTimeService.findOneOrCreate(
-      dto.workTime.shift,
+    const workTime = await this.workTimeService.findOneOrCreate_new(
       dto.workTime,
+      dto.workTime.isDefault,
+      true,
     );
-
     // criar um social medias (ainda não)
     // depois cria-se o objeto
     const place: PlaceType = {
