@@ -14,8 +14,8 @@ import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
-import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 import { User } from 'src/user/entities/user.entity';
+import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 
 @Injectable()
 export class WorkTimeService {
@@ -194,7 +194,7 @@ export class WorkTimeService {
   }
 
   async findOneOwnedBy(user: User, workTimeData: Partial<WorkTime>) {
-    return this.workTimeRepository.find({
+    return this.workTimeRepository.findOne({
       where: { ...workTimeData, user: { id: user.id } },
       relations: {
         places: { workTimes: true },
