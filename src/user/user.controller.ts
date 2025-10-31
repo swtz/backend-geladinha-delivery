@@ -33,7 +33,7 @@ export class UserController {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
     });
-    return new ResponseUserDto(user);
+    return user;
   }
 
   @Get('motoboy')

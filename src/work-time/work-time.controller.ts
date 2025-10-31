@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTimeService } from './work-time.service';
@@ -17,6 +18,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -30,6 +32,13 @@ export class WorkTimeController {
     isDefault: boolean,
   ) {
     const workTime = await this.workTimeService.findAll({ shift, isDefault });
+    return workTime;
+  }
+
+  @Roles(Role.Admin, Role.Operator, Role.Motoboy)
+  @Get('me')
+  async findAllOwned(@Req() req: AuthenticatedRequest) {
+    const workTime = await this.workTimeService.findAllOwned(req.user);
     return workTime;
   }
 
