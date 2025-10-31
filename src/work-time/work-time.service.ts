@@ -120,25 +120,15 @@ export class WorkTimeService {
     }
 
     const defaultWorkTime = this.findDefaultFromPlace(place);
-    const workTime = await this.findOneOrCreate(dto.shift, dto);
-
-    if (workTime.places.length > 0) {
-      const currentPlace = workTime.places.find(item => item.id === place.id);
-
-      if (currentPlace) {
-        currentPlace.workTimes.push(workTime);
-      }
-    }
+    const workTime = await this.findOneOrCreate_new(dto, dto.isDefault, true);
 
     workTime.places.push(place);
 
-    if (dto.isDefault) {
-      if (defaultWorkTime) {
-        await this.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
+    if (dto.isDefault && defaultWorkTime) {
+      await this.save({
+        ...defaultWorkTime,
+        isDefault: false,
+      });
     }
 
     const created = await this.save(workTime);

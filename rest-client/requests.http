@@ -66,7 +66,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Add work time
 # @name AddWorkTime
-POST {{baseUrl}}/place/work-time?placeId=f4970f08-da92-4a29-88f9-26c079c325d5
+POST {{baseUrl}}/place/work-time?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
