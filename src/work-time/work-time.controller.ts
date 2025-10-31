@@ -56,7 +56,7 @@ export class WorkTimeController {
 
   @Post()
   async create(@Body() dto: CreateWorkTimeDto) {
-    const workTime = await this.workTimeService.create_new(dto);
+    const workTime = await this.workTimeService.create(dto);
     return workTime;
   }
 

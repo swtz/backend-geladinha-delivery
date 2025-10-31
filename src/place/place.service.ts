@@ -40,7 +40,7 @@ export class PlaceService {
       : address;
 
     // criar um work time
-    const workTime = await this.workTimeService.findOneOrCreate_new(
+    const workTime = await this.workTimeService.findOneOrCreate(
       dto.workTime,
       dto.workTime.isDefault,
       true,
@@ -141,7 +141,7 @@ export class PlaceService {
 
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
     const place = await this.findOneByOrFail({ id });
-    await this.workTimeService.create_new(dto, place);
+    await this.workTimeService.create(dto, place);
     return this.findOneByOrFail({ id: place.id });
   }
 

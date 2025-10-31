@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { personalShifts, Shift } from 'src/common/enums/work-shifts.enum';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
@@ -28,42 +28,6 @@ export class WorkTimeService {
   ) {}
 
   async findOneOrCreate(
-    shift: Shift,
-    dto?: CreateWorkTimeDto | UpdateWorkTimeDto,
-  ) {
-    const workTime = await this.findOneBy({ shift });
-
-    if (workTime && personalShifts.includes(workTime.shift) && !dto) {
-      throw new BadRequestException('Dados para criação não enviados');
-    }
-
-    if (dto) {
-      if (personalShifts.includes(shift)) {
-        const created = await this.create(dto);
-        return this.findOneByOrFail({ id: created.id });
-      }
-
-      if (!workTime) {
-        if (dto.isDefault) {
-          throw new BadRequestException(
-            'Esse turno não pode ser usado como padrão',
-          );
-        }
-        const created = await this.create({ ...dto, isDefault: false });
-        return this.findOneByOrFail({ id: created.id });
-      }
-    }
-
-    if (!workTime) {
-      throw new BadRequestException(
-        'Horário de serviço não encontrado.\nDados para criação não enviados',
-      );
-    }
-
-    return workTime;
-  }
-
-  async findOneOrCreate_new(
     dto: CreateWorkTimeDto,
     isDefault = false,
     isShared = false,
@@ -95,20 +59,9 @@ export class WorkTimeService {
     return workTime;
   }
 
-  create(dto: CreateWorkTimeDto | UpdateWorkTimeDto) {
-    const workTime = {
-      shift: dto.shift,
-      initHour: dto.initHour,
-      endHour: dto.endHour,
-      isDefault: dto.isDefault,
-    };
-
-    return this.save(workTime);
-  }
-
-  async create_new(dto: CreateWorkTimeDto, place?: Place) {
+  async create(dto: CreateWorkTimeDto, place?: Place) {
     if (!place) {
-      return this.findOneOrCreate_new(dto);
+      return this.findOneOrCreate(dto);
     }
 
     this.failIfShiftExistsInPlace(place, dto.shift);
@@ -120,7 +73,7 @@ export class WorkTimeService {
     }
 
     const defaultWorkTime = this.findDefaultFromPlace(place);
-    const workTime = await this.findOneOrCreate_new(dto, dto.isDefault, true);
+    const workTime = await this.findOneOrCreate(dto, dto.isDefault, true);
 
     workTime.places.push(place);
 
