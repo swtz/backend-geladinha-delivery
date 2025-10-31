@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "guilherme@email.com",
+  "email": "orochi@email.com",
   "password": "123456"
 }
 
@@ -103,7 +103,7 @@ Content-Type: application/json
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time
+GET {{baseUrl}}/work-time?phone=48999558883
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned work times
@@ -200,7 +200,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/924b2100-1474-4311-8cbd-156376cb171f
+GET {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users

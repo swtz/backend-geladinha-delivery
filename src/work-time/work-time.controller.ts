@@ -19,6 +19,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -30,8 +31,19 @@ export class WorkTimeController {
     @Query('shift', new ParseEnumPipe(Shift, { optional: true })) shift: Shift,
     @Query('isDefault', new ParseBoolPipe({ optional: true }))
     isDefault: boolean,
+    @Query('isShared', new ParseBoolPipe({ optional: true }))
+    isShared: boolean,
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
-    const workTime = await this.workTimeService.findAll({ shift, isDefault });
+    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const workTime = await this.workTimeService.findAll({
+      shift,
+      isDefault,
+      isShared,
+      user: qo,
+    });
     return workTime;
   }
 

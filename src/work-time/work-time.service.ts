@@ -16,6 +16,7 @@ import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
+import { FindAllParams } from './types/findAllParams';
 
 @Injectable()
 export class WorkTimeService {
@@ -253,7 +254,7 @@ export class WorkTimeService {
     }
   }
 
-  async findAll(queryParams: Partial<WorkTime>) {
+  async findAll(queryParams: FindAllParams) {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
