@@ -69,6 +69,16 @@ export class WorkTimeController {
     return workTime;
   }
 
+  @Patch('place/:id')
+  async updateShared(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWorkTimeDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const workTime = await this.workTimeService.updateShared(id, dto, req.user);
+    return workTime;
+  }
+
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const workTime = await this.workTimeService.remove(id);

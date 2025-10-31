@@ -101,6 +101,17 @@ Content-Type: application/json
   "shift": "feriado"
 }
 
+### Update shared work time
+# @name updateWorkTime
+PATCH {{baseUrl}}/work-time/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
+  "initHour": 9
+}
+
 ### Find all work times
 # @name findAllWorkTimes
 GET {{baseUrl}}/work-time
@@ -165,15 +176,13 @@ Content-Type: application/json
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+PATCH {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "shift": "noite",
-    "initHour": 18,
-    "endHour": 0
+    "id": "cece908b-f0a4-4c42-8040-60f7947d9272"
   }
 }
 

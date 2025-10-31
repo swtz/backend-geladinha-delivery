@@ -106,7 +106,7 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async updateShared(dto: UpdateWorkTimeDto, user: User, placeId: string) {
+  async updateShared(placeId: string, dto: UpdateWorkTimeDto, user: User) {
     if (!dto.id) {
       throw new BadRequestException('Campo ID é obrigatório');
     }
