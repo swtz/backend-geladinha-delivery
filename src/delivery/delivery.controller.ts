@@ -18,11 +18,10 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
-import { ParseBrDatePipe } from './pipes/parse-br-date.pipe';
-import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { ParseBrWorkDatePipe } from './pipes/parse-br-work-date.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -64,8 +63,8 @@ export class DeliveryController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('from', new ParseBrDatePipe(START_TIME)) from: Date,
-    @Query('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Query('from', ParseBrWorkDatePipe) from: Date,
+    @Query('to', ParseBrWorkDatePipe) to: Date,
     @Query(
       'paymentMethod',
       new ParseEnumPipe(PaymentMethod, { optional: true }),

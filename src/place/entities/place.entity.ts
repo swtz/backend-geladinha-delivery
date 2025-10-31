@@ -26,7 +26,7 @@ export class Place {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   code: string;
 
   @Column({ unique: true })

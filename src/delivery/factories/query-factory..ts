@@ -89,9 +89,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     if (type) {
       const key = type === Role.Admin ? 'operator' : type;
       queryObject[key] = { name, phone, id };
-    }
-
-    if (!userData) {
+    } else {
       queryObject.operator = { name, phone, id };
     }
 

@@ -22,5 +22,5 @@ export class CreateWorkTimeDto {
 
   @IsOptional()
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
-  isDefault: boolean;
+  isDefault?: boolean;
 }

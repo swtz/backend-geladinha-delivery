@@ -18,6 +18,7 @@ import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
 import { relations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
+import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 
 @Injectable()
 export class UserService {
@@ -66,10 +67,7 @@ export class UserService {
       password: hashedPassword,
       roles: [role],
       workTime: dto.workTime
-        ? await this.workTimeService.findOneOrCreate(dto.workTime.shift, {
-            ...dto.workTime,
-            isDefault: false,
-          })
+        ? await this.workTimeService.findOneOrCreate(dto.workTime)
         : undefined,
     };
 
@@ -93,6 +91,11 @@ export class UserService {
     }
 
     const created = await this.saveUser(newUser);
+
+    if (newUser.workTime) {
+      await this.workTimeService.save({ ...newUser.workTime, user: created });
+    }
+
     return this.findOneByOrFail({ id: created.id });
   }
 
@@ -153,21 +156,43 @@ export class UserService {
     }
 
     if (dto.workTime) {
-      if (!dto.workTime.shift) {
-        throw new BadRequestException('Informe o turno do horário');
-      } else if (
-        entity.workTime &&
-        dto.workTime.shift === entity.workTime.shift
-      ) {
-        entity.workTime = await this.workTimeService.update(
-          entity.workTime.id,
-          { ...dto.workTime, isDefault: false },
-        );
+      const { id, shift, initHour, endHour } = dto.workTime;
+      const hasData = !!(shift && initHour && endHour);
+      const hasWorkTime = entity.workTime;
+
+      if (id) {
+        entity.workTime = await this.workTimeService
+          .findOneBy({ id, isShared: true })
+          .then(result => {
+            if (!result) {
+              return this.workTimeService.findOneOwnedByOrFail(entity, {
+                id,
+              });
+            }
+            return result;
+          });
+      } else if (hasData) {
+        if (!hasWorkTime) {
+          const created: NewWorkTimeForRest = {
+            shift,
+            initHour,
+            endHour,
+            isDefault: false,
+            isShared: false,
+          };
+
+          entity.workTime = await this.workTimeService.save({
+            ...created,
+            user: entity,
+          });
+        } else {
+          entity.workTime = await this.workTimeService.update(
+            entity.workTime.id,
+            dto.workTime,
+          );
+        }
       } else {
-        entity.workTime = await this.workTimeService.findOneOrCreate(
-          dto.workTime.shift,
-          { ...dto.workTime, isDefault: false },
-        );
+        throw new BadRequestException('Dados não enviados');
       }
     }
 

@@ -16,8 +16,6 @@ import {
 import { SettlementService } from './settlement.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { ParseBrDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
-import { END_TIME, START_TIME } from 'src/common/operation-time';
 import { ResponseSettlementDto } from './dto/response-settlement.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
@@ -44,8 +42,8 @@ export class SettlementController {
 
   @Post()
   async create(
-    @Body('from', new ParseBrDatePipe(START_TIME)) from: Date,
-    @Body('to', new ParseBrDatePipe(END_TIME)) to: Date,
+    @Body('from', ParseBrWorkDatePipe) from: Date,
+    @Body('to', ParseBrWorkDatePipe) to: Date,
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
@@ -81,7 +79,7 @@ export class SettlementController {
   async findAll(
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
     weekDay: WeekDay,
-    @Query('workDay', new ParseBrDatePipe(START_TIME)) workDay: Date,
+    @Query('workDay', ParseBrWorkDatePipe) workDay: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,

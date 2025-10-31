@@ -7,10 +7,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
@@ -52,7 +53,8 @@ export class User {
   @JoinTable()
   roles: Role[];
 
-  @ManyToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
+  @OneToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn()
   workTime: WorkTime;
 }
 

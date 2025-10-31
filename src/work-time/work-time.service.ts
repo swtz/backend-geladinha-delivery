@@ -9,15 +9,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import {
-  personalShifts,
-  sharedShifts,
-  Shift,
-} from 'src/common/enums/work-shifts.enum';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
+import { User } from 'src/user/entities/user.entity';
+import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
+import { FindAllParams } from './types/findAllParams';
 
 @Injectable()
 export class WorkTimeService {
@@ -29,55 +28,40 @@ export class WorkTimeService {
   ) {}
 
   async findOneOrCreate(
-    shift: Shift,
-    dto?: CreateWorkTimeDto | UpdateWorkTimeDto,
+    dto: CreateWorkTimeDto,
+    isDefault = false,
+    isShared = false,
   ) {
-    const workTime = await this.findOneBy({ shift });
+    const workTime = await this.findOneBy({ shift: dto.shift, isShared: true });
 
-    if (workTime && personalShifts.includes(workTime.shift) && !dto) {
-      throw new BadRequestException('Dados para criação não enviados');
-    }
-
-    if (dto) {
-      if (personalShifts.includes(shift)) {
-        const created = await this.create(dto);
-        return this.findOneByOrFail({ id: created.id });
-      }
-
-      if (!workTime) {
-        if (dto.isDefault) {
-          throw new BadRequestException(
-            'Esse turno não pode ser usado como padrão',
-          );
-        }
-        const created = await this.create({ ...dto, isDefault: false });
-        return this.findOneByOrFail({ id: created.id });
-      }
-    }
+    const newWorkTime: NewWorkTimeForRest = {
+      shift: dto.shift,
+      initHour: dto.initHour,
+      endHour: dto.endHour,
+      isDefault,
+      isShared,
+    };
 
     if (!workTime) {
-      throw new BadRequestException(
-        'Horário de serviço não encontrado.\nDados para criação não enviados',
-      );
+      const created = await this.save(newWorkTime);
+      return this.findOneByOrFail({ id: created.id });
+    }
+
+    const exists = workTime.places.find(
+      place => place.code === process.env.DEFAULT_PLACE_CODE,
+    );
+
+    if (!exists) {
+      const created = await this.save(newWorkTime);
+      return this.findOneByOrFail({ id: created.id });
     }
 
     return workTime;
   }
 
-  create(dto: CreateWorkTimeDto | UpdateWorkTimeDto) {
-    const workTime = {
-      shift: dto.shift,
-      initHour: dto.initHour,
-      endHour: dto.endHour,
-      isDefault: dto.isDefault,
-    };
-
-    return this.save(workTime);
-  }
-
-  async create_new(dto: CreateWorkTimeDto, place?: Place) {
+  async create(dto: CreateWorkTimeDto, place?: Place) {
     if (!place) {
-      return this.findOneOrCreate(dto.shift, dto);
+      return this.findOneOrCreate(dto);
     }
 
     this.failIfShiftExistsInPlace(place, dto.shift);
@@ -89,44 +73,44 @@ export class WorkTimeService {
     }
 
     const defaultWorkTime = this.findDefaultFromPlace(place);
-    const workTime = await this.findOneOrCreate(dto.shift, dto);
-
-    if (workTime.places.length > 0) {
-      const currentPlace = workTime.places.find(item => item.id === place.id);
-
-      if (currentPlace) {
-        currentPlace.workTimes.push(workTime);
-      }
-    }
+    const workTime = await this.findOneOrCreate(dto, dto.isDefault, true);
 
     workTime.places.push(place);
 
-    if (dto.isDefault) {
-      if (defaultWorkTime) {
-        await this.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
+    if (dto.isDefault && defaultWorkTime) {
+      await this.save({
+        ...defaultWorkTime,
+        isDefault: false,
+      });
     }
 
     const created = await this.save(workTime);
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async update(id: string, dto: UpdateWorkTimeDto, place?: Place) {
+  async update(
+    id: string,
+    dto: UpdateWorkTimeDto,
+    isDefault = false,
+    place?: Place,
+  ) {
     const workTime = await this.findOneByOrFail({ id });
 
-    if (sharedShifts.includes(workTime.shift)) {
+    if (workTime.isShared) {
       throw new UnauthorizedException(
-        'Turno compartilhado não pode ser atualizado',
+        'Um estabelecimento possui esse horário.\n Não foi possível atualizar',
       );
     }
 
-    workTime.shift = dto.shift ?? workTime.shift;
-    workTime.initHour = dto.initHour ?? workTime.initHour;
-    workTime.endHour = dto.endHour ?? workTime.endHour;
-    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
+    if (!place) {
+      workTime.shift = dto.shift ?? workTime.shift;
+      workTime.initHour = dto.initHour ?? workTime.initHour;
+      workTime.endHour = dto.endHour ?? workTime.endHour;
+      workTime.isDefault = isDefault;
+
+      const created = await this.save(workTime);
+      return this.findOneByOrFail({ id: created.id });
+    }
 
     if (dto.isDefault && !place) {
       throw new BadRequestException('Informe um estabelecimento');
@@ -144,8 +128,27 @@ export class WorkTimeService {
     }
 
     const created = await this.save(workTime);
-
     return this.findOneByOrFail({ id: created.id });
+  }
+
+  async findOneBy(workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.findOne({
+      where: workTimeData,
+      relations: {
+        places: { workTimes: true },
+        user: true,
+      },
+    });
+  }
+
+  async findOneOwnedBy(user: User, workTimeData: Partial<WorkTime>) {
+    return this.workTimeRepository.findOne({
+      where: { ...workTimeData, user: { id: user.id } },
+      relations: {
+        places: { workTimes: true },
+        user: true,
+      },
+    });
   }
 
   async findOneByOrFail(workTimeData: Partial<WorkTime>) {
@@ -158,13 +161,14 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async findOneBy(workTimeData: Partial<WorkTime>) {
-    return this.workTimeRepository.findOne({
-      where: workTimeData,
-      relations: {
-        places: { workTimes: true },
-      },
-    });
+  async findOneOwnedByOrFail(user: User, workTimeData: Partial<WorkTime>) {
+    const workTime = await this.findOneOwnedBy(user, workTimeData);
+
+    if (!workTime) {
+      throw new NotFoundException('Esse horário de serviço não existe');
+    }
+
+    return workTime;
   }
 
   findDefaultFromPlace(place: Place) {
@@ -173,7 +177,7 @@ export class WorkTimeService {
     return workTime;
   }
 
-  failIfNotDefaultFromPlace(place: Place) {
+  findDefaultFromPlaceOrFail(place: Place) {
     const workTime = this.findDefaultFromPlace(place);
 
     if (!workTime) {
@@ -197,11 +201,19 @@ export class WorkTimeService {
     }
   }
 
-  async findAll(queryParams: Partial<WorkTime>) {
+  async findAll(queryParams: FindAllParams) {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
-      relations: { places: true },
+      relations: { places: true, user: true },
+    });
+  }
+
+  async findAllOwned(user: User) {
+    return this.workTimeRepository.find({
+      where: { user: { id: user.id } },
+      order: { createdAt: 'DESC' },
+      relations: { places: true, user: true },
     });
   }
 

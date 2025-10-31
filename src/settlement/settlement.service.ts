@@ -60,7 +60,7 @@ export class SettlementService {
       );
     }
 
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;
@@ -71,15 +71,8 @@ export class SettlementService {
     };
 
     if (operator.workTime) {
-      const initShortDate = dateObject.initDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-      const endShortDate = dateObject.endDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-
-      dateObject.initDate = parseBrDate(initShortDate, initHour);
-      dateObject.endDate = parseBrDate(endShortDate, endHour);
+      dateObject.initDate = parseBrDate(dateObject.initDate, initHour);
+      dateObject.endDate = parseBrDate(dateObject.endDate, endHour);
     }
 
     if (endHour < initHour) {
@@ -261,7 +254,7 @@ export class SettlementService {
     }
 
     const { workDay: initDate, operator } = settlement;
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;

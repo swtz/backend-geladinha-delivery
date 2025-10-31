@@ -33,7 +33,7 @@ export class UserController {
     const user = await this.userService.findOneByOrFail({
       id: req.user.id,
     });
-    return new ResponseUserDto(user);
+    return user;
   }
 
   @Get('motoboy')
@@ -78,9 +78,14 @@ export class UserController {
   async updateMe(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateUserDto,
+    @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const user = await this.userService.update(req.user, { ...dto, phone });
+    const user = await this.userService.update(req.user, {
+      ...dto,
+      phone,
+      workTime,
+    });
     return new ResponseUserDto(user);
   }
 

@@ -56,7 +56,7 @@ export class PayoutService {
       );
     }
 
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = motoboy.workTime
       ? motoboy.workTime
       : workTime;
@@ -67,15 +67,8 @@ export class PayoutService {
     };
 
     if (motoboy.workTime) {
-      const initShortDate = dateObject.initDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-      const endShortDate = dateObject.endDate.toLocaleString('BR', {
-        dateStyle: 'short',
-      });
-
-      dateObject.initDate = parseBrDate(initShortDate, initHour);
-      dateObject.endDate = parseBrDate(endShortDate, endHour);
+      dateObject.initDate = parseBrDate(dateObject.initDate, initHour);
+      dateObject.endDate = parseBrDate(dateObject.endDate, endHour);
     }
 
     if (endHour < initHour) {
@@ -156,7 +149,11 @@ export class PayoutService {
 
     const lastPayout = lastPayouts[0];
 
-    if (lastPayout && lastPayout.total < 0) {
+    if (dateObject.initDate.valueOf() <= lastPayout.workDay.valueOf()) {
+      return payout;
+    }
+
+    if (lastPayout.total < 0) {
       payout.total = setDecimalPlaces(payout.total + lastPayout.total, 2);
     }
 
@@ -204,7 +201,7 @@ export class PayoutService {
     }
 
     const { workDay: initDate, motoboy } = payout;
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = motoboy.workTime
       ? motoboy.workTime
       : workTime;

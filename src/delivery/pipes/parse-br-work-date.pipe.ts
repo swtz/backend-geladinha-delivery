@@ -22,7 +22,7 @@ export class ParseBrWorkDatePipe implements PipeTransform {
       return undefined;
     }
 
-    const workTime = this.workTimeService.failIfNotDefaultFromPlace(place);
+    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
     const { initHour, endHour } = workTime;
     const parsedValue = value.split('-').join('/');
 
