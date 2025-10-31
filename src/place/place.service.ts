@@ -29,8 +29,8 @@ export class PlaceService {
     const owner = user;
 
     // validar documentos
-    const cpf = dto.cpf;
-    const cnpj = dto.cnpj;
+    const cpf = dto.cpf; // failIfExists
+    const cnpj = dto.cnpj; // failIfExists
 
     // criar endereço
     const address = await this.addressService.create(dto.address);
@@ -48,14 +48,14 @@ export class PlaceService {
     // criar um social medias (ainda não)
     // depois cria-se o objeto
     const place: PlaceType = {
-      code: dto.code,
-      name: dto.name,
+      code: dto.code, // failIfExists
+      name: dto.name, // failIfExists
       businessName: dto.businessName,
       cnpj,
       cpf,
-      phone: dto.phone,
+      phone: dto.phone, // failIfExists
       secondPhone: dto.secondPhone ?? dto.phone,
-      email: dto.email,
+      email: dto.email, // failIfExists
       address,
       postalBox,
       workTimes: [workTime],

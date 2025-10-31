@@ -23,13 +23,13 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Aonde Comercio de bebidas - PF",
-  "code": "first",
-  "businessName": "Deckzynn",
-  "cnpj": "YYY.YYY.YYY/0001-AB",
-  "cpf": "YYY.YYY.YYY-AB",
-  "phone": "48999887789",
-  "email": "deckzynn@email.com",
+  "name": "AAA Drinks e Discoteca - PF",
+  "code": null,
+  "businessName": "AAA",
+  "cnpj": "YYY.YYY.YYY/0001-YY",
+  "cpf": "YYY.YYY.YYY-YY",
+  "phone": "48999887790",
+  "email": "aaa@email.com",
   "address": {
     "street": "Rua 13",
     "neighborhood": "Quarta linha"
@@ -39,9 +39,9 @@ Content-Type: application/json
     "neighborhood": "Docas"
   },
   "workTime": {
-  "shift": "final-de-semana",
-  "initHour": 9,
-  "endHour": 19,
+  "shift": "madrugada",
+  "initHour": 23,
+  "endHour": 6,
   "isDefault": true
   }
 }
@@ -93,7 +93,7 @@ Content-Type: application/json
 
 ### Update work time
 # @name updateWorkTime
-PATCH {{baseUrl}}/work-time/e288a172-f8c3-456b-a6f5-295c50a95691
+PATCH {{baseUrl}}/work-time/59358951-b3bf-419c-8a8a-976b25f372f2
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -103,7 +103,7 @@ Content-Type: application/json
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time?phone=48999558883
+GET {{baseUrl}}/work-time
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned work times
