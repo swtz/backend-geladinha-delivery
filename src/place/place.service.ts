@@ -70,6 +70,7 @@ export class PlaceService {
     const place = await this.findOneByOrFail({ id });
 
     // unique
+    place.code = dto.code ?? place.code;
     place.name = dto.name ?? place.name;
     place.phone = dto.phone ?? place.phone;
     place.email = dto.email ?? place.email;
@@ -79,14 +80,12 @@ export class PlaceService {
 
     // custom
     place.businessName = dto.businessName ?? place.businessName;
-    place.code = dto.code ?? place.code;
 
     // place.owners
     if (dto.ownerId) {
       const owner = await this.userService.findOneByOrFail({ id: dto.ownerId });
       place.owners.push(owner);
     }
-    //
 
     // entities
     // place.address
@@ -109,11 +108,9 @@ export class PlaceService {
     }
 
     // place.workTimes
-    if (dto.workTime) {
-      const defaultWorkTime =
-        this.workTimeService.findDefaultFromPlaceOrFail(place);
-      await this.workTimeService.update(defaultWorkTime.id, dto.workTime);
-    }
+    // Os horários serão atualizados por meio de uma rota
+    // específica do WorkTimeController, por conta da
+    // flag isShared
 
     const updated = await this.save(place);
     return this.findOneByOrFail({ id: updated.id });

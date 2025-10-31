@@ -16,7 +16,6 @@ import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
-import { UpdateDefaultWorkTimeDto } from 'src/work-time/dto/update-default-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 
@@ -43,17 +42,14 @@ export class PlaceController {
   @Patch('me/:id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Req() req: AuthenticatedRequest,
     @Body() dto: UpdatePlaceDto,
     @Body('address') address: UpdateAddressDto,
     @Body('postalBox') postalBox: UpdateAddressDto,
-    @Body('workTime') workTime: UpdateDefaultWorkTimeDto,
   ) {
     const place = await this.placeService.update(id, {
       ...dto,
       address,
       postalBox,
-      workTime,
     });
     return place;
   }
