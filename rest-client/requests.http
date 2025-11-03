@@ -401,9 +401,9 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/voucher/79cf0dd3-904f-42c8-9afc-5d3b49309b2e
 Authorization: Bearer {{JwtToken}}
 
-### Read all vouchers by user
-# @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+### Read all vouchers
+# @name readAllVouchers
+GET {{baseUrl}}/voucher?type=settlement&id=e74d65ce-26c8-4680-9235-77288bccc414
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -490,7 +490,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement
+GET {{baseUrl}}/settlement?isClosed=false
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement

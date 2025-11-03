@@ -1,5 +1,6 @@
 import { User } from 'src/user/entities/user.entity';
 import { Between, FindOperator } from 'typeorm';
+import { Voucher } from '../enums/voucher.enum';
 
 export interface Query {
   createdAt?: FindOperator<Date>;
@@ -17,7 +18,7 @@ type DateParams = {
 };
 
 export type FindAllParams = {
-  type?: 'user' | 'createdBy';
+  type?: Voucher;
   name?: string;
   phone?: string;
   id?: string;

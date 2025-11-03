@@ -24,6 +24,7 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
+import { Voucher } from 'src/voucher/enums/voucher.enum';
 
 @Injectable()
 export class SettlementService {
@@ -88,10 +89,10 @@ export class SettlementService {
       id: operator.id,
     });
 
-    const vouchers = await this.voucherService.findAllOwned({
+    const vouchers = await this.voucherService.findAll({
       from: dateObject.initDate,
       to: dateObject.endDate,
-      type: 'user',
+      type: Voucher.User,
       userData,
     });
     const deliveries = await this.deliveryService.findAll({
@@ -158,7 +159,7 @@ export class SettlementService {
     settlement.totalSpending = await this.voucherService.sum({
       from: dateObject.initDate,
       to: dateObject.endDate,
-      type: 'user',
+      type: Voucher.User,
       userData,
     });
 
