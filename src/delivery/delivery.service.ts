@@ -16,8 +16,6 @@ import {
   DeliveryFindAllFactory,
   DeliveryTaxFactory,
   FindAllParams,
-  SumDeliveryTaxParams,
-  SumTotalPurchaseParams,
   TotalPurchaseFactory,
 } from './factories/query-factory.';
 import { generateBadRequestException } from 'src/common/generate-exception';
@@ -229,7 +227,7 @@ export class DeliveryService {
     return deliveries;
   }
 
-  async sumDeliveryTaxCol(queryParams: SumDeliveryTaxParams) {
+  async sumDeliveryTaxCol(queryParams: FindAllParams) {
     const queryFactory = new DeliveryTaxFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
     const total = await this.deliveryRepository.sum('deliveryTax', queryObject);
@@ -241,7 +239,7 @@ export class DeliveryService {
     return setDecimalPlaces(total, 2);
   }
 
-  async sumTotalPurchaseCol(queryParams: SumTotalPurchaseParams) {
+  async sumTotalPurchaseCol(queryParams: FindAllParams) {
     const queryFactory = new TotalPurchaseFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
     const total = await this.deliveryRepository.sum(

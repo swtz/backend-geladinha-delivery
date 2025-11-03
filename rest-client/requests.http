@@ -415,7 +415,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Guilherme
+GET {{baseUrl}}/payout/preview?id=e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -462,7 +462,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&from=29/10/2025
+GET {{baseUrl}}/settlement/preview?name=Orochi&from=29/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

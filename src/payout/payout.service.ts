@@ -115,7 +115,7 @@ export class PayoutService {
 
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
-        user: motoboy,
+        userData: motoboyData,
         from: dateObject.initDate,
         to: dateObject.endDate,
       });

@@ -138,7 +138,7 @@ export class SettlementService {
 
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
-        user: operator,
+        userData,
         from: dateObject.initDate,
         to: dateObject.endDate,
       });
@@ -164,7 +164,7 @@ export class SettlementService {
 
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
-        user: operator,
+        userData,
         from: dateObject.initDate,
         to: dateObject.endDate,
         isPaid: false,
