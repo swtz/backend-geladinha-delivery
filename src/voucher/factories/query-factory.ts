@@ -17,7 +17,11 @@ type DateParams = {
 };
 
 export type FindAllParams = {
-  user?: User;
+  type?: 'user' | 'createdBy';
+  name?: string;
+  phone?: string;
+  id?: string;
+  userData?: Partial<User>;
 } & DateParams;
 
 abstract class AbstractMethod {
@@ -31,11 +35,25 @@ abstract class AbstractMethod {
 }
 
 export class VoucherFindAllFactory extends AbstractMethod {
-  factoryMethod({ user, from, to }: FindAllParams): Query {
+  factoryMethod({
+    userData,
+    from,
+    to,
+    name,
+    phone,
+    id,
+    type,
+  }: FindAllParams): Query {
     const queryObject = new VoucherFindAllQuery();
+    const data = userData === undefined ? { name, phone, id } : userData;
+
+    if (type) {
+      queryObject[type] = data;
+    } else {
+      queryObject.user = data;
+    }
 
     queryObject.createdAt = this.getDatePeriod(from, to);
-    queryObject.user = { id: user?.id };
 
     return queryObject;
   }

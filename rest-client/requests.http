@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "guilherme@email.com",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -93,7 +93,7 @@ Content-Type: application/json
 
 ### Update work time
 # @name updateWorkTime
-PATCH {{baseUrl}}/work-time/59358951-b3bf-419c-8a8a-976b25f372f2
+PATCH {{baseUrl}}/work-time/cece908b-f0a4-4c42-8040-60f7947d9272
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
@@ -109,7 +109,7 @@ Content-Type: application/json
 
 {
   "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
-  "initHour": 9
+  "isDefault": true
 }
 
 ### Find all work times
@@ -462,7 +462,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Orochi&from=29-10-2025
+GET {{baseUrl}}/settlement/preview?name=Leonardo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
