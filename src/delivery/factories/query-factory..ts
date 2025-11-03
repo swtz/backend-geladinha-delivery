@@ -57,7 +57,7 @@ export type SumTotalPurchaseParams = {
 } & SumDeliveryTaxParams;
 
 abstract class AbstractFactory {
-  checkDateValue(from?: Date, to?: Date) {
+  getDatePeriod(from?: Date, to?: Date) {
     if (from !== undefined && to !== undefined) {
       return Between(from, to);
     }
@@ -81,7 +81,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     const queryObject = new DeliveryFindAllQuery();
     const data = userData === undefined ? { name, phone, id } : userData;
 
-    queryObject.createdAt = this.checkDateValue(from, to);
+    queryObject.createdAt = this.getDatePeriod(from, to);
     queryObject.isPaid = isPaid;
     queryObject.paymentMethod = { name: paymentMethod };
 
@@ -105,7 +105,7 @@ export class DeliveryTaxFactory extends AbstractFactory {
   factoryMethod({ user, from, to, isPaid }: SumDeliveryTaxParams): Query {
     const queryObject = new DeliveryTaxQuery();
 
-    queryObject.createdAt = this.checkDateValue(from, to);
+    queryObject.createdAt = this.getDatePeriod(from, to);
     queryObject.motoboy = { id: user?.id };
     queryObject.isPaid = isPaid;
 
@@ -123,7 +123,7 @@ export class TotalPurchaseFactory extends AbstractFactory {
   }: SumTotalPurchaseParams): Query {
     const queryObject = new TotalPurchaseQuery();
 
-    queryObject.createdAt = this.checkDateValue(from, to);
+    queryObject.createdAt = this.getDatePeriod(from, to);
     queryObject.operator = { id: user?.id };
     queryObject.paymentMethod = { name: paymentMethod };
     queryObject.isPaid = isPaid;
