@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "orochi@email.com",
   "password": "123456"
 }
 
@@ -340,7 +340,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?type=customer&name=Rogério
+GET {{baseUrl}}/delivery?name=Leonardo
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -415,7 +415,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?id=e9df887c-c0ce-4426-9493-5e09c7d998d0&from=30-10-2025
+GET {{baseUrl}}/payout/preview?name=Guilherme
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -440,7 +440,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout
+GET {{baseUrl}}/payout?isClosed=true
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
@@ -462,7 +462,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo
+GET {{baseUrl}}/settlement/preview?name=Leonardo&from=29/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

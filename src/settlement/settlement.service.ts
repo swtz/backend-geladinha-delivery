@@ -23,6 +23,7 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { PlaceService } from 'src/place/place.service';
+import { Role } from 'src/common/role/roles.enum';
 
 @Injectable()
 export class SettlementService {
@@ -88,14 +89,16 @@ export class SettlementService {
     });
 
     const vouchers = await this.voucherService.findAllOwned({
-      user: operator,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: 'user',
+      userData,
     });
     const deliveries = await this.deliveryService.findAll({
-      userData,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Role.Operator,
+      userData,
     });
 
     const settlement = {
@@ -153,9 +156,10 @@ export class SettlementService {
     }
 
     settlement.totalSpending = await this.voucherService.sum({
-      user: operator,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: 'user',
+      userData,
     });
 
     settlement.totalRemainingMotoboy =

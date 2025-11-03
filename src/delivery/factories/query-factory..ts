@@ -79,23 +79,23 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     to,
   }: FindAllParams): Query {
     const queryObject = new DeliveryFindAllQuery();
-
-    if (userData && type === Role.Motoboy) {
-      queryObject.motoboy = userData;
-    } else {
-      queryObject.operator = userData;
-    }
-
-    if (type) {
-      const key = type === Role.Admin ? 'operator' : type;
-      queryObject[key] = { name, phone, id };
-    } else {
-      queryObject.operator = { name, phone, id };
-    }
+    const data = userData === undefined ? { name, phone, id } : userData;
 
     queryObject.createdAt = this.checkDateValue(from, to);
     queryObject.isPaid = isPaid;
     queryObject.paymentMethod = { name: paymentMethod };
+
+    if (!type) {
+      queryObject.operator = data;
+      return queryObject;
+    }
+
+    if (type === Role.Motoboy) {
+      queryObject['motoboy'] = data;
+    } else {
+      const key = type === Role.Admin ? 'operator' : type;
+      queryObject[key] = data;
+    }
 
     return queryObject;
   }

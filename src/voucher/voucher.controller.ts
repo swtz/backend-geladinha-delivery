@@ -34,7 +34,9 @@ export class VoucherController {
 
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const vouchers = await this.voucherService.findAllOwned({ user: req.user });
+    const vouchers = await this.voucherService.findAllOwned({
+      userData: { id: req.user.id },
+    });
     const parsedVouchers = vouchers.map(
       voucher => new ResponseVoucherDto(voucher),
     );

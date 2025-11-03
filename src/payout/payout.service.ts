@@ -80,9 +80,10 @@ export class PayoutService {
     }
 
     const vouchers = await this.voucherService.findAllOwned({
-      user: motoboy,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: 'user',
+      userData: motoboyData,
     });
 
     const deliveries = await this.deliveryService.findAll({
@@ -131,9 +132,10 @@ export class PayoutService {
     );
 
     payout.totalSpending = await this.voucherService.sum({
-      user: motoboy,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: 'user',
+      userData: motoboyData,
     });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
