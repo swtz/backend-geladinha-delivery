@@ -6,73 +6,74 @@
 Ler   Criar   Atualizar    Apagar
 GET / POST / PATCH / PUT / DELETE
 
-/auth/login                     POST        Autenticar usuário                            Aberta          PUBLIC
+/auth/login                               POST        Autenticar usuário                            Aberta          PUBLIC
 
-/user                           POST        Criar usuário                                 JWT             ADMIN
-/user/me                        GET         Ler usuário                                   JWT             ALL
-/user/motoboy                   GET         Ler todos os motoboys                         JWT             ALL
-/user/:uuid                     GET         Ler usuário                                   JWT             ADMIN/OPERATOR
-/user?key=value                 GET         Ler todos os usuários                         JWT             ADMIN/OPERATOR
-/user/me                        PATCH       Atualizar meu usuário                         JWT             ALL
-/user/:uuid                     PATCH       Atualizar usuário                             JWT             ADMIN/OPERATOR
-/user/me/password               PATCH       Atualizar senha                               JWT             ALL
-/user/:uuid                     DELETE      Apagar usuário                                JWT             ADMIN
+/user                                     POST        Criar usuário                                 JWT             ADMIN
+/user/me                                  GET         Ler usuário                                   JWT             ALL
+/user/motoboy                             GET         Ler todos os motoboys                         JWT             ALL
+/user/:uuid                               GET         Ler usuário                                   JWT             ADMIN/OPERATOR
+/user?key=value                           GET         Ler todos os usuários                         JWT             ADMIN/OPERATOR
+/user/me                                  PATCH       Atualizar meu usuário                         JWT             ALL
+/user/:uuid                               PATCH       Atualizar usuário                             JWT             ADMIN/OPERATOR
+/user/me/password                         PATCH       Atualizar senha                               JWT             ALL
+/user/:uuid                               DELETE      Apagar usuário                                JWT             ADMIN
 
-/place/me                       POST        Criar empresa                                 JWT             ADMIN
-/place/:uuid                    GET         Ler empresa                                   JWT             ADMIN
-/place/me/:uuid                 PATCH       Atualizar empresa                             JWT             ADMIN
-/place/work-time?postId=uuid    POST        Adicionar horário de serviço                  JWT             ADMIN
+/place/me                                 POST        Criar empresa                                 JWT             ADMIN
+/place/:uuid                              GET         Ler empresa                                   JWT             ADMIN
+/place/me/:uuid                           PATCH       Atualizar empresa                             JWT             ADMIN
+/place/work-time?postId=uuid              POST        Adicionar horário de serviço compartilhado    JWT             ADMIN
+/place/work-time/:uuid?postId=uuid        DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN
 
-/work-time                      POST        Criar horário de serviço                      JWT             ADMIN
-/work-time/me                   GET         Ler meus horários de serviço                  JWT             ALL
-/work-time?key=value            GET         Ler todos os horários de serviço              JWT             ADMIN
-/work-time/:uuid                PATCH       Atualizar horário de serviço                  JWT             ADMIN
-/work-time/place/:uuid          PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN
-/work-time/:uuid                DELETE      Apagar horário de serviço                     JWT             ADMIN
+/work-time                                POST        Criar horário de serviço                      JWT             ADMIN
+/work-time/me                             GET         Ler meus horários de serviço                  JWT             ALL
+/work-time?key=value                      GET         Ler todos os horários de serviço              JWT             ADMIN
+/work-time/:uuid                          PATCH       Atualizar horário de serviço                  JWT             ADMIN
+/work-time/place/:uuid                    PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN
+/work-time/:uuid                          DELETE      Apagar horário de serviço                     JWT             ADMIN
 
-/customer                       POST        Criar cliente com endereço                    JWT             ADMIN/OPERATOR
-/customer/:uuid/address         POST        Adicionar endereço                            JWT             ADMIN/OPERATOR
-/customer/find?key=value        GET         Ler cliente                                   JWT             ADMIN/OPERATOR
-/customer                       GET         Ler todos os clientes                         JWT             ADMIN/OPERATOR
-/customer/:uuid/address         GET         Ler todos os endereços de um cliente          JWT             ADMIN/OPERATOR
-/customer/:uuid                 PATCH       Atualizar cliente e/ou endereço               JWT             ADMIN/OPERATOR
-/customer/:uuid                 DELETE      Apagar cliente                                JWT             ADMIN/OPERATOR
-/customer/address/:uuid         DELETE      Apagar endereço                               JWT             ADMIN/OPERATOR
+/customer                                 POST        Criar cliente com endereço                    JWT             ADMIN/OPERATOR
+/customer/:uuid/address                   POST        Adicionar endereço                            JWT             ADMIN/OPERATOR
+/customer/find?key=value                  GET         Ler cliente                                   JWT             ADMIN/OPERATOR
+/customer                                 GET         Ler todos os clientes                         JWT             ADMIN/OPERATOR
+/customer/:uuid/address                   GET         Ler todos os endereços de um cliente          JWT             ADMIN/OPERATOR
+/customer/:uuid                           PATCH       Atualizar cliente e/ou endereço               JWT             ADMIN/OPERATOR
+/customer/:uuid                           DELETE      Apagar cliente                                JWT             ADMIN/OPERATOR
+/customer/address/:uuid                   DELETE      Apagar endereço                               JWT             ADMIN/OPERATOR
 
-/delivery/me                    POST        Criar entrega                                 JWT             ADMIN/OPERATOR
-/delivery/:uuid                 GET         Ler entrega                                   JWT             ADMIN/OPERATOR
-/delivery/me                    GET         Ler minhas entregas                           JWT             ALL
-/delivery?key=value             GET         Ler todas as entregas                         JWT             ADMIN/OPERATOR
-/delivery/me/:uuid              PATCH       Atualizar entrega                             JWT             ADMIN/OPERATOR
-/delivery/me/:uuid              DELETE      Apagar entrega                                JWT             ADMIN/OPERATOR
-/tip/:uuid                      DELETE      Apagar gorjeta                                JWT             ADMIN/OPERATOR
+/delivery/me                              POST        Criar entrega                                 JWT             ADMIN/OPERATOR
+/delivery/:uuid                           GET         Ler entrega                                   JWT             ADMIN/OPERATOR
+/delivery/me                              GET         Ler minhas entregas                           JWT             ALL
+/delivery?key=value                       GET         Ler todas as entregas                         JWT             ADMIN/OPERATOR
+/delivery/me/:uuid                        PATCH       Atualizar entrega                             JWT             ADMIN/OPERATOR
+/delivery/me/:uuid                        DELETE      Apagar entrega                                JWT             ADMIN/OPERATOR
+/tip/:uuid                                DELETE      Apagar gorjeta                                JWT             ADMIN/OPERATOR
 
-/voucher/me                     POST        Criar compra/vale                             JWT             ALL
-/voucher/me/user/:uuid          POST        Criar compra/vale para usuário                JWT             ADMIN/OPERATOR
-/voucher/:uuid                  GET         Ler compra/vale de um usuário                 JWT             ADMIN/OPERATOR
-/voucher/me                     GET         Ler minhas compras/vales                      JWT             ALL
-/voucher?key=value              GET         Ler todas as compras/vales                    JWT             ADMIN/OPERATOR
-/voucher/me/:uuid               PATCH       Atualizar compra/vale                         JWT             ALL
-/voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário           JWT             ADMIN/OPERATOR
-/voucher/me/:uuid               DELETE      Apagar uma compra/vale                        JWT             ALL
+/voucher/me                               POST        Criar compra/vale                             JWT             ALL
+/voucher/me/user/:uuid                    POST        Criar compra/vale para usuário                JWT             ADMIN/OPERATOR
+/voucher/:uuid                            GET         Ler compra/vale de um usuário                 JWT             ADMIN/OPERATOR
+/voucher/me                               GET         Ler minhas compras/vales                      JWT             ALL
+/voucher?key=value                        GET         Ler todas as compras/vales                    JWT             ADMIN/OPERATOR
+/voucher/me/:uuid                         PATCH       Atualizar compra/vale                         JWT             ALL
+/voucher/me/user/:uuid                    PATCH       Atualizar compra/vale de um usuário           JWT             ADMIN/OPERATOR
+/voucher/me/:uuid                         DELETE      Apagar uma compra/vale                        JWT             ALL
 
-/payout                         POST        Criar pagamento para um motoboy               JWT             ADMIN/OPERATOR
-/payout/preview?key=value       GET         Pré-visualizar pagamento do motoboy           JWT             ALL
-/payout/me                      GET         Ler meus pagamentos                           JWT             MOTOBOY
-/payout?key=value               GET         Ler todos os pagamentos do motoboy            JWT             ALL
-/payout/:uuid                   GET         Ler pagamento do motoboy                      JWT             ALL
-/payout/:uuid                   PATCH       Atualizar pagamento do motoboy                JWT             ADMIN/OPERATOR
-/payout/:uuid/:bool             PATCH       Atualizar status do pagamento                 JWT             ADMIN
-/payout/:uuid                   DELETE      Apagar pagamento do motoboy                   JWT             ADMIN/OPERATOR
+/payout                                   POST        Criar pagamento para um motoboy               JWT             ADMIN/OPERATOR
+/payout/preview?key=value                 GET         Pré-visualizar pagamento do motoboy           JWT             ALL
+/payout/me                                GET         Ler meus pagamentos                           JWT             MOTOBOY
+/payout?key=value                         GET         Ler todos os pagamentos do motoboy            JWT             ALL
+/payout/:uuid                             GET         Ler pagamento do motoboy                      JWT             ALL
+/payout/:uuid                             PATCH       Atualizar pagamento do motoboy                JWT             ADMIN/OPERATOR
+/payout/:uuid/:bool                       PATCH       Atualizar status do pagamento                 JWT             ADMIN
+/payout/:uuid                             DELETE      Apagar pagamento do motoboy                   JWT             ADMIN/OPERATOR
 
-/settlement                     POST        Criar caixa para um televendas                JWT             ADMIN/OPERATOR
-/settlement/preview?key=value   GET         Pré-visualizar caixa do televendas            JWT             ADMIN/OPERATOR
-/settlement/me                  GET         Ler meus caixas                               JWT             ADMIN/OPERATOR
-/settlement?key=value           GET         Ler todos os caixas do televendas             JWT             ADMIN/OPERATOR
-/settlement/:uuid               GET         Ler caixa do televendas                       JWT             ADMIN/OPERATOR
-/settlement/:uuid               PATCH       Atualizar caixa do televendas                 JWT             ADMIN/OPERATOR
-/settlement/:uuid/:bool         PATCH       Atualizar status do caixa                     JWT             ADMIN
-/settlement/:uuid               DELETE      Apagar caixa do televendas                    JWT             ADMIN/OPERATOR
+/settlement                               POST        Criar caixa para um televendas                JWT             ADMIN/OPERATOR
+/settlement/preview?key=value             GET         Pré-visualizar caixa do televendas            JWT             ADMIN/OPERATOR
+/settlement/me                            GET         Ler meus caixas                               JWT             ADMIN/OPERATOR
+/settlement?key=value                     GET         Ler todos os caixas do televendas             JWT             ADMIN/OPERATOR
+/settlement/:uuid                         GET         Ler caixa do televendas                       JWT             ADMIN/OPERATOR
+/settlement/:uuid                         PATCH       Atualizar caixa do televendas                 JWT             ADMIN/OPERATOR
+/settlement/:uuid/:bool                   PATCH       Atualizar status do caixa                     JWT             ADMIN
+/settlement/:uuid                         DELETE      Apagar caixa do televendas                    JWT             ADMIN/OPERATOR
 ```
 
 Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto da requisição.

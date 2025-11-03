@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -66,6 +67,20 @@ export class PlaceController {
     @Query('placeId', ParseUUIDPipe) placeId: string,
   ) {
     const workTime = await this.placeService.addWorkTime(dto, placeId);
+    return workTime;
+  }
+
+  @Delete('work-time/:id')
+  async removeWorkTime(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('placeId', ParseUUIDPipe) placeId: string,
+  ) {
+    const workTime = await this.placeService.removeWorkTime(
+      placeId,
+      id,
+      req.user,
+    );
     return workTime;
   }
 }

@@ -61,7 +61,7 @@ Content-Type: application/json
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/5c156016-f744-439e-8400-9e6dfaef0582
+GET {{baseUrl}}/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
@@ -76,6 +76,11 @@ Content-Type: application/json
   "endHour": 15,
   "isDefault": false
 }
+
+### Remove shared work time
+# @name removeSharedWorkTime
+DELETE {{baseUrl}}/place/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
+Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################
 
