@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "orochi@email.com",
   "password": "123456"
 }
 
@@ -56,6 +56,11 @@ Content-Type: application/json
   "ownerId": "697dc575-09d7-408f-a325-eb40f4390e43"
 }
 
+### Remove place
+# @name removePlace
+DELETE {{baseUrl}}/place/me/5c156016-f744-439e-8400-9e6dfaef0582
+Authorization: Bearer {{JwtToken}}
+
 ### Find place
 # @name findOnePlace
 GET {{baseUrl}}/place/5c156016-f744-439e-8400-9e6dfaef0582
@@ -63,7 +68,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all places
 # @name findAllPlaces
-GET {{baseUrl}}/place?shift=feriado
+GET {{baseUrl}}/place
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
@@ -81,7 +86,7 @@ Content-Type: application/json
 
 ### Remove shared work time
 # @name removeSharedWorkTime
-DELETE {{baseUrl}}/place/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
+DELETE {{baseUrl}}/place/me/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
 Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################

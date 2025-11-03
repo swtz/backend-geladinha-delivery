@@ -24,15 +24,17 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 
 /place/me                                 POST        Criar empresa                                 JWT             ADMIN
 /place/:uuid                              GET         Ler empresa                                   JWT             ADMIN
+/place?key=value                          GET         Ler todas as empresas                         JWT             ADMIN
 /place/me/:uuid                           PATCH       Atualizar empresa                             JWT             ADMIN
 /place/work-time?postId=uuid              POST        Adicionar horário de serviço compartilhado    JWT             ADMIN
-/place/work-time/:uuid?postId=uuid        DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN
+/place/me/work-time/:uuid?postId=uuid     DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN (OWNER)
+/place/me/:uuid                           DELETE      Apagar empresa                                JWT             ADMIN (OWNER)
 
 /work-time                                POST        Criar horário de serviço                      JWT             ADMIN
 /work-time/me                             GET         Ler meus horários de serviço                  JWT             ALL
 /work-time?key=value                      GET         Ler todos os horários de serviço              JWT             ADMIN
 /work-time/:uuid                          PATCH       Atualizar horário de serviço                  JWT             ADMIN
-/work-time/place/:uuid                    PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN
+/work-time/me/place/:uuid                 PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN (OWNER)
 /work-time/:uuid                          DELETE      Apagar horário de serviço                     JWT             ADMIN
 
 /customer                                 POST        Criar cliente com endereço                    JWT             ADMIN/OPERATOR

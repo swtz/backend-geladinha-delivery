@@ -93,7 +93,7 @@ export class PlaceController {
     return workTime;
   }
 
-  @Delete('work-time/:id')
+  @Delete('me/work-time/:id')
   async removeWorkTime(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
@@ -104,6 +104,15 @@ export class PlaceController {
       id,
       req.user,
     );
+    return workTime;
+  }
+
+  @Delete('me/:id')
+  async remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const workTime = await this.placeService.remove(id, req.user);
     return workTime;
   }
 }

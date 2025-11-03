@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -188,6 +193,25 @@ export class PlaceService {
     const place = await this.findOneByOrFail({ id });
     await this.workTimeService.removeShared(id, workTimeId, user);
     return this.findOneByOrFail({ id: place.id });
+  }
+
+  async remove(id: string, user: User) {
+    const place = await this.findOneByOrFail({ id });
+
+    if (place.code === process.env.DEFAULT_PLACE_CODE) {
+      throw new UnauthorizedException(
+        'Não é possível remover o estabelecimento padrão',
+      );
+    }
+
+    const isOwner = place.owners.some(item => item.id === user.id);
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+
+    await this.placeRepository.delete({ id });
+    return place;
   }
 
   async save(placeData: Partial<Place>) {

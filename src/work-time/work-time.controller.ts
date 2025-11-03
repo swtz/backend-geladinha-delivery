@@ -69,7 +69,7 @@ export class WorkTimeController {
     return workTime;
   }
 
-  @Patch('place/:id')
+  @Patch('me/place/:id')
   async updateShared(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateWorkTimeDto,
