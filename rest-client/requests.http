@@ -124,7 +124,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Remove work time
 # @name removeWorkTime
-DELETE {{baseUrl}}/work-time/e288a172-f8c3-456b-a6f5-295c50a95691
+DELETE {{baseUrl}}/work-time/cece908b-f0a4-4c42-8040-60f7947d9272
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
