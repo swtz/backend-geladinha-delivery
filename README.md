@@ -31,27 +31,27 @@ GET / POST / PATCH / PUT / DELETE
 /work-time/:uuid                DELETE      Apagar horário de serviço                     JWT             ADMIN
 
 /customer                       POST        Criar cliente com endereço                    JWT             ADMIN/OPERATOR
+/customer/:uuid/address         POST        Adicionar endereço                            JWT             ADMIN/OPERATOR
 /customer/find?key=value        GET         Ler cliente                                   JWT             ADMIN/OPERATOR
 /customer                       GET         Ler todos os clientes                         JWT             ADMIN/OPERATOR
+/customer/:uuid/address         GET         Ler todos os endereços de um cliente          JWT             ADMIN/OPERATOR
 /customer/:uuid                 PATCH       Atualizar cliente e/ou endereço               JWT             ADMIN/OPERATOR
 /customer/:uuid                 DELETE      Apagar cliente                                JWT             ADMIN/OPERATOR
-/customer/:uuid/address         GET         Ler todos os endereços de um cliente          JWT             ADMIN/OPERATOR
-/customer/:uuid/address         POST        Adicionar endereço                            JWT             ADMIN/OPERATOR
 /customer/address/:uuid         DELETE      Apagar endereço                               JWT             ADMIN/OPERATOR
 
 /delivery/me                    POST        Criar entrega                                 JWT             ADMIN/OPERATOR
-/delivery/me                    GET         Ler minhas entregas                           JWT             ALL
-/delivery/me/:uuid              PATCH       Atualizar entrega                             JWT             ADMIN/OPERATOR
 /delivery/:uuid                 GET         Ler entrega                                   JWT             ADMIN/OPERATOR
+/delivery/me                    GET         Ler minhas entregas                           JWT             ALL
 /delivery?key=value             GET         Ler todas as entregas                         JWT             ADMIN/OPERATOR
+/delivery/me/:uuid              PATCH       Atualizar entrega                             JWT             ADMIN/OPERATOR
 /delivery/me/:uuid              DELETE      Apagar entrega                                JWT             ADMIN/OPERATOR
 /tip/:uuid                      DELETE      Apagar gorjeta                                JWT             ADMIN/OPERATOR
 
 /voucher/me                     POST        Criar compra/vale                             JWT             ALL
 /voucher/me/user/:uuid          POST        Criar compra/vale para usuário                JWT             ADMIN/OPERATOR
 /voucher/:uuid                  GET         Ler compra/vale de um usuário                 JWT             ADMIN/OPERATOR
-/voucher/user/:uuid             GET         Ler todas as compras/vales de um usuário      JWT             ADMIN/OPERATOR
 /voucher/me                     GET         Ler minhas compras/vales                      JWT             ALL
+/voucher?key=value              GET         Ler todas as compras/vales                    JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               PATCH       Atualizar compra/vale                         JWT             ALL
 /voucher/me/user/:uuid          PATCH       Atualizar compra/vale de um usuário           JWT             ADMIN/OPERATOR
 /voucher/me/:uuid               DELETE      Apagar uma compra/vale                        JWT             ALL
