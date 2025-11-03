@@ -145,6 +145,12 @@ export class PlaceService {
     return this.findOneByOrFail({ id: place.id });
   }
 
+  async removeWorkTime(id: string, workTimeId: string, user: User) {
+    const place = await this.findOneByOrFail({ id });
+    await this.workTimeService.removeShared(id, workTimeId, user);
+    return this.findOneByOrFail({ id: place.id });
+  }
+
   async save(placeData: Partial<Place>) {
     const http400 = generateBadRequestException(
       'Erro ao salvar o estabelecimento',

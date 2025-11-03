@@ -23,6 +23,7 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { PlaceService } from 'src/place/place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { Role } from 'src/common/role/roles.enum';
+import { Voucher } from 'src/voucher/enums/voucher.enum';
 
 @Injectable()
 export class PayoutService {
@@ -79,10 +80,11 @@ export class PayoutService {
       );
     }
 
-    const vouchers = await this.voucherService.findAllOwned({
-      user: motoboy,
+    const vouchers = await this.voucherService.findAll({
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Voucher.User,
+      userData: motoboyData,
     });
 
     const deliveries = await this.deliveryService.findAll({
@@ -114,7 +116,7 @@ export class PayoutService {
 
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
-        user: motoboy,
+        userData: motoboyData,
         from: dateObject.initDate,
         to: dateObject.endDate,
       });
@@ -131,9 +133,10 @@ export class PayoutService {
     );
 
     payout.totalSpending = await this.voucherService.sum({
-      user: motoboy,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Voucher.User,
+      userData: motoboyData,
     });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);

@@ -23,6 +23,8 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { PlaceService } from 'src/place/place.service';
+import { Role } from 'src/common/role/roles.enum';
+import { Voucher } from 'src/voucher/enums/voucher.enum';
 
 @Injectable()
 export class SettlementService {
@@ -87,15 +89,17 @@ export class SettlementService {
       id: operator.id,
     });
 
-    const vouchers = await this.voucherService.findAllOwned({
-      user: operator,
+    const vouchers = await this.voucherService.findAll({
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Voucher.User,
+      userData,
     });
     const deliveries = await this.deliveryService.findAll({
-      userData,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Role.Operator,
+      userData,
     });
 
     const settlement = {
@@ -135,7 +139,7 @@ export class SettlementService {
 
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
-        user: operator,
+        userData,
         from: dateObject.initDate,
         to: dateObject.endDate,
       });
@@ -153,14 +157,15 @@ export class SettlementService {
     }
 
     settlement.totalSpending = await this.voucherService.sum({
-      user: operator,
       from: dateObject.initDate,
       to: dateObject.endDate,
+      type: Voucher.User,
+      userData,
     });
 
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
-        user: operator,
+        userData,
         from: dateObject.initDate,
         to: dateObject.endDate,
         isPaid: false,

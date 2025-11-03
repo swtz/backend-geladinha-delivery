@@ -4,9 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
@@ -16,16 +18,34 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ResponseVoucherDto } from './dto/response-voucher.dto';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { ParseBrWorkDatePipe } from 'src/delivery/pipes/parse-br-work-date.pipe';
+import { Voucher } from './enums/voucher.enum';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  @Get('user/:id')
+  @Get()
   @Roles(Role.Admin, Role.Operator)
-  async findByUser(@Param('id', ParseUUIDPipe) id: string) {
-    const vouchers = await this.voucherService.findByUser(id);
+  async findAll(
+    @Query('type', new ParseEnumPipe(Voucher, { optional: true }))
+    type: Voucher,
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('from', ParseBrWorkDatePipe) from: Date,
+    @Query('to', ParseBrWorkDatePipe) to: Date,
+  ) {
+    const vouchers = await this.voucherService.findAll({
+      from,
+      to,
+      id,
+      name,
+      phone,
+      type,
+    });
     const parsedVouchers = vouchers.map(
       voucher => new ResponseVoucherDto(voucher),
     );
@@ -34,7 +54,9 @@ export class VoucherController {
 
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const vouchers = await this.voucherService.findAllOwned({ user: req.user });
+    const vouchers = await this.voucherService.findAll({
+      userData: { id: req.user.id },
+    });
     const parsedVouchers = vouchers.map(
       voucher => new ResponseVoucherDto(voucher),
     );

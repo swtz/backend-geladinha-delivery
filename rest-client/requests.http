@@ -61,7 +61,7 @@ Content-Type: application/json
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/5c156016-f744-439e-8400-9e6dfaef0582
+GET {{baseUrl}}/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
@@ -76,6 +76,11 @@ Content-Type: application/json
   "endHour": 15,
   "isDefault": false
 }
+
+### Remove shared work time
+# @name removeSharedWorkTime
+DELETE {{baseUrl}}/place/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
+Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################
 
@@ -93,12 +98,23 @@ Content-Type: application/json
 
 ### Update work time
 # @name updateWorkTime
-PATCH {{baseUrl}}/work-time/59358951-b3bf-419c-8a8a-976b25f372f2
+PATCH {{baseUrl}}/work-time/cece908b-f0a4-4c42-8040-60f7947d9272
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "shift": "feriado"
+}
+
+### Update shared work time
+# @name updateWorkTime
+PATCH {{baseUrl}}/work-time/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
+  "isDefault": true
 }
 
 ### Find all work times
@@ -113,7 +129,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Remove work time
 # @name removeWorkTime
-DELETE {{baseUrl}}/work-time/e288a172-f8c3-456b-a6f5-295c50a95691
+DELETE {{baseUrl}}/work-time/cece908b-f0a4-4c42-8040-60f7947d9272
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
@@ -155,25 +171,19 @@ PATCH {{baseUrl}}/user/me
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
-{
-  "workTime": {
-    "shift": "padrão",
-    "initHour": 18,
-    "endHour": 4
-  }
+{ 
+  "motorcycle": "Honda, 2020, 150, Caramelo"
 }
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+PATCH {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "shift": "noite",
-    "initHour": 18,
-    "endHour": 0
+    "id": "cece908b-f0a4-4c42-8040-60f7947d9272"
   }
 }
 
@@ -335,7 +345,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?type=customer&name=Rogério
+GET {{baseUrl}}/delivery?name=Leonardo
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries
@@ -396,9 +406,9 @@ Authorization: Bearer {{JwtToken}}
 GET {{baseUrl}}/voucher/79cf0dd3-904f-42c8-9afc-5d3b49309b2e
 Authorization: Bearer {{JwtToken}}
 
-### Read all vouchers by user
-# @name readAllVouchersByUser
-GET {{baseUrl}}/voucher/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+### Read all vouchers
+# @name readAllVouchers
+GET {{baseUrl}}/voucher?type=settlement&id=e74d65ce-26c8-4680-9235-77288bccc414
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -410,7 +420,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?id=e9df887c-c0ce-4426-9493-5e09c7d998d0&from=30-10-2025
+GET {{baseUrl}}/payout/preview?id=e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -435,7 +445,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout
+GET {{baseUrl}}/payout?isClosed=true
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
@@ -457,7 +467,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Orochi&from=29-10-2025
+GET {{baseUrl}}/settlement/preview?name=Orochi&from=29/10/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -485,7 +495,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement
+GET {{baseUrl}}/settlement?isClosed=false
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement

@@ -88,12 +88,7 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async update(
-    id: string,
-    dto: UpdateWorkTimeDto,
-    isDefault = false,
-    place?: Place,
-  ) {
+  async update(id: string, dto: UpdateWorkTimeDto, isDefault = false) {
     const workTime = await this.findOneByOrFail({ id });
 
     if (workTime.isShared) {
@@ -102,21 +97,36 @@ export class WorkTimeService {
       );
     }
 
+    workTime.shift = dto.shift ?? workTime.shift;
+    workTime.initHour = dto.initHour ?? workTime.initHour;
+    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.isDefault = isDefault;
+
+    const created = await this.save(workTime);
+    return this.findOneByOrFail({ id: created.id });
+  }
+
+  async updateShared(placeId: string, dto: UpdateWorkTimeDto, user: User) {
+    if (!dto.id) {
+      throw new BadRequestException('Campo ID é obrigatório');
+    }
+
+    const workTime = await this.findOneByOrFail({ id: dto.id, isShared: true });
+    const place = workTime.places.find(item => item.id === placeId);
+
     if (!place) {
-      workTime.shift = dto.shift ?? workTime.shift;
-      workTime.initHour = dto.initHour ?? workTime.initHour;
-      workTime.endHour = dto.endHour ?? workTime.endHour;
-      workTime.isDefault = isDefault;
-
-      const created = await this.save(workTime);
-      return this.findOneByOrFail({ id: created.id });
+      throw new NotFoundException(
+        'Estabelecimento não possui o horário de serviço',
+      );
     }
 
-    if (dto.isDefault && !place) {
-      throw new BadRequestException('Informe um estabelecimento');
+    const isOwner = place.owners.some(item => item.id === user.id);
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
     }
 
-    if (dto.isDefault && place) {
+    if (dto.isDefault) {
       const defaultWorkTime = this.findDefaultFromPlace(place);
 
       if (defaultWorkTime) {
@@ -127,15 +137,20 @@ export class WorkTimeService {
       }
     }
 
-    const created = await this.save(workTime);
-    return this.findOneByOrFail({ id: created.id });
+    workTime.shift = dto.shift ?? workTime.shift;
+    workTime.initHour = dto.initHour ?? workTime.initHour;
+    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
+
+    const updated = await this.save(workTime);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneBy(workTimeData: Partial<WorkTime>) {
     return this.workTimeRepository.findOne({
       where: workTimeData,
       relations: {
-        places: { workTimes: true },
+        places: { workTimes: true, owners: true },
         user: true,
       },
     });
@@ -220,24 +235,42 @@ export class WorkTimeService {
   async remove(id: string) {
     const workTime = await this.findOneByOrFail({ id });
 
+    if (workTime.isDefault || workTime.isShared) {
+      throw new UnauthorizedException(
+        'Esse horário de serviço pertence a algum estabelecimento',
+      );
+    }
+
+    await this.workTimeRepository.delete({ id });
+    return workTime;
+  }
+
+  async removeShared(placeId: string, id: string, user: User) {
+    const workTime = await this.findOneByOrFail({ id, isShared: true });
+    const place = workTime.places.find(item => item.id === placeId);
+
+    if (!place) {
+      throw new NotFoundException(
+        'Estabelecimento não possui o horário de serviço',
+      );
+    }
+
+    const isOwner = place.owners.some(item => item.id === user.id);
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+
     if (workTime.isDefault) {
       throw new UnauthorizedException(
         'Esse horário de serviço é o padrão em algum estabelecimento',
       );
     }
 
-    if (workTime.places.length > 0) {
-      for (const place of workTime.places) {
-        const hasWorkTime = place.workTimes.some(
-          item => item.id === workTime.id,
-        );
-
-        if (hasWorkTime && place.workTimes.length === 1) {
-          throw new UnauthorizedException(
-            `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
-          );
-        }
-      }
+    if (place.workTimes.length <= 1) {
+      throw new UnauthorizedException(
+        `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+      );
     }
 
     await this.workTimeRepository.delete({ id });

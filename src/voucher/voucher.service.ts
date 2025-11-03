@@ -167,7 +167,7 @@ export class VoucherService {
     return vouchers;
   }
 
-  async findAllOwned(queryParams: FindAllParams) {
+  async findAll(queryParams: FindAllParams) {
     const factory = new VoucherFindAllFactory();
     const queryObject = factory.factoryMethod(queryParams);
 
