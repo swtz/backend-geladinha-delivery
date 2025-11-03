@@ -105,8 +105,18 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
-    const existsUserData = dto.name || dto.email || dto.phone || dto.workTime;
-    const existsMotoboyData = existsUserData || dto.motorcycle || dto.daily;
+    const userFields = Object.keys(dto)
+      .filter(key => key !== 'motorcycle')
+      .filter(key => key !== 'daily');
+    const motoboyFields = Object.keys(dto).filter(
+      key => key === 'motorcycle' || 'daily',
+    );
+
+    const existsUserData =
+      userFields.filter(key => Boolean(dto[key])).length > 0;
+    const existsMotoboyData =
+      motoboyFields.filter(key => Boolean(dto[key])).length > 0;
+
     const authFlags = await this.getUserAndEntityAuth(user, user.id);
     const assignRoleError = new BadRequestException(
       'Não é possível atribuir duas funções a um usuário',
