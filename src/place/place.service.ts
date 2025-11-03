@@ -11,6 +11,7 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 
 @Injectable()
 export class PlaceService {
@@ -129,6 +130,44 @@ export class PlaceService {
   async findOneBy(placeData: Partial<Place>) {
     return this.placeRepository.findOne({
       where: placeData,
+      relations: {
+        owners: true,
+        address: true,
+        postalBox: true,
+        workTimes: true,
+        socialMedias: true,
+      },
+    });
+  }
+
+  async findAll(
+    queryParams: Partial<Place> & {
+      ownName: string;
+      ownPhone: string;
+      ownId: string;
+      shift: Shift;
+      isDefault: boolean;
+    },
+  ) {
+    const {
+      ownName: name,
+      ownPhone: phone,
+      ownId: id,
+      shift,
+      isDefault,
+    } = queryParams;
+    return this.placeRepository.find({
+      where: {
+        businessName: queryParams.businessName,
+        // As instruções abaixo fazem com que seja
+        // retornado um Place.workTimes contendo
+        // apenas o WorkTime que foi encontrado.
+        // É ignorado caso exista outro WorkTime
+        // no array. Isso pode confundir o usuário.
+        workTimes: [{ shift, isDefault }],
+        owners: [{ name, phone, id }],
+      },
+      order: { createdAt: 'DESC' },
       relations: {
         owners: true,
         address: true,

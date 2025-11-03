@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "orochi@email.com",
+  "email": "leonardo@email.com",
   "password": "123456"
 }
 
@@ -48,32 +48,34 @@ Content-Type: application/json
 
 ### Update place
 # @name updateUser
-PATCH {{baseUrl}}/place/me/ef0b7e03-404e-4a98-af25-b04ddaa15972
+PATCH {{baseUrl}}/place/me/5c156016-f744-439e-8400-9e6dfaef0582
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "workTime": {
-    "initHour": 18,
-    "endHour": 4
-  }
+  "ownerId": "697dc575-09d7-408f-a325-eb40f4390e43"
 }
 
 ### Find place
 # @name findOnePlace
-GET {{baseUrl}}/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
+GET {{baseUrl}}/place/5c156016-f744-439e-8400-9e6dfaef0582
+Authorization: Bearer {{JwtToken}}
+
+### find all places
+# @name findAllPlaces
+GET {{baseUrl}}/place?shift=feriado
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
 # @name AddWorkTime
-POST {{baseUrl}}/place/work-time?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
+POST {{baseUrl}}/place/work-time?placeId=5c156016-f744-439e-8400-9e6dfaef0582
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "feriado",
-  "initHour": 9,
-  "endHour": 15,
+  "shift": "manhã",
+  "initHour": 6,
+  "endHour": 13,
   "isDefault": false
 }
 

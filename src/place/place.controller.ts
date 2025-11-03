@@ -4,6 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -19,6 +21,8 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { Shift } from 'src/common/enums/work-shifts.enum';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -59,6 +63,25 @@ export class PlaceController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const place = await this.placeService.findOneByOrFail({ id });
     return place;
+  }
+
+  @Get()
+  async findAll(
+    @Query('name') ownName: string,
+    @Query('phone', ParseBrPhonePipe) ownPhone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) ownId: string,
+    @Query('shift', new ParseEnumPipe(Shift, { optional: true })) shift: Shift,
+    @Query('isDefault', new ParseBoolPipe({ optional: true }))
+    isDefault: boolean,
+  ) {
+    const places = await this.placeService.findAll({
+      ownName,
+      ownId,
+      ownPhone,
+      shift,
+      isDefault,
+    });
+    return places;
   }
 
   @Post('work-time')
