@@ -8,7 +8,7 @@ import {
 
 @Entity()
 export class SocialMedias {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @CreateDateColumn()

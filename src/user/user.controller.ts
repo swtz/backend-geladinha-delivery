@@ -22,6 +22,7 @@ import { ResponseUserDto } from './dto/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -63,8 +64,8 @@ export class UserController {
   }
 
   @Post()
-  @Roles(Role.Admin)
-  // @Public()
+  // @Roles(Role.Admin)
+  @Public()
   async create(
     @Body() dto: CreateUserDto,
     @Body('workTime') workTime: CreateWorkTimeDto,

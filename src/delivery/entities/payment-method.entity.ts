@@ -14,7 +14,7 @@ import { Delivery } from './delivery.entity';
 
 @Entity()
 export class PaymentMethod {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @Column({ enum: paymentMethods, unique: true })

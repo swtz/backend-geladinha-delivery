@@ -17,7 +17,7 @@ import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Entity()
 export class Place {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @CreateDateColumn()

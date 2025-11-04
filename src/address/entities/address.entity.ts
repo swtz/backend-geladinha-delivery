@@ -10,7 +10,7 @@ import {
 
 @Entity()
 export class Address {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @Column({ length: 48 })

@@ -13,7 +13,7 @@ import {
 
 @Entity()
 export class Payout {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @Column('float')

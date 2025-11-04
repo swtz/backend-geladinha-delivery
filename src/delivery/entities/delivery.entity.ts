@@ -16,7 +16,7 @@ import { Tip } from 'src/tip/entities/tip.entity';
 
 @Entity()
 export class Delivery {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ default: () => 'gen_random_uuid()', primary: true })
   id: string;
 
   @Column({ length: 150, nullable: true })
