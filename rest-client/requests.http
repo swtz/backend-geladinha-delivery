@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8080
+@baseUrl = https://backend-geladinha-delivery-602713593391.southamerica-east1.run.app
 @JwtToken = {{authLogin.response.body.accessToken}}
 
 
@@ -68,7 +68,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find all places
 # @name findAllPlaces
-GET {{baseUrl}}/place
+GET {{baseUrl}}/place?code=first
 Authorization: Bearer {{JwtToken}}
 
 ### Add work time
@@ -184,13 +184,15 @@ Content-Type: application/json
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
+PATCH {{baseUrl}}/user/3aa03f08-628e-4557-bded-ffd77f769953
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "id": "cece908b-f0a4-4c42-8040-60f7947d9272"
+    "shift": "personalizado",
+    "initHour": 9,
+    "endHour": 17
   }
 }
 
@@ -217,7 +219,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
+GET {{baseUrl}}/user/3aa03f08-628e-4557-bded-ffd77f769953
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
