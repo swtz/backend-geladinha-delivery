@@ -74,6 +74,15 @@ export class PlaceController {
     return workTime;
   }
 
+  @Get('work-time')
+  async findWorkTimes(
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+  ) {
+    const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
+    const { workTimes } = await this.placeService.findOneByOrFail(qo);
+    return workTimes;
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const place = await this.placeService.findOneByOrFail({ id });

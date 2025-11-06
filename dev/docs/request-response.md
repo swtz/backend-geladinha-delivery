@@ -23,12 +23,13 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /user/:uuid                               DELETE      Apagar usuário                                JWT             ADMIN
 
 /place/me                                 POST        Criar empresa                                 JWT             ADMIN
+/place/work-time                          GET         Ler horários de serviço da empresa            JWT             ADMIN
 /place/:uuid                              GET         Ler empresa                                   JWT             ADMIN
 /place?key=value                          GET         Ler todas as empresas                         JWT             ADMIN
 /place/me/:uuid                           PATCH       Atualizar empresa                             JWT             ADMIN
-/place/work-time?postId=uuid              POST        Adicionar horário de serviço compartilhado    JWT             ADMIN
+/place/work-time?placeId=uuid             POST        Adicionar horário de serviço compartilhado    JWT             ADMIN
 /place/me/:uuid/work-time                 PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN (OWNER)
-/place/me/work-time/:uuid?postId=uuid     DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN (OWNER)
+/place/me/work-time/:uuid?placeId=uuid    DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN (OWNER)
 /place/me/:uuid                           DELETE      Apagar empresa                                JWT             ADMIN (OWNER)
 
 /work-time                                POST        Criar horário de serviço                      JWT             ADMIN
