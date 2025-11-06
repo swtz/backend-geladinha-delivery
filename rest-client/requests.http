@@ -100,6 +100,11 @@ Content-Type: application/json
 DELETE {{baseUrl}}/place/me/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
 Authorization: Bearer {{JwtToken}}
 
+### find place work times
+# @name findPlaceWorkTimes
+GET {{baseUrl}}/place/work-time?id=5c156016-f744-439e-8400-9e6dfaef0582
+Authorization: Bearer {{JwtToken}}
+
 ################### WORK TIME ###################
 
 ### Create work time
