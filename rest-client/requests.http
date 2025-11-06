@@ -84,6 +84,17 @@ Content-Type: application/json
   "isDefault": false
 }
 
+### Update shared work time
+# @name updateWorkTime
+PATCH {{baseUrl}}/place/me/5c156016-f744-439e-8400-9e6dfaef0582/work-time
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
+  "initHour": 10
+}
+
 ### Remove shared work time
 # @name removeSharedWorkTime
 DELETE {{baseUrl}}/place/me/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
@@ -111,17 +122,6 @@ Content-Type: application/json
 
 {
   "shift": "feriado"
-}
-
-### Update shared work time
-# @name updateWorkTime
-PATCH {{baseUrl}}/work-time/place/c6ad6d5f-1387-4941-80d0-ac57abde5238
-Authorization: Bearer {{JwtToken}}
-Content-Type: application/json
-
-{
-  "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
-  "isDefault": true
 }
 
 ### Find all work times
