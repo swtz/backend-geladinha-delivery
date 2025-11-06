@@ -50,7 +50,7 @@ export class Place {
   @Column({ unique: true })
   email: string;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   owners: User[];
 

@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Place } from './entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +16,8 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { Shift } from 'src/common/enums/work-shifts.enum';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Injectable()
 export class PlaceService {
@@ -139,9 +146,53 @@ export class PlaceService {
     });
   }
 
+  async findAll(
+    queryParams: Partial<Place> & {
+      ownName: string;
+      ownPhone: string;
+      ownId: string;
+      shift: Shift;
+      isDefault: boolean;
+    },
+  ) {
+    const {
+      ownName: name,
+      ownPhone: phone,
+      ownId: id,
+      shift,
+      isDefault,
+    } = queryParams;
+    return this.placeRepository.find({
+      where: {
+        businessName: queryParams.businessName,
+        // As instruções abaixo fazem com que seja
+        // retornado um Place.workTimes contendo
+        // apenas o WorkTime que foi encontrado.
+        // É ignorado caso exista outro WorkTime
+        // no array. Isso pode confundir o usuário.
+        workTimes: [{ shift, isDefault }],
+        owners: [{ name, phone, id }],
+      },
+      order: { createdAt: 'DESC' },
+      relations: {
+        owners: true,
+        address: true,
+        postalBox: true,
+        workTimes: true,
+        socialMedias: true,
+      },
+    });
+  }
+
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
     const place = await this.findOneByOrFail({ id });
     await this.workTimeService.create(dto, place);
+    return this.findOneByOrFail({ id: place.id });
+  }
+
+  async updateSharedWorkTime(dto: UpdateWorkTimeDto, id: string, user: User) {
+    const place = await this.findOneByOrFail({ id });
+    await this.workTimeService.updateShared(id, dto, user);
     return this.findOneByOrFail({ id: place.id });
   }
 
@@ -149,6 +200,25 @@ export class PlaceService {
     const place = await this.findOneByOrFail({ id });
     await this.workTimeService.removeShared(id, workTimeId, user);
     return this.findOneByOrFail({ id: place.id });
+  }
+
+  async remove(id: string, user: User) {
+    const place = await this.findOneByOrFail({ id });
+
+    if (place.code === process.env.DEFAULT_PLACE_CODE) {
+      throw new UnauthorizedException(
+        'Não é possível remover o estabelecimento padrão',
+      );
+    }
+
+    const isOwner = place.owners.some(item => item.id === user.id);
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+
+    await this.placeRepository.delete({ id });
+    return place;
   }
 
   async save(placeData: Partial<Place>) {

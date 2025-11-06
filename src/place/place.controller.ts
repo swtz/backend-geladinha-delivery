@@ -4,6 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -19,6 +21,9 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { Shift } from 'src/common/enums/work-shifts.enum';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -55,10 +60,43 @@ export class PlaceController {
     return place;
   }
 
+  @Patch('me/:id/work-time')
+  async updateSharedWorkTime(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWorkTimeDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const workTime = await this.placeService.updateSharedWorkTime(
+      dto,
+      id,
+      req.user,
+    );
+    return workTime;
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const place = await this.placeService.findOneByOrFail({ id });
     return place;
+  }
+
+  @Get()
+  async findAll(
+    @Query('name') ownName: string,
+    @Query('phone', ParseBrPhonePipe) ownPhone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) ownId: string,
+    @Query('shift', new ParseEnumPipe(Shift, { optional: true })) shift: Shift,
+    @Query('isDefault', new ParseBoolPipe({ optional: true }))
+    isDefault: boolean,
+  ) {
+    const places = await this.placeService.findAll({
+      ownName,
+      ownId,
+      ownPhone,
+      shift,
+      isDefault,
+    });
+    return places;
   }
 
   @Post('work-time')
@@ -70,7 +108,7 @@ export class PlaceController {
     return workTime;
   }
 
-  @Delete('work-time/:id')
+  @Delete('me/work-time/:id')
   async removeWorkTime(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
@@ -81,6 +119,15 @@ export class PlaceController {
       id,
       req.user,
     );
+    return workTime;
+  }
+
+  @Delete('me/:id')
+  async remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const workTime = await this.placeService.remove(id, req.user);
     return workTime;
   }
 }
