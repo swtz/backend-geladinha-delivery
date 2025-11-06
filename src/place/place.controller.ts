@@ -23,6 +23,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -57,6 +58,20 @@ export class PlaceController {
       postalBox,
     });
     return place;
+  }
+
+  @Patch('me/:id/work-time')
+  async updateSharedWorkTime(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWorkTimeDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const workTime = await this.placeService.updateSharedWorkTime(
+      dto,
+      id,
+      req.user,
+    );
+    return workTime;
   }
 
   @Get(':id')

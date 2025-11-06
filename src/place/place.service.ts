@@ -17,6 +17,7 @@ import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 @Injectable()
 export class PlaceService {
@@ -186,6 +187,12 @@ export class PlaceService {
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
     const place = await this.findOneByOrFail({ id });
     await this.workTimeService.create(dto, place);
+    return this.findOneByOrFail({ id: place.id });
+  }
+
+  async updateSharedWorkTime(dto: UpdateWorkTimeDto, id: string, user: User) {
+    const place = await this.findOneByOrFail({ id });
+    await this.workTimeService.updateShared(id, dto, user);
     return this.findOneByOrFail({ id: place.id });
   }
 
