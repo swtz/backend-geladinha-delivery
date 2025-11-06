@@ -42,10 +42,26 @@ import { WorkTimeModule } from './work-time/work-time.module';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => {
-        if (process.env.DB_TYPE === 'better-sqlite3') {
+        const nodeEnv = process.env.NODE_ENV || 'development';
+
+        if (nodeEnv === 'development') {
+          if (process.env.DB_TYPE === 'better-sqlite3') {
+            return {
+              type: process.env.DB_TYPE,
+              database: process.env.DB_DATABASE || './db.sqlite',
+              synchronize: true,
+              autoLoadEntities: true,
+            };
+          }
+
           return {
-            type: process.env.DB_TYPE,
-            database: process.env.DB_DATABASE || './db.sqlite',
+            type: 'postgres',
+            host: process.env.DEV_DB_HOST,
+            port: parseInt(process.env.DEV_DB_PORT || '5432', 10),
+            username: process.env.DEV_DB_USERNAME,
+            password: process.env.DEV_DB_PASSWORD,
+            database: process.env.DEV_DB_DATABASE,
+            // CUIDADO COM O A CONFIGURAÇÃO ABAIXO
             synchronize: true,
             autoLoadEntities: true,
           };
