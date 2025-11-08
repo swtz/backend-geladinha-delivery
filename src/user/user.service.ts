@@ -253,7 +253,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: full,
+      relations: essencial,
     });
 
     return motoboys;
@@ -265,7 +265,7 @@ export class UserService {
         roles: { name: role },
       },
       order: { createdAt: 'DESC' },
-      relations: full,
+      relations: essencial,
     });
   }
 
@@ -280,17 +280,18 @@ export class UserService {
   }
 
   async findOneBy(userData: Partial<User>, relations = true) {
-    const queryObject = relations ? full : essencial;
+    const fields = relations ? full : essencial;
     return this.userRepository.findOne({
       where: userData,
-      relations: queryObject,
+      relations: fields,
     });
   }
 
-  async findOneMotoboyByOrFail(userData: Partial<User>) {
+  async findOneMotoboyByOrFail(userData: Partial<User>, relations = true) {
+    const fields = relations ? full : essencial;
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations: full,
+      relations: fields,
     });
 
     if (!motoboy) {

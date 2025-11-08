@@ -148,10 +148,10 @@ export class WorkTimeService {
   }
 
   async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {
-    const queryObject = relations ? full : essencial;
+    const fields = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: workTimeData,
-      relations: queryObject,
+      relations: fields,
     });
   }
 
@@ -160,10 +160,10 @@ export class WorkTimeService {
     workTimeData: Partial<WorkTime>,
     relations = true,
   ) {
-    const queryObject = relations ? full : essencial;
+    const fields = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: { ...workTimeData, user: { id: user.id } },
-      relations: queryObject,
+      relations: fields,
     });
   }
 

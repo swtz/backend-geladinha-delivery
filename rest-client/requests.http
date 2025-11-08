@@ -232,7 +232,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=admin
+GET {{baseUrl}}/user
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
