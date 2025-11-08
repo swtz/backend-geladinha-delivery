@@ -2,6 +2,7 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
+import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
 
 export class ResponsePayoutDto {
   readonly id?: string;
@@ -16,10 +17,11 @@ export class ResponsePayoutDto {
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly motoboy: Pick<
-    DeliveryMan,
-    'id' | 'name' | 'phone' | 'motorcycle'
-  > | null;
+  readonly motoboy:
+    | (Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'> & {
+        workTime: SmallResponseWorkTime | null;
+      })
+    | null;
   readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(
@@ -48,8 +50,14 @@ export class ResponsePayoutDto {
           name: payout.motoboy.name,
           phone: payout.motoboy.phone,
           motorcycle: payout.motoboy.motorcycle,
-          // workTime: new ResponseWorkTimeDto(payout.motoboy.workTime)
-          // lembrando que workTime pode ser null
+          workTime: payout.motoboy.workTime
+            ? {
+                id: payout.motoboy.workTime.id,
+                shift: payout.motoboy.workTime.shift,
+                initHour: payout.motoboy.workTime.initHour,
+                endHour: payout.motoboy.workTime.endHour,
+              }
+            : null,
         }
       : null;
     this.vouchers = payout.vouchers
