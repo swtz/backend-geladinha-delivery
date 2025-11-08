@@ -17,6 +17,7 @@ import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 import { FindAllParams } from './types/findAllParams';
+import { full, essencial, tiny } from './data/relations/work-time';
 
 @Injectable()
 export class WorkTimeService {
@@ -147,27 +148,22 @@ export class WorkTimeService {
   }
 
   async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {
-    const queryObject = relations
-      ? {
-          places: { workTimes: true, owners: true },
-          user: true,
-        }
-      : {
-          user: true,
-        };
+    const queryObject = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: workTimeData,
       relations: queryObject,
     });
   }
 
-  async findOneOwnedBy(user: User, workTimeData: Partial<WorkTime>) {
+  async findOneOwnedBy(
+    user: User,
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+  ) {
+    const queryObject = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: { ...workTimeData, user: { id: user.id } },
-      relations: {
-        places: { workTimes: true },
-        user: true,
-      },
+      relations: queryObject,
     });
   }
 
@@ -181,8 +177,12 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async findOneOwnedByOrFail(user: User, workTimeData: Partial<WorkTime>) {
-    const workTime = await this.findOneOwnedBy(user, workTimeData);
+  async findOneOwnedByOrFail(
+    user: User,
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+  ) {
+    const workTime = await this.findOneOwnedBy(user, workTimeData, relations);
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');
@@ -225,7 +225,7 @@ export class WorkTimeService {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
-      relations: { places: true, user: true },
+      relations: tiny,
     });
   }
 
@@ -233,7 +233,7 @@ export class WorkTimeService {
     return this.workTimeRepository.find({
       where: { user: { id: user.id } },
       order: { createdAt: 'DESC' },
-      relations: { places: true, user: true },
+      relations: tiny,
     });
   }
 

@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
-import { essencialRelations, allRelations } from './data/relations/user';
+import { essencial, full } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
@@ -176,9 +176,11 @@ export class UserService {
           .findOneBy({ id, isShared: true })
           .then(result => {
             if (!result) {
-              return this.workTimeService.findOneOwnedByOrFail(entity, {
-                id,
-              });
+              return this.workTimeService.findOneOwnedByOrFail(
+                entity,
+                { id },
+                false,
+              );
             }
             return result;
           });
@@ -251,7 +253,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: allRelations,
+      relations: full,
     });
 
     return motoboys;
@@ -263,7 +265,7 @@ export class UserService {
         roles: { name: role },
       },
       order: { createdAt: 'DESC' },
-      relations: allRelations,
+      relations: full,
     });
   }
 
@@ -278,7 +280,7 @@ export class UserService {
   }
 
   async findOneBy(userData: Partial<User>, relations = true) {
-    const queryObject = relations ? allRelations : essencialRelations;
+    const queryObject = relations ? full : essencial;
     return this.userRepository.findOne({
       where: userData,
       relations: queryObject,
@@ -288,7 +290,7 @@ export class UserService {
   async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations: allRelations,
+      relations: full,
     });
 
     if (!motoboy) {
