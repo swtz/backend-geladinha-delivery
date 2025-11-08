@@ -168,7 +168,8 @@ export class UserService {
 
     if (dto.workTime) {
       const { id, shift, initHour, endHour } = dto.workTime;
-      const hasData = !!(shift && initHour && endHour);
+      const hasAllData = !!(shift && initHour && endHour);
+      const hasSomeData = !!(shift || initHour || endHour);
       const hasWorkTime = entity.workTime;
 
       if (id) {
@@ -184,7 +185,7 @@ export class UserService {
             }
             return result;
           });
-      } else if (hasData) {
+      } else if (hasAllData) {
         if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
           const created: NewWorkTimeForRest = {
             shift,
@@ -204,6 +205,11 @@ export class UserService {
             dto.workTime,
           );
         }
+      } else if (hasSomeData) {
+        entity.workTime = await this.workTimeService.update(
+          entity.workTime.id,
+          dto.workTime,
+        );
       } else {
         throw new BadRequestException('Dados não enviados');
       }

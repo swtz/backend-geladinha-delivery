@@ -227,7 +227,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/79984dcf-4463-424a-916a-ff4fb46027d5
+GET {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
