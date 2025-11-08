@@ -2,6 +2,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { DeliveryMan, User } from '../entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
+import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
 
 export class ResponseUserDto {
   readonly id: string;
@@ -13,6 +14,7 @@ export class ResponseUserDto {
   readonly tips?: Omit<Tip, 'motoboy'>[] | null;
   readonly vouchers: ResponseVoucherDto[] | null;
   readonly roles: Role[];
+  readonly workTime: SmallResponseWorkTime | null;
 
   constructor(user: User | DeliveryMan) {
     if (user instanceof DeliveryMan) {
@@ -39,5 +41,13 @@ export class ResponseUserDto {
         })
       : null;
     this.roles = user.roles.map(role => role.name);
+    this.workTime = user.workTime
+      ? {
+          id: user.workTime.id,
+          shift: user.workTime.shift,
+          initHour: user.workTime.initHour,
+          endHour: user.workTime.endHour,
+        }
+      : null;
   }
 }
