@@ -502,7 +502,7 @@ Content-Type: application/json
 
 ### Read settlement
 # @name readSettlement
-GET {{baseUrl}}/settlement/e74d65ce-26c8-4680-9235-77288bccc414
+GET {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
 Authorization: Bearer {{JwtToken}}
 
 ### Read owned settlements
