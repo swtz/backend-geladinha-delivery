@@ -59,16 +59,17 @@ export class ResponseSettlementDto {
     this.expectedTotal = settlement.expectedTotal;
     this.weekDay = settlement.weekDay;
     this.workDay = settlement.workDay;
-    this.operator =
-      settlement.operator !== null
-        ? {
-            id: settlement.operator.id,
-            name: settlement.operator.name,
-            phone: settlement.operator.phone,
-          }
-        : null;
-    this.vouchers = settlement.vouchers.map(
-      item => new ResponseVoucherDto(item),
-    );
+    this.operator = settlement.operator
+      ? {
+          id: settlement.operator.id,
+          name: settlement.operator.name,
+          phone: settlement.operator.phone,
+          // workTime: new ResponseWorkTimeDto(settlement.operator.workTime)
+          // lembrando que workTime pode ser null
+        }
+      : null;
+    this.vouchers = settlement.vouchers
+      ? settlement.vouchers.map(item => new ResponseVoucherDto(item))
+      : null;
   }
 }

@@ -16,8 +16,11 @@ export class ResponsePayoutDto {
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly motoboy: Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'>;
-  readonly vouchers: ResponseVoucherDto[];
+  readonly motoboy: Pick<
+    DeliveryMan,
+    'id' | 'name' | 'phone' | 'motorcycle'
+  > | null;
+  readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(
     payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt' | 'isClosed'> & {
@@ -39,14 +42,18 @@ export class ResponsePayoutDto {
     this.totalSpending = payout.totalSpending;
     this.total = payout.total;
     this.isClosed = payout.isClosed;
-    this.motoboy = {
-      id: payout.motoboy.id,
-      name: payout.motoboy.name,
-      phone: payout.motoboy.phone,
-      motorcycle: payout.motoboy.motorcycle,
-    };
-    this.vouchers = payout.vouchers.map(
-      voucher => new ResponseVoucherDto(voucher),
-    );
+    this.motoboy = payout.motoboy
+      ? {
+          id: payout.motoboy.id,
+          name: payout.motoboy.name,
+          phone: payout.motoboy.phone,
+          motorcycle: payout.motoboy.motorcycle,
+          // workTime: new ResponseWorkTimeDto(payout.motoboy.workTime)
+          // lembrando que workTime pode ser null
+        }
+      : null;
+    this.vouchers = payout.vouchers
+      ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))
+      : null;
   }
 }
