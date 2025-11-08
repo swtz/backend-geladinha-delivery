@@ -2,6 +2,7 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { User } from 'src/user/entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Settlement } from '../entities/settlement.entity';
+import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
 
 export class ResponseSettlementDto {
   readonly id?: string;
@@ -21,7 +22,11 @@ export class ResponseSettlementDto {
   readonly totalSpending: number;
   readonly currentTotal: number;
   readonly expectedTotal: number;
-  readonly operator: Pick<User, 'id' | 'name' | 'phone'> | null;
+  readonly operator:
+    | (Pick<User, 'id' | 'name' | 'phone'> & {
+        workTime: SmallResponseWorkTime | null;
+      })
+    | null;
   readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(
@@ -64,8 +69,14 @@ export class ResponseSettlementDto {
           id: settlement.operator.id,
           name: settlement.operator.name,
           phone: settlement.operator.phone,
-          // workTime: new ResponseWorkTimeDto(settlement.operator.workTime)
-          // lembrando que workTime pode ser null
+          workTime: settlement.operator.workTime
+            ? {
+                id: settlement.operator.workTime.id,
+                shift: settlement.operator.workTime.shift,
+                initHour: settlement.operator.workTime.initHour,
+                endHour: settlement.operator.workTime.endHour,
+              }
+            : null,
         }
       : null;
     this.vouchers = settlement.vouchers
