@@ -14,7 +14,6 @@ import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
-import { CURRENT_SHORT_DATE } from 'src/common/operation-time';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
@@ -68,8 +67,8 @@ export class SettlementService {
       : workTime;
 
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
+      initDate: from || parseBrDate(new Date(), initHour),
+      endDate: to || parseBrDate(new Date(), endHour),
     };
 
     if (operator.workTime) {
@@ -264,7 +263,7 @@ export class SettlementService {
       ? operator.workTime
       : workTime;
 
-    let endDate = parseBrDate(CURRENT_SHORT_DATE, endHour);
+    let endDate = parseBrDate(initDate, endHour);
 
     if (endHour < initHour) {
       endDate = generateRelativeDate('tomorrow', initDate, endHour);

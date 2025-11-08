@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import { CURRENT_SHORT_DATE } from 'src/common/operation-time';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
@@ -63,8 +62,8 @@ export class PayoutService {
       : workTime;
 
     const dateObject = {
-      initDate: from || parseBrDate(CURRENT_SHORT_DATE, initHour),
-      endDate: to || parseBrDate(CURRENT_SHORT_DATE, endHour),
+      initDate: from || parseBrDate(new Date(), initHour),
+      endDate: to || parseBrDate(new Date(), endHour),
     };
 
     if (motoboy.workTime) {
@@ -209,7 +208,7 @@ export class PayoutService {
       ? motoboy.workTime
       : workTime;
 
-    let endDate = parseBrDate(CURRENT_SHORT_DATE, endHour);
+    let endDate = parseBrDate(initDate, endHour);
 
     if (endHour < initHour) {
       endDate = generateRelativeDate('tomorrow', initDate, endHour);
