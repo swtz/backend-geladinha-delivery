@@ -189,7 +189,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 { 
-  "motorcycle": "Honda, 2020, 150, Caramelo"
+  "workTime": {
+    "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1"
+  }
 }
 
 ### Update user

@@ -216,7 +216,7 @@ export class UserService {
     }
 
     const updated = await this.saveUser(entity);
-    return this.findOneByOrFail({ id: updated.id });
+    return this.findOneByOrFail({ id: updated.id }, false);
   }
 
   async updateMotoboyFields(

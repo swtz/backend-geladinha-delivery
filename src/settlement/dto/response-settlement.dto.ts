@@ -2,7 +2,7 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { User } from 'src/user/entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Settlement } from '../entities/settlement.entity';
-import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
+import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 
 export class ResponseSettlementDto {
   readonly id?: string;
@@ -24,7 +24,7 @@ export class ResponseSettlementDto {
   readonly expectedTotal: number;
   readonly operator:
     | (Pick<User, 'id' | 'name' | 'phone'> & {
-        workTime: SmallResponseWorkTime | null;
+        workTime: MediumResponseWorkTime | null;
       })
     | null;
   readonly vouchers: ResponseVoucherDto[] | null;
@@ -72,6 +72,8 @@ export class ResponseSettlementDto {
           workTime: settlement.operator.workTime
             ? {
                 id: settlement.operator.workTime.id,
+                createdAt: settlement.operator.workTime.createdAt,
+                updatedAt: settlement.operator.workTime.updatedAt,
                 shift: settlement.operator.workTime.shift,
                 initHour: settlement.operator.workTime.initHour,
                 endHour: settlement.operator.workTime.endHour,

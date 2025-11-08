@@ -2,7 +2,7 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { DeliveryMan } from 'src/user/entities/user.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
-import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
+import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 
 export class ResponsePayoutDto {
   readonly id?: string;
@@ -19,7 +19,7 @@ export class ResponsePayoutDto {
   readonly total: number;
   readonly motoboy:
     | (Pick<DeliveryMan, 'id' | 'name' | 'phone' | 'motorcycle'> & {
-        workTime: SmallResponseWorkTime | null;
+        workTime: MediumResponseWorkTime | null;
       })
     | null;
   readonly vouchers: ResponseVoucherDto[] | null;
@@ -54,6 +54,8 @@ export class ResponsePayoutDto {
             ? {
                 id: payout.motoboy.workTime.id,
                 shift: payout.motoboy.workTime.shift,
+                createdAt: payout.motoboy.workTime.createdAt,
+                updatedAt: payout.motoboy.workTime.updatedAt,
                 initHour: payout.motoboy.workTime.initHour,
                 endHour: payout.motoboy.workTime.endHour,
               }
