@@ -48,13 +48,18 @@ export class VoucherFindAllFactory extends AbstractMethod {
     const queryObject = new VoucherFindAllQuery();
     const data = userData === undefined ? { name, phone, id } : userData;
 
-    if (type) {
-      queryObject[type] = data;
-    } else {
+    queryObject.createdAt = this.getDatePeriod(from, to);
+
+    if (!type) {
       queryObject.user = data;
+      return queryObject;
     }
 
-    queryObject.createdAt = this.getDatePeriod(from, to);
+    if (type === Voucher.Settlement || type === Voucher.Payout) {
+      queryObject[type] = { id };
+    } else {
+      queryObject[type] = data;
+    }
 
     return queryObject;
   }

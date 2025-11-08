@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
-import { relations } from './data/relations/user';
+import { essencial, full } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
@@ -168,7 +168,8 @@ export class UserService {
 
     if (dto.workTime) {
       const { id, shift, initHour, endHour } = dto.workTime;
-      const hasData = !!(shift && initHour && endHour);
+      const hasAllData = !!(shift && initHour && endHour);
+      const hasSomeData = !!(shift || initHour || endHour);
       const hasWorkTime = entity.workTime;
 
       if (id) {
@@ -176,13 +177,15 @@ export class UserService {
           .findOneBy({ id, isShared: true })
           .then(result => {
             if (!result) {
-              return this.workTimeService.findOneOwnedByOrFail(entity, {
-                id,
-              });
+              return this.workTimeService.findOneOwnedByOrFail(
+                entity,
+                { id },
+                false,
+              );
             }
             return result;
           });
-      } else if (hasData) {
+      } else if (hasAllData) {
         if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
           const created: NewWorkTimeForRest = {
             shift,
@@ -202,13 +205,18 @@ export class UserService {
             dto.workTime,
           );
         }
+      } else if (hasSomeData) {
+        entity.workTime = await this.workTimeService.update(
+          entity.workTime.id,
+          dto.workTime,
+        );
       } else {
         throw new BadRequestException('Dados não enviados');
       }
     }
 
     const updated = await this.saveUser(entity);
-    return this.findOneByOrFail({ id: updated.id });
+    return this.findOneByOrFail({ id: updated.id }, false);
   }
 
   async updateMotoboyFields(
@@ -251,7 +259,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations,
+      relations: essencial,
     });
 
     return motoboys;
@@ -263,12 +271,12 @@ export class UserService {
         roles: { name: role },
       },
       order: { createdAt: 'DESC' },
-      relations,
+      relations: essencial,
     });
   }
 
-  async findOneByOrFail(userData: Partial<User>) {
-    const user = await this.findOneBy(userData);
+  async findOneByOrFail(userData: Partial<User>, relations = true) {
+    const user = await this.findOneBy(userData, relations);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -277,17 +285,19 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(userData: Partial<User>) {
+  async findOneBy(userData: Partial<User>, relations = true) {
+    const fields = relations ? full : essencial;
     return this.userRepository.findOne({
       where: userData,
-      relations,
+      relations: fields,
     });
   }
 
-  async findOneMotoboyByOrFail(userData: Partial<User>) {
+  async findOneMotoboyByOrFail(userData: Partial<User>, relations = true) {
+    const fields = relations ? full : essencial;
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations,
+      relations: fields,
     });
 
     if (!motoboy) {

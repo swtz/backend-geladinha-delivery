@@ -24,6 +24,8 @@ import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
+import { ResponsePlaceDto } from './dto/response-place.dto';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -42,7 +44,7 @@ export class PlaceController {
       { ...dto, address, postalBox, workTime },
       req.user,
     );
-    return place;
+    return new ResponsePlaceDto(place);
   }
 
   @Patch('me/:id')
@@ -57,7 +59,7 @@ export class PlaceController {
       address,
       postalBox,
     });
-    return place;
+    return new ResponsePlaceDto(place);
   }
 
   @Patch('me/:id/work-time')
@@ -66,12 +68,12 @@ export class PlaceController {
     @Body() dto: UpdateWorkTimeDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const workTime = await this.placeService.updateSharedWorkTime(
+    const place = await this.placeService.updateSharedWorkTime(
       dto,
       id,
       req.user,
     );
-    return workTime;
+    return new ResponsePlaceDto(place);
   }
 
   @Get('work-time')
@@ -80,13 +82,16 @@ export class PlaceController {
   ) {
     const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
     const { workTimes } = await this.placeService.findOneByOrFail(qo);
-    return workTimes;
+    const parsedWorkTimes = workTimes.map(
+      item => new ResponseWorkTimeDto(item),
+    );
+    return parsedWorkTimes;
   }
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const place = await this.placeService.findOneByOrFail({ id });
-    return place;
+    return new ResponsePlaceDto(place);
   }
 
   @Get()
@@ -105,7 +110,8 @@ export class PlaceController {
       shift,
       isDefault,
     });
-    return places;
+    const parsedPlaces = places.map(item => new ResponsePlaceDto(item));
+    return parsedPlaces;
   }
 
   @Post('work-time')
@@ -113,8 +119,8 @@ export class PlaceController {
     @Body() dto: CreateWorkTimeDto,
     @Query('placeId', ParseUUIDPipe) placeId: string,
   ) {
-    const workTime = await this.placeService.addWorkTime(dto, placeId);
-    return workTime;
+    const place = await this.placeService.addWorkTime(dto, placeId);
+    return new ResponsePlaceDto(place);
   }
 
   @Delete('me/work-time/:id')
@@ -123,12 +129,8 @@ export class PlaceController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query('placeId', ParseUUIDPipe) placeId: string,
   ) {
-    const workTime = await this.placeService.removeWorkTime(
-      placeId,
-      id,
-      req.user,
-    );
-    return workTime;
+    const place = await this.placeService.removeWorkTime(placeId, id, req.user);
+    return new ResponsePlaceDto(place);
   }
 
   @Delete('me/:id')
@@ -136,7 +138,7 @@ export class PlaceController {
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const workTime = await this.placeService.remove(id, req.user);
-    return workTime;
+    const place = await this.placeService.remove(id, req.user);
+    return new ResponsePlaceDto(place);
   }
 }

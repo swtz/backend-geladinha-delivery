@@ -303,7 +303,7 @@ export class SettlementService {
     return this.settlementRepository.findOne({
       where: settlementData,
       relations: {
-        operator: true,
+        operator: { workTime: true },
         vouchers: voucherRelations,
       },
     });
@@ -315,10 +315,7 @@ export class SettlementService {
         workDay,
         operator: operatorData,
       },
-      relations: {
-        operator: true,
-        vouchers: true,
-      },
+      relations: { operator: true },
     });
   }
 
@@ -328,10 +325,7 @@ export class SettlementService {
         operator: { id: user.id },
       },
       order: { workDay: 'DESC' },
-      relations: {
-        operator: true,
-        vouchers: voucherRelations,
-      },
+      relations: { operator: true },
     });
   }
 
@@ -344,7 +338,7 @@ export class SettlementService {
     return this.settlementRepository.find({
       where: queryParams,
       order: { workDay: 'DESC' },
-      relations: { operator: true, vouchers: voucherRelations },
+      relations: { operator: true },
     });
   }
 

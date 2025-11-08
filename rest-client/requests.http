@@ -102,7 +102,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### find place work times
 # @name findPlaceWorkTimes
-GET {{baseUrl}}/place/work-time?id=5c156016-f744-439e-8400-9e6dfaef0582
+GET {{baseUrl}}/place/work-time
 Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################
@@ -128,6 +128,11 @@ Content-Type: application/json
 {
   "shift": "feriado"
 }
+
+### Find work time
+# @name findWorkTime
+GET {{baseUrl}}/work-time/d21b13b5-48a6-48c7-8dac-0233a3909df1
+Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
 # @name findAllWorkTimes
@@ -184,26 +189,26 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 { 
-  "motorcycle": "Honda, 2020, 150, Caramelo"
+  "workTime": {
+    "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1"
+  }
 }
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/3aa03f08-628e-4557-bded-ffd77f769953
+PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "shift": "personalizado",
-    "initHour": 9,
-    "endHour": 17
+    "initHour": 16
   }
 }
 
 ### Delete user
 # @name deleteUser
-DELETE {{baseUrl}}/user/b350cb30-5e71-4dc5-aa1b-1aabdd4c5599
+DELETE {{baseUrl}}/user/924b2100-1474-4311-8cbd-156376cb171f
 Authorization: Bearer {{JwtToken}}
 
 ### Update user password
@@ -224,12 +229,12 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/3aa03f08-628e-4557-bded-ffd77f769953
+GET {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=operator
+GET {{baseUrl}}/user
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -422,7 +427,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers
 # @name readAllVouchers
-GET {{baseUrl}}/voucher?type=settlement&id=e74d65ce-26c8-4680-9235-77288bccc414
+GET {{baseUrl}}/voucher?type=payout&id=7ed2374c-7548-4d78-a0cb-e767f19faa09
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -459,7 +464,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout?isClosed=true
+GET {{baseUrl}}/payout?name=Anthos
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
@@ -509,7 +514,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement?isClosed=false
+GET {{baseUrl}}/settlement
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement

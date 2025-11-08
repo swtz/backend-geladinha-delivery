@@ -255,10 +255,7 @@ export class PayoutService {
         workDay,
         motoboy: motoboyData,
       },
-      relations: {
-        motoboy: true,
-        vouchers: true,
-      },
+      relations: { motoboy: true },
     });
   }
 
@@ -268,10 +265,7 @@ export class PayoutService {
         motoboy: { id: user.id },
       },
       order: { workDay: 'DESC' },
-      relations: {
-        motoboy: true,
-        vouchers: voucherRelations,
-      },
+      relations: { motoboy: true },
     });
   }
 
@@ -284,7 +278,7 @@ export class PayoutService {
     return this.payoutRepository.find({
       where: queryParams,
       order: { workDay: 'DESC' },
-      relations: { motoboy: true, vouchers: voucherRelations },
+      relations: { motoboy: true },
     });
   }
 

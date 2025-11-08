@@ -17,6 +17,7 @@ import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 import { FindAllParams } from './types/findAllParams';
+import { full, essencial, tiny } from './data/relations/work-time';
 
 @Injectable()
 export class WorkTimeService {
@@ -42,7 +43,7 @@ export class WorkTimeService {
       isShared,
     };
 
-    if (!workTime) {
+    if (!workTime || dto.shift === Shift.Custom) {
       const created = await this.save(newWorkTime);
       return this.findOneByOrFail({ id: created.id });
     }
@@ -146,28 +147,28 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneBy(workTimeData: Partial<WorkTime>) {
+  async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {
+    const fields = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: workTimeData,
-      relations: {
-        places: { workTimes: true, owners: true },
-        user: true,
-      },
+      relations: fields,
     });
   }
 
-  async findOneOwnedBy(user: User, workTimeData: Partial<WorkTime>) {
+  async findOneOwnedBy(
+    user: User,
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+  ) {
+    const fields = relations ? full : essencial;
     return this.workTimeRepository.findOne({
       where: { ...workTimeData, user: { id: user.id } },
-      relations: {
-        places: { workTimes: true },
-        user: true,
-      },
+      relations: fields,
     });
   }
 
-  async findOneByOrFail(workTimeData: Partial<WorkTime>) {
-    const workTime = await this.findOneBy(workTimeData);
+  async findOneByOrFail(workTimeData: Partial<WorkTime>, relations = true) {
+    const workTime = await this.findOneBy(workTimeData, relations);
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');
@@ -176,8 +177,12 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async findOneOwnedByOrFail(user: User, workTimeData: Partial<WorkTime>) {
-    const workTime = await this.findOneOwnedBy(user, workTimeData);
+  async findOneOwnedByOrFail(
+    user: User,
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+  ) {
+    const workTime = await this.findOneOwnedBy(user, workTimeData, relations);
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');
@@ -220,7 +225,7 @@ export class WorkTimeService {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
-      relations: { places: true, user: true },
+      relations: tiny,
     });
   }
 
@@ -228,7 +233,7 @@ export class WorkTimeService {
     return this.workTimeRepository.find({
       where: { user: { id: user.id } },
       order: { createdAt: 'DESC' },
-      relations: { places: true, user: true },
+      relations: tiny,
     });
   }
 
