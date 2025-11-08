@@ -165,21 +165,12 @@ export class PlaceService {
     return this.placeRepository.find({
       where: {
         businessName: queryParams.businessName,
-        // As instruções abaixo fazem com que seja
-        // retornado um Place.workTimes contendo
-        // apenas o WorkTime que foi encontrado.
-        // É ignorado caso exista outro WorkTime
-        // no array. Isso pode confundir o usuário.
         workTimes: [{ shift, isDefault }],
         owners: [{ name, phone, id }],
       },
       order: { createdAt: 'DESC' },
       relations: {
         owners: true,
-        address: true,
-        postalBox: true,
-        workTimes: true,
-        socialMedias: true,
       },
     });
   }

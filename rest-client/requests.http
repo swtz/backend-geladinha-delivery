@@ -131,7 +131,7 @@ Content-Type: application/json
 
 ### Find work time
 # @name findWorkTime
-GET {{baseUrl}}/work-time/26ed0b26-14a3-443e-9cb0-e3cda70ed734
+GET {{baseUrl}}/work-time/d21b13b5-48a6-48c7-8dac-0233a3909df1
 Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
