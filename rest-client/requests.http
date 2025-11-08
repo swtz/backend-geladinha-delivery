@@ -420,7 +420,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers
 # @name readAllVouchers
-GET {{baseUrl}}/voucher?type=createdBy&name=Neo
+GET {{baseUrl}}/voucher?type=payout&id=7ed2374c-7548-4d78-a0cb-e767f19faa09
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -457,7 +457,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all payouts
 # @name readPayout
-GET {{baseUrl}}/payout?isClosed=true
+GET {{baseUrl}}/payout
 Authorization: Bearer {{JwtToken}}
 
 ### Update payout
