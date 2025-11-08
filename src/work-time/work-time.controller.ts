@@ -20,6 +20,7 @@ import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { ResponseWorkTimeDto } from './dto/response-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -38,32 +39,38 @@ export class WorkTimeController {
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const workTime = await this.workTimeService.findAll({
+    const workTimes = await this.workTimeService.findAll({
       shift,
       isDefault,
       isShared,
       user: qo,
     });
-    return workTime;
+    const parsedWorkTimes = workTimes.map(
+      item => new ResponseWorkTimeDto(item),
+    );
+    return parsedWorkTimes;
   }
 
   @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const workTime = await this.workTimeService.findAllOwned(req.user);
-    return workTime;
+    const workTimes = await this.workTimeService.findAllOwned(req.user);
+    const parsedWorkTimes = workTimes.map(
+      item => new ResponseWorkTimeDto(item),
+    );
+    return parsedWorkTimes;
   }
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const workTime = await this.workTimeService.findOneByOrFail({ id }, false);
-    return workTime;
+    return new ResponseWorkTimeDto(workTime);
   }
 
   @Post()
   async create(@Body() dto: CreateWorkTimeDto) {
     const workTime = await this.workTimeService.create(dto);
-    return workTime;
+    return new ResponseWorkTimeDto(workTime);
   }
 
   @Patch(':id')
@@ -72,12 +79,12 @@ export class WorkTimeController {
     @Body() dto: UpdateWorkTimeDto,
   ) {
     const workTime = await this.workTimeService.update(id, dto);
-    return workTime;
+    return new ResponseWorkTimeDto(workTime);
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const workTime = await this.workTimeService.remove(id);
-    return workTime;
+    return new ResponseWorkTimeDto(workTime);
   }
 }
