@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
-import { relations } from './data/relations/user';
+import { essencialRelations, allRelations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
@@ -251,7 +251,7 @@ export class UserService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations,
+      relations: allRelations,
     });
 
     return motoboys;
@@ -263,12 +263,12 @@ export class UserService {
         roles: { name: role },
       },
       order: { createdAt: 'DESC' },
-      relations,
+      relations: allRelations,
     });
   }
 
-  async findOneByOrFail(userData: Partial<User>) {
-    const user = await this.findOneBy(userData);
+  async findOneByOrFail(userData: Partial<User>, relations = true) {
+    const user = await this.findOneBy(userData, relations);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -277,17 +277,18 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(userData: Partial<User>) {
+  async findOneBy(userData: Partial<User>, relations = true) {
+    const queryObject = relations ? allRelations : essencialRelations;
     return this.userRepository.findOne({
       where: userData,
-      relations,
+      relations: queryObject,
     });
   }
 
   async findOneMotoboyByOrFail(userData: Partial<User>) {
     const motoboy = await this.deliveryManRepository.findOne({
       where: userData,
-      relations,
+      relations: allRelations,
     });
 
     if (!motoboy) {

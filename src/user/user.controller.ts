@@ -30,10 +30,13 @@ export class UserController {
 
   @Get('me')
   async findMe(@Req() req: AuthenticatedRequest) {
-    const user = await this.userService.findOneByOrFail({
-      id: req.user.id,
-    });
-    return user;
+    const user = await this.userService.findOneByOrFail(
+      {
+        id: req.user.id,
+      },
+      false,
+    );
+    return new ResponseUserDto(user);
   }
 
   @Get('motoboy')
@@ -48,8 +51,8 @@ export class UserController {
   @Roles(Role.Operator, Role.Admin)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.userService.findOneByOrFail({ id });
-    return user;
+    const user = await this.userService.findOneByOrFail({ id }, false);
+    return new ResponseUserDto(user);
   }
 
   @Roles(Role.Operator, Role.Admin)
@@ -97,7 +100,7 @@ export class UserController {
     @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const user = await this.userService.findOneByOrFail({ id });
+    const user = await this.userService.findOneByOrFail({ id }, false);
     const updated = await this.userService.update(user, {
       ...dto,
       phone,

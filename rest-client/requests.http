@@ -201,7 +201,7 @@ Content-Type: application/json
 
 ### Delete user
 # @name deleteUser
-DELETE {{baseUrl}}/user/b350cb30-5e71-4dc5-aa1b-1aabdd4c5599
+DELETE {{baseUrl}}/user/924b2100-1474-4311-8cbd-156376cb171f
 Authorization: Bearer {{JwtToken}}
 
 ### Update user password
@@ -227,7 +227,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=operator
+GET {{baseUrl}}/user?role=admin
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -420,7 +420,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all vouchers
 # @name readAllVouchers
-GET {{baseUrl}}/voucher?type=settlement&id=e74d65ce-26c8-4680-9235-77288bccc414
+GET {{baseUrl}}/voucher?type=createdBy&name=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Read all owned vouchers
@@ -479,7 +479,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo
+GET {{baseUrl}}/settlement/preview?name=Orochi
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -497,7 +497,7 @@ Content-Type: application/json
 
 ### Read settlement
 # @name readSettlement
-GET {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
+GET {{baseUrl}}/settlement/e74d65ce-26c8-4680-9235-77288bccc414
 Authorization: Bearer {{JwtToken}}
 
 ### Read owned settlements
@@ -507,7 +507,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement?isClosed=false
+GET {{baseUrl}}/settlement
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
