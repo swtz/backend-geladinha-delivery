@@ -42,7 +42,7 @@ export class WorkTimeService {
       isShared,
     };
 
-    if (!workTime) {
+    if (!workTime || dto.shift === Shift.Custom) {
       const created = await this.save(newWorkTime);
       return this.findOneByOrFail({ id: created.id });
     }

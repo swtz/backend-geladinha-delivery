@@ -19,6 +19,7 @@ import { relations } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
+import { Shift } from 'src/common/enums/work-shifts.enum';
 
 @Injectable()
 export class UserService {
@@ -182,7 +183,7 @@ export class UserService {
             return result;
           });
       } else if (hasData) {
-        if (!hasWorkTime) {
+        if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
           const created: NewWorkTimeForRest = {
             shift,
             initHour,
