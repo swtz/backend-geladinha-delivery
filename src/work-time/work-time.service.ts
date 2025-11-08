@@ -146,13 +146,18 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneBy(workTimeData: Partial<WorkTime>) {
+  async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {
+    const queryObject = relations
+      ? {
+          places: { workTimes: true, owners: true },
+          user: true,
+        }
+      : {
+          user: true,
+        };
     return this.workTimeRepository.findOne({
       where: workTimeData,
-      relations: {
-        places: { workTimes: true, owners: true },
-        user: true,
-      },
+      relations: queryObject,
     });
   }
 
@@ -166,8 +171,8 @@ export class WorkTimeService {
     });
   }
 
-  async findOneByOrFail(workTimeData: Partial<WorkTime>) {
-    const workTime = await this.findOneBy(workTimeData);
+  async findOneByOrFail(workTimeData: Partial<WorkTime>, relations = true) {
+    const workTime = await this.findOneBy(workTimeData, relations);
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');

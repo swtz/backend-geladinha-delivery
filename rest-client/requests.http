@@ -129,6 +129,11 @@ Content-Type: application/json
   "shift": "feriado"
 }
 
+### Find work time
+# @name findWorkTime
+GET {{baseUrl}}/work-time/d21b13b5-48a6-48c7-8dac-0233a3909df1
+Authorization: Bearer {{JwtToken}}
+
 ### Find all work times
 # @name findAllWorkTimes
 GET {{baseUrl}}/work-time

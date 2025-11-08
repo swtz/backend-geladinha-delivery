@@ -54,6 +54,12 @@ export class WorkTimeController {
     return workTime;
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const workTime = await this.workTimeService.findOneByOrFail({ id }, false);
+    return workTime;
+  }
+
   @Post()
   async create(@Body() dto: CreateWorkTimeDto) {
     const workTime = await this.workTimeService.create(dto);
