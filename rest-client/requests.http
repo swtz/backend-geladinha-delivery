@@ -91,8 +91,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "cece908b-f0a4-4c42-8040-60f7947d9272",
-  "initHour": 10
+  "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1",
+  "endHour": 17
 }
 
 ### Remove shared work time
@@ -324,10 +324,11 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "motoboy": "e9df887c-c0ce-4426-9493-5e09c7d998d0",
+  "motoboy": "4fcd0dfc-b670-4595-84d5-b268f7bf1941",
   "customer": "874cb730-aa1e-4bc5-b8f4-736c4ccdeb34",
-  "totalPurchase": 87.33,
-  "deliveryTax": 7,
+  "totalPurchase": 99.99,
+  "deliveryTax": 9.99,
+  "tip": 1.99,
   "paymentMethod": "money"
 }
 
@@ -439,7 +440,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?id=e9df887c-c0ce-4426-9493-5e09c7d998d0
+GET {{baseUrl}}/payout/preview?id=4fcd0dfc-b670-4595-84d5-b268f7bf1941
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
