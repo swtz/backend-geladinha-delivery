@@ -24,6 +24,7 @@ import { WorkTimeService } from 'src/work-time/work-time.service';
 import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
+import { DateObject } from 'src/payout/types/date-object.type';
 
 @Injectable()
 export class SettlementService {
@@ -66,14 +67,14 @@ export class SettlementService {
       ? operator.workTime
       : workTime;
 
-    const dateObject = {
-      initDate: from || parseBrDate(new Date(), initHour),
-      endDate: to || parseBrDate(new Date(), endHour),
+    const dateObject: DateObject = {
+      initDate: from || parseBrDate(initHour),
+      endDate: to || parseBrDate(endHour),
     };
 
     if (operator.workTime) {
-      dateObject.initDate = parseBrDate(dateObject.initDate, initHour);
-      dateObject.endDate = parseBrDate(dateObject.endDate, endHour);
+      dateObject.initDate = parseBrDate(initHour, dateObject.initDate);
+      dateObject.endDate = parseBrDate(endHour, dateObject.endDate);
     }
 
     if (endHour < initHour) {
@@ -263,16 +264,19 @@ export class SettlementService {
       ? operator.workTime
       : workTime;
 
-    let endDate = parseBrDate(initDate, endHour);
+    const dateObject: DateObject = {
+      initDate: new Date(0),
+      endDate: parseBrDate(endHour, initDate),
+    };
 
     if (endHour < initHour) {
-      endDate = generateRelativeDate('tomorrow', initDate, endHour);
+      dateObject.endDate = generateRelativeDate('tomorrow', initDate, endHour);
     }
 
     const newSettlement = await this.preview(
       { id: operator.id },
       initDate,
-      endDate,
+      dateObject.endDate,
     );
     const mergedSettlement = {
       ...settlement,

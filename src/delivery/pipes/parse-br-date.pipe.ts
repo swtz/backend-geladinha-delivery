@@ -16,6 +16,6 @@ export class ParseBrDatePipe implements PipeTransform {
     }
 
     const parsedValue = value.split('-').join('/');
-    return parseBrDate(parsedValue, this.hour);
+    return parseBrDate(this.hour, parsedValue);
   }
 }
