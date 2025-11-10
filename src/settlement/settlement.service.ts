@@ -24,7 +24,7 @@ import { WorkTimeService } from 'src/work-time/work-time.service';
 import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
-import { DateObject } from 'src/payout/payout.service';
+import { DateObject } from 'src/payout/types/date-object.type';
 
 @Injectable()
 export class SettlementService {

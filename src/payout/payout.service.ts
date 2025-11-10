@@ -23,12 +23,7 @@ import { PlaceService } from 'src/place/place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
-import { UTCDate } from '@date-fns/utc';
-
-export type DateObject = {
-  initDate: Date | UTCDate;
-  endDate: Date | UTCDate;
-};
+import { DateObject } from './types/date-object.type';
 
 @Injectable()
 export class PayoutService {
