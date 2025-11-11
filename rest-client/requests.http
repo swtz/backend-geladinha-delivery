@@ -92,8 +92,8 @@ Content-Type: application/json
 
 {
   "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1",
-  "initHour": 18,
-  "endHour": 4
+  "initHour": 21,
+  "endHour": 2
 }
 
 ### Remove shared work time
@@ -490,7 +490,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Neo
+GET {{baseUrl}}/settlement/preview?name=Leonardo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
