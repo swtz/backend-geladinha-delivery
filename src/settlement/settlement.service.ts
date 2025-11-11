@@ -66,23 +66,19 @@ export class SettlementService {
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;
-
+    const initDate = parseBrDate(initHour, from);
+    const initDateCopy = Object.assign(new Date(), initDate);
+    const endDate = parseBrDate(endHour, initDateCopy);
     const dateObject: DateObject = {
-      initDate: from || parseBrDate(initHour),
-      endDate: to || parseBrDate(endHour),
+      initDate,
+      endDate,
     };
 
-    if (operator.workTime) {
-      dateObject.initDate = parseBrDate(initHour, dateObject.initDate);
-      dateObject.endDate = parseBrDate(endHour, dateObject.endDate);
-    }
-
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        endHour,
-      );
+    if (![21, 22, 23].includes(endHour)) {
+      dateObject.endDate =
+        endHour < initHour
+          ? generateRelativeDate('tomorrow', dateObject.initDate, endHour)
+          : dateObject.endDate;
     }
 
     const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {

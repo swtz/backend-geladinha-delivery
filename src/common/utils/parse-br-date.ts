@@ -5,12 +5,28 @@ import { parse } from 'date-fns';
 const types = ['string', 'object'];
 
 export function parseBrDate(hour: number, shortDate?: string | Date | UTCDate) {
+  const auxDate = new Date();
+  auxDate.setHours(hour);
+
+  const utcDate = new UTCDate(
+    auxDate.getUTCFullYear(),
+    auxDate.getUTCMonth(),
+    auxDate.getUTCDate(),
+    auxDate.getUTCHours(),
+    auxDate.getUTCMinutes(),
+    auxDate.getUTCSeconds(),
+  );
+
+  if ([21, 22, 23].includes(hour) && typeof shortDate === 'object') {
+    shortDate.setDate(shortDate.getDate() + 1);
+  }
+
   const dateString = shortDate
     ? generateDateString(shortDate)
-    : new Date().toLocaleString('BR', { dateStyle: 'short' });
+    : utcDate.toLocaleString('BR', { dateStyle: 'short' });
 
   const newDate = parse(
-    `${dateString} ${hour + 3}`,
+    `${dateString} ${utcDate.getHours()}`,
     'dd/MM/yyyy H',
     new UTCDate(),
   );

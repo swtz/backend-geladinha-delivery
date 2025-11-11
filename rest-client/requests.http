@@ -92,7 +92,8 @@ Content-Type: application/json
 
 {
   "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1",
-  "endHour": 17
+  "initHour": 18,
+  "endHour": 4
 }
 
 ### Remove shared work time
@@ -136,7 +137,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
 # @name findAllWorkTimes
-GET {{baseUrl}}/work-time
+GET {{baseUrl}}/work-time?shift=personalizado
 Authorization: Bearer {{JwtToken}}
 
 ### Find all owned work times
@@ -190,19 +191,21 @@ Content-Type: application/json
 
 { 
   "workTime": {
-    "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1"
+    "initHour": 18,
+    "endHour": 4
   }
 }
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+PATCH {{baseUrl}}/user/77765315-68b7-43c2-83f4-c4140afb244e
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "initHour": 16
+    "initHour": 9,
+    "endHour": 15
   }
 }
 
@@ -229,7 +232,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/e9df887c-c0ce-4426-9493-5e09c7d998d0
+GET {{baseUrl}}/user/77765315-68b7-43c2-83f4-c4140afb244e
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
@@ -487,7 +490,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo
+GET {{baseUrl}}/settlement/preview?name=Neo
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
