@@ -25,6 +25,7 @@ import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { DateObject } from 'src/payout/types/date-object.type';
+import { UTCDate } from '@date-fns/utc';
 
 @Injectable()
 export class SettlementService {
@@ -67,7 +68,7 @@ export class SettlementService {
       ? operator.workTime
       : workTime;
     const initDate = parseBrDate(initHour, from);
-    const initDateCopy = Object.assign(new Date(), initDate);
+    const initDateCopy = Object.assign(new UTCDate(), initDate);
     const endDate = parseBrDate(endHour, initDateCopy);
     const dateObject: DateObject = {
       initDate,
