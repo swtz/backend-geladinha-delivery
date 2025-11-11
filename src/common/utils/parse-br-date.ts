@@ -26,9 +26,9 @@ export function parseBrDate(hour: number, shortDate?: string | Date | UTCDate) {
     : utcDate.toLocaleString('BR', { dateStyle: 'short' });
 
   const newDate = parse(
-    `${dateString} ${utcDate.getHours()}`,
+    `${dateString} ${auxDate.getUTCHours()}`,
     'dd/MM/yyyy H',
-    new UTCDate(),
+    utcDate,
   );
   const isInvalidYear = newDate.getFullYear().toString(10).length < 4;
 
