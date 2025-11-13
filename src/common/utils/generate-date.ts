@@ -1,19 +1,27 @@
-import { UTCDate } from '@date-fns/utc';
 import { parse } from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 export function generateRelativeDate(
   day: 'yesterday' | 'tomorrow',
-  date: Date | UTCDate,
-  hour?: number,
+  hour: number,
+  referenceDate?: Date,
 ) {
-  const utcHour = hour ? hour + 3 : date.getUTCHours();
+  const utcDate = new Date();
+  const userDate = toZonedTime(utcDate, 'America/Sao_Paulo');
+  userDate.setHours(hour);
+
   const relativeDay =
-    day === 'yesterday' ? date.getDate() - 1 : date.getDate() + 1;
-  const newDate = parse(
-    `${date.toLocaleString('BR', { dateStyle: 'short' })} ${utcHour}`,
+    day === 'yesterday' ? userDate.getDate() - 1 : userDate.getDate() + 1;
+  userDate.setDate(relativeDay);
+
+  const date = fromZonedTime(userDate, 'America/Sao_Paulo');
+  const dateString = date.toLocaleString('BR', { dateStyle: 'short' });
+
+  const parsedUTCDate = parse(
+    `${dateString} ${date.getHours()}`,
     'dd/MM/yyyy H',
-    new UTCDate(),
+    new Date(),
   );
-  newDate.setDate(relativeDay);
-  return newDate;
+
+  return parsedUTCDate;
 }

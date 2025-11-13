@@ -25,7 +25,6 @@ import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { DateObject } from 'src/payout/types/date-object.type';
-import { UTCDate } from '@date-fns/utc';
 
 @Injectable()
 export class SettlementService {
@@ -42,15 +41,14 @@ export class SettlementService {
   ) {}
 
   async preview(userData: Partial<User>, from?: Date, to?: Date) {
-    // userData.name = userData.name ?? '';
+    if (Object.keys(userData).length === 0) {
+      throw new BadRequestException('Informe os dados para consulta');
+    }
+
     const operator = await this.userService.findOneByOrFail(userData);
 
     if (operator instanceof DeliveryMan) {
       throw new BadRequestException('Motoboys não possuem caixa para fechar');
-    }
-
-    if (Object.keys(userData).length === 0) {
-      throw new BadRequestException('Informe os dados para consulta');
     }
 
     const place = await this.placeService.findOneBy({
@@ -67,9 +65,9 @@ export class SettlementService {
     const { initHour, endHour } = operator.workTime
       ? operator.workTime
       : workTime;
+
     const initDate = parseBrDate(initHour, from);
-    const initDateCopy = Object.assign(new UTCDate(), initDate);
-    const endDate = parseBrDate(endHour, initDateCopy);
+    const endDate = parseBrDate(endHour, to);
     const dateObject: DateObject = {
       initDate,
       endDate,
@@ -78,7 +76,7 @@ export class SettlementService {
     if (![21, 22, 23].includes(endHour)) {
       dateObject.endDate =
         endHour < initHour
-          ? generateRelativeDate('tomorrow', dateObject.initDate, endHour)
+          ? generateRelativeDate('tomorrow', endHour)
           : dateObject.endDate;
     }
 
@@ -267,7 +265,7 @@ export class SettlementService {
     };
 
     if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate('tomorrow', initDate, endHour);
+      dateObject.endDate = generateRelativeDate('tomorrow', endHour, initDate);
     }
 
     const newSettlement = await this.preview(
