@@ -1,20 +1,27 @@
 import { parse } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
+// Métodos como payout.update() usam essas funções para
+// calcular corretamente os períodos.
+// É preciso checar o comportamento desses métodos também.
 export function generateRelativeDate(
   day: 'yesterday' | 'tomorrow',
   hour: number,
   referenceDate?: Date,
 ) {
-  const utcDate = new Date();
-  const userDate = toZonedTime(utcDate, 'America/Sao_Paulo');
-  userDate.setHours(hour);
+  const userDate = referenceDate ? referenceDate : new Date();
+  const timezoneDate = toZonedTime(userDate, 'America/Sao_Paulo');
+
+  timezoneDate.setHours(hour);
 
   const relativeDay =
-    day === 'yesterday' ? userDate.getDate() - 1 : userDate.getDate() + 1;
-  userDate.setDate(relativeDay);
+    day === 'yesterday'
+      ? timezoneDate.getDate() - 1
+      : timezoneDate.getDate() + 1;
 
-  const date = fromZonedTime(userDate, 'America/Sao_Paulo');
+  timezoneDate.setDate(relativeDay);
+
+  const date = fromZonedTime(timezoneDate, 'America/Sao_Paulo');
   const dateString = date.toLocaleString('BR', { dateStyle: 'short' });
 
   const parsedUTCDate = parse(

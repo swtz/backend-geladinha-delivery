@@ -25,6 +25,7 @@ import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { DateObject } from 'src/payout/types/date-object.type';
+import { toZonedTime } from 'date-fns-tz';
 
 @Injectable()
 export class SettlementService {
@@ -66,18 +67,55 @@ export class SettlementService {
       ? operator.workTime
       : workTime;
 
-    const initDate = parseBrDate(initHour, from);
-    const endDate = parseBrDate(endHour, to);
+    const initDate = from || parseBrDate(initHour);
+
+    // checar se está sendo sobrescrito,
+    // pois 'to' deve levar em contra os
+    // dados de 'from'
+    const endDate = to || parseBrDate(endHour);
+
+    // dateObject já possui datas em UTC,
+    // pois 'from/to' também usam parseBrDate()
     const dateObject: DateObject = {
       initDate,
       endDate,
     };
 
-    if (![21, 22, 23].includes(endHour)) {
-      dateObject.endDate =
-        endHour < initHour
-          ? generateRelativeDate('tomorrow', endHour)
-          : dateObject.endDate;
+    // Se surgir a necessidade:
+    // "Eu quero a mesma data só que com o horário diferente"
+    // Como resolver?
+
+    // Preciso fazer uma atribuição automática à propriedade
+    // dateObject.endDate
+
+    if (endHour < initHour && !to) {
+      if ([21, 22, 23].includes(initHour)) {
+        const timezoneDate = toZonedTime(
+          dateObject.initDate,
+          'America/Sao_Paulo',
+        );
+
+        dateObject.endDate = generateRelativeDate(
+          'tomorrow',
+          endHour,
+          timezoneDate,
+        );
+
+        // preciso checar se initHour não está dentre [21, 22, 23], se não, por causa do horário
+        // em UTC, será adicionado 1 dia a mais do que o esperado
+      } else {
+        dateObject.endDate = generateRelativeDate(
+          'tomorrow',
+          endHour,
+          dateObject.initDate,
+        );
+      }
+    }
+
+    if (endHour < initHour && to) {
+      if (![21, 22, 23].includes(endHour)) {
+        dateObject.endDate = generateRelativeDate('tomorrow', endHour, to);
+      }
     }
 
     const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {

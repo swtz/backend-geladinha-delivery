@@ -92,8 +92,8 @@ Content-Type: application/json
 
 {
   "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1",
-  "initHour": 15,
-  "endHour": 21
+  "initHour": 23,
+  "endHour": 12
 }
 
 ### Remove shared work time
@@ -490,14 +490,14 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo
+GET {{baseUrl}}/settlement/preview?name=Leonardo&from=18/11/2025&to=20/11/2025
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
 # @name createSettlement
 POST {{baseUrl}}/settlement
 Authorization: Bearer {{JwtToken}}
-Content-Type: application/json
+Content-Type: application/json// checar se está sendo sobrescrito,
 
 {
   "from": "26-10-2025",
