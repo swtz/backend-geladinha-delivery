@@ -40,13 +40,11 @@ export class PayoutService {
   ) {}
 
   async preview(motoboyData: Partial<DeliveryMan>, from?: Date, to?: Date) {
-    // motoboyData.name = motoboyData.name ?? '';
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
-
     if (Object.keys(motoboyData).length === 0) {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
+    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const place = await this.placeService.findOneBy({
       code: process.env.DEFAULT_PLACE_CODE,
     });
@@ -62,22 +60,18 @@ export class PayoutService {
       ? motoboy.workTime
       : workTime;
 
+    const initDate = parseBrDate(initHour, from);
+    const endDate = parseBrDate(endHour, to);
     const dateObject: DateObject = {
-      initDate: from || parseBrDate(initHour),
-      endDate: to || parseBrDate(endHour),
+      initDate,
+      endDate,
     };
 
-    if (motoboy.workTime) {
-      dateObject.initDate = parseBrDate(initHour, dateObject.initDate);
-      dateObject.endDate = parseBrDate(endHour, dateObject.endDate);
-    }
-
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate(
-        'tomorrow',
-        dateObject.initDate,
-        endHour,
-      );
+    if (![21, 22, 23].includes(endHour)) {
+      dateObject.endDate =
+        endHour < initHour
+          ? generateRelativeDate('tomorrow', endHour)
+          : dateObject.endDate;
     }
 
     const vouchers = await this.voucherService.findAll({
@@ -215,7 +209,7 @@ export class PayoutService {
     };
 
     if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate('tomorrow', initDate, endHour);
+      dateObject.endDate = generateRelativeDate('tomorrow', endHour, initDate);
     }
 
     const newPayout = await this.preview(
