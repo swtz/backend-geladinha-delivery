@@ -8,7 +8,6 @@ export function parseBrDate(hour: number, shortDate?: string | Date) {
   // ou com base no horário atual.
   // shortDate é sempre uma data com deslocamento 180? (Data BR)
   // Quando não passo shortDate, o que acontece em termos de algoritmo?
-
   const utcDate = new Date();
   const userDate = toZonedTime(utcDate, 'America/Sao_Paulo');
   userDate.setHours(hour);
