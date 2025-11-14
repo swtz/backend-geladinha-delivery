@@ -10,6 +10,10 @@ export function generateRelativeDate(
   referenceDate?: Date,
 ) {
   const userDate = referenceDate ? referenceDate : new Date();
+
+  // Checar funcionamento do método 'toZonedTime'
+  // Acredito que ele não esteja se comportando
+  // como esperado (mesmo usando .toISOString())
   const timezoneDate = toZonedTime(userDate, 'America/Sao_Paulo');
 
   timezoneDate.setHours(hour);

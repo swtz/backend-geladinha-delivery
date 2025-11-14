@@ -91,9 +91,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "d21b13b5-48a6-48c7-8dac-0233a3909df1",
-  "initHour": 23,
-  "endHour": 12
+  "id": "c522631e-be63-474c-a75b-6fe649987815",
+  "initHour": 9,
+  "endHour": 4
 }
 
 ### Remove shared work time
@@ -115,9 +115,9 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "madrugada",
-  "initHour": 0,
-  "endHour": 6
+  "shift": "manhã",
+  "initHour": 7,
+  "endHour": 15
 }
 
 ### Update work time
@@ -191,6 +191,7 @@ Content-Type: application/json
 
 { 
   "workTime": {
+    "id": "c522631e-be63-474c-a75b-6fe649987815",
     "initHour": 16,
     "endHour": 22
   }
@@ -204,6 +205,7 @@ Content-Type: application/json
 
 {
   "workTime": {
+    "id": "c522631e-be63-474c-a75b-6fe649987815",
     "initHour": 12,
     "endHour": 19
   }
@@ -490,7 +492,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&day=14
+GET {{baseUrl}}/settlement/preview?name=Leonardo&fromDay=7
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

@@ -49,6 +49,9 @@ export class PayoutController {
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromData, toData);
 
+    console.log(from);
+    console.log(to);
+
     const payout = await this.payoutService.preview(qo, from, to);
 
     return new ResponsePayoutDto(payout);
