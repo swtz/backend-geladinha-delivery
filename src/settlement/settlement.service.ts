@@ -25,7 +25,6 @@ import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { DateObject } from 'src/payout/types/date-object.type';
-import { toZonedTime } from 'date-fns-tz';
 
 @Injectable()
 export class SettlementService {
@@ -41,7 +40,7 @@ export class SettlementService {
     private readonly placeService: PlaceService,
   ) {}
 
-  async preview(userData: Partial<User>, from?: Date, to?: Date) {
+  async preview(userData: Partial<User>, from: Date, to: Date) {
     if (Object.keys(userData).length === 0) {
       throw new BadRequestException('Informe os dados para consulta');
     }
@@ -52,92 +51,26 @@ export class SettlementService {
       throw new BadRequestException('Motoboys não possuem caixa para fechar');
     }
 
-    const place = await this.placeService.findOneBy({
-      code: process.env.DEFAULT_PLACE_CODE,
-    });
-
-    if (!place) {
-      throw new NotFoundException(
-        'Nenhum estabelecimento definido como padrão',
-      );
-    }
-
-    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
-    const { initHour, endHour } = operator.workTime
-      ? operator.workTime
-      : workTime;
-
-    const initDate = from || parseBrDate(initHour);
-
-    // checar se está sendo sobrescrito,
-    // pois 'to' deve levar em contra os
-    // dados de 'from'
-    const endDate = to || parseBrDate(endHour);
-
-    // dateObject já possui datas em UTC,
-    // pois 'from/to' também usam parseBrDate()
-    const dateObject: DateObject = {
-      initDate,
-      endDate,
-    };
-
-    // Se surgir a necessidade:
-    // "Eu quero a mesma data só que com o horário diferente"
-    // Como resolver?
-
-    // Preciso fazer uma atribuição automática à propriedade
-    // dateObject.endDate
-
-    if (endHour < initHour && !to) {
-      if ([21, 22, 23].includes(initHour)) {
-        const timezoneDate = toZonedTime(
-          dateObject.initDate,
-          'America/Sao_Paulo',
-        );
-
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          endHour,
-          timezoneDate,
-        );
-
-        // preciso checar se initHour não está dentre [21, 22, 23], se não, por causa do horário
-        // em UTC, será adicionado 1 dia a mais do que o esperado
-      } else {
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          endHour,
-          dateObject.initDate,
-        );
-      }
-    }
-
-    if (endHour < initHour && to) {
-      if (![21, 22, 23].includes(endHour)) {
-        dateObject.endDate = generateRelativeDate('tomorrow', endHour, to);
-      }
-    }
-
-    const exists = await this.findOneByWorkDayAndOperator(dateObject.initDate, {
+    const exists = await this.findOneByWorkDayAndOperator(from, {
       id: operator.id,
     });
 
     const vouchers = await this.voucherService.findAll({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Voucher.User,
       userData,
     });
     const deliveries = await this.deliveryService.findAll({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Role.Operator,
       userData,
     });
 
     const settlement = {
-      weekDay: weekDays[dateObject.initDate.getDay()],
-      workDay: dateObject.initDate,
+      weekDay: weekDays[from.getDay()],
+      workDay: from,
       initValue: exists !== null ? exists.initValue : undefined,
       amountDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
@@ -173,8 +106,8 @@ export class SettlementService {
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
         userData,
-        from: dateObject.initDate,
-        to: dateObject.endDate,
+        from,
+        to,
       });
 
       deliveries.forEach(delivery => {
@@ -190,8 +123,8 @@ export class SettlementService {
     }
 
     settlement.totalSpending = await this.voucherService.sum({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Voucher.User,
       userData,
     });
@@ -199,8 +132,8 @@ export class SettlementService {
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
         userData,
-        from: dateObject.initDate,
-        to: dateObject.endDate,
+        from,
+        to,
         isPaid: false,
       });
 

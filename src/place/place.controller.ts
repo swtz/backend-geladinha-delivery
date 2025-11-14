@@ -26,11 +26,31 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
 import { ResponsePlaceDto } from './dto/response-place.dto';
+import { WorkTimeDateService } from './services/work-time-date.service';
 
 @Roles(Role.Admin)
 @Controller('place')
 export class PlaceController {
-  constructor(private readonly placeService: PlaceService) {}
+  constructor(
+    private readonly placeService: PlaceService,
+    private readonly workTimeDateService: WorkTimeDateService,
+  ) {}
+
+  @Get('date')
+  async getDateObject(
+    @Req() req: AuthenticatedRequest,
+    @Query('year') year: string = '2025',
+    @Query('month') month: string = '11',
+    @Query('day') day: string = '13',
+    @Query('hours') hours: string,
+    @Query('minutes') minutes: string,
+  ) {
+    const from = { year, month, day, hours, minutes };
+    const to = { year, month, day, hours, minutes };
+
+    const date = await this.workTimeDateService.create(req.user, from, to);
+    return date;
+  }
 
   @Post('me')
   async create(

@@ -11,7 +11,7 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
-import { PlaceType } from './types/place';
+import { PlaceType } from './types/place.type';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
