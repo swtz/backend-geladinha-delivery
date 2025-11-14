@@ -191,21 +191,21 @@ Content-Type: application/json
 
 { 
   "workTime": {
-    "initHour": 18,
-    "endHour": 4
+    "initHour": 16,
+    "endHour": 22
   }
 }
 
 ### Update user
 # @name updateUser
-PATCH {{baseUrl}}/user/77765315-68b7-43c2-83f4-c4140afb244e
+PATCH {{baseUrl}}/user/4fcd0dfc-b670-4595-84d5-b268f7bf1941
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
   "workTime": {
-    "initHour": 9,
-    "endHour": 15
+    "initHour": 12,
+    "endHour": 19
   }
 }
 
@@ -443,7 +443,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?id=4fcd0dfc-b670-4595-84d5-b268f7bf1941
+GET {{baseUrl}}/payout/preview?name=Fernando&fromDay=17&toDay=22
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -490,7 +490,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&from=18/11/2025&to=20/11/2025
+GET {{baseUrl}}/settlement/preview?name=Leonardo&day=14
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -540,4 +540,11 @@ Content-Type: application/json
 ### Delete settlement
 # @name deleteSettlement
 DELETE {{baseUrl}}/settlement/7f099db0-4530-4ea6-9a18-d7d0c317b33f
+Authorization: Bearer {{JwtToken}}
+
+################### TESTING ###################
+
+### Get dateObject
+# @name getDateObject
+GET {{baseUrl}}/place/date?day=22
 Authorization: Bearer {{JwtToken}}

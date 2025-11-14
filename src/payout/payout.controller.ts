@@ -20,22 +20,37 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ParseBrWorkDatePipe } from 'src/delivery/pipes/parse-br-work-date.pipe';
+import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
 export class PayoutController {
-  constructor(private readonly payoutService: PayoutService) {}
+  constructor(
+    private readonly payoutService: PayoutService,
+    private readonly workTimeDateService: WorkTimeDateService,
+  ) {}
 
   @Get('preview')
   async preview(
-    @Query('from', ParseBrWorkDatePipe) from: Date,
-    @Query('to', ParseBrWorkDatePipe) to: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('year') year: string = `${new Date().getFullYear()}`,
+    @Query('month') month: string = `${new Date().getMonth() + 1}`,
+    @Query('fromDay') fromDay: string = `${new Date().getDate()}`,
+    @Query('toDay') toDay: string = `${new Date().getDate()}`,
+    @Query('hours') hours: string,
+    @Query('minutes') minutes: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const fromData = { year, month, day: fromDay, hours, minutes };
+    const toData = { year, month, day: toDay, hours, minutes };
+
+    const { initDate: from, endDate: to } =
+      await this.workTimeDateService.create(qo, fromData, toData);
+
     const payout = await this.payoutService.preview(qo, from, to);
+
     return new ResponsePayoutDto(payout);
   }
 

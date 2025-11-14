@@ -39,51 +39,22 @@ export class PayoutService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async preview(motoboyData: Partial<DeliveryMan>, from?: Date, to?: Date) {
+  async preview(motoboyData: Partial<DeliveryMan>, from: Date, to: Date) {
     if (Object.keys(motoboyData).length === 0) {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
-    const place = await this.placeService.findOneBy({
-      code: process.env.DEFAULT_PLACE_CODE,
-    });
-
-    if (!place) {
-      throw new NotFoundException(
-        'Nenhum estabelecimento definido como padrão',
-      );
-    }
-
-    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
-    const { initHour, endHour } = motoboy.workTime
-      ? motoboy.workTime
-      : workTime;
-
-    const initDate = parseBrDate(initHour, from);
-    const endDate = parseBrDate(endHour, to);
-    const dateObject: DateObject = {
-      initDate,
-      endDate,
-    };
-
-    if (![21, 22, 23].includes(endHour)) {
-      dateObject.endDate =
-        endHour < initHour
-          ? generateRelativeDate('tomorrow', endHour)
-          : dateObject.endDate;
-    }
-
     const vouchers = await this.voucherService.findAll({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Voucher.User,
       userData: motoboyData,
     });
 
     const deliveries = await this.deliveryService.findAll({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Role.Motoboy,
       userData: motoboyData,
     });
@@ -96,8 +67,8 @@ export class PayoutService {
     }, 0);
 
     const payout = {
-      weekDay: weekDays[dateObject.initDate.getDay()],
-      workDay: dateObject.initDate,
+      weekDay: weekDays[from.getDay()],
+      workDay: from,
       totalDeliveries: 0,
       motoboyDaily: 0,
       motoboyTips,
@@ -111,8 +82,8 @@ export class PayoutService {
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
         userData: motoboyData,
-        from: dateObject.initDate,
-        to: dateObject.endDate,
+        from,
+        to,
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
@@ -127,8 +98,8 @@ export class PayoutService {
     );
 
     payout.totalSpending = await this.voucherService.sum({
-      from: dateObject.initDate,
-      to: dateObject.endDate,
+      from,
+      to,
       type: Voucher.User,
       userData: motoboyData,
     });
@@ -146,7 +117,7 @@ export class PayoutService {
 
     const lastPayout = lastPayouts[0];
 
-    if (dateObject.initDate.valueOf() <= lastPayout.workDay.valueOf()) {
+    if (from.valueOf() <= lastPayout.workDay.valueOf()) {
       return payout;
     }
 
