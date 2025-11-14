@@ -50,6 +50,9 @@ export class SettlementController {
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromData, toData);
 
+    console.log(from);
+    console.log(to);
+
     const settlement = await this.settlementService.preview(qo, from, to);
 
     return new ResponseSettlementDto(settlement);

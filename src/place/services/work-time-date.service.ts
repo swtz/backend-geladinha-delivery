@@ -31,14 +31,19 @@ export class WorkTimeDateService {
 
     // `11/12/2025 21`;
     // `2025-12-11T21:00:00`;
-    const fromDateString = `${from.year}-${from.month}-${from.day}T${from.hours || initHour}:${from.minutes || '00'}:00`;
-    const toDateString = `${to.year}-${to.month}-${to.day}T${to.hours || endHour}:${to.minutes || '00'}:00`;
+    const dblDigitInitHour = `${initHour}`.padStart(2, '0');
+    const dblDigitEndHour = `${endHour}`.padStart(2, '0');
+    const dblDigitFromDay = `${from.day}`.padStart(2, '0');
+    const dblDigitToDay = `${to.day}`.padStart(2, '0');
 
-    const timezoneInitDate = fromZonedTime(fromDateString, 'America/Sao_Paulo');
-    const timezoneEndDate = fromZonedTime(toDateString, 'America/Sao_Paulo');
+    const fromDateString = `${from.year}-${from.month}-${dblDigitFromDay}T${from.hours || dblDigitInitHour}:${from.minutes || '00'}:00`;
+    const toDateString = `${to.year}-${to.month}-${dblDigitToDay}T${to.hours || dblDigitEndHour}:${to.minutes || '00'}:00`;
 
-    const initDate = timezoneInitDate;
-    const endDate = timezoneEndDate;
+    const utcInitDate = fromZonedTime(fromDateString, 'America/Sao_Paulo');
+    const utcEndDate = fromZonedTime(toDateString, 'America/Sao_Paulo');
+
+    const initDate = utcInitDate;
+    const endDate = utcEndDate;
     const dateObject: DateObject = {
       initDate,
       endDate,
@@ -52,7 +57,7 @@ export class WorkTimeDateService {
         dateObject.endDate = generateRelativeDate(
           'tomorrow',
           endHour,
-          initDate,
+          utcEndDate,
         );
       }
     }
