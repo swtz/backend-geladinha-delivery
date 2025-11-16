@@ -39,16 +39,21 @@ export class PlaceController {
   @Get('date')
   async getDateObject(
     @Req() req: AuthenticatedRequest,
-    @Query('year') year: string = '2025',
-    @Query('month') month: string = '11',
-    @Query('day') day: string = '13',
+    @Query('year') year: string = `${new Date().getFullYear()}`,
+    @Query('month') month: string = `${new Date().getMonth() + 1}`,
+    @Query('fromDay') fromDay: string = `${new Date().getDate()}`,
+    @Query('toDay') toDay: string = `${new Date().getDate()}`,
     @Query('hours') hours: string,
     @Query('minutes') minutes: string,
   ) {
-    const from = { year, month, day, hours, minutes };
-    const to = { year, month, day, hours, minutes };
+    const from = { year, month, day: fromDay, hours, minutes };
+    const to = { year, month, day: toDay, hours, minutes };
 
-    const date = await this.workTimeDateService.create(req.user, from, to);
+    const date = await this.workTimeDateService.create(
+      { id: req.user.id },
+      from,
+      to,
+    );
     return date;
   }
 

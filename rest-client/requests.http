@@ -445,7 +445,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Fernando&fromDay=17&toDay=22
+GET {{baseUrl}}/payout/preview?name=Anthos
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -455,6 +455,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
+  "fromDay": "7",
   "name": "Anthos"
 }
 
@@ -480,7 +481,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update Payout.isClosed
 # @name updatePayoutIsClosed
-PATCH {{baseUrl}}/payout/9fbae80f-af63-4835-81c0-db52571a6fdf/true
+PATCH {{baseUrl}}/payout/2db426a2-031c-47db-95d0-df76612b0ad0/true
 Authorization: Bearer {{JwtToken}}
 
 ### Remove payout
@@ -548,5 +549,5 @@ Authorization: Bearer {{JwtToken}}
 
 ### Get dateObject
 # @name getDateObject
-GET {{baseUrl}}/place/date?day=22
+GET {{baseUrl}}/place/date?fromDay=10
 Authorization: Bearer {{JwtToken}}

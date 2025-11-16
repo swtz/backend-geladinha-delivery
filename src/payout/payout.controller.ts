@@ -60,15 +60,26 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('from', ParseBrWorkDatePipe) from: Date,
-    @Body('to', ParseBrWorkDatePipe) to: Date,
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Body('year') year: string = `${new Date().getFullYear()}`,
+    @Body('month') month: string = `${new Date().getMonth() + 1}`,
+    @Body('fromDay') fromDay: string = `${new Date().getDate()}`,
+    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('hours') hours: string,
+    @Body('minutes') minutes: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const fromData = { year, month, day: fromDay, hours, minutes };
+    const toData = { year, month, day: toDay, hours, minutes };
+
+    const { initDate: from, endDate: to } =
+      await this.workTimeDateService.create(qo, fromData, toData);
+
     const preview = await this.payoutService.preview(qo, from, to);
     const payout = await this.payoutService.create(preview);
+
     return new ResponsePayoutDto(payout);
   }
 
