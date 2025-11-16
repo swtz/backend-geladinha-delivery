@@ -476,12 +476,17 @@ Authorization: Bearer {{JwtToken}}
 
 ### Update payout
 # @name updatePayout
-PATCH {{baseUrl}}/payout/9fbae80f-af63-4835-81c0-db52571a6fdf
+PATCH {{baseUrl}}/payout/2db426a2-031c-47db-95d0-df76612b0ad0
 Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "toDay": "7"
+}
 
 ### Update Payout.isClosed
 # @name updatePayoutIsClosed
-PATCH {{baseUrl}}/payout/2db426a2-031c-47db-95d0-df76612b0ad0/true
+PATCH {{baseUrl}}/payout/2db426a2-031c-47db-95d0-df76612b0ad0/false
 Authorization: Bearer {{JwtToken}}
 
 ### Remove payout

@@ -10,20 +10,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { PlaceService } from 'src/place/place.service';
-import { WorkTimeService } from 'src/work-time/work-time.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
-import { DateObject } from './types/date-object.type';
+import { DateTime } from 'src/place/types/date-time.type';
+import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Injectable()
 export class PayoutService {
@@ -35,8 +32,7 @@ export class PayoutService {
     private readonly deliveryService: DeliveryService,
     private readonly userService: UserService,
     private readonly voucherService: VoucherService,
-    private readonly placeService: PlaceService,
-    private readonly workTimeService: WorkTimeService,
+    private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
   async preview(motoboyData: Partial<DeliveryMan>, from: Date, to: Date) {
@@ -149,7 +145,7 @@ export class PayoutService {
     return this.save(payoutData);
   }
 
-  async update(id: string) {
+  async update(id: string, toData: DateTime) {
     const payout = await this.findOneByOrFail({ id });
 
     if (payout.isClosed) {
@@ -158,36 +154,14 @@ export class PayoutService {
       );
     }
 
-    const place = await this.placeService.findOneBy({
-      code: process.env.DEFAULT_PLACE_CODE,
-    });
-
-    if (!place) {
-      throw new NotFoundException(
-        'Nenhum estabelecimento definido como padrão',
-      );
-    }
-
     const { workDay: initDate, motoboy } = payout;
-    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
-    const { initHour, endHour } = motoboy.workTime
-      ? motoboy.workTime
-      : workTime;
-
-    const dateObject: DateObject = {
-      initDate: new Date(0),
-      endDate: parseBrDate(endHour, initDate),
-    };
-
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate('tomorrow', endHour, initDate);
-    }
-
-    const newPayout = await this.preview(
+    const { endDate: to } = await this.workTimeDateService.create(
       { id: motoboy.id },
-      initDate,
-      dateObject.endDate,
+      { year: '1970', month: '1', day: '1' },
+      toData,
     );
+
+    const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
     const mergedPayout = {
       ...payout,
       ...newPayout,

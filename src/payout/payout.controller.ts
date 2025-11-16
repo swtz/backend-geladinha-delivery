@@ -118,8 +118,17 @@ export class PayoutController {
 
   @Roles(Role.Admin, Role.Operator)
   @Patch(':id')
-  async update(@Param('id', ParseUUIDPipe) id: string) {
-    const payout = await this.payoutService.update(id);
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('year') year: string = `${new Date().getFullYear()}`,
+    @Body('month') month: string = `${new Date().getMonth() + 1}`,
+    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('hours') hours: string,
+    @Body('minutes') minutes: string,
+  ) {
+    const toData = { year, month, day: toDay, hours, minutes };
+    const payout = await this.payoutService.update(id, toData);
+
     return new ResponsePayoutDto(payout);
   }
 
