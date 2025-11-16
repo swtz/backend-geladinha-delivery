@@ -60,21 +60,32 @@ export class SettlementController {
 
   @Post()
   async create(
-    @Body('from', ParseBrWorkDatePipe) from: Date,
-    @Body('to', ParseBrWorkDatePipe) to: Date,
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Body('initValue', ParseFloatPipe) initValue: number,
     @Body('description') description: string,
+    @Body('year') year: string = `${new Date().getFullYear()}`,
+    @Body('month') month: string = `${new Date().getMonth() + 1}`,
+    @Body('fromDay') fromDay: string = `${new Date().getDate()}`,
+    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('hours') hours: string,
+    @Body('minutes') minutes: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
+    const fromData = { year, month, day: fromDay, hours, minutes };
+    const toData = { year, month, day: toDay, hours, minutes };
+
+    const { initDate: from, endDate: to } =
+      await this.workTimeDateService.create(qo, fromData, toData);
+
     const preview = await this.settlementService.preview(qo, from, to);
     const settlement = await this.settlementService.create(
       preview,
       initValue,
       description,
     );
+
     return new ResponseSettlementDto(settlement);
   }
 
