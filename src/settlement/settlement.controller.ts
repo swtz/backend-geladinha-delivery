@@ -130,8 +130,19 @@ export class SettlementController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('description') description: string,
+    @Body('year') year: string = `${new Date().getFullYear()}`,
+    @Body('month') month: string = `${new Date().getMonth() + 1}`,
+    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('hours') hours: string,
+    @Body('minutes') minutes: string,
   ) {
-    const settlement = await this.settlementService.update(id, description);
+    const toData = { year, month, day: toDay, hours, minutes };
+    const settlement = await this.settlementService.update(
+      id,
+      toData,
+      description,
+    );
+
     return new ResponseSettlementDto(settlement);
   }
 

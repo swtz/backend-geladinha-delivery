@@ -13,18 +13,15 @@ import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { DeliveryMan, User } from 'src/user/entities/user.entity';
-import { parseBrDate } from 'src/common/utils/parse-br-date';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
-import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { WorkTimeService } from 'src/work-time/work-time.service';
-import { PlaceService } from 'src/place/place.service';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
-import { DateObject } from 'src/payout/types/date-object.type';
+import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { DateTime } from 'src/place/types/date-time.type';
 
 @Injectable()
 export class SettlementService {
@@ -36,8 +33,7 @@ export class SettlementService {
     private readonly deliveryService: DeliveryService,
     private readonly voucherService: VoucherService,
     private readonly userService: UserService,
-    private readonly workTimeService: WorkTimeService,
-    private readonly placeService: PlaceService,
+    private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
   async preview(userData: Partial<User>, from: Date, to: Date) {
@@ -207,43 +203,21 @@ export class SettlementService {
     return this.save(settlementData);
   }
 
-  async update(id: string, description?: string) {
+  async update(id: string, toData: DateTime, description?: string) {
     const settlement = await this.findOneByOrFail({ id });
 
     if (settlement.isClosed) {
       throw new UnauthorizedException('Caixa fechado. Não é possível alterar');
     }
 
-    const place = await this.placeService.findOneBy({
-      code: process.env.DEFAULT_PLACE_CODE,
-    });
-
-    if (!place) {
-      throw new NotFoundException(
-        'Nenhum estabelecimento definido como padrão',
-      );
-    }
-
     const { workDay: initDate, operator } = settlement;
-    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
-    const { initHour, endHour } = operator.workTime
-      ? operator.workTime
-      : workTime;
-
-    const dateObject: DateObject = {
-      initDate: new Date(0),
-      endDate: parseBrDate(endHour, initDate),
-    };
-
-    if (endHour < initHour) {
-      dateObject.endDate = generateRelativeDate('tomorrow', endHour, initDate);
-    }
-
-    const newSettlement = await this.preview(
+    const { endDate: to } = await this.workTimeDateService.create(
       { id: operator.id },
-      initDate,
-      dateObject.endDate,
+      { year: '1970', month: '1', day: '1' },
+      toData,
     );
+
+    const newSettlement = await this.preview({ id: operator.id }, initDate, to);
     const mergedSettlement = {
       ...settlement,
       ...newSettlement,
