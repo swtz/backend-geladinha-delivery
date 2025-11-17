@@ -35,19 +35,13 @@ export class PayoutController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('year') year: string,
-    @Query('month') month: string,
-    @Query('fromDay') fromDay: string,
-    @Query('toDay') toDay: string,
-    @Query('hours') hours: string,
-    @Query('minutes') minutes: string,
+    @Query('from') fromDate: string,
+    @Query('to') toDate: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const fromData = { year, month, day: fromDay, hours, minutes };
-    const toData = { year, month, day: toDay, hours, minutes };
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromData, toData);
+      await this.workTimeDateService.create(qo, fromDate, toDate);
 
     console.log(from);
     console.log(to);
@@ -63,19 +57,13 @@ export class PayoutController {
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Body('year') year: string,
-    @Body('month') month: string,
-    @Body('fromDay') fromDay: string,
-    @Body('toDay') toDay: string,
-    @Body('hours') hours: string,
-    @Body('minutes') minutes: string,
+    @Body('from') fromDate: string,
+    @Body('to') toDate: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const fromData = { year, month, day: fromDay, hours, minutes };
-    const toData = { year, month, day: toDay, hours, minutes };
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromData, toData);
+      await this.workTimeDateService.create(qo, fromDate, toDate);
 
     const preview = await this.payoutService.preview(qo, from, to);
     const payout = await this.payoutService.create(preview);
@@ -120,15 +108,9 @@ export class PayoutController {
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('year') year: string,
-    @Body('month') month: string,
-    @Body('toDay') toDay: string,
-    @Body('hours') hours: string,
-    @Body('minutes') minutes: string,
+    @Query('to') toDate: string,
   ) {
-    const toData = { year, month, day: toDay, hours, minutes };
-    const payout = await this.payoutService.update(id, toData);
-
+    const payout = await this.payoutService.update(id, toDate);
     return new ResponsePayoutDto(payout);
   }
 

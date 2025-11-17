@@ -498,7 +498,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&from=2025-11-17T13:22:28&to=2025-11-18
+GET {{baseUrl}}/settlement/preview?name=Leonardo&from=2025-11-17&to=2025-11-17
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -508,8 +508,8 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "fromDay": "7",
-  "toDay": "10",
+  "from": "2025-11-17",
+  "to": "2025-11-17",
   "initValue": 100,
   "name": "Leonardo"
 }
@@ -526,16 +526,17 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement?workDay=2025-11-07T09:00:00
+GET {{baseUrl}}/settlement
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
 # @name createSettlement
-PATCH {{baseUrl}}/settlement/71963d55-3f02-4e58-b062-350287858c4f
+PATCH {{baseUrl}}/settlement/76f3ba65-7556-4b14-babe-df66e59bc9c9
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 { 
+  "to": "2025-11-17",
   "description": null 
 }
 

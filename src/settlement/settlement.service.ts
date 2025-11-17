@@ -21,7 +21,6 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
-import { DateTime } from 'src/place/types/date-time.type';
 
 @Injectable()
 export class SettlementService {
@@ -203,7 +202,7 @@ export class SettlementService {
     return this.save(settlementData);
   }
 
-  async update(id: string, toData: DateTime, description?: string) {
+  async update(id: string, toDate: string, description?: string) {
     const settlement = await this.findOneByOrFail({ id });
 
     if (settlement.isClosed) {
@@ -213,8 +212,8 @@ export class SettlementService {
     const { workDay: initDate, operator } = settlement;
     const { endDate: to } = await this.workTimeDateService.create(
       { id: operator.id },
-      { year: '1970', month: '1', day: '1' },
-      toData,
+      new Date(0).toISOString(),
+      toDate,
     );
 
     const newSettlement = await this.preview({ id: operator.id }, initDate, to);

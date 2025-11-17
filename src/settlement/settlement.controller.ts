@@ -59,19 +59,13 @@ export class SettlementController {
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Body('initValue', ParseFloatPipe) initValue: number,
     @Body('description') description: string,
-    @Body('year') year: string,
-    @Body('month') month: string,
-    @Body('fromDay') fromDay: string,
-    @Body('toDay') toDay: string,
-    @Body('hours') hours: string,
-    @Body('minutes') minutes: string,
+    @Body('from') fromDate: string,
+    @Body('to') toDate: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const fromData = { year, month, day: fromDay, hours, minutes };
-    const toData = { year, month, day: toDay, hours, minutes };
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromData, toData);
+      await this.workTimeDateService.create(qo, fromDate, toDate);
 
     const preview = await this.settlementService.preview(qo, from, to);
     const settlement = await this.settlementService.create(
@@ -124,16 +118,11 @@ export class SettlementController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('description') description: string,
-    @Body('year') year: string,
-    @Body('month') month: string,
-    @Body('toDay') toDay: string,
-    @Body('hours') hours: string,
-    @Body('minutes') minutes: string,
+    @Body('to') toDate: string,
   ) {
-    const toData = { year, month, day: toDay, hours, minutes };
     const settlement = await this.settlementService.update(
       id,
-      toData,
+      toDate,
       description,
     );
 

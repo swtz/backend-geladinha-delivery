@@ -19,7 +19,6 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
-import { DateTime } from 'src/place/types/date-time.type';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Injectable()
@@ -145,7 +144,7 @@ export class PayoutService {
     return this.save(payoutData);
   }
 
-  async update(id: string, toData: DateTime) {
+  async update(id: string, toDate: string) {
     const payout = await this.findOneByOrFail({ id });
 
     if (payout.isClosed) {
@@ -157,8 +156,8 @@ export class PayoutService {
     const { workDay: initDate, motoboy } = payout;
     const { endDate: to } = await this.workTimeDateService.create(
       { id: motoboy.id },
-      { year: '1970', month: '1', day: '1' },
-      toData,
+      new Date(0).toISOString(),
+      toDate,
     );
 
     const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
