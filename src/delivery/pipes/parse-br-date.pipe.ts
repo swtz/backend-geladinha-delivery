@@ -1,21 +1,18 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { parseBrDate } from 'src/common/utils/parse-br-date';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { isISO8601 } from 'class-validator';
+import { fromZonedTime } from 'date-fns-tz';
 
 @Injectable()
-export class ParseBrDatePipe implements PipeTransform {
-  private readonly hour: number;
-  private readonly paramTypes = ['body', 'query'];
-
-  constructor(hour: number) {
-    this.hour = hour;
-  }
-
-  transform(value: string, { type }: ArgumentMetadata) {
-    if (!value || !this.paramTypes.includes(type)) {
+export class ParseTimezoneDatePipe implements PipeTransform {
+  transform(value: string) {
+    if (!value) {
       return undefined;
     }
 
-    const parsedValue = value.split('-').join('/');
-    return parseBrDate(this.hour, parsedValue);
+    if (!isISO8601(value, { strict: true })) {
+      throw new BadRequestException('Data inválida');
+    }
+
+    return fromZonedTime(value, 'America/Sao_Paulo');
   }
 }

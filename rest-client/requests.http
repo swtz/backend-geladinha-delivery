@@ -370,7 +370,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Find all deliveries
 # @name findAllDeliveries
-GET {{baseUrl}}/delivery?name=Leonardo
+GET {{baseUrl}}/delivery?from=2025-11-08T00:00:00&to=2025-11-08T23:59:59
 Authorization: Bearer {{JwtToken}}
 
 ### Find all paid deliveries

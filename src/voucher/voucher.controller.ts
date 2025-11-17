@@ -19,8 +19,8 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ResponseVoucherDto } from './dto/response-voucher.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ParseBrWorkDatePipe } from 'src/delivery/pipes/parse-br-work-date.pipe';
 import { Voucher } from './enums/voucher.enum';
+import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
@@ -35,8 +35,8 @@ export class VoucherController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('from', ParseBrWorkDatePipe) from: Date,
-    @Query('to', ParseBrWorkDatePipe) to: Date,
+    @Query('from', ParseTimezoneDatePipe) from: Date,
+    @Query('to', ParseTimezoneDatePipe) to: Date,
   ) {
     const vouchers = await this.voucherService.findAll({
       from,
