@@ -498,7 +498,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&fromDay=7&toDay=10
+GET {{baseUrl}}/settlement/preview?name=Leonardo&from=2025-11-17T13:22:28&to=2025-11-18
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement

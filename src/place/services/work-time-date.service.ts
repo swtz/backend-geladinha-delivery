@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PlaceService } from '../place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
@@ -6,8 +6,8 @@ import { User } from 'src/user/entities/user.entity';
 import { DateObject } from 'src/payout/types/date-object.type';
 import { fromZonedTime } from 'date-fns-tz';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
-import { DateTime } from '../types/date-time.type';
 import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
+import { isISO8601 } from 'class-validator';
 
 @Injectable()
 export class WorkTimeDateService {
@@ -17,23 +17,7 @@ export class WorkTimeDateService {
     private readonly userService: UserService,
   ) {}
 
-  async create(
-    user: Partial<User>,
-    {
-      year: fYear = `${new Date().getFullYear()}`,
-      month: fMonth = `${new Date().getMonth() + 1}`,
-      day: fDay = `${new Date().getDate()}`,
-      hours: fHours,
-      minutes: fMinutes,
-    }: DateTime,
-    {
-      year: tYear = `${new Date().getFullYear()}`,
-      month: tMonth = `${new Date().getMonth() + 1}`,
-      day: tDay = `${new Date().getDate()}`,
-      hours: tHours,
-      minutes: tMinutes,
-    }: DateTime,
-  ) {
+  async create(user: Partial<User>, from: string, to: string) {
     const code = process.env.DEFAULT_PLACE_CODE;
     const place = await this.placeService.findOneByOrFail({
       code,
@@ -46,21 +30,29 @@ export class WorkTimeDateService {
       ? operator.workTime
       : workTime;
 
+    if (
+      !isISO8601(from, { strict: true }) ||
+      !isISO8601(to, { strict: true })
+    ) {
+      throw new BadRequestException('Data inválida');
+    }
+
     // `11/12/2025 21`;
     // `2025-12-11T21:00:00`;
-    const twoDigitFromDay = padLeftWithChar(fDay, '0');
-    const twoDigitToDay = padLeftWithChar(tDay, '0');
+    const fromDate = from.slice(0, 10);
+    const toDate = to.slice(0, 10);
 
-    const twoDigitInitHour = padLeftWithChar(fHours || initHour, '0');
-    const twoDigitEndHour = padLeftWithChar(tHours || endHour, '0');
-    const twoDigitFromMinutes = padLeftWithChar(fMinutes || '00', '0');
-    const twoDigitToMinutes = padLeftWithChar(tMinutes || '00', '0');
+    const twoDigitInitHour = padLeftWithChar(initHour, '0');
+    const twoDigitEndHour = padLeftWithChar(endHour, '0');
 
-    const fromDateString = `${fYear}-${fMonth}-${twoDigitFromDay}T${twoDigitInitHour}:${twoDigitFromMinutes}:00`;
-    const toDateString = `${tYear}-${tMonth}-${twoDigitToDay}T${twoDigitEndHour}:${twoDigitToMinutes}:00`;
-
-    const utcInitDate = fromZonedTime(fromDateString, 'America/Sao_Paulo');
-    const utcEndDate = fromZonedTime(toDateString, 'America/Sao_Paulo');
+    const utcInitDate = fromZonedTime(
+      `${fromDate}T${twoDigitInitHour}:00:00`,
+      'America/Sao_Paulo',
+    );
+    const utcEndDate = fromZonedTime(
+      `${toDate}T${twoDigitEndHour}:00:00`,
+      'America/Sao_Paulo',
+    );
 
     const initDate = utcInitDate;
     const endDate = utcEndDate;

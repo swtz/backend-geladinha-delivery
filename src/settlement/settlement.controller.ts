@@ -36,19 +36,13 @@ export class SettlementController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('year') year: string,
-    @Query('month') month: string,
-    @Query('fromDay') fromDay: string,
-    @Query('toDay') toDay: string,
-    @Query('hours') hours: string,
-    @Query('minutes') minutes: string,
+    @Query('from') fromDate: string,
+    @Query('to') toDate: string,
   ) {
     const qo = !name && !phone && !id ? {} : { name, phone, id };
-    const fromData = { year, month, day: fromDay, hours, minutes };
-    const toData = { year, month, day: toDay, hours, minutes };
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromData, toData);
+      await this.workTimeDateService.create(qo, fromDate, toDate);
 
     console.log(from);
     console.log(to);
