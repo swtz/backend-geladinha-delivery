@@ -21,7 +21,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ParseBrWorkDatePipe } from './pipes/parse-br-work-date.pipe';
+import { ParseTimezoneDatePipe } from './pipes/parse-br-date.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -63,8 +63,8 @@ export class DeliveryController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('from', ParseBrWorkDatePipe) from: Date,
-    @Query('to', ParseBrWorkDatePipe) to: Date,
+    @Query('from', ParseTimezoneDatePipe) from: Date,
+    @Query('to', ParseTimezoneDatePipe) to: Date,
     @Query(
       'paymentMethod',
       new ParseEnumPipe(PaymentMethod, { optional: true }),
