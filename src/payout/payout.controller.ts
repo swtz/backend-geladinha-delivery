@@ -35,10 +35,10 @@ export class PayoutController {
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Query('year') year: string = `${new Date().getFullYear()}`,
-    @Query('month') month: string = `${new Date().getMonth() + 1}`,
-    @Query('fromDay') fromDay: string = `${new Date().getDate()}`,
-    @Query('toDay') toDay: string = `${new Date().getDate()}`,
+    @Query('year') year: string,
+    @Query('month') month: string,
+    @Query('fromDay') fromDay: string,
+    @Query('toDay') toDay: string,
     @Query('hours') hours: string,
     @Query('minutes') minutes: string,
   ) {
@@ -63,10 +63,10 @@ export class PayoutController {
     @Body('name') name: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Body('year') year: string = `${new Date().getFullYear()}`,
-    @Body('month') month: string = `${new Date().getMonth() + 1}`,
-    @Body('fromDay') fromDay: string = `${new Date().getDate()}`,
-    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('year') year: string,
+    @Body('month') month: string,
+    @Body('fromDay') fromDay: string,
+    @Body('toDay') toDay: string,
     @Body('hours') hours: string,
     @Body('minutes') minutes: string,
   ) {
@@ -120,9 +120,9 @@ export class PayoutController {
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('year') year: string = `${new Date().getFullYear()}`,
-    @Body('month') month: string = `${new Date().getMonth() + 1}`,
-    @Body('toDay') toDay: string = `${new Date().getDate()}`,
+    @Body('year') year: string,
+    @Body('month') month: string,
+    @Body('toDay') toDay: string,
     @Body('hours') hours: string,
     @Body('minutes') minutes: string,
   ) {

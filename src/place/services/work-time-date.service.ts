@@ -16,7 +16,23 @@ export class WorkTimeDateService {
     private readonly userService: UserService,
   ) {}
 
-  async create(user: Partial<User>, from: DateTime, to: DateTime) {
+  async create(
+    user: Partial<User>,
+    {
+      year: fYear = `${new Date().getFullYear()}`,
+      month: fMonth = `${new Date().getMonth() + 1}`,
+      day: fDay = `${new Date().getDate()}`,
+      hours: fHours,
+      minutes: fMinutes,
+    }: DateTime,
+    {
+      year: tYear = `${new Date().getFullYear()}`,
+      month: tMonth = `${new Date().getMonth() + 1}`,
+      day: tDay = `${new Date().getDate()}`,
+      hours: tHours,
+      minutes: tMinutes,
+    }: DateTime,
+  ) {
     const code = process.env.DEFAULT_PLACE_CODE;
     const place = await this.placeService.findOneByOrFail({
       code,
@@ -31,13 +47,17 @@ export class WorkTimeDateService {
 
     // `11/12/2025 21`;
     // `2025-12-11T21:00:00`;
-    const dblDigitInitHour = `${initHour}`.padStart(2, '0');
-    const dblDigitEndHour = `${endHour}`.padStart(2, '0');
-    const dblDigitFromDay = `${from.day}`.padStart(2, '0');
-    const dblDigitToDay = `${to.day}`.padStart(2, '0');
+    const dblDigitInitHour = `${fHours || initHour}`.padStart(2, '0');
+    const dblDigitEndHour = `${tHours || endHour}`.padStart(2, '0');
 
-    const fromDateString = `${from.year}-${from.month}-${dblDigitFromDay}T${from.hours || dblDigitInitHour}:${from.minutes || '00'}:00`;
-    const toDateString = `${to.year}-${to.month}-${dblDigitToDay}T${to.hours || dblDigitEndHour}:${to.minutes || '00'}:00`;
+    const dblDigitFromDay = `${fDay}`.padStart(2, '0');
+    const dblDigitToDay = `${tDay}`.padStart(2, '0');
+
+    const dblDigitFromMinutes = `${fMinutes || '00'}`.padStart(2, '0');
+    const dblDigitToMinutes = `${tMinutes || '00'}`.padStart(2, '0');
+
+    const fromDateString = `${fYear}-${fMonth}-${dblDigitFromDay}T${dblDigitInitHour}:${dblDigitFromMinutes}:00`;
+    const toDateString = `${tYear}-${tMonth}-${dblDigitToDay}T${dblDigitEndHour}:${dblDigitToMinutes}:00`;
 
     const utcInitDate = fromZonedTime(fromDateString, 'America/Sao_Paulo');
     const utcEndDate = fromZonedTime(toDateString, 'America/Sao_Paulo');
