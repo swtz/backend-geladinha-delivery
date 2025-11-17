@@ -7,6 +7,7 @@ import { DateObject } from 'src/payout/types/date-object.type';
 import { fromZonedTime } from 'date-fns-tz';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { DateTime } from '../types/date-time.type';
+import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
 
 @Injectable()
 export class WorkTimeDateService {
@@ -47,17 +48,16 @@ export class WorkTimeDateService {
 
     // `11/12/2025 21`;
     // `2025-12-11T21:00:00`;
-    const dblDigitInitHour = `${fHours || initHour}`.padStart(2, '0');
-    const dblDigitEndHour = `${tHours || endHour}`.padStart(2, '0');
+    const twoDigitFromDay = padLeftWithChar(fDay, '0');
+    const twoDigitToDay = padLeftWithChar(tDay, '0');
 
-    const dblDigitFromDay = `${fDay}`.padStart(2, '0');
-    const dblDigitToDay = `${tDay}`.padStart(2, '0');
+    const twoDigitInitHour = padLeftWithChar(fHours || initHour, '0');
+    const twoDigitEndHour = padLeftWithChar(tHours || endHour, '0');
+    const twoDigitFromMinutes = padLeftWithChar(fMinutes || '00', '0');
+    const twoDigitToMinutes = padLeftWithChar(tMinutes || '00', '0');
 
-    const dblDigitFromMinutes = `${fMinutes || '00'}`.padStart(2, '0');
-    const dblDigitToMinutes = `${tMinutes || '00'}`.padStart(2, '0');
-
-    const fromDateString = `${fYear}-${fMonth}-${dblDigitFromDay}T${dblDigitInitHour}:${dblDigitFromMinutes}:00`;
-    const toDateString = `${tYear}-${tMonth}-${dblDigitToDay}T${dblDigitEndHour}:${dblDigitToMinutes}:00`;
+    const fromDateString = `${fYear}-${fMonth}-${twoDigitFromDay}T${twoDigitInitHour}:${twoDigitFromMinutes}:00`;
+    const toDateString = `${tYear}-${tMonth}-${twoDigitToDay}T${twoDigitEndHour}:${twoDigitToMinutes}:00`;
 
     const utcInitDate = fromZonedTime(fromDateString, 'America/Sao_Paulo');
     const utcEndDate = fromZonedTime(toDateString, 'America/Sao_Paulo');
