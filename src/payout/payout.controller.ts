@@ -19,8 +19,8 @@ import { Role } from 'src/common/role/roles.enum';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ParseBrWorkDatePipe } from 'src/delivery/pipes/parse-br-work-date.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -101,7 +101,7 @@ export class PayoutController {
   async findAll(
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
     weekDay: WeekDay,
-    @Query('workDay', ParseBrWorkDatePipe) workDay: Date,
+    @Query('workDay', ParseTimezoneDatePipe) workDay: Date,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,

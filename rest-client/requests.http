@@ -526,7 +526,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all settlements
 # @name readAllSettlements
-GET {{baseUrl}}/settlement
+GET {{baseUrl}}/settlement?workDay=2025-11-07T09:00:00
 Authorization: Bearer {{JwtToken}}
 
 ### Update settlement
