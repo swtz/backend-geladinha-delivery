@@ -54,6 +54,7 @@ export class UserService {
   async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
+    await this.failIfPhoneExists(dto.phone);
 
     if (!dto.role || !roles.includes(dto.role)) {
       throw new BadRequestException('Função inválida');
@@ -313,10 +314,18 @@ export class UserService {
     });
   }
 
-  findByPhone(phone: string) {
-    return this.userRepository.findOneBy({
+  findByPhone(phone: string, isSecondPhone = false) {
+    const qo: { phone: undefined | string; secondPhone: undefined | string } = {
       phone,
-    });
+      secondPhone: undefined,
+    };
+
+    if (isSecondPhone) {
+      qo.phone = undefined;
+      qo.secondPhone = phone;
+    }
+
+    return this.userRepository.findOneBy(qo);
   }
 
   findById(id: string) {

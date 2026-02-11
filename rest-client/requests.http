@@ -160,14 +160,16 @@ Content-Type: application/json
 
 {
   "name": "Rogério",
-  "phone": "48999558883",
-  "email": "rogerio@email.com",
+  "lastName": "Silva",
+  "nickname": "Rogerinho",
+  "phone": "+5548999884489",
+  "email": "rogerinho@email.com",
   "role": "operator",
   "password": "123456",
   "workTime": {
-    "shift": "madrugada",
-    "initHour": 23,
-    "endHour": 7
+    "shift": "personalizado",
+    "initHour": 9,
+    "endHour": 16
   },
   "motorcycle": "Yamaha, 2017, 300, Preta",
   "daily": 15
