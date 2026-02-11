@@ -26,11 +26,18 @@ export class User {
   @Column()
   name: string;
 
-  // @Column()
-  // lastName: string;
+  // REMOVER {nullable: true}
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ nullable: true })
+  nickname: string;
 
   @Column({ unique: true })
   phone: string;
+
+  @Column({ nullable: true })
+  secondPhone: string;
 
   @Column({ unique: true })
   email: string;
