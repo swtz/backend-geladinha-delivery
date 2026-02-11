@@ -162,8 +162,9 @@ Content-Type: application/json
   "name": "Rogério",
   "lastName": "Silva",
   "nickname": "Rogerinho",
-  "phone": "+5548999884489",
-  "email": "rogerinho@email.com",
+  "phone": "+5548999884494",
+  "secondPhone": "+5548999884499",
+  "email": "rogerinho5@email.com",
   "role": "operator",
   "password": "123456",
   "workTime": {

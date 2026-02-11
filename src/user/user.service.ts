@@ -43,8 +43,8 @@ export class UserService {
     }
   }
 
-  async failIfPhoneExists(phone: string) {
-    const exists = await this.findByPhone(phone);
+  async failIfPhoneExists(phone: string, isSecondPhone = false) {
+    const exists = await this.findByPhone(phone, isSecondPhone);
 
     if (exists) {
       throw new ConflictException('Telefone já existe');
@@ -54,7 +54,10 @@ export class UserService {
   async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
-    await this.failIfPhoneExists(dto.phone);
+
+    if (dto.secondPhone) {
+      await this.failIfPhoneExists(dto.secondPhone, true);
+    }
 
     if (!dto.role || !roles.includes(dto.role)) {
       throw new BadRequestException('Função inválida');
