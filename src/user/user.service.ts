@@ -56,6 +56,7 @@ export class UserService {
     await this.failIfPhoneExists(dto.phone);
 
     if (dto.secondPhone) {
+      await this.failIfPhoneExists(dto.secondPhone);
       await this.failIfPhoneExists(dto.secondPhone, true);
     }
 
@@ -67,7 +68,10 @@ export class UserService {
     const hashedPassword = await this.hashingService.hash(dto.password);
     const newUser = {
       name: dto.name,
+      lastName: dto.lastName,
+      nickname: dto.nickname,
       phone: dto.phone,
+      secondPhone: dto.secondPhone,
       email: dto.email,
       password: hashedPassword,
       roles: [role],
