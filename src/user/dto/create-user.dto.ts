@@ -17,8 +17,20 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
   name: string;
 
+  @IsString({ message: 'Formato inválido' })
+  @IsNotEmpty({ message: 'Campo sobrenome não pode estar vazio' })
+  lastName: string;
+
+  @IsString({ message: 'Formato inválido' })
+  @IsNotEmpty({ message: 'Campo apelido não pode estar vazio' })
+  nickname: string;
+
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   phone: string;
+
+  @IsOptional()
+  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  secondPhone?: string;
 
   @IsEmail({}, { message: 'E-mail inválido' })
   email: string;
