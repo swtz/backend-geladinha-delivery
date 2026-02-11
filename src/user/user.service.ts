@@ -51,9 +51,18 @@ export class UserService {
     }
   }
 
+  async failIfNicknameExists(nickname: string) {
+    const exists = await this.userRepository.findOneBy({ nickname });
+
+    if (exists) {
+      throw new ConflictException('Apelido já existe');
+    }
+  }
+
   async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
+    await this.failIfNicknameExists(dto.nickname);
 
     if (dto.secondPhone) {
       await this.failIfPhoneExists(dto.secondPhone);

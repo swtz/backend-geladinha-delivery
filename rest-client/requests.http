@@ -161,10 +161,10 @@ Content-Type: application/json
 {
   "name": "Rogério",
   "lastName": "Fernandes",
-  "nickname": "Rogerinho",
-  "phone": "+5548999884454",
-  "secondPhone": "+5548999884454",
-  "email": "rogerinho_fernades2@email.com",
+  "nickname": "Rogerinhuuu",
+  "phone": "+5548999884459",
+  "secondPhone": "+5548999884459",
+  "email": "rogerinho_fernades@email.com",
   "role": "operator",
   "password": "123456",
   "workTime": {
