@@ -30,13 +30,13 @@ export class User {
   @Column({ nullable: true })
   lastName: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   nickname: string;
 
   @Column({ unique: true })
   phone: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   secondPhone: string;
 
   @Column({ unique: true })
