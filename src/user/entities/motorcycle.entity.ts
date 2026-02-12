@@ -1,12 +1,14 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { DeliveryMan, User } from './user.entity';
 
+@Entity()
 export class Motorcycle {
   @PrimaryGeneratedColumn('uuid')
   id: string;
