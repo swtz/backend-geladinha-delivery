@@ -7,7 +7,10 @@ import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-t
 export class ResponseUserDto {
   readonly id: string;
   readonly name: string;
+  readonly lastName: string;
+  readonly nickname: string;
   readonly phone: string;
+  readonly secondPhone?: string;
   readonly email: string;
   readonly motorcycle?: string;
   readonly daily?: number;
@@ -33,7 +36,10 @@ export class ResponseUserDto {
     }
     this.id = user.id;
     this.name = user.name;
+    this.lastName = user.lastName;
+    this.nickname = user.nickname;
     this.phone = user.phone;
+    this.secondPhone = user.secondPhone;
     this.email = user.email;
     this.vouchers = user.vouchers
       ? user.vouchers.map(voucher => {

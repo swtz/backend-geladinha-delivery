@@ -242,7 +242,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user
+GET {{baseUrl}}/user?role=operator
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
