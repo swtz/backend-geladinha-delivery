@@ -12,13 +12,13 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/user/create-user.dto';
+import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { UpdatePasswordDto } from './dto/update-password.dto';
-import { ResponseUserDto } from './dto/response-user.dto';
+import { UpdatePasswordDto } from './dtos/user/update-password.dto';
+import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';

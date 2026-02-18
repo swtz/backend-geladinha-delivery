@@ -242,7 +242,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user
+GET {{baseUrl}}/user?role=admin
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -560,3 +560,19 @@ Authorization: Bearer {{JwtToken}}
 # @name getDateObject
 GET {{baseUrl}}/place/date?fromDay=10
 Authorization: Bearer {{JwtToken}}
+
+### Create motorcycle
+# @name createMotorcycle
+POST {{baseUrl}}/motorcycle
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "licensePlate": "IBJ-8756",
+  "brand": "Honda",
+  "model": "Titan",
+  "year": "2017",
+  "color": "Preto",
+  "owner": "697dc575-09d7-408f-a325-eb40f4390e43",
+  "driver": "4fcd0dfc-b670-4595-84d5-b268f7bf1941"
+}
