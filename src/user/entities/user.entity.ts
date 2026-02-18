@@ -10,12 +10,14 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
 } from 'typeorm';
+import { Motorcycle } from './motorcycle.entity';
 
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -72,6 +74,9 @@ export class User {
 export class DeliveryMan extends User {
   @Column()
   motorcycle: string;
+
+  @ManyToOne(() => Motorcycle, { onDelete: 'SET NULL' })
+  motorcycle_new: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
   tips: Tip[];
