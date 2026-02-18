@@ -6,6 +6,8 @@ import { DeliveryMan, User } from './entities/user.entity';
 import { Motorcycle } from './entities/motorcycle.entity';
 import { CommonModule } from 'src/common/common.module';
 import { WorkTimeModule } from 'src/work-time/work-time.module';
+import { MotorcycleController } from './controllers/motorcycle.controller';
+import { MotorcycleService } from './services/motorcycle.service';
 
 @Module({
   imports: [
@@ -13,8 +15,8 @@ import { WorkTimeModule } from 'src/work-time/work-time.module';
     CommonModule,
     WorkTimeModule,
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [UserController, MotorcycleController],
+  providers: [UserService, MotorcycleService],
   exports: [UserService],
 })
 export class UserModule {}
