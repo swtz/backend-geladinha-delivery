@@ -13,37 +13,37 @@ import {
 @Entity()
 export class Voucher {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('float')
-  amount: number;
+  amount!: number;
 
   @Column({ nullable: true })
-  description: string;
+  description!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ManyToOne(() => User, user => user.vouchers, {
     onDelete: 'CASCADE',
   })
-  user: User;
+  user!: User;
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
-  createdBy: User;
+  createdBy!: User;
 
   @ManyToOne(() => Payout, payout => payout.vouchers, {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  payout: Payout;
+  payout!: Payout;
 
   @ManyToOne(() => Settlement, settlement => settlement.vouchers, {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  settlement: Settlement;
+  settlement!: Settlement;
 }

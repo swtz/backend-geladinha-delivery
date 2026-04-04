@@ -15,34 +15,34 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 export class CreateUserDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
-  name: string;
+  name!: string;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo sobrenome não pode estar vazio' })
-  lastName: string;
+  lastName!: string;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo apelido não pode estar vazio' })
-  nickname: string;
+  nickname!: string;
 
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  phone: string;
+  phone!: string;
 
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   secondPhone?: string;
 
   @IsEmail({}, { message: 'E-mail inválido' })
-  email: string;
+  email!: string;
 
   @IsEnum(Role, { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo função não pode estar vazio' })
-  role: Role;
+  role!: Role;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   @MinLength(6, { message: 'A senha precisa ter no mínimo 6 caracteres' })
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })

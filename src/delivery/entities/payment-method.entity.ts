@@ -15,17 +15,17 @@ import { Delivery } from './delivery.entity';
 @Entity()
 export class PaymentMethod {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ enum: paymentMethods, unique: true })
-  name: PaymentMethodEnum;
+  name!: PaymentMethodEnum;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @OneToMany(() => Delivery, delivery => delivery.paymentMethod)
-  deliveries: Delivery[];
+  deliveries!: Delivery[];
 }

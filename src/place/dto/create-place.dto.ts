@@ -12,29 +12,29 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 export class CreatePlaceDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
-  name: string;
+  name!: string;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo razão social não pode estar vazio' })
-  businessName: string;
+  businessName!: string;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo CNPJ não pode estar vazio' })
-  cnpj: string;
+  cnpj!: string;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo CPF não pode estar vazio' })
-  cpf: string;
+  cpf!: string;
 
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  phone: string;
+  phone!: string;
 
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   secondPhone?: string;
 
   @IsEmail({}, { message: 'Email inválido' })
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
@@ -44,12 +44,12 @@ export class CreatePlaceDto {
   code?: string;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  address: CreateAddressDto;
+  address!: CreateAddressDto;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  postalBox: CreateAddressDto;
+  postalBox!: CreateAddressDto;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  workTime: CreateWorkTimeDto;
+  workTime!: CreateWorkTimeDto;
   // socialMedias: CreateSocialMediasDto;
 }

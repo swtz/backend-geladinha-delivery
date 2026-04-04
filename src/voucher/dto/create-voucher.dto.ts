@@ -12,7 +12,7 @@ export class CreateVoucherDto {
     { message: 'Campo quantidade precisa ser um número' },
   )
   @IsNotEmpty({ message: 'Campo quantidade não pode estar vazio' })
-  amount: number;
+  amount!: number;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })

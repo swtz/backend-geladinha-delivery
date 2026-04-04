@@ -14,59 +14,59 @@ import {
 @Entity()
 export class Settlement {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('float')
-  initValue: number;
+  initValue!: number;
 
   @Column('int')
-  amountDeliveries: number;
+  amountDeliveries!: number;
 
   @Column('float')
-  totalRemainingMotoboy: number;
+  totalRemainingMotoboy!: number;
 
   @Column('float')
-  moneySubtotal: number;
+  moneySubtotal!: number;
 
   @Column('float')
-  cardSubtotal: number;
+  cardSubtotal!: number;
 
   @Column('float')
-  pixSubtotal: number;
+  pixSubtotal!: number;
 
   @Column('float')
-  subtotal: number;
+  subtotal!: number;
 
   @Column({ nullable: true })
-  description: string;
+  description!: string;
 
   @Column('float')
-  totalSpending: number;
+  totalSpending!: number;
 
   @Column('float')
-  currentTotal: number;
+  currentTotal!: number;
 
   @Column('float')
-  expectedTotal: number;
+  expectedTotal!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ enum: weekDays })
-  weekDay: WeekDay;
+  weekDay!: WeekDay;
 
   @Column()
-  workDay: Date;
+  workDay!: Date;
 
   @Column({ default: false })
-  isClosed: boolean;
+  isClosed!: boolean;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
-  operator: User;
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  operator!: User;
 
   @OneToMany(() => Voucher, voucher => voucher.settlement, { nullable: true })
-  vouchers: Voucher[];
+  vouchers!: Voucher[];
 }

@@ -15,33 +15,33 @@ import {
 @Entity()
 export class WorkTime {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ enum: shifts })
-  shift: Shift;
+  shift!: Shift;
 
   @Column()
-  initHour: number;
+  initHour!: number;
 
   @Column()
-  endHour: number;
+  endHour!: number;
 
   @Column({ default: false })
-  isDefault: boolean;
+  isDefault!: boolean;
 
   @Column({ default: false })
-  isShared: boolean;
+  isShared!: boolean;
 
   @ManyToMany(() => Place, place => place.workTimes, { onDelete: 'CASCADE' })
-  places: Place[];
+  places!: Place[];
 
   @OneToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  user: User;
+  user!: User;
 }

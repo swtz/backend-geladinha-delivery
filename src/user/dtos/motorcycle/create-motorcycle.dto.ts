@@ -3,29 +3,29 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 export class CreateMotorcycleDto {
   @IsNotEmpty({ message: 'Campo placa não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
-  licensePlate: string;
+  licensePlate!: string;
 
   @IsNotEmpty({ message: 'Campo marca não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
-  brand: string;
+  brand!: string;
 
   @IsNotEmpty({ message: 'Campo ano não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
-  year: string;
+  year!: string;
 
   @IsNotEmpty({ message: 'Campo modelo não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
-  model: string;
+  model!: string;
 
   @IsNotEmpty({ message: 'Campo cor não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
-  color: string;
+  color!: string;
 
   @IsNotEmpty({ message: 'Campo proprietário não pode estar vazio' })
   @IsUUID('4', { message: 'Formato inválido' })
-  owner: string;
+  owner!: string;
 
   @IsNotEmpty({ message: 'Campo motorista não pode estar vazio' })
   @IsUUID('4', { message: 'Formato inválido' })
-  driver: string;
+  driver!: string;
 }

@@ -18,56 +18,56 @@ import { WorkTime } from 'src/work-time/entities/work-time.entity';
 @Entity()
 export class Place {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ nullable: true, unique: true })
-  code: string;
+  code!: string;
 
   @Column({ unique: true })
-  name: string;
+  name!: string;
 
   @Column()
-  businessName: string;
+  businessName!: string;
 
   @Column({ unique: true })
-  cnpj: string;
+  cnpj!: string;
 
   @Column({ unique: true })
-  cpf: string;
+  cpf!: string;
 
   @Column({ unique: true })
-  phone: string;
+  phone!: string;
 
   @Column({ nullable: true })
-  secondPhone: string;
+  secondPhone!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @ManyToMany(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
-  owners: User[];
+  owners!: User[];
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL' })
-  address: Address;
+  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
+  address!: Address;
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL' })
-  postalBox: Address;
+  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
+  postalBox!: Address;
 
   @ManyToMany(() => WorkTime, workTime => workTime.places, {
     cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()
-  workTimes: WorkTime[];
+  workTimes!: WorkTime[];
 
   @OneToOne(() => SocialMedias, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  socialMedias: SocialMedias;
+  socialMedias!: SocialMedias;
 }

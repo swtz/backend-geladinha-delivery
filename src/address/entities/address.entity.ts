@@ -11,44 +11,44 @@ import {
 @Entity()
 export class Address {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ length: 48 })
-  street: string;
+  street!: string;
 
   @Column({ length: 16, default: 'S/N' })
-  number: string;
+  number!: string;
 
   @Column({ length: 32, nullable: true })
-  complement: string;
+  complement!: string;
 
   @Column({ length: 32, nullable: true })
-  referencePoint: string;
+  referencePoint!: string;
 
   @Column({ length: 32 })
-  neighborhood: string;
+  neighborhood!: string;
 
   @Column({ length: 32, default: '88955-000' })
-  postalCode: string;
+  postalCode!: string;
 
   @Column({ length: 32, default: 'Balneário Gaivota' })
-  city: string;
+  city!: string;
 
   @Column({ length: 2, default: 'SC' })
-  stateCode: string;
+  stateCode!: string;
 
   @Column({ length: 32, nullable: true })
-  location: string;
+  location!: string;
 
   @Column({ default: false })
-  isDefault: boolean;
+  isDefault!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ManyToOne(() => Customer, { onDelete: 'CASCADE' })
-  customer: Customer;
+  customer!: Customer;
 }

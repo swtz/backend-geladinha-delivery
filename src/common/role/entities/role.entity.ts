@@ -5,11 +5,11 @@ import { Role as RoleEnum, roles } from '../roles.enum';
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ enum: roles, unique: true })
-  name: RoleEnum;
+  name!: RoleEnum;
 
   @ManyToMany(() => User, user => user.roles)
-  users: User[];
+  users!: User[];
 }

@@ -11,20 +11,20 @@ import {
 @Entity()
 export class Customer {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  phone: string;
+  phone!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updateAt: Date;
+  updateAt!: Date;
 
   @OneToMany(() => Address, address => address.customer)
-  addresses: Address[];
+  addresses!: Address[];
 }

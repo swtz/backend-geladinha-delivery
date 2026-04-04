@@ -11,35 +11,35 @@ import { DeliveryMan, User } from './user.entity';
 @Entity()
 export class Motorcycle {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  licensePlate: string;
+  licensePlate!: string;
 
   @Column()
-  brand: string;
+  brand!: string;
 
   @Column()
-  year: string;
+  year!: string;
 
   @Column()
-  model: string;
+  model!: string;
 
   @Column()
-  color: string;
+  color!: string;
 
   @Column({ default: false })
-  isActive: boolean;
+  isActive!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
-  owner: User;
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  owner!: User;
 
-  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL' })
-  driver: DeliveryMan;
+  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL', nullable: true })
+  driver!: DeliveryMan;
 }

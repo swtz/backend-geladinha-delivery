@@ -17,44 +17,44 @@ import { Tip } from 'src/tip/entities/tip.entity';
 @Entity()
 export class Delivery {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ length: 150, nullable: true })
-  description: string;
+  description!: string;
 
   @Column('float')
-  totalPurchase: number;
+  totalPurchase!: number;
 
   @Column('float')
-  deliveryTax: number;
+  deliveryTax!: number;
 
   @Column({ default: false })
-  isPaid: boolean;
+  isPaid: boolean = false;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  tip: Tip;
+  tip!: Tip;
 
   @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {
     onDelete: 'SET NULL',
   })
-  paymentMethod: PaymentMethod;
+  paymentMethod!: PaymentMethod;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
-  operator: User;
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  operator!: User;
 
-  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL' })
-  motoboy: DeliveryMan;
+  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL', nullable: true })
+  motoboy!: DeliveryMan;
 
-  @ManyToOne(() => Customer, { onDelete: 'SET NULL' })
-  customer: Customer;
+  @ManyToOne(() => Customer, { onDelete: 'SET NULL', nullable: true })
+  customer!: Customer;
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL' })
-  address: Address;
+  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
+  address!: Address;
 }

@@ -11,19 +11,19 @@ import {
 @Entity()
 export class Tip {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('float')
-  amount: number;
+  amount!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ManyToOne(() => DeliveryMan, deliveryMan => deliveryMan.tips, {
     onDelete: 'CASCADE',
   })
-  motoboy: DeliveryMan;
+  motoboy!: DeliveryMan;
 }

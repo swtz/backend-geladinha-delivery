@@ -23,64 +23,64 @@ import { Motorcycle } from './motorcycle.entity';
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   // REMOVER {nullable: true}
   @Column({ nullable: true })
-  lastName: string;
+  lastName!: string;
 
   @Column({ nullable: true, unique: true })
-  nickname: string;
+  nickname!: string;
 
   @Column({ unique: true })
-  phone: string;
+  phone!: string;
 
   @Column({ nullable: true, unique: true })
-  secondPhone: string;
+  secondPhone!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({ default: false })
-  forceLogout: boolean;
+  forceLogout!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @OneToMany(() => Voucher, voucher => voucher.user, {
     nullable: true,
   })
-  vouchers: Voucher[];
+  vouchers!: Voucher[];
 
   @ManyToMany(() => Role, role => role.users)
   @JoinTable()
-  roles: Role[];
+  roles!: Role[];
 
   @OneToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  workTime: WorkTime;
+  workTime!: WorkTime;
 }
 
 @ChildEntity()
 export class DeliveryMan extends User {
   @Column()
-  motorcycle: string;
+  motorcycle!: string;
 
-  @ManyToOne(() => Motorcycle, { onDelete: 'SET NULL' })
-  motorcycle_new: Motorcycle;
+  @ManyToOne(() => Motorcycle, { onDelete: 'SET NULL', nullable: true })
+  motorcycle_new!: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
-  tips: Tip[];
+  tips!: Tip[];
 
   @Column('float')
-  daily: number;
+  daily!: number;
 }

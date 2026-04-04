@@ -14,44 +14,44 @@ import {
 @Entity()
 export class Payout {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('float')
-  totalDeliveries: number;
+  totalDeliveries!: number;
 
   @Column('float')
-  motoboyDaily: number;
+  motoboyDaily!: number;
 
   @Column('float')
-  motoboyTips: number;
+  motoboyTips!: number;
 
   @Column('float')
-  subtotal: number;
+  subtotal!: number;
 
   @Column('float')
-  totalSpending: number;
+  totalSpending!: number;
 
   @Column('float')
-  total: number;
+  total!: number;
 
   @Column({ default: false })
-  isClosed: boolean;
+  isClosed!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ enum: weekDays })
-  weekDay: WeekDay;
+  weekDay!: WeekDay;
 
   @Column()
-  workDay: Date;
+  workDay!: Date;
 
   @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE' })
-  motoboy: DeliveryMan;
+  motoboy!: DeliveryMan;
 
   @OneToMany(() => Voucher, voucher => voucher.payout, { nullable: true })
-  vouchers: Voucher[];
+  vouchers!: Voucher[];
 }

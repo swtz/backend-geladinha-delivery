@@ -15,7 +15,7 @@ export class CreateAddressDto {
   @IsNotEmpty({ message: 'Campo rua não pode estar vazio' })
   @MaxLength(48, { message: 'Campo rua pode ter no máximo 48 caracteres' })
   @MinLength(4, { message: 'Campo rua precisa ter no mínimo 4 caracteres' })
-  street: string;
+  street!: string;
 
   @IsOptional()
   @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
@@ -49,7 +49,7 @@ export class CreateAddressDto {
   @IsNotEmpty({ message: 'Campo bairro não pode estar vazio' })
   @MaxLength(32, { message: 'Campo bairro pode ter no máximo 32 caracteres' })
   @MinLength(4, { message: 'Campo bairro precisa ter no mínimo 4 caracteres' })
-  neighborhood: string;
+  neighborhood!: string;
 
   @IsOptional()
   @IsPostalCode('BR', { message: 'CEP inválido' })

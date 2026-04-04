@@ -9,23 +9,23 @@ import {
 @Entity()
 export class SocialMedias {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ nullable: true })
-  instagram: string;
+  instagram!: string;
 
   @Column({ nullable: true })
-  facebook: string;
+  facebook!: string;
 
   @Column({ nullable: true })
-  whatsapp: string;
+  whatsapp!: string;
 
   @Column({ nullable: true })
-  linkedIn: string;
+  linkedIn!: string;
 }

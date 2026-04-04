@@ -9,11 +9,11 @@ import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 export class CreateCustomerDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo nome não pode estar vazio' })
-  name: string;
+  name!: string;
 
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  phone: string;
+  phone!: string;
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  address: CreateAddressDto;
+  address!: CreateAddressDto;
 }
