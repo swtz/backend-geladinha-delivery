@@ -22,7 +22,6 @@ export class MotorcycleService {
     });
     const year = dto.year;
 
-    // verificar se licensePlate é valida
     const licensePlate = dto.licensePlate;
 
     return this.save({ ...dto, year, licensePlate, owner, driver });
