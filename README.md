@@ -1,82 +1,162 @@
-# Documentação da API do app Geladinha Delivery
+# Geladinha Delivery – API do Sistema
 
-## Futuramente serão detalhadas ainda mais essas operações
+A API Geladinha Delivery é o conjunto de serviços que permite operar todo o
+sistema interno do delivery, incluindo gestão de usuários, empresas, clientes,
+entregas, pagamentos e vales.  
+Ela funciona como o “cérebro” do aplicativo e conecta todas as partes do
+negócio.
 
-```
-Ler   Criar   Atualizar    Apagar
-GET / POST / PATCH / PUT / DELETE
+---
 
-/auth/login                               POST        Autenticar usuário                            Aberta          PUBLIC
+## 💡 O que esta API faz
 
-/user                                     POST        Criar usuário                                 JWT             ADMIN
-/user/me                                  GET         Ler usuário                                   JWT             ALL
-/user/motoboy                             GET         Ler todos os motoboys                         JWT             ALL
-/user/:uuid                               GET         Ler usuário                                   JWT             ADMIN/OPERATOR
-/user?key=value                           GET         Ler todos os usuários                         JWT             ADMIN/OPERATOR
-/user/me                                  PATCH       Atualizar meu usuário                         JWT             ALL
-/user/:uuid                               PATCH       Atualizar usuário                             JWT             ADMIN/OPERATOR
-/user/me/password                         PATCH       Atualizar senha                               JWT             ALL
-/user/:uuid                               DELETE      Apagar usuário                                JWT             ADMIN
+A API permite:
 
-/place/me                                 POST        Criar empresa                                 JWT             ADMIN
-/place/work-time                          GET         Ler horários de serviço da empresa            JWT             ADMIN
-/place/:uuid                              GET         Ler empresa                                   JWT             ADMIN
-/place?key=value                          GET         Ler todas as empresas                         JWT             ADMIN
-/place/me/:uuid                           PATCH       Atualizar empresa                             JWT             ADMIN
-/place/work-time?placeId=uuid             POST        Adicionar horário de serviço compartilhado    JWT             ADMIN
-/place/me/:uuid/work-time                 PATCH       Atualizar horário de serviço compartilhado    JWT             ADMIN (OWNER)
-/place/me/work-time/:uuid?placeId=uuid    DELETE      Apagar horário de serviço compartilhado       JWT             ADMIN (OWNER)
-/place/me/:uuid                           DELETE      Apagar empresa                                JWT             ADMIN (OWNER)
+- Gerenciar usuários do sistema (administradores, operadores e motoboys)
+- Cadastrar e administrar empresas (locais de operação)
+- Controlar horários de funcionamento
+- Cadastrar clientes e endereços
+- Criar e acompanhar entregas
+- Registrar compras/vales (vouchers)
+- Gerar pagamentos para motoboys
+- Administrar caixa (settlements) de operadores e televendas
 
-/work-time                                POST        Criar horário de serviço                      JWT             ADMIN
-/work-time/me                             GET         Ler meus horários de serviço                  JWT             ALL
-/work-time?key=value                      GET         Ler todos os horários de serviço              JWT             ADMIN
-/work-time/:uuid                          PATCH       Atualizar horário de serviço                  JWT             ADMIN
-/work-time/:uuid                          DELETE      Apagar horário de serviço                     JWT             ADMIN
+Em outras palavras, ela é responsável por **toda a operação digital do Geladinha
+Delivery**.
 
-/customer                                 POST        Criar cliente com endereço                    JWT             ADMIN/OPERATOR
-/customer/:uuid/address                   POST        Adicionar endereço                            JWT             ADMIN/OPERATOR
-/customer/find?key=value                  GET         Ler cliente                                   JWT             ADMIN/OPERATOR
-/customer                                 GET         Ler todos os clientes                         JWT             ADMIN/OPERATOR
-/customer/:uuid/address                   GET         Ler todos os endereços de um cliente          JWT             ADMIN/OPERATOR
-/customer/:uuid                           PATCH       Atualizar cliente e/ou endereço               JWT             ADMIN/OPERATOR
-/customer/:uuid                           DELETE      Apagar cliente                                JWT             ADMIN/OPERATOR
-/customer/address/:uuid                   DELETE      Apagar endereço                               JWT             ADMIN/OPERATOR
+---
 
-/delivery/me                              POST        Criar entrega                                 JWT             ADMIN/OPERATOR
-/delivery/:uuid                           GET         Ler entrega                                   JWT             ADMIN/OPERATOR
-/delivery/me                              GET         Ler minhas entregas                           JWT             ALL
-/delivery?key=value                       GET         Ler todas as entregas                         JWT             ADMIN/OPERATOR
-/delivery/me/:uuid                        PATCH       Atualizar entrega                             JWT             ADMIN/OPERATOR
-/delivery/me/:uuid                        DELETE      Apagar entrega                                JWT             ADMIN/OPERATOR
-/tip/:uuid                                DELETE      Apagar gorjeta                                JWT             ADMIN/OPERATOR
+## 🚀 Como o sistema funciona (em termos de negócio)
 
-/voucher/me                               POST        Criar compra/vale                             JWT             ALL
-/voucher/me/user/:uuid                    POST        Criar compra/vale para usuário                JWT             ADMIN/OPERATOR
-/voucher/:uuid                            GET         Ler compra/vale de um usuário                 JWT             ADMIN/OPERATOR
-/voucher/me                               GET         Ler minhas compras/vales                      JWT             ALL
-/voucher?key=value                        GET         Ler todas as compras/vales                    JWT             ADMIN/OPERATOR
-/voucher/me/:uuid                         PATCH       Atualizar compra/vale                         JWT             ALL
-/voucher/me/user/:uuid                    PATCH       Atualizar compra/vale de um usuário           JWT             ADMIN/OPERATOR
-/voucher/me/:uuid                         DELETE      Apagar uma compra/vale                        JWT             ALL
+1. **O usuário faz login** (administrador, operador ou motoboy)
+2. Cada tipo de usuário tem acesso ao que precisa:
+   - _Admin:_ controla tudo
+   - _Operator:_ atende pedidos e gerencia clientes
+   - _Motoboy:_ vê e atualiza suas entregas e pagamentos
+3. A API recebe solicitações do aplicativo e retorna:
+   - Dados de clientes
+   - Novas entregas
+   - Status de pagamentos
+   - Caixas/vales
+   - Informações do motoboy
 
-/payout                                   POST        Criar pagamento para um motoboy               JWT             ADMIN/OPERATOR
-/payout/preview?key=value                 GET         Pré-visualizar pagamento do motoboy           JWT             ALL
-/payout/me                                GET         Ler meus pagamentos                           JWT             MOTOBOY
-/payout?key=value                         GET         Ler todos os pagamentos do motoboy            JWT             ALL
-/payout/:uuid                             GET         Ler pagamento do motoboy                      JWT             ALL
-/payout/:uuid                             PATCH       Atualizar pagamento do motoboy                JWT             ADMIN/OPERATOR
-/payout/:uuid/:bool                       PATCH       Atualizar status do pagamento                 JWT             ADMIN
-/payout/:uuid                             DELETE      Apagar pagamento do motoboy                   JWT             ADMIN/OPERATOR
+O aplicativo se comunica com a API usando um token de segurança (JWT) para
+garantir que cada usuário acesse apenas o que deve.
 
-/settlement                               POST        Criar caixa para um televendas                JWT             ADMIN/OPERATOR
-/settlement/preview?key=value             GET         Pré-visualizar caixa do televendas            JWT             ADMIN/OPERATOR
-/settlement/me                            GET         Ler meus caixas                               JWT             ADMIN/OPERATOR
-/settlement?key=value                     GET         Ler todos os caixas do televendas             JWT             ADMIN/OPERATOR
-/settlement/:uuid                         GET         Ler caixa do televendas                       JWT             ADMIN/OPERATOR
-/settlement/:uuid                         PATCH       Atualizar caixa do televendas                 JWT             ADMIN/OPERATOR
-/settlement/:uuid/:bool                   PATCH       Atualizar status do caixa                     JWT             ADMIN
-/settlement/:uuid                         DELETE      Apagar caixa do televendas                    JWT             ADMIN/OPERATOR
-```
+---
 
-Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto da requisição.
+## 🧩 Módulos principais
+
+### **1. Usuários**
+
+Permite criar e gerenciar:
+
+- Administradores
+- Operadores
+- Motoboys
+
+### **2. Empresas (Place)**
+
+Cada empresa pode ter:
+
+- Informações próprias
+- Horários de atendimento
+- Responsáveis
+
+### **3. Clientes**
+
+Cadastro de clientes e seus endereços.
+
+### **4. Entregas (Delivery)**
+
+Criação, consulta e atualização de entregas.
+
+### **5. Vales (Voucher)**
+
+Registro e controle de vales/compras.
+
+### **6. Pagamentos para Motoboys (Payout)**
+
+Cálculos e pagamentos para entregadores.
+
+### **7. Caixa / Televendas (Settlement)**
+
+Controle do caixa diário para operadores.
+
+---
+
+## 🔐 Segurança
+
+Toda operação autenticada utiliza **JWT (JSON Web Token)**.  
+Isso garante:
+
+- segurança dos dados
+- acesso controlado por tipo de usuário
+- operação confiável
+
+Rotas com `/me` usam automaticamente o usuário do token.
+
+---
+
+## 📌 Rotas da API (Resumo)
+
+Abaixo estão todas as rotas principais divididas por módulo.  
+_Esta parte é mais técnica, mas útil como referência rápida._
+
+### **Autenticação**
+
+- `POST /auth/login` — Autentica o usuário
+
+### **Usuário (User)**
+
+- Criar, ler, atualizar e apagar usuários
+- Consultar motoboys
+- Atualizar senha
+- Consultar informações do próprio usuário
+
+### **Empresa (Place)**
+
+- Criar e editar empresa
+- Gerenciar horários de funcionamento
+
+### **Horários (Work-Time)**
+
+- Criar, editar e listar horários de serviço
+
+### **Cliente (Customer)**
+
+- Criar cliente com endereço
+- Adicionar e editar endereços
+- Listar clientes
+
+### **Entrega (Delivery)**
+
+- Criar entrega
+- Ver minhas entregas
+- Atualizar e apagar entregas
+
+### **Vale/Compra (Voucher)**
+
+- Criar vale
+- Ver minhas compras/vales
+- Atualizar e apagar vales
+
+### **Pagamento (Payout)**
+
+- Criar pagamento
+- Visualizar e atualizar pagamentos
+
+### **Caixa / Televendas (Settlement)**
+
+- Criar caixa
+- Atualizar e listar caixas
+
+---
+
+## 📞 Suporte e Continuidade
+
+Mais módulos, relatórios e integrações podem ser adicionados conforme a
+necessidade da operação.
+
+Para dúvidas ou solicitações, entre em contato com o responsável técnico ou
+administrador do sistema → luderser@hotmail.com / (48) 996642905 (Leonardo).
