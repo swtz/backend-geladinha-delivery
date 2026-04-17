@@ -22,7 +22,7 @@ export class MotorcycleService {
     });
     const year = dto.year;
 
-    const licensePlate = dto.licensePlate;
+    const licensePlate = dto.licensePlate.toUpperCase();
 
     return this.save({ ...dto, year, licensePlate, owner, driver });
   }

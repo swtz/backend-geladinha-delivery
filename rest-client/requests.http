@@ -568,7 +568,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "licensePlate": "ABC1234",
+  "licensePlate": "oem8j76",
   "brand": "Honda",
   "model": "Titan",
   "year": "2014",
