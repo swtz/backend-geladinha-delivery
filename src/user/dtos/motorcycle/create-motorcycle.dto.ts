@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+  IsUUID,
+  Min,
+} from 'class-validator';
 
 export class CreateMotorcycleDto {
   @IsNotEmpty({ message: 'Campo placa não pode estar vazio' })
@@ -10,7 +16,8 @@ export class CreateMotorcycleDto {
   brand!: string;
 
   @IsNotEmpty({ message: 'Campo ano não pode estar vazio' })
-  @IsString({ message: 'Formato inválido' })
+  @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
+  @Min(4, { message: 'O ano precisa ter 4 dígitos' })
   year!: string;
 
   @IsNotEmpty({ message: 'Campo modelo não pode estar vazio' })

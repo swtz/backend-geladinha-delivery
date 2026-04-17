@@ -20,10 +20,6 @@ export class MotorcycleService {
     const driver = await this.userService.findOneMotoboyByOrFail({
       id: dto.driver,
     });
-
-    // dto.isActive aqui é necessário?
-
-    // verificar se o ano é valido
     const year = dto.year;
 
     // verificar se licensePlate é valida
