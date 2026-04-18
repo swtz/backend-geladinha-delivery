@@ -20,11 +20,19 @@ export class MotorcycleService {
     const driver = await this.userService.findOneMotoboyByOrFail({
       id: dto.driver,
     });
-    const year = dto.year;
 
-    const licensePlate = dto.licensePlate.toUpperCase();
+    const motorcycle: Omit<Motorcycle, 'id' | 'createdAt' | 'updatedAt'> = {
+      licensePlate: dto.licensePlate.toUpperCase(),
+      brand: dto.brand,
+      model: dto.model,
+      year: dto.year,
+      color: dto.color,
+      isActive: false,
+      owner,
+      driver,
+    };
 
-    return this.save({ ...dto, year, licensePlate, owner, driver });
+    return this.save(motorcycle);
   }
 
   async save(motorcycle: Partial<Motorcycle>) {
