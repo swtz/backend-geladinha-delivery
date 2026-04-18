@@ -1,6 +1,8 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumberString,
+  IsOptional,
   IsString,
   IsUUID,
   Length,
@@ -30,6 +32,10 @@ export class CreateMotorcycleDto {
   @IsNotEmpty({ message: 'Campo cor não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
   color!: string;
+
+  @IsOptional()
+  @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
+  isActive?: boolean;
 
   @IsNotEmpty({ message: 'Campo proprietário não pode estar vazio' })
   @IsUUID('4', { message: 'Formato inválido' })
