@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { DeliveryMan, User } from './user.entity';
 
 @Entity()
 export class Motorcycle {
@@ -42,4 +44,10 @@ export class Motorcycle {
 
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   owner!: User;
+
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle_new, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  driver!: DeliveryMan;
 }
