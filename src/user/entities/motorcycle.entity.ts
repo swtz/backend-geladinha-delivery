@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { DeliveryMan, User } from './user.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Motorcycle {
@@ -42,7 +42,4 @@ export class Motorcycle {
 
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   owner!: User;
-
-  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL', nullable: true })
-  driver!: DeliveryMan;
 }
