@@ -25,6 +25,9 @@ export class Motorcycle {
   @Column()
   model!: string;
 
+  @Column({ nullable: true })
+  displacement!: string;
+
   @Column()
   color!: string;
 
