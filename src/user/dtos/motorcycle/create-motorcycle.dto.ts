@@ -44,4 +44,8 @@ export class CreateMotorcycleDto {
   @IsNotEmpty({ message: 'Campo proprietário não pode estar vazio' })
   @IsUUID('4', { message: 'Formato inválido' })
   owner!: string;
+
+  @IsNotEmpty({ message: 'Campo motorista não pode estar vazio' })
+  @IsUUID('4', { message: 'Formato inválido' })
+  driver!: string;
 }
