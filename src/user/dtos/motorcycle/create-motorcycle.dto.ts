@@ -29,6 +29,10 @@ export class CreateMotorcycleDto {
   @IsString({ message: 'Formato inválido' })
   model!: string;
 
+  @IsOptional()
+  @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
+  displacement?: string;
+
   @IsNotEmpty({ message: 'Campo cor não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
   color!: string;
