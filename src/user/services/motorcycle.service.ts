@@ -34,10 +34,14 @@ export class MotorcycleService {
     const driver = await this.userService.findOneMotoboyByOrFail({
       id: dto.driver,
     });
-    const motorcycle: Omit<Motorcycle, 'id' | 'createdAt' | 'updatedAt'> = {
+    const motorcycle: Omit<
+      Motorcycle,
+      'id' | 'createdAt' | 'updatedAt' | 'displacement'
+    > & { displacement: string | undefined } = {
       licensePlate,
       brand: dto.brand,
       model: dto.model,
+      displacement: dto.displacement,
       year: dto.year,
       color: dto.color,
       isActive: dto.isActive ? dto.isActive : false,
