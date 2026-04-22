@@ -75,7 +75,7 @@ export class DeliveryMan extends User {
   @Column()
   motorcycle!: string;
 
-  @ManyToOne(() => Motorcycle, { onDelete: 'SET NULL', nullable: true })
+  @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver)
   motorcycle_new!: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
