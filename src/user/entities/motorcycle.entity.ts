@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -45,9 +44,6 @@ export class Motorcycle {
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   owner!: User;
 
-  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle_new, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle_new)
   driver!: DeliveryMan;
 }

@@ -74,7 +74,11 @@ export class DeliveryMan extends User {
   @Column()
   motorcycle!: string;
 
-  @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver)
+  @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn()
   motorcycle_new!: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
