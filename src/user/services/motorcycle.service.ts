@@ -31,9 +31,6 @@ export class MotorcycleService {
     await this.failIfLicensePlateExists(licensePlate);
 
     const owner = await this.userService.findOneByOrFail({ id: dto.owner });
-    const driver = await this.userService.findOneMotoboyByOrFail({
-      id: dto.driver,
-    });
     const motorcycle: Omit<
       Motorcycle,
       'id' | 'createdAt' | 'updatedAt' | 'displacement'
@@ -46,7 +43,6 @@ export class MotorcycleService {
       color: dto.color,
       isActive: dto.isActive ? dto.isActive : false,
       owner,
-      driver,
     };
 
     return this.save(motorcycle);
