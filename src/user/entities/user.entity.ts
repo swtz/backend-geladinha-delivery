@@ -71,15 +71,12 @@ export class User {
 
 @ChildEntity()
 export class DeliveryMan extends User {
-  @Column()
-  motorcycle!: string;
-
   @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
     nullable: false,
     onDelete: 'RESTRICT',
   })
   @JoinColumn()
-  motorcycle_new!: Motorcycle;
+  motorcycle!: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
   tips!: Tip[];

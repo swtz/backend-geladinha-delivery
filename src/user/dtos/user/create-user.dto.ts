@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { CreateMotorcycleDto } from '../motorcycle/create-motorcycle.dto';
 
 export class CreateUserDto {
   @IsString({ message: 'Formato inválido' })
@@ -44,9 +45,8 @@ export class CreateUserDto {
   @MinLength(6, { message: 'A senha precisa ter no mínimo 6 caracteres' })
   password!: string;
 
-  @IsOptional()
-  @IsString({ message: 'Formato inválido' })
-  motorcycle?: string;
+  @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
+  motorcycle!: CreateMotorcycleDto;
 
   @IsOptional()
   @IsNumber(
