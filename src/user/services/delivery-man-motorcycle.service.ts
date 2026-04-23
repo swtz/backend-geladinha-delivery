@@ -21,12 +21,17 @@ export class DeliveryManMotorcycleService {
       throw http400;
     }
 
-    const owner = await this.userService.findOneByOrFail({
-      id: motorcycleDto.owner,
-    });
-    const driver = await this.userService.findOneMotoboyByOrFail({
-      id: motorcycleDto.driver,
-    });
+    const owner = motorcycleDto.owner
+      ? await this.userService.findOneByOrFail({
+          id: motorcycleDto.owner,
+        })
+      : undefined;
+
+    const driver = motorcycleDto.driver
+      ? await this.userService.findOneMotoboyByOrFail({
+          id: motorcycleDto.driver,
+        })
+      : undefined;
 
     const newMotorcycle = await this.motorcycleService.create(
       motorcycleDto,
