@@ -20,6 +20,7 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { MotorcycleService } from './services/motorcycle.service';
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,7 @@ export class UserService {
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
     private readonly workTimeService: WorkTimeService,
+    private readonly motorcycleService: MotorcycleService,
   ) {}
 
   async failIfEmailExists(email: string) {
