@@ -8,6 +8,7 @@ import { CommonModule } from 'src/common/common.module';
 import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { MotorcycleController } from './controllers/motorcycle.controller';
 import { MotorcycleService } from './services/motorcycle.service';
+import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MotorcycleService } from './services/motorcycle.service';
     WorkTimeModule,
   ],
   controllers: [UserController, MotorcycleController],
-  providers: [UserService, MotorcycleService],
+  providers: [UserService, MotorcycleService, DeliveryManMotorcycleService],
   exports: [UserService],
 })
 export class UserModule {}

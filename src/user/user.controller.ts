@@ -23,14 +23,14 @@ import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { CreateMotorcycleDto } from './dtos/motorcycle/create-motorcycle.dto';
-import { MotorcycleService } from './services/motorcycle.service';
+import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly motorcycleService: MotorcycleService,
+    private readonly deliveryManMotorcycleService: DeliveryManMotorcycleService,
   ) {}
 
   @Get('me')
@@ -88,13 +88,10 @@ export class UserController {
       return new ResponseUserDto(user);
     }
 
-    const motorcycle = await this.motorcycleService.create(motorcycleDto);
-    const user = await this.userService.create(
-      { ...userDto, phone, workTime },
-      motorcycle,
-    );
+    const deliveryManWithMotorcycle =
+      await this.deliveryManMotorcycleService.create(userDto, motorcycleDto);
 
-    return new ResponseUserDto(user);
+    return new ResponseUserDto(deliveryManWithMotorcycle);
   }
 
   @Patch('me')
