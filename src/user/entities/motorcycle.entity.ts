@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -25,6 +26,9 @@ export class Motorcycle {
   @Column()
   model!: string;
 
+  @Column({ nullable: true })
+  displacement!: string;
+
   @Column()
   color!: string;
 
@@ -40,6 +44,6 @@ export class Motorcycle {
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   owner!: User;
 
-  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL', nullable: true })
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle)
   driver!: DeliveryMan;
 }

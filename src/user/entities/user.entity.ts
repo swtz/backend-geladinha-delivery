@@ -10,7 +10,6 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -72,11 +71,12 @@ export class User {
 
 @ChildEntity()
 export class DeliveryMan extends User {
-  @Column()
-  motorcycle!: string;
-
-  @ManyToOne(() => Motorcycle, { onDelete: 'SET NULL', nullable: true })
-  motorcycle_new!: Motorcycle;
+  @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn()
+  motorcycle!: Motorcycle;
 
   @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
   tips!: Tip[];

@@ -1,8 +1,19 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+  Matches,
+} from 'class-validator';
 
 export class CreateMotorcycleDto {
   @IsNotEmpty({ message: 'Campo placa não pode estar vazio' })
-  @IsString({ message: 'Formato inválido' })
+  @Matches(/^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/i, {
+    message: 'Placa inválida',
+  })
   licensePlate!: string;
 
   @IsNotEmpty({ message: 'Campo marca não pode estar vazio' })
@@ -10,16 +21,25 @@ export class CreateMotorcycleDto {
   brand!: string;
 
   @IsNotEmpty({ message: 'Campo ano não pode estar vazio' })
-  @IsString({ message: 'Formato inválido' })
+  @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
+  @Length(4, 4, { message: 'O ano precisa ter 4 dígitos' })
   year!: string;
 
   @IsNotEmpty({ message: 'Campo modelo não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
   model!: string;
 
+  @IsOptional()
+  @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
+  displacement?: string;
+
   @IsNotEmpty({ message: 'Campo cor não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
   color!: string;
+
+  @IsOptional()
+  @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
+  isActive?: boolean;
 
   @IsNotEmpty({ message: 'Campo proprietário não pode estar vazio' })
   @IsUUID('4', { message: 'Formato inválido' })
