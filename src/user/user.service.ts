@@ -21,6 +21,7 @@ import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { UserType } from './types/user';
+import { Motorcycle } from './entities/motorcycle.entity';
 
 @Injectable()
 export class UserService {
@@ -60,7 +61,7 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto, motorcycle?: Motorcycle) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
     await this.failIfNicknameExists(dto.nickname);
@@ -90,6 +91,17 @@ export class UserService {
         ? await this.workTimeService.findOneOrCreate(dto.workTime)
         : undefined,
     };
+
+    if (dto.role === RoleEnum.Motoboy) {
+      const newMotoboy = {
+        ...newUser,
+        daily: dto.daily,
+        motorcycle,
+      };
+      const created = await this.saveDeliveryMan(newMotoboy);
+
+      return this.findOneMotoboyByOrFail({ id: created.id });
+    }
 
     const created = await this.saveUser(newUser);
 
