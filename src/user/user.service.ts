@@ -89,29 +89,6 @@ export class UserService {
         : undefined,
     };
 
-    if (dto.role === RoleEnum.Motoboy) {
-      const http400 = generateBadRequestException(
-        'Informe o valor da diária do motoboy',
-      );
-
-      if (!dto.daily) {
-        throw http400;
-      }
-
-      // const newMotorcycle = await this.motorcycleService.create({
-      //   ...dto.motorcycle,
-      // });
-
-      const newMotoboy = {
-        ...newUser,
-        daily: dto.daily,
-        // motorcycle: newMotorcycle,
-      };
-
-      const created = await this.saveDeliveryMan(newMotoboy);
-      return this.findOneByOrFail({ id: created.id });
-    }
-
     const created = await this.saveUser(newUser);
 
     if (newUser.workTime) {
