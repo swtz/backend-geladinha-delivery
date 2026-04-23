@@ -44,6 +44,6 @@ export class Motorcycle {
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   owner!: User;
 
-  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle_new)
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle)
   driver!: DeliveryMan;
 }
