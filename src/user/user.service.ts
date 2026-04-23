@@ -91,16 +91,15 @@ export class UserService {
 
     if (dto.role === RoleEnum.Motoboy) {
       const http400 = generateBadRequestException(
-        'Campo motocicleta e diária são obrigatórios para o motoboy',
+        'Informe o valor da diária do motoboy',
       );
 
-      if (!dto.motorcycle && !dto.daily) {
+      if (!dto.daily) {
         throw http400;
       }
 
       const newMotoboy = {
         ...newUser,
-        motorcycle: dto.motorcycle,
         daily: dto.daily,
       };
 
