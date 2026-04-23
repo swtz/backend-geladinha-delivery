@@ -253,7 +253,9 @@ export class UserService {
 
     const motoboy = await this.findOneMotoboyByOrFail({ id: user.id });
 
-    motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
+    // motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
+    // MotorcycleService.update()
+
     motoboy.daily = dto.daily ?? motoboy.daily;
 
     return motoboy;
