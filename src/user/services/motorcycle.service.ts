@@ -26,7 +26,7 @@ export class MotorcycleService {
     }
   }
 
-  async create(dto: CreateMotorcycleDto, owner: User, driver: DeliveryMan) {
+  async create(dto: CreateMotorcycleDto, owner?: User, driver?: DeliveryMan) {
     const licensePlate = dto.licensePlate.toUpperCase();
 
     await this.failIfLicensePlateExists(licensePlate);
