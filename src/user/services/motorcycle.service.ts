@@ -1,12 +1,13 @@
 import { Repository } from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { UserService } from '../user.service';
 import { MotorcycleType } from '../types/motorcycle';
 
+@Injectable()
 export class MotorcycleService {
   private readonly logger = new Logger(MotorcycleService.name);
 
