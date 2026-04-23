@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
-import { UserService } from '../user.service';
 import { MotorcycleType } from '../types/motorcycle';
 
 @Injectable()
@@ -14,7 +13,6 @@ export class MotorcycleService {
   constructor(
     @InjectRepository(Motorcycle)
     private readonly motorcycleRepository: Repository<Motorcycle>,
-    private readonly userService: UserService,
   ) {}
 
   async failIfLicensePlateExists(licensePlate: string) {
@@ -32,11 +30,11 @@ export class MotorcycleService {
 
     await this.failIfLicensePlateExists(licensePlate);
 
-    const owner = await this.userService.findOneByOrFail({ id: dto.owner });
-    const driver = await this.userService.findOneMotoboyByOrFail({
-      id: dto.driver,
-    });
-    const motorcycle: MotorcycleType = {
+    // const owner = await this.userService.findOneByOrFail({ id: dto.owner });
+    // const driver = await this.userService.findOneMotoboyByOrFail({
+    //   id: dto.driver,
+    // });
+    const motorcycle = {
       licensePlate,
       brand: dto.brand,
       model: dto.model,
@@ -44,8 +42,8 @@ export class MotorcycleService {
       year: dto.year,
       color: dto.color,
       isActive: dto.isActive ? dto.isActive : false,
-      owner,
-      driver,
+      // owner,
+      // driver,
     };
 
     return this.save(motorcycle);
