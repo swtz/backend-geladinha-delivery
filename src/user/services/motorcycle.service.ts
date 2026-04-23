@@ -5,6 +5,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { UserService } from '../user.service';
+import { MotorcycleType } from '../types/motorcycle';
 
 export class MotorcycleService {
   private readonly logger = new Logger(MotorcycleService.name);
@@ -34,10 +35,7 @@ export class MotorcycleService {
     const driver = await this.userService.findOneMotoboyByOrFail({
       id: dto.driver,
     });
-    const motorcycle: Omit<
-      Motorcycle,
-      'id' | 'createdAt' | 'updatedAt' | 'displacement'
-    > & { displacement: string | undefined } = {
+    const motorcycle: MotorcycleType = {
       licensePlate,
       brand: dto.brand,
       model: dto.model,
