@@ -20,6 +20,7 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { UserType } from './types/user';
 
 @Injectable()
 export class UserService {
@@ -75,7 +76,7 @@ export class UserService {
 
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser = {
+    const newUser: UserType = {
       name: dto.name,
       lastName: dto.lastName,
       nickname: dto.nickname,
@@ -83,6 +84,7 @@ export class UserService {
       secondPhone: dto.secondPhone,
       email: dto.email,
       password: hashedPassword,
+      forceLogout: false,
       roles: [role],
       workTime: dto.workTime
         ? await this.workTimeService.findOneOrCreate(dto.workTime)
