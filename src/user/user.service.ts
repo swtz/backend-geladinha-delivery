@@ -100,9 +100,14 @@ export class UserService {
         throw http400;
       }
 
+      const newMotorcycle = await this.motorcycleService.create({
+        ...dto.motorcycle,
+      });
+
       const newMotoboy = {
         ...newUser,
         daily: dto.daily,
+        motorcycle: newMotorcycle,
       };
 
       const created = await this.saveDeliveryMan(newMotoboy);
