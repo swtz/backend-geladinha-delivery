@@ -3,6 +3,7 @@ import { DeliveryMan, User } from '../../entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
+import { Motorcycle } from 'src/user/entities/motorcycle.entity';
 
 export class ResponseUserDto {
   readonly id: string;
@@ -12,7 +13,7 @@ export class ResponseUserDto {
   readonly phone: string;
   readonly secondPhone?: string;
   readonly email: string;
-  readonly motorcycle?: string;
+  readonly motorcycle!: Motorcycle;
   readonly daily?: number;
   readonly tips?: Omit<Tip, 'motoboy'>[] | null;
   readonly vouchers: ResponseVoucherDto[] | null;
