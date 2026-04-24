@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { DeliveryMan } from './delivery-man.entity';
 
 @Entity()
 export class User {
@@ -48,6 +49,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.user, {
+    nullable: true,
+  })
+  deliveryMan!: DeliveryMan;
 
   @OneToMany(() => Voucher, voucher => voucher.user, {
     nullable: true,
