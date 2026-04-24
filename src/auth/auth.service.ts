@@ -1,8 +1,4 @@
 import {
- 
- 
- ,
-
   BadRequestException,
   Injectable,
   UnauthorizedException,
@@ -27,7 +23,7 @@ export class AuthService {
     }
 
     const user = await this.userService.findByEmail(dto.email);
-    const error = new UnauthorizedException('Usuário ou senha inválidos');
+    const error = new UnauthorizedException('Informações inválidas');
 
     if (!user) {
       throw error;
