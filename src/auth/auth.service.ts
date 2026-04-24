@@ -1,4 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+ 
+ 
+ ,
+
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UserService } from 'src/user/user.service';
@@ -14,6 +22,10 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
+    if (!(dto.email || dto.nickname || dto.phone)) {
+      throw new BadRequestException('Preencha ao menos um campo');
+    }
+
     const user = await this.userService.findByEmail(dto.email);
     const error = new UnauthorizedException('Usuário ou senha inválidos');
 
