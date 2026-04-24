@@ -41,11 +41,11 @@ export class CreateMotorcycleDto {
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
   isActive?: boolean;
 
-  @IsNotEmpty({ message: 'Campo proprietário não pode estar vazio' })
+  @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  owner!: string;
+  owner?: string;
 
-  @IsNotEmpty({ message: 'Campo motorista não pode estar vazio' })
+  @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  driver!: string;
+  driver?: string;
 }

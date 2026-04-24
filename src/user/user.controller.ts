@@ -22,11 +22,16 @@ import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { CreateMotorcycleDto } from './dtos/motorcycle/create-motorcycle.dto';
+import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly deliveryManMotorcycleService: DeliveryManMotorcycleService,
+  ) {}
 
   @Get('me')
   async findMe(@Req() req: AuthenticatedRequest) {
@@ -69,12 +74,24 @@ export class UserController {
   @Roles(Role.Admin)
   // @Public()
   async create(
-    @Body() dto: CreateUserDto,
+    @Body() userDto: CreateUserDto,
+    @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const user = await this.userService.create({ ...dto, phone, workTime });
-    return new ResponseUserDto(user);
+    if (userDto.role !== Role.Motoboy) {
+      const user = await this.userService.create({
+        ...userDto,
+        phone,
+        workTime,
+      });
+      return new ResponseUserDto(user);
+    }
+
+    const deliveryManWithMotorcycle =
+      await this.deliveryManMotorcycleService.create(userDto, motorcycleDto);
+
+    return new ResponseUserDto(deliveryManWithMotorcycle);
   }
 
   @Patch('me')

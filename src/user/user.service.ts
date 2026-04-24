@@ -20,7 +20,8 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { MotorcycleService } from './services/motorcycle.service';
+import { UserType } from './types/user';
+import { Motorcycle } from './entities/motorcycle.entity';
 
 @Injectable()
 export class UserService {
@@ -34,7 +35,6 @@ export class UserService {
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
     private readonly workTimeService: WorkTimeService,
-    private readonly motorcycleService: MotorcycleService,
   ) {}
 
   async failIfEmailExists(email: string) {
@@ -61,7 +61,7 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto, motorcycle?: Motorcycle) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
     await this.failIfNicknameExists(dto.nickname);
@@ -77,7 +77,7 @@ export class UserService {
 
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser = {
+    const newUser: UserType = {
       name: dto.name,
       lastName: dto.lastName,
       nickname: dto.nickname,
@@ -85,6 +85,7 @@ export class UserService {
       secondPhone: dto.secondPhone,
       email: dto.email,
       password: hashedPassword,
+      forceLogout: false,
       roles: [role],
       workTime: dto.workTime
         ? await this.workTimeService.findOneOrCreate(dto.workTime)
@@ -92,26 +93,14 @@ export class UserService {
     };
 
     if (dto.role === RoleEnum.Motoboy) {
-      const http400 = generateBadRequestException(
-        'Informe o valor da diária do motoboy',
-      );
-
-      if (!dto.daily) {
-        throw http400;
-      }
-
-      const newMotorcycle = await this.motorcycleService.create({
-        ...dto.motorcycle,
-      });
-
       const newMotoboy = {
         ...newUser,
         daily: dto.daily,
-        motorcycle: newMotorcycle,
+        motorcycle,
       };
-
       const created = await this.saveDeliveryMan(newMotoboy);
-      return this.findOneByOrFail({ id: created.id });
+
+      return this.findOneMotoboyByOrFail({ id: created.id });
     }
 
     const created = await this.saveUser(newUser);

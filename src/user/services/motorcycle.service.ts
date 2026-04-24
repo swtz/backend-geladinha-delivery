@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
-import { UserService } from '../user.service';
 import { MotorcycleType } from '../types/motorcycle';
+import { DeliveryMan, User } from '../entities/user.entity';
 
 @Injectable()
 export class MotorcycleService {
@@ -14,7 +14,6 @@ export class MotorcycleService {
   constructor(
     @InjectRepository(Motorcycle)
     private readonly motorcycleRepository: Repository<Motorcycle>,
-    private readonly userService: UserService,
   ) {}
 
   async failIfLicensePlateExists(licensePlate: string) {
@@ -27,15 +26,11 @@ export class MotorcycleService {
     }
   }
 
-  async create(dto: CreateMotorcycleDto) {
+  async create(dto: CreateMotorcycleDto, owner?: User, driver?: DeliveryMan) {
     const licensePlate = dto.licensePlate.toUpperCase();
 
     await this.failIfLicensePlateExists(licensePlate);
 
-    const owner = await this.userService.findOneByOrFail({ id: dto.owner });
-    const driver = await this.userService.findOneMotoboyByOrFail({
-      id: dto.driver,
-    });
     const motorcycle: MotorcycleType = {
       licensePlate,
       brand: dto.brand,
