@@ -22,7 +22,11 @@ export class AuthService {
       throw new BadRequestException('Preencha ao menos um campo');
     }
 
-    const user = await this.userService.findByEmail(dto.email);
+    const email = dto['email'];
+    const nickname = dto['nickname'];
+    const phone = dto['phone'];
+
+    const user = await this.userService.findOneBy({ email, nickname, phone });
     const error = new UnauthorizedException('Informações inválidas');
 
     if (!user) {
