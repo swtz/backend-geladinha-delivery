@@ -1,5 +1,6 @@
 import { Motorcycle } from '../entities/motorcycle.entity';
-import { DeliveryMan, User } from '../entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 
 export type MotorcycleType = Omit<
   Motorcycle,

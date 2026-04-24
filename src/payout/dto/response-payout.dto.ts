@@ -1,6 +1,6 @@
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
-import { DeliveryMan } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 

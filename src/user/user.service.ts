@@ -7,7 +7,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { DeliveryMan, User } from './entities/user.entity';
+import { User } from './entities/user.entity';
+import { DeliveryMan } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/user/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';

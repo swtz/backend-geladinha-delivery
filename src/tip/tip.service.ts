@@ -7,7 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeliveryMan } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()

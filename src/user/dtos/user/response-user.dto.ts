@@ -1,5 +1,6 @@
 import { Role } from 'src/common/role/roles.enum';
-import { DeliveryMan, User } from '../../entities/user.entity';
+import { User } from '../../entities/user.entity';
+import { DeliveryMan } from '../../entities/delivery-man.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';

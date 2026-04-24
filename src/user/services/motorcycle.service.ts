@@ -5,8 +5,8 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { MotorcycleType } from '../types/motorcycle';
-import { DeliveryMan, User } from '../entities/user.entity';
-
+import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 @Injectable()
 export class MotorcycleService {
   private readonly logger = new Logger(MotorcycleService.name);

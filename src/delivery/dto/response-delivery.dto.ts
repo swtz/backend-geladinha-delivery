@@ -1,7 +1,8 @@
 import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
 import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
-import { DeliveryMan, User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 
 export class ResponseDeliveryDto {

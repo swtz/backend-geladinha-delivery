@@ -1,5 +1,5 @@
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
-import { DeliveryMan } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
   Column,

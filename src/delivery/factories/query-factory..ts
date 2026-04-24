@@ -1,5 +1,6 @@
 import { Customer } from 'src/customer/entities/customer.entity';
-import { DeliveryMan, User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { Between, FindOperator } from 'typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
