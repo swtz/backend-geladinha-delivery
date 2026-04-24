@@ -7,7 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { DeliveryMan, User } from './user.entity';
+import { User } from './user.entity';
+import { DeliveryMan } from './delivery-man.entity';
 
 @Entity()
 export class Motorcycle {

@@ -1,9 +1,7 @@
 import { Role } from 'src/common/role/entities/role.entity';
-import { Tip } from 'src/tip/entities/tip.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import { WorkTime } from 'src/work-time/entities/work-time.entity';
 import {
-  ChildEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -13,13 +11,10 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  TableInheritance,
   UpdateDateColumn,
 } from 'typeorm';
-import { Motorcycle } from './motorcycle.entity';
 
 @Entity()
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -27,11 +22,10 @@ export class User {
   @Column()
   name!: string;
 
-  // REMOVER {nullable: true}
-  @Column({ nullable: true })
+  @Column()
   lastName!: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ unique: true })
   nickname!: string;
 
   @Column({ unique: true })
@@ -40,7 +34,7 @@ export class User {
   @Column({ nullable: true, unique: true })
   secondPhone!: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   email!: string;
 
   @Column()
@@ -67,20 +61,4 @@ export class User {
   @OneToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
   workTime!: WorkTime;
-}
-
-@ChildEntity()
-export class DeliveryMan extends User {
-  @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
-    nullable: false,
-    onDelete: 'RESTRICT',
-  })
-  @JoinColumn()
-  motorcycle!: Motorcycle;
-
-  @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
-  tips!: Tip[];
-
-  @Column('float')
-  daily!: number;
 }
