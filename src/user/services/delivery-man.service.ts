@@ -52,18 +52,7 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async saveDeliveryMan(user: Partial<DeliveryMan>) {
-    const http400 = generateBadRequestException('Erro ao criar o motoboy');
-    const created = await this.deliveryManRepository
-      .save(user)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+  async save(deliveryMan: Partial<DeliveryMan>) {
+    return this.deliveryManRepository.save(deliveryMan);
   }
 }
