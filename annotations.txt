@@ -1,13 +1,109 @@
-Projeto → Backend para "Geladinha Delivery"
+Observações Diárias (25/4/2026) MANHÃ DE SÁBADO
+2nd GRANDE REFATORAÇÃO DO SISTEMA
 
-→ Seguir curso que mostrou como fazer o backend para o projeto "The Blog" e fazer
-as adaptações necessárias.
+# ABANDONADA A FUNCIONALIDADE DE Table Inheritance do TypeORM
+# Agora, existe o mapeamento da relação One-To-One entre a entidade
+User e DeliveryMan onde DeliveryMan é o dono da relação, assim exigindo
+que já exista uma instância válida de usuário no banco de dados.
 
-→ Novo sistema de autorização seguindo o RBAC (Role-Based Access Control).
-Roles disponíveis: Admin, Operator e Motoboy.
+######### FRIDAY, 24th, afternoon #########
+Concluir refatoração do módulo 'auth' e depois criar DeliveryManService com os serviços
+essenciais (CRUD) e depois fazer as respectivas substituições no sistema.
 
-→ Após a criação das principais entidades do sistema (User, Voucher, Delivery, Role, Customer e Address),
-  acredito que já seja possível ir para o Frontend. Entretanto, acho que seria interessante fazer
-  um resource representando o Dashboard do sistema, ou seja, uma reunião das funcionalidades necessárias
-  que vêm dessas entidades, a fim de usar endpoints específicos para isso.
-  (mais detalhes: Observações Diárias 19/08/25)
+PRESTAR ATENÇÃO: como atualmente o sistema identifica que um usuário é um motoboy?
+
+- instanceof DeliveryMan
+- role.Motoboy
+
+Nova maneira (pós-refatoração)
+- if (!User.deliveryMan) {}
+- User.deliveryMan !== undefined
+
+######### END OF FRIDAY #########
+
+######### Módulos que vão e devem ser modificados ##########
+- delivery
+	- ResponseDeliveryDto
+		- this.user (mesma situação que o módulo Payout)
+		- Delivery.motoboy aponta para User
+	\n
+	- DeliveryService
+		- create()
+			→ métodos que buscam informações de User e de DeliveryMan precisam
+			retornar as relações JÁ EXISTENTES, além das que foram criadas
+	\n
+		- update()
+
+- payout
+	- ResponsePayoutDto
+		this.user: Pick<User> & this.motoboy.motorcycle: Partial<Motorocycle>
+		# deve-se prestar atenção no método que alimenta o campo
+		Payout.motoboy.deliveryMan, pois, atualmente, é o mesmo método que
+		lida com a entidade User, ou seja, existem campos que só existem
+		na entidade DeliveryMan.
+	\n
+	- Payout.motoboy aponta para User
+	\n
+	- PayoutService
+		- preview()
+			- payout.motoboyDaily = motoboy.deliveryMan.daily
+		- create()
+		- findOneByWorkDayAndMotoboy()
+		- findAllOwned()
+
+- settlement
+	- preview()
+
+- user → objetivo: DESACOPLAR TUDO RELACIONADO À ENTIDADE DeliveryMan
+	- UserService
+		- findOneBy()
+		- findOneByMotoboyOrFail() → relations: true
+		- create()
+			this.saveUser()
+			# cuidado com o retorno da entidade (por causa das relações)!
+		- updateMotoboyFields() → deve ser RETIRADO desse service
+		- findAllMotoboy() → deve ser RETIRADO desse service
+		- saveDeliveryMan() → deve ser RETIRADO desse service
+		- getUserAndEntityAuth() → a ideia é boa, mas acho que é possível
+			melhorar (bom uso da IA)
+	\n
+	- types/user.ts
+		# quem sabe deixar a mesma tipagem com exceção das relações contendo
+		`nullable: true`
+		\n
+		motorcycle.ts
+	\n
+	- MotorcycleService
+	- DeliveryManMotorcycleService → checar "Serviço intermediário"
+	\n
+	- Motorcycle.driver → aponta para User
+	- DeliveryMan precisa de uma PK
+	- ResponseUserDto → desaclopar toda lógica que envolve DeliveryMan,
+		pois será feito um próprio ResponseDeliveryManDto
+	\n
+	- data/relations/user.ts
+	# Prestar muita atenção aqui, para evitar qualquer "contaminação"
+		da entidade DeliveryMan, pois, agora, o sistema encara essas
+		entidades de forma distinta, ou seja, uma não conhece a outra.
+		- criar o próprio arquivo de relações para DeliveryMan
+		- verificar se é possível puxar as relações de DeliveryMan pelas
+			consultas usando o repositório de User; senão, pensar em outra
+			maneira para buscar essas relações de modo mais uniforme (cada
+			entidade conhece suas relações e seus campos).
+		
+- voucher
+	- createForEntity()
+
+########### Serviço intermediário #############
+- service para criar uma entidade DeliveryMan
+	- requisitos:
+		- user.id
+		- motorcycle.id
+		- após, DeliveryMan poderá ser criado
+		
+Notas:
+	Motorcycle é IDEPENDENTE de DeliveryMan
+	DeliveryMan é DEPENDENTE de Motorcycle
+	
+	User é INDEPENDENTE de DeliveryMan
+	DeliveryMan é DEPENDENTE de User
