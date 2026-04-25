@@ -10,6 +10,7 @@ import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { MotorcycleController } from './controllers/motorcycle.controller';
 import { MotorcycleService } from './services/motorcycle.service';
 import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
+import { DeliveryManService } from './services/delivery-man.service';
 
 @Module({
   imports: [
@@ -18,7 +19,12 @@ import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle
     WorkTimeModule,
   ],
   controllers: [UserController, MotorcycleController],
-  providers: [UserService, MotorcycleService, DeliveryManMotorcycleService],
+  providers: [
+    UserService,
+    MotorcycleService,
+    DeliveryManService,
+    DeliveryManMotorcycleService,
+  ],
   exports: [UserService],
 })
 export class UserModule {}
