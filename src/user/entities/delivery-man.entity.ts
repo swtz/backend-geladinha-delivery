@@ -1,10 +1,20 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Motorcycle } from './motorcycle.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { User } from './user.entity';
 
 @Entity()
 export class DeliveryMan {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
   @Column('float')
   daily!: number;
 
