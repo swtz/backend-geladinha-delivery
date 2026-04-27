@@ -60,9 +60,12 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto) {
-    await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
     await this.failIfNicknameExists(dto.nickname);
+
+    if (dto.email) {
+      await this.failIfEmailExists(dto.email);
+    }
 
     if (dto.secondPhone) {
       await this.failIfPhoneExists(dto.secondPhone);
