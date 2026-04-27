@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -14,19 +13,15 @@ import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
-import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
+import { Role, Role as RoleEnum } from 'src/common/role/roles.enum';
 import { essencial, full, withDeliveryMan } from './data/relations/user';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { UserType } from './types/user';
-import { Motorcycle } from './entities/motorcycle.entity';
 
 @Injectable()
 export class UserService {
-  private readonly logger = new Logger(UserService.name);
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
