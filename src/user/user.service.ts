@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
-import { essencial, full } from './data/relations/user';
+import { essencial, full, withDeliveryMan } from './data/relations/user';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
@@ -259,8 +259,12 @@ export class UserService {
     });
   }
 
-  async findOneByOrFail(userData: Partial<User>, relations = true) {
-    const user = await this.findOneBy(userData, relations);
+  async findOneByOrFail(
+    userData: Partial<User>,
+    relations = true,
+    isMotoboy = false,
+  ) {
+    const user = await this.findOneBy(userData, relations, isMotoboy);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -269,11 +273,26 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(userData: Partial<User>, relations = true) {
-    const fields = relations ? full : essencial;
+  async findOneBy(
+    userData: Partial<User>,
+    relations = true,
+    isMotoboy = false,
+  ) {
+    const aux: { fields: Record<string, any> } = { fields: {} };
+
+    if (!isMotoboy) {
+      if (relations) {
+        aux.fields = full;
+      } else {
+        aux.fields = essencial;
+      }
+    } else {
+      aux.fields = withDeliveryMan;
+    }
+
     return this.userRepository.findOne({
       where: userData,
-      relations: fields,
+      relations: aux.fields,
     });
   }
 
