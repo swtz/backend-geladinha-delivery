@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
-import { NewDeliveryMan } from '../types/deliveryMan';
+import { DeliveryManType } from '../types/delivery-man';
 import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class DeliveryManService {
   ) {}
 
   async create(dto: CreateDeliveryManDto, user: User, motorcycle: Motorcycle) {
-    const deliveryMan: NewDeliveryMan = {
+    const deliveryMan: DeliveryManType = {
       daily: dto.daily,
       motorcycle,
       user,

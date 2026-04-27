@@ -1,6 +1,6 @@
 import { DeliveryMan } from '../entities/delivery-man.entity';
 
-export type NewDeliveryMan = Omit<
+export type DeliveryManType = Omit<
   DeliveryMan,
   'id' | 'tips' | 'createdAt' | 'updatedAt'
 >;
