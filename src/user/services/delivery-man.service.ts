@@ -6,6 +6,7 @@ import { User } from '../entities/user.entity';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
 import { NewDeliveryMan } from '../types/deliveryMan';
+import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()
 export class DeliveryManService {
@@ -43,7 +44,7 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneByOrFail(motoboyData: Partial<DeliveryMan>, relations = true) {
+  async findOneByOrFail(motoboyData: Partial<DeliveryMan>, relations = false) {
     const motoboy = await this.findOneBy(motoboyData, relations);
 
     if (!motoboy) {
@@ -53,7 +54,7 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneBy(motoboyData: Partial<DeliveryMan>, relations = true) {
+  async findOneBy(motoboyData: Partial<DeliveryMan>, relations = false) {
     const fields = relations ? full : essencial;
     return this.deliveryManRepository.findOne({
       where: motoboyData,
@@ -68,20 +69,6 @@ export class DeliveryManService {
     });
 
     return motoboys;
-  }
-
-  async findOneMotoboyByOrFail(userData: Partial<User>, relations = true) {
-    const fields = relations ? full : essencial;
-    const motoboy = await this.deliveryManRepository.findOne({
-      where: userData,
-      relations: fields,
-    });
-
-    if (!motoboy) {
-      throw new NotFoundException('Motoboy não encontrado');
-    }
-
-    return motoboy;
   }
 
   async save(deliveryMan: Partial<DeliveryMan>) {
