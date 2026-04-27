@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,6 +41,24 @@ export class DeliveryManService {
     motoboy.daily = dto.daily ?? motoboy.daily;
 
     return motoboy;
+  }
+
+  async findOneByOrFail(motoboyData: Partial<DeliveryMan>, relations = true) {
+    const motoboy = await this.findOneBy(motoboyData, relations);
+
+    if (!motoboy) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return motoboy;
+  }
+
+  async findOneBy(motoboyData: Partial<DeliveryMan>, relations = true) {
+    const fields = relations ? full : essencial;
+    return this.deliveryManRepository.findOne({
+      where: motoboyData,
+      relations: fields,
+    });
   }
 
   async findAllMotoboy() {
