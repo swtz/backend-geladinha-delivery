@@ -59,7 +59,7 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto, motorcycle?: Motorcycle) {
+  async create(dto: CreateUserDto) {
     await this.failIfEmailExists(dto.email);
     await this.failIfPhoneExists(dto.phone);
     await this.failIfNicknameExists(dto.nickname);
@@ -67,10 +67,6 @@ export class UserService {
     if (dto.secondPhone) {
       await this.failIfPhoneExists(dto.secondPhone);
       await this.failIfPhoneExists(dto.secondPhone, true);
-    }
-
-    if (!dto.role || !roles.includes(dto.role)) {
-      throw new BadRequestException('Função inválida');
     }
 
     const role = await this.roleService.findOneOrCreate(dto.role);
@@ -89,17 +85,6 @@ export class UserService {
         ? await this.workTimeService.findOneOrCreate(dto.workTime)
         : undefined,
     };
-
-    if (dto.role === RoleEnum.Motoboy) {
-      const newMotoboy = {
-        ...newUser,
-        daily: dto.daily,
-        motorcycle,
-      };
-      const created = await this.saveDeliveryMan(newMotoboy);
-
-      return this.findOneMotoboyByOrFail({ id: created.id });
-    }
 
     const created = await this.saveUser(newUser);
 

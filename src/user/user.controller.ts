@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,7 +17,7 @@ import { CreateUserDto } from './dtos/user/create-user.dto';
 import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
-import { Role } from 'src/common/role/roles.enum';
+import { Role, roles } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
@@ -79,13 +80,8 @@ export class UserController {
     @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    if (userDto.role !== Role.Motoboy) {
-      const user = await this.userService.create({
-        ...userDto,
-        phone,
-        workTime,
-      });
-      return new ResponseUserDto(user);
+    if (!userDto.role || !roles.includes(userDto.role)) {
+      throw new BadRequestException('Função inválida');
     }
 
     const deliveryManWithMotorcycle =
