@@ -74,7 +74,7 @@ export class UserService {
 
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser: UserType = {
+    const user: UserType = {
       name: dto.name,
       lastName: dto.lastName,
       nickname: dto.nickname,
@@ -89,10 +89,10 @@ export class UserService {
         : undefined,
     };
 
-    const created = await this.saveUser(newUser);
+    const created = await this.save(user);
 
-    if (newUser.workTime) {
-      await this.workTimeService.save({ ...newUser.workTime, user: created });
+    if (user.workTime) {
+      await this.workTimeService.save({ ...user.workTime, user: created });
     }
 
     return this.findOneByOrFail({ id: created.id });
@@ -316,19 +316,8 @@ export class UserService {
     return user;
   }
 
-  async saveUser(user: Partial<User>) {
-    const http400 = generateBadRequestException('Erro ao criar o usuário');
-    const created = await this.userRepository
-      .save(user)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+  async save(user: Partial<User>) {
+    return this.userRepository.save(user);
   }
 
   async getUserAndEntityAuth(user: User, id: string) {
