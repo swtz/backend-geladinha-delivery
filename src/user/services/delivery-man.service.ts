@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../entities/user.entity';
+import { Motorcycle } from '../entities/motorcycle.entity';
 
 @Injectable()
 export class DeliveryManService {
@@ -9,6 +11,8 @@ export class DeliveryManService {
     @InjectRepository(DeliveryMan)
     private readonly deliveryManRepository: Repository<DeliveryMan>,
   ) {}
+
+  async create(dto: CreateDeliveryManDto, user: User, motorcycle: Motorcycle) {}
 
   async updateMotoboyFields(
     existsMotoboyData: boolean,
