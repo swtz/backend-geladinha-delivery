@@ -9,6 +9,5 @@ export const withDeliveryMan = {
 export const full = {
   ...essencial,
   ...withDeliveryMan,
-  tips: true,
   vouchers: { user: true, createdBy: true },
 };
