@@ -39,8 +39,12 @@ export class DeliveryManMotorcycleService {
 
     await this.motorcycleService.save({ ...motorcycle, driver: motoboy });
 
-    return this.userService.findOneByOrFail({
-      deliveryMan: { id: motoboy.id },
-    });
+    return this.userService.findOneByOrFail(
+      {
+        deliveryMan: { id: motoboy.id },
+      },
+      true,
+      true,
+    );
   }
 }
