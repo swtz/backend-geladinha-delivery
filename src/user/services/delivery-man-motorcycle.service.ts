@@ -20,7 +20,6 @@ export class DeliveryManMotorcycleService {
     motorcycleDto: CreateMotorcycleDto,
   ) {
     const user = await this.userService.create(userDto);
-
     const owner = motorcycleDto.owner
       ? await this.userService.findOneByOrFail({
           id: motorcycleDto.owner,
@@ -31,6 +30,7 @@ export class DeliveryManMotorcycleService {
       motorcycleDto,
       owner,
     );
+
     const motoboy = await this.deliveryManService.create(
       deliveryManDto,
       user,
@@ -39,12 +39,6 @@ export class DeliveryManMotorcycleService {
 
     await this.motorcycleService.save({ ...motorcycle, driver: motoboy });
 
-    return this.userService.findOneByOrFail(
-      {
-        deliveryMan: { id: motoboy.id },
-      },
-      true,
-      true,
-    );
+    return this.userService.findOneByOrFail({ id: user.id }, true, true);
   }
 }
