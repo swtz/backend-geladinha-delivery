@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Motorcycle } from './motorcycle.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
@@ -17,6 +19,12 @@ export class DeliveryMan {
 
   @Column('float')
   daily!: number;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 
   @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
     nullable: false,
