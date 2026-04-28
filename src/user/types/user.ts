@@ -3,6 +3,7 @@ import { User } from '../entities/user.entity';
 import { Voucher } from 'src/voucher/entities/voucher.entity';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 
+export type UserDtoType = Pick<User, 'id' | 'name' | 'phone'>;
 export type UserType = Omit<
   User,
   | 'id'
