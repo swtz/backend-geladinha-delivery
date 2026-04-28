@@ -1,12 +1,19 @@
 import { Repository } from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { MotorcycleType } from '../types/motorcycle';
 import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
+import { essencial, full } from '../data/relations/delivery-man';
+
 @Injectable()
 export class MotorcycleService {
   private readonly logger = new Logger(MotorcycleService.name);
@@ -42,8 +49,28 @@ export class MotorcycleService {
       owner,
       driver,
     };
+    const created = await this.save(motorcycle);
 
-    return this.save(motorcycle);
+    return this.findOneByOrFail({ id: created.id });
+  }
+
+  async findOneByOrFail(motorcycleData: Partial<Motorcycle>, relations = true) {
+    const motorcycle = await this.findOneBy(motorcycleData, relations);
+
+    if (!motorcycle) {
+      throw new NotFoundException('Essa moto não existe');
+    }
+
+    return motorcycle;
+  }
+
+  findOneBy(motorcycleData: Partial<Motorcycle>, relations = true) {
+    const fields = relations ? full : essencial;
+
+    return this.motorcycleRepository.findOne({
+      where: motorcycleData,
+      relations: { owner: true, driver: fields },
+    });
   }
 
   async save(motorcycle: Partial<Motorcycle>) {
