@@ -1,10 +1,7 @@
 import { Role } from 'src/common/role/roles.enum';
 import { User } from '../../entities/user.entity';
-import { DeliveryMan } from '../../entities/delivery-man.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
-import { Tip } from 'src/tip/entities/tip.entity';
 import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
-import { Motorcycle } from 'src/user/entities/motorcycle.entity';
 
 export class ResponseUserDto {
   readonly id: string;
@@ -13,29 +10,13 @@ export class ResponseUserDto {
   readonly nickname: string;
   readonly phone: string;
   readonly secondPhone?: string;
-  readonly email: string;
-  readonly motorcycle!: Motorcycle;
+  readonly email?: string;
   readonly daily?: number;
-  readonly tips?: Omit<Tip, 'motoboy'>[] | null;
-  readonly vouchers: ResponseVoucherDto[] | null;
   readonly roles: Role[];
-  readonly workTime: SmallResponseWorkTime | null;
+  readonly vouchers?: ResponseVoucherDto[];
+  readonly workTime?: SmallResponseWorkTime;
 
-  constructor(user: User | DeliveryMan) {
-    if (user instanceof DeliveryMan) {
-      this.motorcycle = user.motorcycle;
-      this.daily = user.daily;
-      this.tips = user.tips
-        ? user.tips.map(tip => {
-            return {
-              id: tip.id,
-              amount: tip.amount,
-              createdAt: tip.createdAt,
-              updatedAt: tip.updatedAt,
-            };
-          })
-        : null;
-    }
+  constructor(user: User) {
     this.id = user.id;
     this.name = user.name;
     this.lastName = user.lastName;
@@ -43,11 +24,9 @@ export class ResponseUserDto {
     this.phone = user.phone;
     this.secondPhone = user.secondPhone;
     this.email = user.email;
-    this.vouchers = user.vouchers
-      ? user.vouchers.map(voucher => {
-          return new ResponseVoucherDto(voucher);
-        })
-      : null;
+    this.vouchers = user.vouchers?.map(voucher => {
+      return new ResponseVoucherDto(voucher);
+    });
     this.roles = user.roles.map(role => role.name);
     this.workTime = user.workTime
       ? {
@@ -56,6 +35,6 @@ export class ResponseUserDto {
           initHour: user.workTime.initHour,
           endHour: user.workTime.endHour,
         }
-      : null;
+      : undefined;
   }
 }
