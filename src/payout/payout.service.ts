@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -24,8 +23,6 @@ import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Injectable()
 export class PayoutService {
-  private readonly logger = new Logger(PayoutService.name);
-
   constructor(
     @InjectRepository(Payout)
     private readonly payoutRepository: Repository<Payout>,
@@ -243,19 +240,6 @@ export class PayoutService {
   }
 
   async save(payout: Partial<Payout>) {
-    const http400 = generateBadRequestException(
-      'Erro ao salvar pagamento do motoboy',
-    );
-    const created = await this.payoutRepository
-      .save(payout)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.payoutRepository.save(payout);
   }
 }
