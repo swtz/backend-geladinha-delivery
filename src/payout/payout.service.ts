@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -32,7 +31,10 @@ export class PayoutService {
   ) {}
 
   async preview(motoboyData: Partial<User>, from: Date, to: Date) {
-    const motoboy = await this.userService.findOneByOrFail(motoboyData);
+    const { deliveryMan: motoboy } = await this.userService.findOneByOrFail(
+      motoboyData,
+      'motoboy-full',
+    );
     const vouchers = await this.voucherService.findAll({
       from,
       to,
