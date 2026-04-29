@@ -16,7 +16,6 @@ import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
