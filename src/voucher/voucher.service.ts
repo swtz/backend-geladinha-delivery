@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,12 +18,9 @@ import {
   FindAllParams,
   VoucherFindAllFactory,
 } from './factories/query-factory';
-import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class VoucherService {
-  private readonly logger = new Logger(VoucherService.name);
-
   constructor(
     @InjectRepository(Voucher)
     private readonly voucherRepository: Repository<Voucher>,
@@ -233,17 +229,6 @@ export class VoucherService {
   }
 
   async save(voucher: Partial<Voucher>) {
-    const http400 = generateBadRequestException('Erro ao salvar a compra/vale');
-    const created = await this.voucherRepository
-      .save(voucher)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.voucherRepository.save(voucher);
   }
 }
