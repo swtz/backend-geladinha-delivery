@@ -14,7 +14,11 @@ import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum } from 'src/common/role/roles.enum';
-import { essencial, full, withDeliveryMan } from './data/relations/user';
+import { essencial, full } from './data/relations/user';
+import {
+  essencial as mtbEssencial,
+  full as mtbFull,
+} from './data/relations/delivery-man';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
@@ -244,7 +248,7 @@ export class UserService {
 
   async findOneByOrFail(
     userData: Partial<User>,
-    relations: 'full' | 'essencial' | 'motoboy',
+    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
   ) {
     const user = await this.findOneBy(userData, relations);
 
@@ -255,24 +259,33 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(userData: Partial<User>, relations?: 'full' | 'motoboy') {
-    const aux: { fields: Record<string, any> } = { fields: {} };
+  async findOneBy(
+    userData: Partial<User>,
+    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+  ) {
+    const aux: {
+      userFields: Record<string, any>;
+      deliveryManFields: Record<string, any>;
+    } = { userFields: {}, deliveryManFields: {} };
 
     if (relations) {
       switch (relations) {
-        case 'motoboy':
-          aux.fields = withDeliveryMan;
+        case 'motoboy-essencial':
+          aux.deliveryManFields = mtbEssencial;
           break;
-        case 'full':
-          aux.fields = full;
+        case 'motoboy-full':
+          aux.deliveryManFields = mtbFull;
+          break;
+        case 'user-full':
+          aux.userFields = full;
       }
     } else {
-      aux.fields = essencial;
+      aux.userFields = essencial;
     }
 
     return this.userRepository.findOne({
       where: userData,
-      relations: aux.fields,
+      relations: { ...aux.userFields, deliveryMan: aux.deliveryManFields },
     });
   }
 
