@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import relations from './data/relations/voucher';
@@ -44,7 +43,7 @@ export class VoucherService {
       throw new BadRequestException('O ID do usuário é obrigatório');
     }
 
-    const entity = await this.userService.findOneByOrFail({ id });
+    const entity = await this.userService.findOneByOrFail({ id }, false, true);
     const { isLoggedUserAdmin } = await this.userService.getUserAndEntityAuth(
       user,
       id,
@@ -56,7 +55,7 @@ export class VoucherService {
       createdBy: user,
     };
 
-    if (voucher.user instanceof DeliveryMan) {
+    if (voucher.user?.deliveryMan) {
       return this.save(voucher);
     }
 

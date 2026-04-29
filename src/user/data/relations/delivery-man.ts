@@ -1,6 +1,5 @@
 export const essencial = {
   motorcycle: true,
-  workTime: true,
 };
 
 export const full = {
