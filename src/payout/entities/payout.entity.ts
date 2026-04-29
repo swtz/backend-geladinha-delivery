@@ -52,6 +52,9 @@ export class Payout {
   @Column()
   workDay!: Date;
 
+  @Column()
+  motorcycleLicensePlate!: string;
+
   // Será necessário computar o dia/horário do término do serviço do motoboy,
   // ou User.workTime já é suficiente?
   // @Column()
