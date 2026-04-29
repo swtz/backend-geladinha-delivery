@@ -19,6 +19,9 @@ export class Payout {
   @Column('float')
   totalDeliveries!: number;
 
+  @Column()
+  quantityDeliveries!: number;
+
   @Column('float')
   motoboyDaily!: number;
 
@@ -49,7 +52,12 @@ export class Payout {
   @Column()
   workDay!: Date;
 
-  @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE' })
+  // Será necessário computar o dia/horário do término do serviço do motoboy,
+  // ou User.workTime já é suficiente?
+  // @Column()
+  // workEndDay!: Date;
+
+  @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE', nullable: false })
   motoboy!: DeliveryMan;
 
   @OneToMany(() => Voucher, voucher => voucher.payout, { nullable: true })
