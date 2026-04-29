@@ -255,21 +255,19 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(
-    userData: Partial<User>,
-    relations: 'full' | 'essencial' | 'motoboy',
-  ) {
+  async findOneBy(userData: Partial<User>, relations?: 'full' | 'motoboy') {
     const aux: { fields: Record<string, any> } = { fields: {} };
 
-    switch (relations) {
-      case 'motoboy':
-        aux.fields = withDeliveryMan;
-        break;
-      case 'essencial':
-        aux.fields = essencial;
-        break;
-      case 'full':
-        aux.fields = full;
+    if (relations) {
+      switch (relations) {
+        case 'motoboy':
+          aux.fields = withDeliveryMan;
+          break;
+        case 'full':
+          aux.fields = full;
+      }
+    } else {
+      aux.fields = essencial;
     }
 
     return this.userRepository.findOne({
