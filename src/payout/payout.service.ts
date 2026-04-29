@@ -32,7 +32,7 @@ export class PayoutService {
   ) {}
 
   async preview(motoboyData: Partial<User>, from: Date, to: Date) {
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+    const motoboy = await this.userService.findOneByOrFail(motoboyData);
     const vouchers = await this.voucherService.findAll({
       from,
       to,

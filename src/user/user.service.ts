@@ -244,10 +244,9 @@ export class UserService {
 
   async findOneByOrFail(
     userData: Partial<User>,
-    relations = true,
-    isMotoboy = false,
+    relations: 'full' | 'essencial' | 'motoboy',
   ) {
-    const user = await this.findOneBy(userData, relations, isMotoboy);
+    const user = await this.findOneBy(userData, relations);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -258,19 +257,19 @@ export class UserService {
 
   async findOneBy(
     userData: Partial<User>,
-    relations = true,
-    isMotoboy = false,
+    relations: 'full' | 'essencial' | 'motoboy',
   ) {
     const aux: { fields: Record<string, any> } = { fields: {} };
 
-    if (!isMotoboy) {
-      if (relations) {
-        aux.fields = full;
-      } else {
+    switch (relations) {
+      case 'motoboy':
+        aux.fields = withDeliveryMan;
+        break;
+      case 'essencial':
         aux.fields = essencial;
-      }
-    } else {
-      aux.fields = withDeliveryMan;
+        break;
+      case 'full':
+        aux.fields = full;
     }
 
     return this.userRepository.findOne({
