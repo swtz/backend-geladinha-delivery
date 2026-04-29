@@ -31,11 +31,7 @@ export class PayoutService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(motoboyData: Partial<DeliveryMan>, from: Date, to: Date) {
-    if (Object.keys(motoboyData).length === 0) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
-
+  async preview(motoboyData: Partial<User>, from: Date, to: Date) {
     const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
     const vouchers = await this.voucherService.findAll({
       from,

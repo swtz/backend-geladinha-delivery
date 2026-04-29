@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -38,8 +39,11 @@ export class PayoutController {
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    if (!name && !phone && !id) {
+      throw new BadRequestException('Informe os dados para consulta');
+    }
 
+    const qo = { name, phone, id };
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
