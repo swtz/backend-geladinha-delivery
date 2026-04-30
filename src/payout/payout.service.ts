@@ -60,6 +60,7 @@ export class PayoutService {
       weekDay: weekDays[from.getDay()],
       workDay: from,
       totalDeliveries: 0,
+      quantityDeliveries: deliveries.length,
       motoboyDaily: 0,
       motoboyTips,
       subtotal: 0,
