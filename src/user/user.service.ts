@@ -248,7 +248,11 @@ export class UserService {
 
   async findOneByOrFail(
     userData: Partial<User>,
-    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+    relations?:
+      | 'user-full'
+      | 'motoboy-essencial'
+      | 'motoboy-full'
+      | 'user-with-delivery-man',
   ) {
     const user = await this.findOneBy(userData, relations);
 
