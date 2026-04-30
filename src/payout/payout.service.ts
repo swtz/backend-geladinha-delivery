@@ -119,77 +119,77 @@ export class PayoutService {
     return payout;
   }
 
-  async create(
-    payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
-      workDay: Date;
-      motoboy: DeliveryMan;
-    },
-  ) {
-    const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
-      id: payoutData.motoboy.id,
-    });
+  // async create(
+  //   payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
+  //     workDay: Date;
+  //     motoboy: DeliveryMan;
+  //   },
+  // ) {
+  //   const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
+  //     id: payoutData.motoboy.id,
+  //   });
 
-    if (exists) {
-      const motoboyName = exists.motoboy.name;
+  //   if (exists) {
+  //     const motoboyName = exists.motoboy.name;
 
-      throw new ConflictException(
-        `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
-      );
-    }
+  //     throw new ConflictException(
+  //       `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
+  //     );
+  //   }
 
-    return this.save(payoutData);
-  }
+  //   return this.save(payoutData);
+  // }
 
-  async update(id: string, toDate: string) {
-    const payout = await this.findOneByOrFail({ id });
+  // async update(id: string, toDate: string) {
+  //   const payout = await this.findOneByOrFail({ id });
 
-    if (payout.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível alterar um pagamento fechado',
-      );
-    }
+  //   if (payout.isClosed) {
+  //     throw new UnauthorizedException(
+  //       'Não é possível alterar um pagamento fechado',
+  //     );
+  //   }
 
-    const { workDay: initDate, motoboy } = payout;
-    const { endDate: to } = await this.workTimeDateService.create(
-      { id: motoboy.id },
-      new Date(0).toISOString(),
-      toDate,
-    );
+  //   const { workDay: initDate, motoboy } = payout;
+  //   const { endDate: to } = await this.workTimeDateService.create(
+  //     { id: motoboy.id },
+  //     new Date(0).toISOString(),
+  //     toDate,
+  //   );
 
-    const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
-    const mergedPayout = {
-      ...payout,
-      ...newPayout,
-    };
+  //   const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
+  //   const mergedPayout = {
+  //     ...payout,
+  //     ...newPayout,
+  //   };
 
-    return this.save(mergedPayout);
-  }
+  //   return this.save(mergedPayout);
+  // }
 
-  async updateIsClosed(id: string, flag: boolean) {
-    const payout = await this.findOneByOrFail({ id });
-    payout.isClosed = flag;
-    return this.save(payout);
-  }
+  // async updateIsClosed(id: string, flag: boolean) {
+  //   const payout = await this.findOneByOrFail({ id });
+  //   payout.isClosed = flag;
+  //   return this.save(payout);
+  // }
 
-  async findOneByOrFail(payoutData: Partial<Payout>) {
-    const payout = await this.findOneBy(payoutData);
+  // async findOneByOrFail(payoutData: Partial<Payout>) {
+  //   const payout = await this.findOneBy(payoutData);
 
-    if (!payout) {
-      throw new NotFoundException('Pagamento não encontrado');
-    }
+  //   if (!payout) {
+  //     throw new NotFoundException('Pagamento não encontrado');
+  //   }
 
-    return payout;
-  }
+  //   return payout;
+  // }
 
-  findOneBy(payoutData: Partial<Payout>) {
-    return this.payoutRepository.findOne({
-      where: payoutData,
-      relations: {
-        motoboy: { workTime: true },
-        vouchers: voucherRelations,
-      },
-    });
-  }
+  // findOneBy(payoutData: Partial<Payout>) {
+  //   return this.payoutRepository.findOne({
+  //     where: payoutData,
+  //     relations: {
+  //       motoboy: { workTime: true },
+  //       vouchers: voucherRelations,
+  //     },
+  //   });
+  // }
 
   findOneByWorkDayAndMotoboy(workDay: Date, motoboyData: Partial<DeliveryMan>) {
     return this.payoutRepository.findOne({
@@ -224,18 +224,18 @@ export class PayoutService {
     });
   }
 
-  async remove(id: string) {
-    const payout = await this.findOneByOrFail({ id });
+  // async remove(id: string) {
+  //   const payout = await this.findOneByOrFail({ id });
 
-    if (payout.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível remover um pagamento fechado',
-      );
-    }
+  //   if (payout.isClosed) {
+  //     throw new UnauthorizedException(
+  //       'Não é possível remover um pagamento fechado',
+  //     );
+  //   }
 
-    await this.payoutRepository.delete({ id });
-    return payout;
-  }
+  //   await this.payoutRepository.delete({ id });
+  //   return payout;
+  // }
 
   async save(payout: Partial<Payout>) {
     return this.payoutRepository.save(payout);

@@ -102,119 +102,119 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  async update(user: User, dto: UpdateUserDto) {
-    const userFields = Object.keys(dto)
-      .filter(key => key !== 'motorcycle')
-      .filter(key => key !== 'daily');
-    const motoboyFields = Object.keys(dto).filter(
-      key => key === 'motorcycle' || 'daily',
-    );
+  // async update(user: User, dto: UpdateUserDto) {
+  //   const userFields = Object.keys(dto)
+  //     .filter(key => key !== 'motorcycle')
+  //     .filter(key => key !== 'daily');
+  //   const motoboyFields = Object.keys(dto).filter(
+  //     key => key === 'motorcycle' || 'daily',
+  //   );
 
-    const existsUserData =
-      userFields.filter(key => Boolean(dto[key])).length > 0;
-    const existsMotoboyData =
-      motoboyFields.filter(key => Boolean(dto[key])).length > 0;
+  //   const existsUserData =
+  //     userFields.filter(key => Boolean(dto[key])).length > 0;
+  //   const existsMotoboyData =
+  //     motoboyFields.filter(key => Boolean(dto[key])).length > 0;
 
-    const authFlags = await this.getUserAndEntityAuth(user, user.id);
-    const assignRoleError = new BadRequestException(
-      'Não é possível atribuir duas funções a um usuário',
-    );
+  //   const authFlags = await this.getUserAndEntityAuth(user, user.id);
+  //   const assignRoleError = new BadRequestException(
+  //     'Não é possível atribuir duas funções a um usuário',
+  //   );
 
-    if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
-      throw assignRoleError;
-    }
+  //   if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
+  //     throw assignRoleError;
+  //   }
 
-    if (
-      (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
-      dto.role === RoleEnum.Motoboy
-    ) {
-      throw assignRoleError;
-    }
+  //   if (
+  //     (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
+  //     dto.role === RoleEnum.Motoboy
+  //   ) {
+  //     throw assignRoleError;
+  //   }
 
-    const entity = authFlags.isLoggedUserMotoboy
-      ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
-      : user;
+  //   const entity = authFlags.isLoggedUserMotoboy
+  //     ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
+  //     : user;
 
-    if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
-      throw new BadRequestException('Dados não enviados');
-    }
+  //   if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
+  //     throw new BadRequestException('Dados não enviados');
+  //   }
 
-    entity.name = dto.name ?? entity.name;
+  //   entity.name = dto.name ?? entity.name;
 
-    if (dto.email && dto.email !== entity.email) {
-      await this.failIfEmailExists(dto.email);
-      entity.email = dto.email;
-      entity.forceLogout = true;
-    }
+  //   if (dto.email && dto.email !== entity.email) {
+  //     await this.failIfEmailExists(dto.email);
+  //     entity.email = dto.email;
+  //     entity.forceLogout = true;
+  //   }
 
-    if (dto.phone && dto.phone !== entity.phone) {
-      await this.failIfPhoneExists(dto.phone);
-      entity.phone = dto.phone;
-      entity.forceLogout = true;
-    }
+  //   if (dto.phone && dto.phone !== entity.phone) {
+  //     await this.failIfPhoneExists(dto.phone);
+  //     entity.phone = dto.phone;
+  //     entity.forceLogout = true;
+  //   }
 
-    if (
-      dto.role &&
-      !authFlags.userRoles.includes(dto.role) &&
-      authFlags.isLoggedUserAdmin
-    ) {
-      const role = await this.roleService.findOneOrCreate(dto.role);
-      entity.roles.push(role);
-      entity.forceLogout = true;
-    }
+  //   if (
+  //     dto.role &&
+  //     !authFlags.userRoles.includes(dto.role) &&
+  //     authFlags.isLoggedUserAdmin
+  //   ) {
+  //     const role = await this.roleService.findOneOrCreate(dto.role);
+  //     entity.roles.push(role);
+  //     entity.forceLogout = true;
+  //   }
 
-    if (dto.workTime) {
-      const { id, shift, initHour, endHour } = dto.workTime;
-      const hasAllData = !!(shift && initHour && endHour);
-      const hasSomeData = !!(shift || initHour || endHour);
-      const hasWorkTime = entity.workTime;
+  //   if (dto.workTime) {
+  //     const { id, shift, initHour, endHour } = dto.workTime;
+  //     const hasAllData = !!(shift && initHour && endHour);
+  //     const hasSomeData = !!(shift || initHour || endHour);
+  //     const hasWorkTime = entity.workTime;
 
-      if (id) {
-        entity.workTime = await this.workTimeService
-          .findOneBy({ id, isShared: true })
-          .then(result => {
-            if (!result) {
-              return this.workTimeService.findOneOwnedByOrFail(
-                entity,
-                { id },
-                false,
-              );
-            }
-            return result;
-          });
-      } else if (hasAllData) {
-        if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
-          const created: NewWorkTimeForRest = {
-            shift,
-            initHour,
-            endHour,
-            isDefault: false,
-            isShared: false,
-          };
+  //     if (id) {
+  //       entity.workTime = await this.workTimeService
+  //         .findOneBy({ id, isShared: true })
+  //         .then(result => {
+  //           if (!result) {
+  //             return this.workTimeService.findOneOwnedByOrFail(
+  //               entity,
+  //               { id },
+  //               false,
+  //             );
+  //           }
+  //           return result;
+  //         });
+  //     } else if (hasAllData) {
+  //       if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
+  //         const created: NewWorkTimeForRest = {
+  //           shift,
+  //           initHour,
+  //           endHour,
+  //           isDefault: false,
+  //           isShared: false,
+  //         };
 
-          entity.workTime = await this.workTimeService.save({
-            ...created,
-            user: entity,
-          });
-        } else {
-          entity.workTime = await this.workTimeService.update(
-            entity.workTime.id,
-            dto.workTime,
-          );
-        }
-      } else if (hasSomeData) {
-        entity.workTime = await this.workTimeService.update(
-          entity.workTime.id,
-          dto.workTime,
-        );
-      } else {
-        throw new BadRequestException('Dados não enviados');
-      }
-    }
+  //         entity.workTime = await this.workTimeService.save({
+  //           ...created,
+  //           user: entity,
+  //         });
+  //       } else {
+  //         entity.workTime = await this.workTimeService.update(
+  //           entity.workTime.id,
+  //           dto.workTime,
+  //         );
+  //       }
+  //     } else if (hasSomeData) {
+  //       entity.workTime = await this.workTimeService.update(
+  //         entity.workTime.id,
+  //         dto.workTime,
+  //       );
+  //     } else {
+  //       throw new BadRequestException('Dados não enviados');
+  //     }
+  //   }
 
-    const updated = await this.saveUser(entity);
-    return this.findOneByOrFail({ id: updated.id }, false);
-  }
+  //   const updated = await this.saveUser(entity);
+  //   return this.findOneByOrFail({ id: updated.id }, false);
+  // }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
     const user = await this.findOneByOrFail({ id });
@@ -233,7 +233,7 @@ export class UserService {
     user.password = hashedPassword;
     user.forceLogout = true;
 
-    return this.saveUser(user);
+    return this.save(user);
   }
 
   async findAll({ role }: { role?: RoleEnum }) {
@@ -248,11 +248,7 @@ export class UserService {
 
   async findOneByOrFail(
     userData: Partial<User>,
-    relations?:
-      | 'user-full'
-      | 'motoboy-essencial'
-      | 'motoboy-full'
-      | 'user-with-delivery-man',
+    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
   ) {
     const user = await this.findOneBy(userData, relations);
 

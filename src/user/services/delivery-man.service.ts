@@ -25,24 +25,24 @@ export class DeliveryManService {
     return this.save(deliveryMan);
   }
 
-  async updateMotoboyFields(
-    existsMotoboyData: boolean,
-    dto: UpdateUserDto,
-    user: User,
-  ) {
-    if (!existsMotoboyData) {
-      throw new BadRequestException('Dados do motoboy não enviados');
-    }
+  // async updateMotoboyFields(
+  //   existsMotoboyData: boolean,
+  //   dto: UpdateUserDto,
+  //   user: User,
+  // ) {
+  //   if (!existsMotoboyData) {
+  //     throw new BadRequestException('Dados do motoboy não enviados');
+  //   }
 
-    const motoboy = await this.findOneMotoboyByOrFail({ id: user.id });
+  //   const motoboy = await this.findOneMotoboyByOrFail({ id: user.id });
 
-    // motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
-    // MotorcycleService.update()
+  //   // motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
+  //   // MotorcycleService.update()
 
-    motoboy.daily = dto.daily ?? motoboy.daily;
+  //   motoboy.daily = dto.daily ?? motoboy.daily;
 
-    return motoboy;
-  }
+  //   return motoboy;
+  // }
 
   async findOneByOrFail(
     motoboyData: Omit<Partial<DeliveryMan>, 'user'> & { user: Partial<User> },

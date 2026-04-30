@@ -19,6 +19,7 @@ import {
   TotalPurchaseFactory,
 } from './factories/query-factory.';
 import { generateBadRequestException } from 'src/common/generate-exception';
+import { DeliveryManService } from 'src/user/services/delivery-man.service';
 
 @Injectable()
 export class DeliveryService {
@@ -29,6 +30,7 @@ export class DeliveryService {
     private readonly deliveryRepository: Repository<Delivery>,
     private readonly paymentMethodService: PaymentMethodService,
     private readonly userService: UserService,
+    private readonly deliveryManService: DeliveryManService,
     private readonly customerService: CustomerService,
     private readonly addressService: AddressService,
     private readonly tipService: TipService,
@@ -38,8 +40,8 @@ export class DeliveryService {
     const operator = await this.userService.findOneByOrFail({
       id: user.id,
     });
-    const motoboy = await this.userService.findOneMotoboyByOrFail({
-      id: dto.motoboy,
+    const motoboy = await this.deliveryManService.findOneByOrFail({
+      user: { id: dto.motoboy },
     });
     const customer = await this.customerService.findOneByOrFail({
       id: dto.customer,
@@ -75,8 +77,8 @@ export class DeliveryService {
     const delivery = await this.findOneOwnedByOrFail(operator, { id });
 
     if (dto.motoboy && dto.motoboy !== delivery.motoboy.id) {
-      const newMotoboy = await this.userService.findOneMotoboyByOrFail({
-        id: dto.motoboy,
+      const newMotoboy = await this.deliveryManService.findOneByOrFail({
+        user: { id: dto.motoboy },
       });
 
       if (delivery.tip !== null) {

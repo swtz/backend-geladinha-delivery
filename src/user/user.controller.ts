@@ -25,6 +25,7 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { CreateMotorcycleDto } from './dtos/motorcycle/create-motorcycle.dto';
 import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -36,28 +37,25 @@ export class UserController {
 
   @Get('me')
   async findMe(@Req() req: AuthenticatedRequest) {
-    const user = await this.userService.findOneByOrFail(
-      {
-        id: req.user.id,
-      },
-      false,
-    );
+    const user = await this.userService.findOneByOrFail({
+      id: req.user.id,
+    });
     return new ResponseUserDto(user);
   }
 
-  @Get('motoboy')
-  async findAllMotoboy() {
-    const motoboys = await this.userService.findAllMotoboy();
-    const parsedMotoboys = motoboys.map(
-      motoboy => new ResponseUserDto(motoboy),
-    );
-    return parsedMotoboys;
-  }
+  // @Get('motoboy')
+  // async findAllMotoboy() {
+  //   const motoboys = await this.userService.findAllMotoboy();
+  //   const parsedMotoboys = motoboys.map(
+  //     motoboy => new ResponseUserDto(motoboy),
+  //   );
+  //   return parsedMotoboys;
+  // }
 
   @Roles(Role.Operator, Role.Admin)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.userService.findOneByOrFail({ id }, false);
+    const user = await this.userService.findOneByOrFail({ id });
     return new ResponseUserDto(user);
   }
 
@@ -73,10 +71,10 @@ export class UserController {
 
   @Post()
   @Roles(Role.Admin)
-  // @Public()
+  @Public()
   async create(
     @Body() userDto: CreateUserDto,
-    @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
+    // @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
@@ -84,43 +82,46 @@ export class UserController {
       throw new BadRequestException('Função inválida');
     }
 
-    const deliveryManWithMotorcycle =
-      await this.deliveryManMotorcycleService.create(userDto, motorcycleDto);
+    const deliveryManWithMotorcycle = await this.userService.create({
+      ...userDto,
+      phone,
+      workTime,
+    });
 
     return new ResponseUserDto(deliveryManWithMotorcycle);
   }
 
-  @Patch('me')
-  async updateMe(
-    @Req() req: AuthenticatedRequest,
-    @Body() dto: UpdateUserDto,
-    @Body('workTime') workTime: UpdateWorkTimeDto,
-    @Body('phone', ParseBrPhonePipe) phone: string,
-  ) {
-    const user = await this.userService.update(req.user, {
-      ...dto,
-      phone,
-      workTime,
-    });
-    return new ResponseUserDto(user);
-  }
+  // @Patch('me')
+  // async updateMe(
+  //   @Req() req: AuthenticatedRequest,
+  //   @Body() dto: UpdateUserDto,
+  //   @Body('workTime') workTime: UpdateWorkTimeDto,
+  //   @Body('phone', ParseBrPhonePipe) phone: string,
+  // ) {
+  //   const user = await this.userService.update(req.user, {
+  //     ...dto,
+  //     phone,
+  //     workTime,
+  //   });
+  //   return new ResponseUserDto(user);
+  // }
 
-  @Roles(Role.Operator, Role.Admin)
-  @Patch(':id')
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateUserDto,
-    @Body('workTime') workTime: UpdateWorkTimeDto,
-    @Body('phone', ParseBrPhonePipe) phone: string,
-  ) {
-    const user = await this.userService.findOneByOrFail({ id }, false);
-    const updated = await this.userService.update(user, {
-      ...dto,
-      phone,
-      workTime,
-    });
-    return new ResponseUserDto(updated);
-  }
+  // @Roles(Role.Operator, Role.Admin)
+  // @Patch(':id')
+  // async update(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Body() dto: UpdateUserDto,
+  //   @Body('workTime') workTime: UpdateWorkTimeDto,
+  //   @Body('phone', ParseBrPhonePipe) phone: string,
+  // ) {
+  //   const user = await this.userService.findOneByOrFail({ id }, false);
+  //   const updated = await this.userService.update(user, {
+  //     ...dto,
+  //     phone,
+  //     workTime,
+  //   });
+  //   return new ResponseUserDto(updated);
+  // }
 
   @Patch('me/password')
   async updatePassword(

@@ -50,7 +50,7 @@ export class AuthService {
 
     user.forceLogout = false;
 
-    await this.userService.saveUser(user);
+    await this.userService.save(user);
 
     return { accessToken };
   }
