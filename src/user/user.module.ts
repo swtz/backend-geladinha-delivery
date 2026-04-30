@@ -11,7 +11,7 @@ import { MotorcycleController } from './controllers/motorcycle.controller';
 import { MotorcycleService } from './services/motorcycle.service';
 import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
 import { DeliveryManService } from './services/delivery-man.service';
-import { DeliveryManMotorcycleController } from './controllers/delivery-man-motorcycle-controller';
+import { DeliveryManMotorcycleController } from './controllers/delivery-man-motorcycle.controller';
 
 @Module({
   imports: [

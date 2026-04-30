@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "leonardo@email.com",
+  "email": "a@email.com",
   "password": "123456"
 }
 
@@ -159,21 +159,19 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Rogério",
-  "lastName": "Fernandes",
-  "nickname": "Rogerinhuuu",
+  "name": "Leonardo",
+  "lastName": "Lüders",
+  "nickname": "leo-surfistinha",
   "phone": "+5548999884459",
   "secondPhone": "+5548999884459",
-  "email": "rogerinho_fernades@email.com",
-  "role": "operator",
+  "email": "a@email.com",
+  "role": "admin",
   "password": "123456",
   "workTime": {
     "shift": "personalizado",
-    "initHour": 9,
-    "endHour": 16
-  },
-  "motorcycle": "Yamaha, 2017, 300, Preta",
-  "daily": 15
+    "initHour": 18,
+    "endHour": 4
+  }
 }
 
 # {
@@ -575,4 +573,32 @@ Content-Type: application/json
   "color": "Preto",
   "owner": "697dc575-09d7-408f-a325-eb40f4390e43",
   "driver": "4fcd0dfc-b670-4595-84d5-b268f7bf1941"
+}
+
+### Create Delivery Man
+# @name createDeliveryMan
+POST {{baseUrl}}/motoboy
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "user": {
+    "name": "Gabriel",
+    "lastName": "Rodrigues",
+    "nickname": "alemao",
+    "phone": "(48) 99988-5578",
+    "role": "motoboy",
+    "password": "123456"
+  },
+  "motorcycle": {
+    "licensePlate": "oem8j76",
+    "brand": "Honda",
+    "model": "Titan",
+    "year": "2014",
+    "color": "Preto",
+    "owner": "0694f8ac-bac1-454e-9059-77737e064f47"
+  },
+  "deliveryMan": {
+    "daily": 30
+  }
 }
