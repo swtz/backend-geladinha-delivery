@@ -13,6 +13,7 @@ export class ResponsePayoutDto {
   readonly workDay: Date;
   readonly isClosed?: boolean;
   readonly totalDeliveries: number;
+  readonly quantityDeliveries: number;
   readonly motoboyDaily: number;
   readonly motoboyTips: number;
   readonly subtotal: number;
@@ -41,6 +42,7 @@ export class ResponsePayoutDto {
     this.weekDay = payout.weekDay;
     this.workDay = payout.workDay;
     this.totalDeliveries = payout.totalDeliveries;
+    this.quantityDeliveries = payout.quantityDeliveries;
     this.motoboyDaily = payout.motoboyDaily;
     this.motoboyTips = payout.motoboyTips;
     this.subtotal = payout.subtotal;
