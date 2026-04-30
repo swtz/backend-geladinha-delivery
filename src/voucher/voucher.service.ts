@@ -43,7 +43,10 @@ export class VoucherService {
       throw new BadRequestException('O ID do usuário é obrigatório');
     }
 
-    const entity = await this.userService.findOneByOrFail({ id }, false, true);
+    const entity = await this.userService.findOneByOrFail(
+      { id },
+      'motoboy-essencial',
+    );
     const { isLoggedUserAdmin } = await this.userService.getUserAndEntityAuth(
       user,
       id,
@@ -55,7 +58,7 @@ export class VoucherService {
       createdBy: user,
     };
 
-    if (voucher.user?.deliveryMan) {
+    if (voucher.user.deliveryMan) {
       return this.save(voucher);
     }
 

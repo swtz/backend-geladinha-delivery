@@ -39,6 +39,6 @@ export class DeliveryManMotorcycleService {
 
     await this.motorcycleService.save({ ...motorcycle, driver: motoboy });
 
-    return this.userService.findOneByOrFail({ id: user.id }, true, true);
+    return this.userService.findOneByOrFail({ id: user.id }, 'motoboy-full');
   }
 }
