@@ -24,16 +24,12 @@ import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { CreateMotorcycleDto } from './dtos/motorcycle/create-motorcycle.dto';
-import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly deliveryManMotorcycleService: DeliveryManMotorcycleService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('me')
   async findMe(@Req() req: AuthenticatedRequest) {
@@ -70,11 +66,10 @@ export class UserController {
   }
 
   @Post()
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Public()
   async create(
     @Body() userDto: CreateUserDto,
-    // @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
@@ -82,13 +77,13 @@ export class UserController {
       throw new BadRequestException('Função inválida');
     }
 
-    const deliveryManWithMotorcycle = await this.userService.create({
+    const user = await this.userService.create({
       ...userDto,
       phone,
       workTime,
     });
 
-    return new ResponseUserDto(deliveryManWithMotorcycle);
+    return new ResponseUserDto(user);
   }
 
   // @Patch('me')
