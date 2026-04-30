@@ -102,7 +102,7 @@ Nova maneira (pós-refatoração)
 		- após, DeliveryMan poderá ser criado
 		
 Notas:
-	Motorcycle é IDEPENDENTE de DeliveryMan
+	Motorcycle é INDEPENDENTE de DeliveryMan
 	DeliveryMan é DEPENDENTE de Motorcycle
 	
 	User é INDEPENDENTE de DeliveryMan

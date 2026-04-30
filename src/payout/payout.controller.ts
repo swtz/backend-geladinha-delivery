@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -38,8 +39,11 @@ export class PayoutController {
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    if (!name && !phone && !id) {
+      throw new BadRequestException('Informe os dados para consulta');
+    }
 
+    const qo = { name, phone, id };
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
@@ -51,25 +55,25 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
-  @Roles(Role.Admin, Role.Operator)
-  @Post()
-  async create(
-    @Body('name') name: string,
-    @Body('phone', ParseBrPhonePipe) phone: string,
-    @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Body('from') fromDate: string,
-    @Body('to') toDate: string,
-  ) {
-    const qo = !name && !phone && !id ? {} : { name, phone, id };
+  // @Roles(Role.Admin, Role.Operator)
+  // @Post()
+  // async create(
+  //   @Body('name') name: string,
+  //   @Body('phone', ParseBrPhonePipe) phone: string,
+  //   @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
+  //   @Body('from') fromDate: string,
+  //   @Body('to') toDate: string,
+  // ) {
+  //   const qo = !name && !phone && !id ? {} : { name, phone, id };
 
-    const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromDate, toDate);
+  //   const { initDate: from, endDate: to } =
+  //     await this.workTimeDateService.create(qo, fromDate, toDate);
 
-    const preview = await this.payoutService.preview(qo, from, to);
-    const payout = await this.payoutService.create(preview);
+  //   const preview = await this.payoutService.preview(qo, from, to);
+  //   const payout = await this.payoutService.create(preview);
 
-    return new ResponsePayoutDto(payout);
-  }
+  //   return new ResponsePayoutDto(payout);
+  // }
 
   @Roles(Role.Motoboy)
   @Get('me')
@@ -79,55 +83,55 @@ export class PayoutController {
     return parsedPayouts;
   }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const payout = await this.payoutService.findOneByOrFail({ id });
-    return new ResponsePayoutDto(payout);
-  }
+  // @Get(':id')
+  // async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  //   const payout = await this.payoutService.findOneByOrFail({ id });
+  //   return new ResponsePayoutDto(payout);
+  // }
 
-  @Get()
-  async findAll(
-    @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
-    weekDay: WeekDay,
-    @Query('workDay', ParseTimezoneDatePipe) workDay: Date,
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
-    @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
-  ) {
-    const payouts = await this.payoutService.findAll({
-      weekDay,
-      workDay,
-      motoboy: { name, phone },
-      isClosed,
-    });
-    const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
-    return parsedPayouts;
-  }
+  // @Get()
+  // async findAll(
+  //   @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
+  //   weekDay: WeekDay,
+  //   @Query('workDay', ParseTimezoneDatePipe) workDay: Date,
+  //   @Query('name') name: string,
+  //   @Query('phone', ParseBrPhonePipe) phone: string,
+  //   @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
+  // ) {
+  //   const payouts = await this.payoutService.findAll({
+  //     weekDay,
+  //     workDay,
+  //     motoboy: { name, phone },
+  //     isClosed,
+  //   });
+  //   const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
+  //   return parsedPayouts;
+  // }
 
-  @Roles(Role.Admin, Role.Operator)
-  @Patch(':id')
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('to') toDate: string,
-  ) {
-    const payout = await this.payoutService.update(id, toDate);
-    return new ResponsePayoutDto(payout);
-  }
+  // @Roles(Role.Admin, Role.Operator)
+  // @Patch(':id')
+  // async update(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Query('to') toDate: string,
+  // ) {
+  //   const payout = await this.payoutService.update(id, toDate);
+  //   return new ResponsePayoutDto(payout);
+  // }
 
-  @Roles(Role.Admin)
-  @Patch(':id/:flag')
-  async updateIsClosed(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Param('flag', ParseBoolPipe) flag: boolean,
-  ) {
-    const payout = await this.payoutService.updateIsClosed(id, flag);
-    return new ResponsePayoutDto(payout);
-  }
+  // @Roles(Role.Admin)
+  // @Patch(':id/:flag')
+  // async updateIsClosed(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Param('flag', ParseBoolPipe) flag: boolean,
+  // ) {
+  //   const payout = await this.payoutService.updateIsClosed(id, flag);
+  //   return new ResponsePayoutDto(payout);
+  // }
 
-  @Roles(Role.Admin, Role.Operator)
-  @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
-    const payout = await this.payoutService.remove(id);
-    return new ResponsePayoutDto(payout);
-  }
+  // @Roles(Role.Admin, Role.Operator)
+  // @Delete(':id')
+  // async remove(@Param('id', ParseUUIDPipe) id: string) {
+  //   const payout = await this.payoutService.remove(id);
+  //   return new ResponsePayoutDto(payout);
+  // }
 }

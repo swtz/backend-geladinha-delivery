@@ -15,7 +15,7 @@ export class Motorcycle {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ unique: true })
   licensePlate!: string;
 
   @Column()

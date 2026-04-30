@@ -9,7 +9,7 @@ export type MotorcycleType = Omit<
   MotorcycleOptionalFieldsType;
 
 type MotorcycleOptionalFieldsType = {
-  displacement: string | undefined;
-  owner: User | undefined;
-  driver: DeliveryMan | undefined;
+  displacement?: string;
+  owner?: User;
+  driver?: DeliveryMan;
 };

@@ -13,7 +13,6 @@ import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
@@ -41,9 +40,12 @@ export class SettlementService {
       throw new BadRequestException('Informe os dados para consulta');
     }
 
-    const operator = await this.userService.findOneByOrFail(userData);
+    const operator = await this.userService.findOneByOrFail(
+      userData,
+      'motoboy-essencial',
+    );
 
-    if (operator instanceof DeliveryMan) {
+    if (operator.deliveryMan) {
       throw new BadRequestException('Motoboys não possuem caixa para fechar');
     }
 
@@ -68,7 +70,7 @@ export class SettlementService {
       weekDay: weekDays[from.getDay()],
       workDay: from,
       initValue: exists !== null ? exists.initValue : undefined,
-      amountDeliveries: deliveries.length,
+      quantityDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
       subtotal: 0,
       moneySubtotal: 0,

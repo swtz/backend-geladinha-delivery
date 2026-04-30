@@ -1,8 +1,6 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,37 +8,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { DeliveryManService } from 'src/user/services/delivery-man.service';
 
 @Injectable()
 export class PayoutService {
-  private readonly logger = new Logger(PayoutService.name);
-
   constructor(
     @InjectRepository(Payout)
     private readonly payoutRepository: Repository<Payout>,
     private readonly deliveryService: DeliveryService,
-    private readonly userService: UserService,
+    private readonly deliveryManService: DeliveryManService,
     private readonly voucherService: VoucherService,
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(motoboyData: Partial<DeliveryMan>, from: Date, to: Date) {
-    if (Object.keys(motoboyData).length === 0) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
-
-    const motoboy = await this.userService.findOneMotoboyByOrFail(motoboyData);
+  async preview(motoboyData: Partial<User>, from: Date, to: Date) {
+    const motoboy = await this.deliveryManService.findOneByOrFail(
+      { user: motoboyData },
+      true,
+    );
     const vouchers = await this.voucherService.findAll({
       from,
       to,
@@ -66,6 +60,7 @@ export class PayoutService {
       weekDay: weekDays[from.getDay()],
       workDay: from,
       totalDeliveries: 0,
+      quantityDeliveries: deliveries.length,
       motoboyDaily: 0,
       motoboyTips,
       subtotal: 0,
@@ -124,77 +119,77 @@ export class PayoutService {
     return payout;
   }
 
-  async create(
-    payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
-      workDay: Date;
-      motoboy: DeliveryMan;
-    },
-  ) {
-    const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
-      id: payoutData.motoboy.id,
-    });
+  // async create(
+  //   payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
+  //     workDay: Date;
+  //     motoboy: DeliveryMan;
+  //   },
+  // ) {
+  //   const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
+  //     id: payoutData.motoboy.id,
+  //   });
 
-    if (exists) {
-      const motoboyName = exists.motoboy.name;
+  //   if (exists) {
+  //     const motoboyName = exists.motoboy.name;
 
-      throw new ConflictException(
-        `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
-      );
-    }
+  //     throw new ConflictException(
+  //       `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
+  //     );
+  //   }
 
-    return this.save(payoutData);
-  }
+  //   return this.save(payoutData);
+  // }
 
-  async update(id: string, toDate: string) {
-    const payout = await this.findOneByOrFail({ id });
+  // async update(id: string, toDate: string) {
+  //   const payout = await this.findOneByOrFail({ id });
 
-    if (payout.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível alterar um pagamento fechado',
-      );
-    }
+  //   if (payout.isClosed) {
+  //     throw new UnauthorizedException(
+  //       'Não é possível alterar um pagamento fechado',
+  //     );
+  //   }
 
-    const { workDay: initDate, motoboy } = payout;
-    const { endDate: to } = await this.workTimeDateService.create(
-      { id: motoboy.id },
-      new Date(0).toISOString(),
-      toDate,
-    );
+  //   const { workDay: initDate, motoboy } = payout;
+  //   const { endDate: to } = await this.workTimeDateService.create(
+  //     { id: motoboy.id },
+  //     new Date(0).toISOString(),
+  //     toDate,
+  //   );
 
-    const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
-    const mergedPayout = {
-      ...payout,
-      ...newPayout,
-    };
+  //   const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
+  //   const mergedPayout = {
+  //     ...payout,
+  //     ...newPayout,
+  //   };
 
-    return this.save(mergedPayout);
-  }
+  //   return this.save(mergedPayout);
+  // }
 
-  async updateIsClosed(id: string, flag: boolean) {
-    const payout = await this.findOneByOrFail({ id });
-    payout.isClosed = flag;
-    return this.save(payout);
-  }
+  // async updateIsClosed(id: string, flag: boolean) {
+  //   const payout = await this.findOneByOrFail({ id });
+  //   payout.isClosed = flag;
+  //   return this.save(payout);
+  // }
 
-  async findOneByOrFail(payoutData: Partial<Payout>) {
-    const payout = await this.findOneBy(payoutData);
+  // async findOneByOrFail(payoutData: Partial<Payout>) {
+  //   const payout = await this.findOneBy(payoutData);
 
-    if (!payout) {
-      throw new NotFoundException('Pagamento não encontrado');
-    }
+  //   if (!payout) {
+  //     throw new NotFoundException('Pagamento não encontrado');
+  //   }
 
-    return payout;
-  }
+  //   return payout;
+  // }
 
-  findOneBy(payoutData: Partial<Payout>) {
-    return this.payoutRepository.findOne({
-      where: payoutData,
-      relations: {
-        motoboy: { workTime: true },
-        vouchers: voucherRelations,
-      },
-    });
-  }
+  // findOneBy(payoutData: Partial<Payout>) {
+  //   return this.payoutRepository.findOne({
+  //     where: payoutData,
+  //     relations: {
+  //       motoboy: { workTime: true },
+  //       vouchers: voucherRelations,
+  //     },
+  //   });
+  // }
 
   findOneByWorkDayAndMotoboy(workDay: Date, motoboyData: Partial<DeliveryMan>) {
     return this.payoutRepository.findOne({
@@ -229,33 +224,20 @@ export class PayoutService {
     });
   }
 
-  async remove(id: string) {
-    const payout = await this.findOneByOrFail({ id });
+  // async remove(id: string) {
+  //   const payout = await this.findOneByOrFail({ id });
 
-    if (payout.isClosed) {
-      throw new UnauthorizedException(
-        'Não é possível remover um pagamento fechado',
-      );
-    }
+  //   if (payout.isClosed) {
+  //     throw new UnauthorizedException(
+  //       'Não é possível remover um pagamento fechado',
+  //     );
+  //   }
 
-    await this.payoutRepository.delete({ id });
-    return payout;
-  }
+  //   await this.payoutRepository.delete({ id });
+  //   return payout;
+  // }
 
   async save(payout: Partial<Payout>) {
-    const http400 = generateBadRequestException(
-      'Erro ao salvar pagamento do motoboy',
-    );
-    const created = await this.payoutRepository
-      .save(payout)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.payoutRepository.save(payout);
   }
 }

@@ -1,38 +1,33 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { DeliveryMan } from './entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/user/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
-import { Role, Role as RoleEnum, roles } from 'src/common/role/roles.enum';
+import { Role, Role as RoleEnum } from 'src/common/role/roles.enum';
 import { essencial, full } from './data/relations/user';
-import { generateBadRequestException } from 'src/common/generate-exception';
+import {
+  essencial as mtbEssencial,
+  full as mtbFull,
+} from './data/relations/delivery-man';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { UserType } from './types/user';
-import { Motorcycle } from './entities/motorcycle.entity';
 
 @Injectable()
 export class UserService {
-  private readonly logger = new Logger(UserService.name);
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(DeliveryMan)
-    private readonly deliveryManRepository: Repository<DeliveryMan>,
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
     private readonly workTimeService: WorkTimeService,
@@ -62,23 +57,22 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto, motorcycle?: Motorcycle) {
-    await this.failIfEmailExists(dto.email);
+  async create(dto: CreateUserDto) {
     await this.failIfPhoneExists(dto.phone);
     await this.failIfNicknameExists(dto.nickname);
+
+    if (dto.email) {
+      await this.failIfEmailExists(dto.email);
+    }
 
     if (dto.secondPhone) {
       await this.failIfPhoneExists(dto.secondPhone);
       await this.failIfPhoneExists(dto.secondPhone, true);
     }
 
-    if (!dto.role || !roles.includes(dto.role)) {
-      throw new BadRequestException('Função inválida');
-    }
-
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser: UserType = {
+    const user: UserType = {
       name: dto.name,
       lastName: dto.lastName,
       nickname: dto.nickname,
@@ -93,21 +87,10 @@ export class UserService {
         : undefined,
     };
 
-    if (dto.role === RoleEnum.Motoboy) {
-      const newMotoboy = {
-        ...newUser,
-        daily: dto.daily,
-        motorcycle,
-      };
-      const created = await this.saveDeliveryMan(newMotoboy);
+    const created = await this.save(user);
 
-      return this.findOneMotoboyByOrFail({ id: created.id });
-    }
-
-    const created = await this.saveUser(newUser);
-
-    if (newUser.workTime) {
-      await this.workTimeService.save({ ...newUser.workTime, user: created });
+    if (user.workTime) {
+      await this.workTimeService.save({ ...user.workTime, user: created });
     }
 
     return this.findOneByOrFail({ id: created.id });
@@ -118,138 +101,119 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  async update(user: User, dto: UpdateUserDto) {
-    const userFields = Object.keys(dto)
-      .filter(key => key !== 'motorcycle')
-      .filter(key => key !== 'daily');
-    const motoboyFields = Object.keys(dto).filter(
-      key => key === 'motorcycle' || 'daily',
-    );
+  // async update(user: User, dto: UpdateUserDto) {
+  //   const userFields = Object.keys(dto)
+  //     .filter(key => key !== 'motorcycle')
+  //     .filter(key => key !== 'daily');
+  //   const motoboyFields = Object.keys(dto).filter(
+  //     key => key === 'motorcycle' || 'daily',
+  //   );
 
-    const existsUserData =
-      userFields.filter(key => Boolean(dto[key])).length > 0;
-    const existsMotoboyData =
-      motoboyFields.filter(key => Boolean(dto[key])).length > 0;
+  //   const existsUserData =
+  //     userFields.filter(key => Boolean(dto[key])).length > 0;
+  //   const existsMotoboyData =
+  //     motoboyFields.filter(key => Boolean(dto[key])).length > 0;
 
-    const authFlags = await this.getUserAndEntityAuth(user, user.id);
-    const assignRoleError = new BadRequestException(
-      'Não é possível atribuir duas funções a um usuário',
-    );
+  //   const authFlags = await this.getUserAndEntityAuth(user, user.id);
+  //   const assignRoleError = new BadRequestException(
+  //     'Não é possível atribuir duas funções a um usuário',
+  //   );
 
-    if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
-      throw assignRoleError;
-    }
+  //   if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
+  //     throw assignRoleError;
+  //   }
 
-    if (
-      (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
-      dto.role === RoleEnum.Motoboy
-    ) {
-      throw assignRoleError;
-    }
+  //   if (
+  //     (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
+  //     dto.role === RoleEnum.Motoboy
+  //   ) {
+  //     throw assignRoleError;
+  //   }
 
-    const entity = authFlags.isLoggedUserMotoboy
-      ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
-      : user;
+  //   const entity = authFlags.isLoggedUserMotoboy
+  //     ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
+  //     : user;
 
-    if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
-      throw new BadRequestException('Dados não enviados');
-    }
+  //   if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
+  //     throw new BadRequestException('Dados não enviados');
+  //   }
 
-    entity.name = dto.name ?? entity.name;
+  //   entity.name = dto.name ?? entity.name;
 
-    if (dto.email && dto.email !== entity.email) {
-      await this.failIfEmailExists(dto.email);
-      entity.email = dto.email;
-      entity.forceLogout = true;
-    }
+  //   if (dto.email && dto.email !== entity.email) {
+  //     await this.failIfEmailExists(dto.email);
+  //     entity.email = dto.email;
+  //     entity.forceLogout = true;
+  //   }
 
-    if (dto.phone && dto.phone !== entity.phone) {
-      await this.failIfPhoneExists(dto.phone);
-      entity.phone = dto.phone;
-      entity.forceLogout = true;
-    }
+  //   if (dto.phone && dto.phone !== entity.phone) {
+  //     await this.failIfPhoneExists(dto.phone);
+  //     entity.phone = dto.phone;
+  //     entity.forceLogout = true;
+  //   }
 
-    if (
-      dto.role &&
-      !authFlags.userRoles.includes(dto.role) &&
-      authFlags.isLoggedUserAdmin
-    ) {
-      const role = await this.roleService.findOneOrCreate(dto.role);
-      entity.roles.push(role);
-      entity.forceLogout = true;
-    }
+  //   if (
+  //     dto.role &&
+  //     !authFlags.userRoles.includes(dto.role) &&
+  //     authFlags.isLoggedUserAdmin
+  //   ) {
+  //     const role = await this.roleService.findOneOrCreate(dto.role);
+  //     entity.roles.push(role);
+  //     entity.forceLogout = true;
+  //   }
 
-    if (dto.workTime) {
-      const { id, shift, initHour, endHour } = dto.workTime;
-      const hasAllData = !!(shift && initHour && endHour);
-      const hasSomeData = !!(shift || initHour || endHour);
-      const hasWorkTime = entity.workTime;
+  //   if (dto.workTime) {
+  //     const { id, shift, initHour, endHour } = dto.workTime;
+  //     const hasAllData = !!(shift && initHour && endHour);
+  //     const hasSomeData = !!(shift || initHour || endHour);
+  //     const hasWorkTime = entity.workTime;
 
-      if (id) {
-        entity.workTime = await this.workTimeService
-          .findOneBy({ id, isShared: true })
-          .then(result => {
-            if (!result) {
-              return this.workTimeService.findOneOwnedByOrFail(
-                entity,
-                { id },
-                false,
-              );
-            }
-            return result;
-          });
-      } else if (hasAllData) {
-        if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
-          const created: NewWorkTimeForRest = {
-            shift,
-            initHour,
-            endHour,
-            isDefault: false,
-            isShared: false,
-          };
+  //     if (id) {
+  //       entity.workTime = await this.workTimeService
+  //         .findOneBy({ id, isShared: true })
+  //         .then(result => {
+  //           if (!result) {
+  //             return this.workTimeService.findOneOwnedByOrFail(
+  //               entity,
+  //               { id },
+  //               false,
+  //             );
+  //           }
+  //           return result;
+  //         });
+  //     } else if (hasAllData) {
+  //       if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
+  //         const created: NewWorkTimeForRest = {
+  //           shift,
+  //           initHour,
+  //           endHour,
+  //           isDefault: false,
+  //           isShared: false,
+  //         };
 
-          entity.workTime = await this.workTimeService.save({
-            ...created,
-            user: entity,
-          });
-        } else {
-          entity.workTime = await this.workTimeService.update(
-            entity.workTime.id,
-            dto.workTime,
-          );
-        }
-      } else if (hasSomeData) {
-        entity.workTime = await this.workTimeService.update(
-          entity.workTime.id,
-          dto.workTime,
-        );
-      } else {
-        throw new BadRequestException('Dados não enviados');
-      }
-    }
+  //         entity.workTime = await this.workTimeService.save({
+  //           ...created,
+  //           user: entity,
+  //         });
+  //       } else {
+  //         entity.workTime = await this.workTimeService.update(
+  //           entity.workTime.id,
+  //           dto.workTime,
+  //         );
+  //       }
+  //     } else if (hasSomeData) {
+  //       entity.workTime = await this.workTimeService.update(
+  //         entity.workTime.id,
+  //         dto.workTime,
+  //       );
+  //     } else {
+  //       throw new BadRequestException('Dados não enviados');
+  //     }
+  //   }
 
-    const updated = await this.saveUser(entity);
-    return this.findOneByOrFail({ id: updated.id }, false);
-  }
-
-  async updateMotoboyFields(
-    existsMotoboyData: boolean,
-    dto: UpdateUserDto,
-    user: User,
-  ) {
-    if (!existsMotoboyData) {
-      throw new BadRequestException('Dados do motoboy não enviados');
-    }
-
-    const motoboy = await this.findOneMotoboyByOrFail({ id: user.id });
-
-    // motoboy.motorcycle = dto.motorcycle ?? motoboy.motorcycle;
-    // MotorcycleService.update()
-
-    motoboy.daily = dto.daily ?? motoboy.daily;
-
-    return motoboy;
-  }
+  //   const updated = await this.saveUser(entity);
+  //   return this.findOneByOrFail({ id: updated.id }, false);
+  // }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
     const user = await this.findOneByOrFail({ id });
@@ -268,16 +232,7 @@ export class UserService {
     user.password = hashedPassword;
     user.forceLogout = true;
 
-    return this.saveUser(user);
-  }
-
-  async findAllMotoboy() {
-    const motoboys = await this.deliveryManRepository.find({
-      order: { createdAt: 'DESC' },
-      relations: essencial,
-    });
-
-    return motoboys;
+    return this.save(user);
   }
 
   async findAll({ role }: { role?: RoleEnum }) {
@@ -290,7 +245,10 @@ export class UserService {
     });
   }
 
-  async findOneByOrFail(userData: Partial<User>, relations = true) {
+  async findOneByOrFail(
+    userData: Partial<User>,
+    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+  ) {
     const user = await this.findOneBy(userData, relations);
 
     if (!user) {
@@ -300,26 +258,34 @@ export class UserService {
     return user;
   }
 
-  async findOneBy(userData: Partial<User>, relations = true) {
-    const fields = relations ? full : essencial;
-    return this.userRepository.findOne({
-      where: userData,
-      relations: fields,
-    });
-  }
+  async findOneBy(
+    userData: Partial<User>,
+    relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+  ) {
+    const aux: {
+      userFields: Record<string, any>;
+      deliveryManFields: Record<string, any>;
+    } = { userFields: {}, deliveryManFields: {} };
 
-  async findOneMotoboyByOrFail(userData: Partial<User>, relations = true) {
-    const fields = relations ? full : essencial;
-    const motoboy = await this.deliveryManRepository.findOne({
-      where: userData,
-      relations: fields,
-    });
-
-    if (!motoboy) {
-      throw new NotFoundException('Motoboy não encontrado');
+    if (relations) {
+      switch (relations) {
+        case 'motoboy-essencial':
+          aux.deliveryManFields = mtbEssencial;
+          break;
+        case 'motoboy-full':
+          aux.deliveryManFields = mtbFull;
+          break;
+        case 'user-full':
+          aux.userFields = full;
+      }
+    } else {
+      aux.userFields = essencial;
     }
 
-    return motoboy;
+    return this.userRepository.findOne({
+      where: userData,
+      relations: { ...aux.userFields, deliveryMan: aux.deliveryManFields },
+    });
   }
 
   findByEmail(email: string) {
@@ -354,34 +320,8 @@ export class UserService {
     return user;
   }
 
-  async saveUser(user: Partial<User>) {
-    const http400 = generateBadRequestException('Erro ao criar o usuário');
-    const created = await this.userRepository
-      .save(user)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
-  }
-
-  async saveDeliveryMan(user: Partial<DeliveryMan>) {
-    const http400 = generateBadRequestException('Erro ao criar o motoboy');
-    const created = await this.deliveryManRepository
-      .save(user)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+  async save(user: Partial<User>) {
+    return this.userRepository.save(user);
   }
 
   async getUserAndEntityAuth(user: User, id: string) {

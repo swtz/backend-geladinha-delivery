@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import relations from './data/relations/voucher';
@@ -19,12 +17,9 @@ import {
   FindAllParams,
   VoucherFindAllFactory,
 } from './factories/query-factory';
-import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class VoucherService {
-  private readonly logger = new Logger(VoucherService.name);
-
   constructor(
     @InjectRepository(Voucher)
     private readonly voucherRepository: Repository<Voucher>,
@@ -48,7 +43,10 @@ export class VoucherService {
       throw new BadRequestException('O ID do usuário é obrigatório');
     }
 
-    const entity = await this.userService.findOneByOrFail({ id });
+    const entity = await this.userService.findOneByOrFail(
+      { id },
+      'motoboy-essencial',
+    );
     const { isLoggedUserAdmin } = await this.userService.getUserAndEntityAuth(
       user,
       id,
@@ -60,7 +58,7 @@ export class VoucherService {
       createdBy: user,
     };
 
-    if (voucher.user instanceof DeliveryMan) {
+    if (voucher.user.deliveryMan) {
       return this.save(voucher);
     }
 
@@ -233,17 +231,6 @@ export class VoucherService {
   }
 
   async save(voucher: Partial<Voucher>) {
-    const http400 = generateBadRequestException('Erro ao salvar a compra/vale');
-    const created = await this.voucherRepository
-      .save(voucher)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.voucherRepository.save(voucher);
   }
 }

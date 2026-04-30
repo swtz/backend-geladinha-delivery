@@ -1,8 +1,8 @@
 import { WeekDay } from 'src/common/enums/weekDays.enum';
-import { User } from 'src/user/entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Settlement } from '../entities/settlement.entity';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
+import { UserDtoType } from 'src/user/types/user';
 
 export class ResponseSettlementDto {
   readonly id?: string;
@@ -12,22 +12,20 @@ export class ResponseSettlementDto {
   readonly workDay: Date;
   readonly isClosed?: boolean;
   readonly initValue?: number;
-  readonly amountDeliveries: number;
+  readonly quantityDeliveries: number;
   readonly totalRemainingMotoboy: number;
   readonly moneySubtotal: number;
   readonly cardSubtotal: number;
   readonly pixSubtotal: number;
   readonly subtotal: number;
-  readonly description?: string | null;
+  readonly description?: string;
   readonly totalSpending: number;
   readonly currentTotal: number;
   readonly expectedTotal: number;
-  readonly operator:
-    | (Pick<User, 'id' | 'name' | 'phone'> & {
-        workTime: MediumResponseWorkTime | null;
-      })
-    | null;
-  readonly vouchers: ResponseVoucherDto[] | null;
+  readonly operator: UserDtoType & {
+    workTime?: MediumResponseWorkTime;
+  };
+  readonly vouchers?: ResponseVoucherDto[];
 
   constructor(
     settlement: Omit<
@@ -52,7 +50,7 @@ export class ResponseSettlementDto {
     this.updatedAt = settlement.updatedAt;
     this.isClosed = settlement.isClosed;
     this.initValue = settlement.initValue;
-    this.amountDeliveries = settlement.amountDeliveries;
+    this.quantityDeliveries = settlement.quantityDeliveries;
     this.totalRemainingMotoboy = settlement.totalRemainingMotoboy;
     this.moneySubtotal = settlement.moneySubtotal;
     this.cardSubtotal = settlement.cardSubtotal;
@@ -64,25 +62,14 @@ export class ResponseSettlementDto {
     this.expectedTotal = settlement.expectedTotal;
     this.weekDay = settlement.weekDay;
     this.workDay = settlement.workDay;
-    this.operator = settlement.operator
-      ? {
-          id: settlement.operator.id,
-          name: settlement.operator.name,
-          phone: settlement.operator.phone,
-          workTime: settlement.operator.workTime
-            ? {
-                id: settlement.operator.workTime.id,
-                createdAt: settlement.operator.workTime.createdAt,
-                updatedAt: settlement.operator.workTime.updatedAt,
-                shift: settlement.operator.workTime.shift,
-                initHour: settlement.operator.workTime.initHour,
-                endHour: settlement.operator.workTime.endHour,
-              }
-            : null,
-        }
-      : null;
+    this.operator = {
+      id: settlement.operator.id,
+      name: settlement.operator.name,
+      phone: settlement.operator.phone,
+      workTime: settlement.operator?.workTime,
+    };
     this.vouchers = settlement.vouchers
       ? settlement.vouchers.map(item => new ResponseVoucherDto(item))
-      : null;
+      : undefined;
   }
 }

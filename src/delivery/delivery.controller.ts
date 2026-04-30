@@ -18,7 +18,7 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
-import { ResponseDeliveryDto } from './dto/response-delivery.dto';
+// import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ParseTimezoneDatePipe } from './pipes/parse-br-date.pipe';
@@ -34,7 +34,7 @@ export class DeliveryController {
     @Body() dto: CreateDeliveryDto,
   ) {
     const delivery = await this.deliveryService.create(dto, req.user);
-    return new ResponseDeliveryDto(delivery);
+    return delivery;
   }
 
   @Patch('me/:id')
@@ -44,7 +44,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.update(dto, req.user, id);
-    return new ResponseDeliveryDto(delivery);
+    return delivery;
   }
 
   @Delete('me/:id')
@@ -53,7 +53,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.remove(req.user, id);
-    return new ResponseDeliveryDto(delivery);
+    return delivery;
   }
 
   @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -82,9 +82,7 @@ export class DeliveryController {
       from,
       to,
     });
-    const parsedDeliveries = deliveries.map(
-      delivery => new ResponseDeliveryDto(delivery),
-    );
+    const parsedDeliveries = deliveries.map(delivery => delivery);
     return parsedDeliveries;
   }
 
@@ -92,15 +90,13 @@ export class DeliveryController {
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const deliveries = await this.deliveryService.findAllOwned(req.user);
-    const parsedDeliveries = deliveries.map(
-      delivery => new ResponseDeliveryDto(delivery),
-    );
+    const parsedDeliveries = deliveries.map(delivery => delivery);
     return parsedDeliveries;
   }
 
   @Get(':id')
   async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
     const delivery = await this.deliveryService.findOneByOrFail({ id });
-    return new ResponseDeliveryDto(delivery);
+    return delivery;
   }
 }

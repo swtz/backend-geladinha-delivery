@@ -5,25 +5,25 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
-    const response = host.switchToHttp().getResponse<Response>();
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
     const isHttpException = exception instanceof HttpException;
-    const status = isHttpException
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
-
     const defaultMessage = 'Internal Server Error';
     const defaultError = 'Internal Server Error';
 
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let messages: string[] = [defaultMessage];
     let errorName = defaultError;
 
     if (isHttpException) {
+      status = exception.getStatus();
       const responseData = exception.getResponse();
 
       if (typeof responseData === 'string') {
@@ -43,21 +43,44 @@ export class AllExceptionsFilter implements ExceptionFilter {
           errorName = error;
         }
       }
-    }
 
-    if (!(exception instanceof HttpException)) {
+      this.logger.warn(`${status} - ${errorName}: ${messages.join(' | ')}`);
+    } else if (
+      typeof exception === 'object' &&
+      exception !== null &&
+      'code' in exception
+    ) {
+      const dbError = exception as Record<string, any>;
+
+      switch (dbError.code) {
+        case '23505':
+          status = HttpStatus.CONFLICT;
+          messages = ['Resource already exists'];
+          errorName = 'Conflict';
+          break;
+
+        case '23503':
+          status = HttpStatus.BAD_REQUEST;
+          messages = ['Invalid reference'];
+          errorName = 'Bad Request';
+          break;
+
+        default:
+          this.logger.error('Database error', dbError?.stack || 'sem stack');
+      }
+    } else {
       this.logger.error(
         'Unexpected internal error',
-        (exception as Error).stack || 'sem stack',
+        exception instanceof Error ? exception.stack : 'sem stack',
       );
-    } else {
-      this.logger.warn(`${status} - ${errorName}: ${messages.join(' | ')}`);
     }
 
     return response.status(status).json({
       message: messages,
       error: errorName,
       statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
     });
   }
 }

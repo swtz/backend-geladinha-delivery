@@ -19,8 +19,8 @@ export class Settlement {
   @Column('float')
   initValue!: number;
 
-  @Column('int')
-  amountDeliveries!: number;
+  @Column()
+  quantityDeliveries!: number;
 
   @Column('float')
   totalRemainingMotoboy!: number;
@@ -64,7 +64,7 @@ export class Settlement {
   @Column({ default: false })
   isClosed!: boolean;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   operator!: User;
 
   @OneToMany(() => Voucher, voucher => voucher.settlement, { nullable: true })
