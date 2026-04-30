@@ -44,7 +44,10 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneByOrFail(motoboyData: Partial<DeliveryMan>, relations = false) {
+  async findOneByOrFail(
+    motoboyData: Omit<Partial<DeliveryMan>, 'user'> & { user: Partial<User> },
+    relations = false,
+  ) {
     const motoboy = await this.findOneBy(motoboyData, relations);
 
     if (!motoboy) {
@@ -54,7 +57,10 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneBy(motoboyData: Partial<DeliveryMan>, relations = false) {
+  async findOneBy(
+    motoboyData: Omit<Partial<DeliveryMan>, 'user'> & { user: Partial<User> },
+    relations = false,
+  ) {
     const fields = relations ? full : essencial;
     return this.deliveryManRepository.findOne({
       where: motoboyData,

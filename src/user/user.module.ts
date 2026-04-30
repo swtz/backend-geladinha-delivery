@@ -25,6 +25,6 @@ import { DeliveryManService } from './services/delivery-man.service';
     DeliveryManService,
     DeliveryManMotorcycleService,
   ],
-  exports: [UserService],
+  exports: [UserService, DeliveryManService],
 })
 export class UserModule {}

@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
 import { Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import { UserService } from 'src/user/user.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
@@ -18,6 +17,7 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { DeliveryManService } from 'src/user/services/delivery-man.service';
 
 @Injectable()
 export class PayoutService {
@@ -25,15 +25,15 @@ export class PayoutService {
     @InjectRepository(Payout)
     private readonly payoutRepository: Repository<Payout>,
     private readonly deliveryService: DeliveryService,
-    private readonly userService: UserService,
+    private readonly deliveryManService: DeliveryManService,
     private readonly voucherService: VoucherService,
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
   async preview(motoboyData: Partial<User>, from: Date, to: Date) {
-    const { deliveryMan: motoboy } = await this.userService.findOneByOrFail(
-      motoboyData,
-      'motoboy-full',
+    const motoboy = await this.deliveryManService.findOneByOrFail(
+      { user: motoboyData },
+      true,
     );
     const vouchers = await this.voucherService.findAll({
       from,
