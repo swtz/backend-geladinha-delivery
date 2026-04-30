@@ -20,7 +20,7 @@ export class ResponsePayoutDto {
   readonly totalSpending: number;
   readonly total: number;
   readonly motoboy: UserDtoType & {
-    workTime: MediumResponseWorkTime;
+    workTime?: MediumResponseWorkTime;
     motorcycle: Pick<
       ResponseMotorcycleDto,
       'id' | 'brand' | 'color' | 'licensePlate'
@@ -53,7 +53,7 @@ export class ResponsePayoutDto {
       name: payout.motoboy.user.name,
       phone: payout.motoboy.user.phone,
       motorcycle: payout.motoboy.motorcycle,
-      workTime: payout.motoboy.user.workTime,
+      workTime: payout.motoboy.user?.workTime,
     };
     this.vouchers = payout.vouchers
       ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))
