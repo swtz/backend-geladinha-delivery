@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
-import { MotorcycleType } from '../types/motorcycle';
+import { MotorcycleType } from '../types/motorcycle.type';
 import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { essencial, full } from '../data/relations/delivery-man';

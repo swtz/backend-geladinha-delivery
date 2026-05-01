@@ -21,7 +21,7 @@ import {
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { NewWorkTimeForRest } from 'src/work-time/types/new-work-time-for-rest';
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { UserType } from './types/user';
+import { UserType } from './types/user.type';
 
 @Injectable()
 export class UserService {

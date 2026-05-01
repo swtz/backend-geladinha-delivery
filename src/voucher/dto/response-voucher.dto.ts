@@ -1,5 +1,5 @@
 import { Voucher } from '../entities/voucher.entity';
-import { UserDtoType } from 'src/user/types/user';
+import { UserDtoType } from 'src/user/types/user.type';
 
 export class ResponseVoucherDto {
   readonly id: string;

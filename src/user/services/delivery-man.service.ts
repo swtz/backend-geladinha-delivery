@@ -8,7 +8,7 @@ import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.d
 import {
   DeliveryManType,
   FindDeliveryManByUserDataType,
-} from '../types/delivery-man';
+} from '../types/delivery-man.type';
 import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()

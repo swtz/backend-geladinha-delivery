@@ -2,7 +2,7 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { UserDtoType } from 'src/user/types/user';
+import { UserDtoType } from 'src/user/types/user.type';
 import { ResponseMotorcycleDto } from 'src/user/dtos/motorcycle/response-motorcycle.dto';
 
 export class ResponsePayoutDto {

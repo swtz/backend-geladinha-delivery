@@ -4,7 +4,7 @@ import { Between, FindOperator } from 'typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 import { Role } from 'src/common/role/roles.enum';
-import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man';
+import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 
 interface Query {
   isPaid?: boolean;
