@@ -1,10 +1,10 @@
 import { Customer } from 'src/customer/entities/customer.entity';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { Between, FindOperator } from 'typeorm';
 import { PaymentMethod } from '../entities/payment-method.entity';
 import { PaymentMethod as PaymentMethodEnum } from '../enums/payment-methods.enum';
 import { Role } from 'src/common/role/roles.enum';
+import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man';
 
 interface Query {
   isPaid?: boolean;
@@ -13,7 +13,7 @@ interface Query {
 
 class DeliveryFindAllQuery implements Query {
   customer?: Partial<Customer>;
-  motoboy?: Partial<DeliveryMan>;
+  motoboy?: FindDeliveryManByUserDataType;
   operator?: Partial<User>;
   paymentMethod?: Partial<PaymentMethod>;
   isPaid?: boolean;
@@ -83,7 +83,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     }
 
     if (type === Role.Motoboy) {
-      queryObject['motoboy'] = data;
+      queryObject['motoboy'] = { user: data };
     } else {
       const key = type === Role.Admin ? 'operator' : type;
       queryObject[key] = data;

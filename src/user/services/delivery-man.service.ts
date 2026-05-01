@@ -5,7 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
-import { DeliveryManType } from '../types/delivery-man';
+import {
+  DeliveryManType,
+  FindDeliveryManByUserDataType,
+} from '../types/delivery-man';
 import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()
@@ -45,7 +48,7 @@ export class DeliveryManService {
   // }
 
   async findOneByOrFail(
-    motoboyData: Omit<Partial<DeliveryMan>, 'user'> & { user: Partial<User> },
+    motoboyData: FindDeliveryManByUserDataType,
     relations = false,
   ) {
     const motoboy = await this.findOneBy(motoboyData, relations);
