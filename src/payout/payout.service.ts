@@ -19,6 +19,8 @@ import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
 import { UserDtoType } from 'src/user/types/user.type';
+import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
+import { full as mtbFull } from 'src/user/data/relations/delivery-man';
 
 @Injectable()
 export class PayoutService {
@@ -100,7 +102,7 @@ export class PayoutService {
 
     const lastPayouts = await this.findAll({
       isClosed: true,
-      motoboy: { id: motoboy.id },
+      motoboy: { user: motoboyData },
     });
 
     if (lastPayouts.length === 0) {
@@ -120,26 +122,26 @@ export class PayoutService {
     return payout;
   }
 
-  // async create(
-  //   payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
-  //     workDay: Date;
-  //     motoboy: DeliveryMan;
-  //   },
-  // ) {
-  //   const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
-  //     id: payoutData.motoboy.id,
-  //   });
+  async create(
+    payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
+      workDay: Date;
+      motoboy: DeliveryMan;
+    },
+  ) {
+    const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
+      user: { id: payoutData.motoboy.user.id },
+    });
 
-  //   if (exists) {
-  //     const motoboyName = exists.motoboy.name;
+    if (exists) {
+      const motoboyName = exists.motoboy.user.name;
 
-  //     throw new ConflictException(
-  //       `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
-  //     );
-  //   }
+      throw new ConflictException(
+        `Já existe um pagamento lançado para esse dia.\nMotoboy: ${motoboyName}`,
+      );
+    }
 
-  //   return this.save(payoutData);
-  // }
+    return this.save(payoutData);
+  }
 
   // async update(id: string, toDate: string) {
   //   const payout = await this.findOneByOrFail({ id });
@@ -192,36 +194,39 @@ export class PayoutService {
   //   });
   // }
 
-  findOneByWorkDayAndMotoboy(workDay: Date, motoboyData: Partial<DeliveryMan>) {
+  findOneByWorkDayAndMotoboy(
+    workDay: Date,
+    motoboyData: FindDeliveryManByUserDataType,
+  ) {
     return this.payoutRepository.findOne({
       where: {
         workDay,
         motoboy: motoboyData,
       },
-      relations: { motoboy: true },
+      relations: { motoboy: mtbFull },
     });
   }
 
   findAllOwned(user: User) {
     return this.payoutRepository.find({
       where: {
-        motoboy: { id: user.id },
+        motoboy: { user: { id: user.id } },
       },
       order: { workDay: 'DESC' },
-      relations: { motoboy: true },
+      relations: { motoboy: mtbFull },
     });
   }
 
   findAll(queryParams: {
     weekDay?: WeekDay;
     workDay?: Date;
-    motoboy?: Partial<DeliveryMan>;
+    motoboy?: FindDeliveryManByUserDataType;
     isClosed?: boolean;
   }) {
     return this.payoutRepository.find({
       where: queryParams,
       order: { workDay: 'DESC' },
-      relations: { motoboy: true },
+      relations: { motoboy: mtbFull },
     });
   }
 
