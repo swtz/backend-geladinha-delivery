@@ -8,7 +8,11 @@ export interface Query {
 }
 
 export class VoucherFindAllQuery implements Query {
-  user?: Partial<User> | FindDeliveryManByUserDataType;
+  user?: Partial<
+    Omit<User, 'deliveryMan'> & {
+      deliveryMan: FindDeliveryManByUserDataType;
+    }
+  >;
   createdBy?: Partial<User>;
   createdAt?: FindOperator<Date>;
 }
@@ -52,7 +56,7 @@ export class VoucherFindAllFactory extends AbstractMethod {
     queryObject.createdAt = this.getDatePeriod(from, to);
 
     if (!type || type === Voucher.DeliveryMan) {
-      queryObject.user = { user: data };
+      queryObject.user = { deliveryMan: { user: data } };
       return queryObject;
     }
 

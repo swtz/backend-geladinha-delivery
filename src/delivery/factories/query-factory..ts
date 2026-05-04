@@ -21,7 +21,7 @@ class DeliveryFindAllQuery implements Query {
 }
 
 class DeliveryTaxQuery implements Query {
-  motoboy?: Partial<User>;
+  motoboy?: FindDeliveryManByUserDataType;
   isPaid?: boolean;
   createdAt?: FindOperator<Date>;
 }
@@ -98,7 +98,7 @@ export class DeliveryTaxFactory extends AbstractFactory {
     const queryObject = new DeliveryTaxQuery();
 
     queryObject.createdAt = this.getDatePeriod(from, to);
-    queryObject.motoboy = userData;
+    queryObject.motoboy = userData ? { user: userData } : undefined;
     queryObject.isPaid = isPaid;
 
     return queryObject;
