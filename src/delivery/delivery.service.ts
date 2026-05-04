@@ -37,9 +37,12 @@ export class DeliveryService {
     const operator = await this.userService.findOneByOrFail({
       id: user.id,
     });
-    const motoboy = await this.deliveryManService.findOneByOrFail({
-      user: { id: dto.motoboy },
-    });
+    const motoboy = await this.deliveryManService.findOneByOrFail(
+      {
+        user: { id: dto.motoboy },
+      },
+      true,
+    );
     const customer = await this.customerService.findOneByOrFail({
       id: dto.customer,
     });
