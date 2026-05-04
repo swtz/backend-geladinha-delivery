@@ -38,6 +38,9 @@ export class Delivery {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Column()
+  motorcycleLicensePlate!: string;
+
   @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
   tip!: Tip;
