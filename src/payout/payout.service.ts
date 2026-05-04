@@ -18,6 +18,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
+import { UserDtoType } from 'src/user/types/user.type';
 
 @Injectable()
 export class PayoutService {
@@ -30,7 +31,7 @@ export class PayoutService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(motoboyData: Partial<User>, from: Date, to: Date) {
+  async preview(motoboyData: UserDtoType, from: Date, to: Date) {
     const motoboy = await this.deliveryManService.findOneByOrFail(
       { user: motoboyData },
       true,
@@ -38,7 +39,7 @@ export class PayoutService {
     const vouchers = await this.voucherService.findAll({
       from,
       to,
-      type: Voucher.User,
+      type: Voucher.DeliveryMan,
       userData: motoboyData,
     });
 
