@@ -58,10 +58,11 @@ export class DeliveryService {
       ? await this.tipService.create(dto.tip, motoboy)
       : undefined;
 
-    const created = {
+    const delivery = {
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
+      motorcycleLicensePlate: motoboy.motorcycle.licensePlate,
       tip,
       paymentMethod,
       operator,
@@ -70,7 +71,9 @@ export class DeliveryService {
       address: defaultAddress,
     };
 
-    return this.save(created);
+    const created = await this.save(delivery);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {

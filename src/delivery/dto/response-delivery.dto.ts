@@ -13,6 +13,7 @@ export class ResponseDeliveryDto {
   readonly deliveryTax: number;
   readonly paymentMethod?: string;
   readonly isPaid: boolean;
+  readonly motorcycleLicensePlate: string;
   readonly tip?: Pick<Tip, 'id' | 'amount'>;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -36,6 +37,7 @@ export class ResponseDeliveryDto {
     this.isPaid = delivery.isPaid;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
+    this.motorcycleLicensePlate = delivery.motoboy.motorcycle.licensePlate;
     this.tip = delivery.tip
       ? {
           id: delivery.tip.id,
