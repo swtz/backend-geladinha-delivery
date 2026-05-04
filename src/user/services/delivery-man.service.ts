@@ -61,7 +61,7 @@ export class DeliveryManService {
   }
 
   async findOneBy(
-    motoboyData: Omit<Partial<DeliveryMan>, 'user'> & { user: Partial<User> },
+    motoboyData: FindDeliveryManByUserDataType,
     relations = false,
   ) {
     const fields = relations ? full : essencial;
