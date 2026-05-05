@@ -1,13 +1,18 @@
 import { User } from 'src/user/entities/user.entity';
 import { Between, FindOperator } from 'typeorm';
 import { Voucher } from '../enums/voucher.enum';
+import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 
 export interface Query {
   createdAt?: FindOperator<Date>;
 }
 
 export class VoucherFindAllQuery implements Query {
-  user?: Partial<User>;
+  user?: Partial<
+    Omit<User, 'deliveryMan'> & {
+      deliveryMan: FindDeliveryManByUserDataType;
+    }
+  >;
   createdBy?: Partial<User>;
   createdAt?: FindOperator<Date>;
 }
@@ -50,16 +55,17 @@ export class VoucherFindAllFactory extends AbstractMethod {
 
     queryObject.createdAt = this.getDatePeriod(from, to);
 
-    if (!type) {
+    if (!type || type === Voucher.DeliveryMan) {
+      queryObject.user = { deliveryMan: { user: data } };
+      return queryObject;
+    }
+
+    if (type === Voucher.User || type === Voucher.CreatedBy) {
       queryObject.user = data;
       return queryObject;
     }
 
-    if (type === Voucher.Settlement || type === Voucher.Payout) {
-      queryObject[type] = { id };
-    } else {
-      queryObject[type] = data;
-    }
+    queryObject[type] = { id };
 
     return queryObject;
   }

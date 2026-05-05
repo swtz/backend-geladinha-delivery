@@ -2,8 +2,8 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { UserDtoType } from 'src/user/types/user';
-import { ResponseMotorcycleDto } from 'src/user/dtos/motorcycle/response-motorcycle.dto';
+import { UserDtoType } from 'src/user/types/user.type';
+import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 
 export class ResponsePayoutDto {
   readonly id?: string;
@@ -21,10 +21,7 @@ export class ResponsePayoutDto {
   readonly total: number;
   readonly motoboy: UserDtoType & {
     workTime?: MediumResponseWorkTime;
-    motorcycle: Pick<
-      ResponseMotorcycleDto,
-      'id' | 'brand' | 'color' | 'licensePlate'
-    >;
+    motorcycle: SmallResponseMotorcycle;
   };
   readonly vouchers?: ResponseVoucherDto[];
 
@@ -52,8 +49,22 @@ export class ResponsePayoutDto {
       id: payout.motoboy.user.id,
       name: payout.motoboy.user.name,
       phone: payout.motoboy.user.phone,
-      motorcycle: payout.motoboy.motorcycle,
-      workTime: payout.motoboy.user?.workTime,
+      motorcycle: {
+        id: payout.motoboy.motorcycle.id,
+        brand: payout.motoboy.motorcycle.brand,
+        color: payout.motoboy.motorcycle.color,
+        licensePlate: payout.motoboy.motorcycle.licensePlate,
+      },
+      workTime: payout.motoboy.user.workTime
+        ? {
+            id: payout.motoboy.user.workTime.id,
+            shift: payout.motoboy.user.workTime.shift,
+            initHour: payout.motoboy.user.workTime.initHour,
+            endHour: payout.motoboy.user.workTime.endHour,
+            createdAt: payout.motoboy.user.workTime.createdAt,
+            updatedAt: payout.motoboy.user.workTime.updatedAt,
+          }
+        : undefined,
     };
     this.vouchers = payout.vouchers
       ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))

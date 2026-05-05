@@ -30,13 +30,16 @@ export class Delivery {
   deliveryTax!: number;
 
   @Column({ default: false })
-  isPaid: boolean = false;
+  isPaid!: boolean;
 
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @Column()
+  motorcycleLicensePlate!: string;
 
   @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()

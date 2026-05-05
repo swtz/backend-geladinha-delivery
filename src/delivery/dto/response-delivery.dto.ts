@@ -1,72 +1,70 @@
-// import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
-// import { Delivery } from '../entities/delivery.entity';
-// import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
-// import { User } from 'src/user/entities/user.entity';
-// import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
-// import { Tip } from 'src/tip/entities/tip.entity';
+import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
+import { Delivery } from '../entities/delivery.entity';
+import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
+import { Tip } from 'src/tip/entities/tip.entity';
+import { UserDtoType } from 'src/user/types/user.type';
+import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
+import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 
-// export class ResponseDeliveryDto {
-//   readonly id: string;
-//   readonly description?: string | null;
-//   readonly totalPurchase: number;
-//   readonly deliveryTax: number;
-//   readonly paymentMethod: string | null;
-//   readonly isPaid: boolean;
-//   readonly tip: Pick<Tip, 'id' | 'amount'> | null;
-//   readonly createdAt: Date;
-//   readonly updatedAt: Date;
-//   readonly operator: Pick<User, 'id' | 'name' | 'phone'> | null;
-//   readonly motoboy: Pick<
-//     DeliveryMan,
-//     'id' | 'name' | 'phone' | 'motorcycle'
-//   > | null;
-//   readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
-//   readonly address: ResponseAddressDto | null;
+export class ResponseDeliveryDto {
+  readonly id: string;
+  readonly description?: string;
+  readonly totalPurchase: number;
+  readonly deliveryTax: number;
+  readonly paymentMethod?: string;
+  readonly isPaid: boolean;
+  readonly motorcycleLicensePlate: string;
+  readonly tip?: Pick<Tip, 'id' | 'amount'>;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly operator?: UserDtoType;
+  readonly motoboy?: UserDtoType & {
+    workTime?: MediumResponseWorkTime;
+    motorcycle: SmallResponseMotorcycle;
+  };
+  readonly customer?: Omit<ResponseCustomerDto, 'addresses'>;
+  readonly address?: ResponseAddressDto;
 
-//   constructor(delivery: Delivery) {
-//     this.id = delivery.id;
-//     this.description = delivery.description;
-//     this.totalPurchase = delivery.totalPurchase;
-//     this.deliveryTax = delivery.deliveryTax;
-//     this.paymentMethod =
-//       delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
-//     this.isPaid = delivery.isPaid;
-//     this.tip = delivery.tip
-//       ? {
-//           id: delivery.tip.id,
-//           amount: delivery.tip.amount,
-//         }
-//       : null;
-//     this.createdAt = delivery.createdAt;
-//     this.updatedAt = delivery.updatedAt;
-//     this.operator =
-//       delivery.operator !== null
-//         ? {
-//             id: delivery.operator.id,
-//             name: delivery.operator.name,
-//             phone: delivery.operator.phone,
-//           }
-//         : null;
-//     this.motoboy =
-//       delivery.motoboy !== null
-//         ? {
-//             id: delivery.motoboy.id,
-//             name: delivery.motoboy.name,
-//             phone: delivery.motoboy.phone,
-//             motorcycle: delivery.motoboy.motorcycle,
-//           }
-//         : null;
-//     this.customer =
-//       delivery.customer !== null
-//         ? {
-//             id: delivery.customer.id,
-//             name: delivery.customer.name,
-//             phone: delivery.customer.phone,
-//           }
-//         : null;
-//     this.address =
-//       delivery.address !== null
-//         ? new ResponseAddressDto(delivery.address)
-//         : null;
-//   }
-// }
+  constructor(delivery: Delivery) {
+    this.id = delivery.id;
+    this.description = delivery.description;
+    this.totalPurchase = delivery.totalPurchase;
+    this.deliveryTax = delivery.deliveryTax;
+    this.paymentMethod = delivery?.paymentMethod.name;
+    this.isPaid = delivery.isPaid;
+    this.createdAt = delivery.createdAt;
+    this.updatedAt = delivery.updatedAt;
+    this.motorcycleLicensePlate = delivery.motoboy.motorcycle.licensePlate;
+    this.tip = delivery.tip
+      ? {
+          id: delivery.tip.id,
+          amount: delivery.tip.amount,
+        }
+      : undefined;
+    this.operator = delivery.operator
+      ? {
+          id: delivery.operator.id,
+          name: delivery.operator.name,
+          phone: delivery.operator.phone,
+        }
+      : undefined;
+    this.motoboy = delivery.motoboy
+      ? {
+          id: delivery.motoboy.user.id,
+          name: delivery.motoboy.user.name,
+          phone: delivery.motoboy.user.phone,
+          motorcycle: delivery.motoboy.motorcycle,
+        }
+      : undefined;
+    this.customer = delivery.customer
+      ? {
+          id: delivery.customer.id,
+          name: delivery.customer.name,
+          phone: delivery.customer.phone,
+        }
+      : undefined;
+    this.address = delivery.address
+      ? new ResponseAddressDto(delivery.address)
+      : undefined;
+  }
+}

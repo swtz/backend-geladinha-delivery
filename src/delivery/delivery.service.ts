@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,13 +18,10 @@ import {
   FindAllParams,
   TotalPurchaseFactory,
 } from './factories/query-factory.';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
 
 @Injectable()
 export class DeliveryService {
-  private readonly logger = new Logger(DeliveryService.name);
-
   constructor(
     @InjectRepository(Delivery)
     private readonly deliveryRepository: Repository<Delivery>,
@@ -40,9 +37,12 @@ export class DeliveryService {
     const operator = await this.userService.findOneByOrFail({
       id: user.id,
     });
-    const motoboy = await this.deliveryManService.findOneByOrFail({
-      user: { id: dto.motoboy },
-    });
+    const motoboy = await this.deliveryManService.findOneByOrFail(
+      {
+        user: { id: dto.motoboy },
+      },
+      true,
+    );
     const customer = await this.customerService.findOneByOrFail({
       id: dto.customer,
     });
@@ -58,10 +58,11 @@ export class DeliveryService {
       ? await this.tipService.create(dto.tip, motoboy)
       : undefined;
 
-    const created = {
+    const delivery = {
       description: dto.description,
       totalPurchase: dto.totalPurchase,
       deliveryTax: dto.deliveryTax,
+      motorcycleLicensePlate: motoboy.motorcycle.licensePlate,
       tip,
       paymentMethod,
       operator,
@@ -70,7 +71,9 @@ export class DeliveryService {
       address: defaultAddress,
     };
 
-    return this.save(created);
+    const created = await this.save(delivery);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
@@ -268,16 +271,6 @@ export class DeliveryService {
   }
 
   async save(delivery: Partial<Delivery>) {
-    const http400 = generateBadRequestException('Erro ao salvar a entrega');
-    const created = await this.deliveryRepository
-      .save(delivery)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-        throw http400;
-      });
-
-    return created;
+    return await this.deliveryRepository.save(delivery);
   }
 }
