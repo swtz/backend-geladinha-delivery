@@ -3,7 +3,7 @@ import { Payout } from '../entities/payout.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 import { UserDtoType } from 'src/user/types/user.type';
-import { ResponseMotorcycleDto } from 'src/user/dtos/motorcycle/response-motorcycle.dto';
+import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 
 export class ResponsePayoutDto {
   readonly id?: string;
@@ -21,10 +21,7 @@ export class ResponsePayoutDto {
   readonly total: number;
   readonly motoboy: UserDtoType & {
     workTime?: MediumResponseWorkTime;
-    motorcycle: Pick<
-      ResponseMotorcycleDto,
-      'id' | 'brand' | 'color' | 'licensePlate'
-    >;
+    motorcycle: SmallResponseMotorcycle;
   };
   readonly vouchers?: ResponseVoucherDto[];
 
@@ -52,7 +49,12 @@ export class ResponsePayoutDto {
       id: payout.motoboy.user.id,
       name: payout.motoboy.user.name,
       phone: payout.motoboy.user.phone,
-      motorcycle: payout.motoboy.motorcycle,
+      motorcycle: {
+        id: payout.motoboy.motorcycle.id,
+        brand: payout.motoboy.motorcycle.brand,
+        color: payout.motoboy.motorcycle.color,
+        licensePlate: payout.motoboy.motorcycle.licensePlate,
+      },
       workTime: payout.motoboy.user?.workTime,
     };
     this.vouchers = payout.vouchers

@@ -3,8 +3,8 @@ import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { UserDtoType } from 'src/user/types/user.type';
-import { ResponseMotorcycleDto } from 'src/user/dtos/motorcycle/response-motorcycle.dto';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
+import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 
 export class ResponseDeliveryDto {
   readonly id: string;
@@ -20,10 +20,7 @@ export class ResponseDeliveryDto {
   readonly operator?: UserDtoType;
   readonly motoboy?: UserDtoType & {
     workTime?: MediumResponseWorkTime;
-    motorcycle: Pick<
-      ResponseMotorcycleDto,
-      'id' | 'brand' | 'color' | 'licensePlate'
-    >;
+    motorcycle: SmallResponseMotorcycle;
   };
   readonly customer?: Omit<ResponseCustomerDto, 'addresses'>;
   readonly address?: ResponseAddressDto;
