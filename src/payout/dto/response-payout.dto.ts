@@ -55,7 +55,16 @@ export class ResponsePayoutDto {
         color: payout.motoboy.motorcycle.color,
         licensePlate: payout.motoboy.motorcycle.licensePlate,
       },
-      workTime: payout.motoboy.user?.workTime,
+      workTime: payout.motoboy.user.workTime
+        ? {
+            id: payout.motoboy.user.workTime.id,
+            shift: payout.motoboy.user.workTime.shift,
+            initHour: payout.motoboy.user.workTime.initHour,
+            endHour: payout.motoboy.user.workTime.endHour,
+            createdAt: payout.motoboy.user.workTime.createdAt,
+            updatedAt: payout.motoboy.user.workTime.updatedAt,
+          }
+        : undefined,
     };
     this.vouchers = payout.vouchers
       ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))
