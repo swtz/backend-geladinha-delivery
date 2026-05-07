@@ -1,10 +1,10 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
@@ -36,17 +36,15 @@ export class SettlementService {
   ) {}
 
   async preview(userData: Partial<User>, from: Date, to: Date) {
-    if (Object.keys(userData).length === 0) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
-
     const operator = await this.userService.findOneByOrFail(
       userData,
       'motoboy-essencial',
     );
 
     if (operator.deliveryMan) {
-      throw new BadRequestException('Motoboys não possuem caixa para fechar');
+      throw new UnprocessableEntityException(
+        'Motoboys não possuem caixa para fechar',
+      );
     }
 
     const exists = await this.findOneByWorkDayAndOperator(from, {
