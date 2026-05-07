@@ -19,7 +19,6 @@ export class ResponseSettlementDto {
   readonly pixSubtotal: number;
   readonly subtotal: number;
   readonly description?: string;
-  readonly totalSpending: number;
   readonly currentTotal: number;
   readonly expectedTotal: number;
   readonly operator: UserDtoType & {
@@ -57,7 +56,6 @@ export class ResponseSettlementDto {
     this.pixSubtotal = settlement.pixSubtotal;
     this.subtotal = settlement.subtotal;
     this.description = settlement.description;
-    this.totalSpending = settlement.totalSpending;
     this.currentTotal = settlement.currentTotal;
     this.expectedTotal = settlement.expectedTotal;
     this.weekDay = settlement.weekDay;

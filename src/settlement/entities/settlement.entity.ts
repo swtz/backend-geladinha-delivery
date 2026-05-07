@@ -41,9 +41,6 @@ export class Settlement {
   description!: string;
 
   @Column('float')
-  totalSpending!: number;
-
-  @Column('float')
   currentTotal!: number;
 
   @Column('float')

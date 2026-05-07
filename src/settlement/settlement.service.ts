@@ -74,7 +74,6 @@ export class SettlementService {
       moneySubtotal: 0,
       cardSubtotal: 0,
       pixSubtotal: 0,
-      totalSpending: 0,
       currentTotal: exists !== null ? exists.currentTotal : 0,
       expectedTotal: exists !== null ? exists.expectedTotal : 0,
       description: exists !== null ? exists.description : undefined,
@@ -118,13 +117,6 @@ export class SettlementService {
       settlement.subtotal = delivery.totalPurchase;
     }
 
-    settlement.totalSpending = await this.voucherService.sum({
-      from,
-      to,
-      type: Voucher.User,
-      userData,
-    });
-
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
         userData,
@@ -134,12 +126,13 @@ export class SettlementService {
       });
 
     const currentTotal = setDecimalPlaces(
-      settlement.subtotal -
-        settlement.totalSpending -
-        settlement.totalRemainingMotoboy,
+      settlement.subtotal - settlement.totalRemainingMotoboy,
       2,
     );
-    const expectedTotal = currentTotal + settlement.totalRemainingMotoboy;
+    const expectedTotal = setDecimalPlaces(
+      currentTotal + settlement.totalRemainingMotoboy,
+      2,
+    );
 
     if (exists) {
       settlement.currentTotal = setDecimalPlaces(
