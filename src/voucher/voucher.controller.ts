@@ -70,6 +70,7 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
+  @Roles(Role.Admin)
   @Post('me')
   async create(
     @Body() dto: CreateVoucherDto,
@@ -80,7 +81,7 @@ export class VoucherController {
   }
 
   @Post('me/user/:id')
-  @Roles(Role.Admin, Role.Operator)
+  @Roles(Role.Admin)
   async createForEntity(
     @Body() dto: CreateVoucherDto,
     @Req() req: AuthenticatedRequest,
@@ -94,6 +95,7 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
+  @Roles(Role.Admin)
   @Patch('me/:id')
   async update(
     @Body() dto: UpdateVoucherDto,
@@ -105,7 +107,7 @@ export class VoucherController {
   }
 
   @Patch('me/user/:id')
-  @Roles(Role.Admin, Role.Operator)
+  @Roles(Role.Admin)
   async updateForEntity(
     @Body() dto: UpdateVoucherDto,
     @Req() req: AuthenticatedRequest,
@@ -119,6 +121,7 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
+  @Roles(Role.Admin)
   @Delete('me/:id')
   async remove(
     @Req() req: AuthenticatedRequest,
