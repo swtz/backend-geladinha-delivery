@@ -1,6 +1,6 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { User } from 'src/user/entities/user.entity';
 import { WorkTime } from '../entities/work-time.entity';
+import { UserDtoType } from 'src/user/types/user.type';
 
 export class ResponseWorkTimeDto {
   readonly id: string;
@@ -9,15 +9,13 @@ export class ResponseWorkTimeDto {
   readonly endHour: number;
   readonly isDefault: boolean;
   readonly isShared: boolean;
-  readonly places:
-    | {
-        id: string;
-        name: string;
-        businessName: string;
-        phone: string;
-      }[]
-    | null;
-  readonly user: Pick<User, 'id' | 'name' | 'phone'> | null;
+  readonly places?: {
+    id: string;
+    name: string;
+    businessName: string;
+    phone: string;
+  }[];
+  readonly user?: UserDtoType;
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
@@ -35,13 +33,13 @@ export class ResponseWorkTimeDto {
             phone: item.phone,
           };
         })
-      : null;
+      : undefined;
     this.user = workTime.user
       ? {
           id: workTime.user.id,
           name: workTime.user.name,
           phone: workTime.user.phone,
         }
-      : null;
+      : undefined;
   }
 }
