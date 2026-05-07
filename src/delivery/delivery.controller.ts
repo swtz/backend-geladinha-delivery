@@ -44,7 +44,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.update(dto, req.user, id);
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 
   @Delete('me/:id')
@@ -53,7 +53,7 @@ export class DeliveryController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const delivery = await this.deliveryService.remove(req.user, id);
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 
   @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -92,13 +92,15 @@ export class DeliveryController {
   @Get('me')
   async findAllOwned(@Req() req: AuthenticatedRequest) {
     const deliveries = await this.deliveryService.findAllOwned(req.user);
-    const parsedDeliveries = deliveries.map(delivery => delivery);
+    const parsedDeliveries = deliveries.map(
+      delivery => new ResponseDeliveryDto(delivery),
+    );
     return parsedDeliveries;
   }
 
   @Get(':id')
   async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
     const delivery = await this.deliveryService.findOneByOrFail({ id });
-    return delivery;
+    return new ResponseDeliveryDto(delivery);
   }
 }

@@ -53,7 +53,12 @@ export class ResponseDeliveryDto {
           id: delivery.motoboy.user.id,
           name: delivery.motoboy.user.name,
           phone: delivery.motoboy.user.phone,
-          motorcycle: delivery.motoboy.motorcycle,
+          motorcycle: {
+            id: delivery.motoboy.motorcycle.id,
+            brand: delivery.motoboy.motorcycle.brand,
+            color: delivery.motoboy.motorcycle.color,
+            licensePlate: delivery.motoboy.motorcycle.licensePlate,
+          },
         }
       : undefined;
     this.customer = delivery.customer
