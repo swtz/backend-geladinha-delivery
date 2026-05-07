@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UserService } from 'src/user/user.service';
@@ -18,10 +14,6 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
-    if (!(dto.email || dto.nickname || dto.phone)) {
-      throw new BadRequestException('Preencha ao menos um campo');
-    }
-
     const email = dto['email'];
     const nickname = dto['nickname'];
     const phone = dto['phone'];
