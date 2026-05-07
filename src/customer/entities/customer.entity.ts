@@ -25,6 +25,8 @@ export class Customer {
   @UpdateDateColumn()
   updateAt!: Date;
 
-  @OneToMany(() => Address, address => address.customer)
+  @OneToMany(() => Address, address => address.customer, {
+    onDelete: 'SET NULL',
+  })
   addresses!: Address[];
 }
