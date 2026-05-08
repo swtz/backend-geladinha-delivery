@@ -23,7 +23,6 @@ import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
-import { CreateMotorcycleDto } from './dtos/motorcycle/create-motorcycle.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
@@ -86,20 +85,22 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  // @Patch('me')
-  // async updateMe(
-  //   @Req() req: AuthenticatedRequest,
-  //   @Body() dto: UpdateUserDto,
-  //   @Body('workTime') workTime: UpdateWorkTimeDto,
-  //   @Body('phone', ParseBrPhonePipe) phone: string,
-  // ) {
-  //   const user = await this.userService.update(req.user, {
-  //     ...dto,
-  //     phone,
-  //     workTime,
-  //   });
-  //   return new ResponseUserDto(user);
-  // }
+  @Patch('me')
+  async updateMe(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateUserDto,
+    @Body('workTime') workTime: UpdateWorkTimeDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
+  ) {
+    const user = await this.userService.update(req.user, {
+      ...dto,
+      phone,
+      secondPhone,
+      workTime,
+    });
+    return new ResponseUserDto(user);
+  }
 
   @Roles(Role.Operator, Role.Admin)
   @Patch(':id')
@@ -108,11 +109,13 @@ export class UserController {
     @Body() dto: UpdateUserDto,
     @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
     const user = await this.userService.findOneByOrFail({ id });
     const updated = await this.userService.update(user, {
       ...dto,
       phone,
+      secondPhone,
       workTime,
     });
     return new ResponseUserDto(updated);

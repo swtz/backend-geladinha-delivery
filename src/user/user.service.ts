@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -104,9 +103,14 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
-    const authFlags = await this.getUserAndEntityAuth(user, user.id);
-
     user.name = dto.name ?? user.name;
+    user.lastName = dto.lastName ?? user.lastName;
+
+    if (dto.nickname && dto.nickname !== user.nickname) {
+      await this.failIfNicknameExists(dto.nickname);
+      user.nickname = dto.nickname;
+      user.forceLogout = true;
+    }
 
     if (dto.email && dto.email !== user.email) {
       await this.failIfEmailExists(dto.email);
@@ -116,19 +120,16 @@ export class UserService {
 
     if (dto.phone && dto.phone !== user.phone) {
       await this.failIfPhoneExists(dto.phone);
+      await this.failIfPhoneExists(dto.phone, true);
       user.phone = dto.phone;
       user.forceLogout = true;
     }
 
-    // if (
-    //   dto.role &&
-    //   !authFlags.userRoles.includes(dto.role) &&
-    //   authFlags.isLoggedUserAdmin
-    // ) {
-    //   const role = await this.roleService.findOneOrCreate(dto.role);
-    //   user.roles.push(role);
-    //   user.forceLogout = true;
-    // }
+    if (dto.secondPhone && dto.secondPhone !== user.secondPhone) {
+      await this.failIfPhoneExists(dto.secondPhone);
+      await this.failIfPhoneExists(dto.secondPhone, true);
+      user.secondPhone = dto.secondPhone;
+    }
 
     if (dto.workTime) {
       const { id, shift, initHour, endHour } = dto.workTime;

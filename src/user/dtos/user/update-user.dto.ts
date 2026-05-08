@@ -4,7 +4,7 @@ import { IsNotEmptyObject, IsOptional } from 'class-validator';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 
 export class UpdateUserDto extends PartialType(
-  OmitType(CreateUserDto, ['password', 'workTime']),
+  OmitType(CreateUserDto, ['password', 'workTime', 'role']),
 ) {
   @IsOptional()
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
