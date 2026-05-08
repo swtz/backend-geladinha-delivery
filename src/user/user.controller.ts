@@ -101,22 +101,22 @@ export class UserController {
   //   return new ResponseUserDto(user);
   // }
 
-  // @Roles(Role.Operator, Role.Admin)
-  // @Patch(':id')
-  // async update(
-  //   @Param('id', ParseUUIDPipe) id: string,
-  //   @Body() dto: UpdateUserDto,
-  //   @Body('workTime') workTime: UpdateWorkTimeDto,
-  //   @Body('phone', ParseBrPhonePipe) phone: string,
-  // ) {
-  //   const user = await this.userService.findOneByOrFail({ id }, false);
-  //   const updated = await this.userService.update(user, {
-  //     ...dto,
-  //     phone,
-  //     workTime,
-  //   });
-  //   return new ResponseUserDto(updated);
-  // }
+  @Roles(Role.Operator, Role.Admin)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateUserDto,
+    @Body('workTime') workTime: UpdateWorkTimeDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ) {
+    const user = await this.userService.findOneByOrFail({ id });
+    const updated = await this.userService.update(user, {
+      ...dto,
+      phone,
+      workTime,
+    });
+    return new ResponseUserDto(updated);
+  }
 
   @Patch('me/password')
   async updatePassword(

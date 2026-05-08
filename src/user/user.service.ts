@@ -1,6 +1,8 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -101,119 +103,85 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  // async update(user: User, dto: UpdateUserDto) {
-  //   const userFields = Object.keys(dto)
-  //     .filter(key => key !== 'motorcycle')
-  //     .filter(key => key !== 'daily');
-  //   const motoboyFields = Object.keys(dto).filter(
-  //     key => key === 'motorcycle' || 'daily',
-  //   );
+  async update(user: User, dto: UpdateUserDto) {
+    const authFlags = await this.getUserAndEntityAuth(user, user.id);
 
-  //   const existsUserData =
-  //     userFields.filter(key => Boolean(dto[key])).length > 0;
-  //   const existsMotoboyData =
-  //     motoboyFields.filter(key => Boolean(dto[key])).length > 0;
+    user.name = dto.name ?? user.name;
 
-  //   const authFlags = await this.getUserAndEntityAuth(user, user.id);
-  //   const assignRoleError = new BadRequestException(
-  //     'Não é possível atribuir duas funções a um usuário',
-  //   );
+    if (dto.email && dto.email !== user.email) {
+      await this.failIfEmailExists(dto.email);
+      user.email = dto.email;
+      user.forceLogout = true;
+    }
 
-  //   if (authFlags.isLoggedUserMotoboy && dto.role === RoleEnum.Operator) {
-  //     throw assignRoleError;
-  //   }
+    if (dto.phone && dto.phone !== user.phone) {
+      await this.failIfPhoneExists(dto.phone);
+      user.phone = dto.phone;
+      user.forceLogout = true;
+    }
 
-  //   if (
-  //     (authFlags.isLoggedUserOperator || authFlags.isLoggedUserAdmin) &&
-  //     dto.role === RoleEnum.Motoboy
-  //   ) {
-  //     throw assignRoleError;
-  //   }
+    // if (
+    //   dto.role &&
+    //   !authFlags.userRoles.includes(dto.role) &&
+    //   authFlags.isLoggedUserAdmin
+    // ) {
+    //   const role = await this.roleService.findOneOrCreate(dto.role);
+    //   user.roles.push(role);
+    //   user.forceLogout = true;
+    // }
 
-  //   const entity = authFlags.isLoggedUserMotoboy
-  //     ? await this.updateMotoboyFields(!!existsMotoboyData, dto, user)
-  //     : user;
+    if (dto.workTime) {
+      const { id, shift, initHour, endHour } = dto.workTime;
+      const hasAllData = !!(shift && initHour && endHour);
+      const hasSomeData = !!(shift || initHour || endHour);
+      const hasWorkTime = user.workTime;
 
-  //   if (!authFlags.isLoggedUserMotoboy && !existsUserData) {
-  //     throw new BadRequestException('Dados não enviados');
-  //   }
+      if (id) {
+        user.workTime = await this.workTimeService
+          .findOneBy({ id, isShared: true })
+          .then(result => {
+            if (!result) {
+              return this.workTimeService.findOneOwnedByOrFail(
+                user,
+                { id },
+                false,
+              );
+            }
+            return result;
+          });
+      } else if (hasAllData) {
+        if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
+          const created: NewWorkTimeForRest = {
+            shift,
+            initHour,
+            endHour,
+            isDefault: false,
+            isShared: false,
+          };
 
-  //   entity.name = dto.name ?? entity.name;
+          user.workTime = await this.workTimeService.save({
+            ...created,
+            user,
+          });
+        } else {
+          user.workTime = await this.workTimeService.update(
+            user.workTime.id,
+            dto.workTime,
+          );
+        }
+      } else if (hasSomeData) {
+        user.workTime = await this.workTimeService.update(
+          user.workTime.id,
+          dto.workTime,
+        );
+      } else {
+        throw new InternalServerErrorException('ERROR FROM WORK TIME FRAME');
+      }
+    }
 
-  //   if (dto.email && dto.email !== entity.email) {
-  //     await this.failIfEmailExists(dto.email);
-  //     entity.email = dto.email;
-  //     entity.forceLogout = true;
-  //   }
-
-  //   if (dto.phone && dto.phone !== entity.phone) {
-  //     await this.failIfPhoneExists(dto.phone);
-  //     entity.phone = dto.phone;
-  //     entity.forceLogout = true;
-  //   }
-
-  //   if (
-  //     dto.role &&
-  //     !authFlags.userRoles.includes(dto.role) &&
-  //     authFlags.isLoggedUserAdmin
-  //   ) {
-  //     const role = await this.roleService.findOneOrCreate(dto.role);
-  //     entity.roles.push(role);
-  //     entity.forceLogout = true;
-  //   }
-
-  //   if (dto.workTime) {
-  //     const { id, shift, initHour, endHour } = dto.workTime;
-  //     const hasAllData = !!(shift && initHour && endHour);
-  //     const hasSomeData = !!(shift || initHour || endHour);
-  //     const hasWorkTime = entity.workTime;
-
-  //     if (id) {
-  //       entity.workTime = await this.workTimeService
-  //         .findOneBy({ id, isShared: true })
-  //         .then(result => {
-  //           if (!result) {
-  //             return this.workTimeService.findOneOwnedByOrFail(
-  //               entity,
-  //               { id },
-  //               false,
-  //             );
-  //           }
-  //           return result;
-  //         });
-  //     } else if (hasAllData) {
-  //       if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
-  //         const created: NewWorkTimeForRest = {
-  //           shift,
-  //           initHour,
-  //           endHour,
-  //           isDefault: false,
-  //           isShared: false,
-  //         };
-
-  //         entity.workTime = await this.workTimeService.save({
-  //           ...created,
-  //           user: entity,
-  //         });
-  //       } else {
-  //         entity.workTime = await this.workTimeService.update(
-  //           entity.workTime.id,
-  //           dto.workTime,
-  //         );
-  //       }
-  //     } else if (hasSomeData) {
-  //       entity.workTime = await this.workTimeService.update(
-  //         entity.workTime.id,
-  //         dto.workTime,
-  //       );
-  //     } else {
-  //       throw new BadRequestException('Dados não enviados');
-  //     }
-  //   }
-
-  //   const updated = await this.saveUser(entity);
-  //   return this.findOneByOrFail({ id: updated.id }, false);
-  // }
+    const updated = await this.save(user);
+    return this.findOneByOrFail({ id: updated.id });
+  }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
     const user = await this.findOneByOrFail({ id });
