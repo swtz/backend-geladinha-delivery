@@ -10,7 +10,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "a@email.com",
+  "nickname": "leo-surfista22",
   "password": "123456"
 }
 
@@ -190,13 +190,12 @@ PATCH {{baseUrl}}/user/me
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
-{ 
-  "workTime": {
-    "id": "c522631e-be63-474c-a75b-6fe649987815",
-    "initHour": 16,
-    "endHour": 22
-  }
+{
+  "nickname": "leo-surfista22"
 }
+
+  # "email": "a@email.com",
+  # "phone": "(48) 98877-4466"
 
 ### Update user
 # @name updateUser
@@ -205,11 +204,7 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "workTime": {
-    "id": "c522631e-be63-474c-a75b-6fe649987815",
-    "initHour": 12,
-    "endHour": 19
-  }
+  "nickname": "leo-surfista"
 }
 
 ### Delete user
@@ -245,7 +240,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
 # @name readAllMotoboys
-GET {{baseUrl}}/user/motoboy
+GET {{baseUrl}}/user?role=motoboy
 Authorization: Bearer {{JwtToken}}
 
 ################### CUSTOMER ###################

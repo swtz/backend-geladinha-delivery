@@ -106,29 +106,36 @@ export class UserService {
     user.name = dto.name ?? user.name;
     user.lastName = dto.lastName ?? user.lastName;
 
-    if (dto.nickname && dto.nickname !== user.nickname) {
-      await this.failIfNicknameExists(dto.nickname);
-      user.nickname = dto.nickname;
-      user.forceLogout = true;
-    }
+    const dtoFields = Object.entries(dto);
+    const dtoValues = Object.values(dto);
+    const filledValues: string[] = dtoValues.filter(
+      value => value !== undefined,
+    );
+    const filledFields = dtoFields.filter(
+      (field: string[]) => field[1] !== undefined,
+    );
 
-    if (dto.email && dto.email !== user.email) {
-      await this.failIfEmailExists(dto.email);
-      user.email = dto.email;
-      user.forceLogout = true;
-    }
+    const object = {
+      nickname: async (nickname: string) =>
+        await this.failIfNicknameExists(nickname),
+      email: async (email: string) => await this.failIfEmailExists(email),
+      phone: async (phone: string) => await this.failIfPhoneExists(phone),
+      secondPhone: async (secondPhone: string) =>
+        await this.failIfPhoneExists(secondPhone, true),
+    };
 
-    if (dto.phone && dto.phone !== user.phone) {
-      await this.failIfPhoneExists(dto.phone);
-      await this.failIfPhoneExists(dto.phone, true);
-      user.phone = dto.phone;
-      user.forceLogout = true;
-    }
+    let counter = 0;
 
-    if (dto.secondPhone && dto.secondPhone !== user.secondPhone) {
-      await this.failIfPhoneExists(dto.secondPhone);
-      await this.failIfPhoneExists(dto.secondPhone, true);
-      user.secondPhone = dto.secondPhone;
+    for (const arrayField of filledFields) {
+      const field = arrayField[0];
+      const value = filledValues[counter];
+
+      await object[field](value);
+
+      user[field] = value;
+      user.forceLogout = true;
+
+      counter += 1;
     }
 
     if (dto.workTime) {
