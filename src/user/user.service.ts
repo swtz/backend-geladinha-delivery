@@ -91,7 +91,7 @@ export class UserService {
     const created = await this.save(user);
 
     if (user.workTime) {
-      await this.workTimeService.save({ ...user.workTime, user: created });
+      await this.workTimeService.save({ ...user.workTime, user: [created] });
     }
 
     return this.findOneByOrFail({ id: created.id });
