@@ -2,13 +2,11 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from './entities/work-time.entity';
@@ -21,8 +19,6 @@ import { full, essencial, tiny } from './data/relations/work-time';
 
 @Injectable()
 export class WorkTimeService {
-  private readonly logger = new Logger(WorkTimeService.name);
-
   constructor(
     @InjectRepository(WorkTime)
     private readonly workTimeRepository: Repository<WorkTime>,
@@ -283,19 +279,6 @@ export class WorkTimeService {
   }
 
   async save(workTimeData: Partial<WorkTime>) {
-    const http400 = generateBadRequestException(
-      'Erro ao salvar o horário de serviço',
-    );
-    const created = await this.workTimeRepository
-      .save(workTimeData)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return await this.workTimeRepository.save(workTimeData);
   }
 }
