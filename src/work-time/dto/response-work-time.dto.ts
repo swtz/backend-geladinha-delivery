@@ -15,7 +15,7 @@ export class ResponseWorkTimeDto {
     businessName: string;
     phone: string;
   }[];
-  readonly user?: UserDtoType;
+  readonly user?: UserDtoType[];
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
@@ -25,21 +25,23 @@ export class ResponseWorkTimeDto {
     this.isDefault = workTime.isDefault;
     this.isShared = workTime.isShared;
     this.places = workTime.places
-      ? workTime.places.map(item => {
+      ? workTime.places.map(place => {
           return {
-            id: item.id,
-            name: item.name,
-            businessName: item.businessName,
-            phone: item.phone,
+            id: place.id,
+            name: place.name,
+            businessName: place.businessName,
+            phone: place.phone,
           };
         })
       : undefined;
     this.user = workTime.user
-      ? {
-          id: workTime.user.id,
-          name: workTime.user.name,
-          phone: workTime.user.phone,
-        }
+      ? workTime.user.map(user => {
+          return {
+            id: user.id,
+            name: user.name,
+            phone: user.phone,
+          };
+        })
       : undefined;
   }
 }

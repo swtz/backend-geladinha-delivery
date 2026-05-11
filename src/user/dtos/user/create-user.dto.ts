@@ -7,6 +7,7 @@ import {
   IsPhoneNumber,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
@@ -45,6 +46,7 @@ export class CreateUserDto {
   password!: string;
 
   @IsOptional()
+  @ValidateNested()
   @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
   workTime?: CreateWorkTimeDto;
 }
