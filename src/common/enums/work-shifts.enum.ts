@@ -1,8 +1,8 @@
 export enum Shift {
-  Fist = 'madrugada',
-  Second = 'manhã',
-  Third = 'tarde',
-  Forth = 'noite',
+  Night = 'madrugada',
+  Morning = 'manhã',
+  Afternoon = 'tarde',
+  Evening = 'noite',
   Custom = 'personalizado',
   Default = 'padrão',
   WeekDay = 'semana',
