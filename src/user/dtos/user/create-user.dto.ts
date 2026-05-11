@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  IsUUID,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -51,4 +52,8 @@ export class CreateUserDto {
   @Type(() => CreateWorkTimeDto)
   @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
   workTime?: CreateWorkTimeDto;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'Formato inválido' })
+  workTimeId?: string;
 }

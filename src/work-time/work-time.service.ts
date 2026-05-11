@@ -24,6 +24,15 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
+  async useIsSharedWorkTime(id: string, user: User) {
+    const sharedWorkTime = await this.findOneByOrFail({ id, isShared: true });
+
+    sharedWorkTime.user.push(user);
+
+    const updatedWorkTime = await this.save(sharedWorkTime);
+    return this.findOneByOrFail({ id: updatedWorkTime.id });
+  }
+
   async findOneOrCreate(
     dto: CreateWorkTimeDto,
     isDefault = false,

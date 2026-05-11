@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -92,6 +91,13 @@ export class UserService {
         ...createdUser.workTime,
         user: workTimeUser,
       });
+    }
+
+    if (dto.workTimeId) {
+      await this.workTimeService.useIsSharedWorkTime(
+        dto.workTimeId,
+        createdUser,
+      );
     }
 
     return this.findOneByOrFail({ id: created.id });
