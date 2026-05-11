@@ -35,7 +35,7 @@ export class UserService {
   ) {}
 
   async failIfEmailExists(email: string) {
-    const exists = await this.findByEmail(email);
+    const exists = await this.findOneBy({ email });
 
     if (exists) {
       throw new ConflictException('Email já existe');
@@ -264,12 +264,6 @@ export class UserService {
     });
   }
 
-  findByEmail(email: string) {
-    return this.userRepository.findOneBy({
-      email,
-    });
-  }
-
   findByPhone(phone: string, isSecondPhone = false) {
     const qo: { phone: undefined | string; secondPhone: undefined | string } = {
       phone,
@@ -282,12 +276,6 @@ export class UserService {
     }
 
     return this.userRepository.findOneBy(qo);
-  }
-
-  findById(id: string) {
-    return this.userRepository.findOneBy({
-      id,
-    });
   }
 
   async remove(id: string) {
