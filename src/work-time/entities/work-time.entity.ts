@@ -7,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -41,7 +42,10 @@ export class WorkTime {
   @ManyToMany(() => Place, place => place.workTimes, { onDelete: 'CASCADE' })
   places!: Place[];
 
-  @OneToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @OneToMany(() => User, user => user.workTime, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn()
-  user!: User;
+  user!: User[];
 }

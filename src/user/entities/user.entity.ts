@@ -8,6 +8,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -64,7 +65,10 @@ export class User {
   @JoinTable()
   roles!: Role[];
 
-  @OneToOne(() => WorkTime, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => WorkTime, workTime => workTime.user, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn()
   workTime!: WorkTime;
 }
