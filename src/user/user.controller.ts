@@ -17,7 +17,7 @@ import { CreateUserDto } from './dtos/user/create-user.dto';
 import { UpdateUserDto } from './dtos/user/update-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
-import { Role, roles } from 'src/common/role/roles.enum';
+import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
@@ -37,15 +37,6 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  // @Get('motoboy')
-  // async findAllMotoboy() {
-  //   const motoboys = await this.userService.findAllMotoboy();
-  //   const parsedMotoboys = motoboys.map(
-  //     motoboy => new ResponseUserDto(motoboy),
-  //   );
-  //   return parsedMotoboys;
-  // }
-
   @Roles(Role.Operator, Role.Admin)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -63,19 +54,17 @@ export class UserController {
     return parsedUsers;
   }
 
-  @Post()
   // @Roles(Role.Admin)
   @Public()
+  @Post()
   async create(
-    @Body() userDto: CreateUserDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('role', new ParseEnumPipe(Role)) role: Role,
+    @Body() userDto: CreateUserDto,
   ) {
-    if (!userDto.role || !roles.includes(userDto.role)) {
-      throw new BadRequestException('Função inválida');
-    }
-
     const user = await this.userService.create({
       ...userDto,
+      role,
       phone,
     });
 
@@ -127,8 +116,8 @@ export class UserController {
     return new ResponseUserDto(user);
   }
 
-  @Delete(':id')
   @Roles(Role.Admin)
+  @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.remove(id);
     return new ResponseUserDto(user);
