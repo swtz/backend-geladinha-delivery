@@ -159,20 +159,21 @@ Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "name": "Leonardo",
-  "lastName": "Lüders",
-  "nickname": "leo-surfistinha",
-  "phone": "+5548999884459",
-  "secondPhone": "+5548999884459",
-  "email": "a@email.com",
-  "role": "admin",
-  "password": "123456",
-  "workTime": {
-    "shift": "personalizado",
-    "initHour": 18,
-    "endHour": 4
-  }
+  "name": "Maria",
+  "lastName": "Cabral",
+  "nickname": "da-luz",
+  "phone": "+5548999884499",
+  "secondPhone": "+5548999884499",
+  "email": "d@email.com",
+  "role": "operator",
+  "password": "123456"
 }
+
+  # "workTime": {
+  #   "shift": "personalizado",
+  #   "initHour": 18,
+  #   "endHour": 4
+  # }
 
 # {
 #   "name": "Gabriel",

@@ -34,14 +34,18 @@ export class SettlementController {
 
   @Get('preview')
   async preview(
+    @Query('nickname') nickname: string,
     @Query('name') name: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = !name && !phone && !id ? {} : { name, phone, id };
+    if (!name && !phone && !id && !nickname) {
+      throw new BadRequestException('Informe os dados para consulta');
+    }
 
+    const qo = { name, phone, id, nickname };
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 

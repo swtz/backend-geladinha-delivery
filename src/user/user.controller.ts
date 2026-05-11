@@ -21,7 +21,6 @@ import { Role, roles } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
-import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 
@@ -69,7 +68,6 @@ export class UserController {
   @Public()
   async create(
     @Body() userDto: CreateUserDto,
-    @Body('workTime') workTime: CreateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
     if (!userDto.role || !roles.includes(userDto.role)) {
@@ -79,7 +77,6 @@ export class UserController {
     const user = await this.userService.create({
       ...userDto,
       phone,
-      workTime,
     });
 
     return new ResponseUserDto(user);

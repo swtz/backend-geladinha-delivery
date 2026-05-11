@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsEnum,
@@ -47,6 +48,7 @@ export class CreateUserDto {
 
   @IsOptional()
   @ValidateNested()
+  @Type(() => CreateWorkTimeDto)
   @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
   workTime?: CreateWorkTimeDto;
 }
