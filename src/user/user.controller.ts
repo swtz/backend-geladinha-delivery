@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -62,6 +61,18 @@ export class UserController {
     @Body('role', new ParseEnumPipe(Role)) role: Role,
     @Body() userDto: CreateUserDto,
   ) {
+    await this.userService.failIfPhoneExists(userDto.phone);
+    await this.userService.failIfNicknameExists(userDto.nickname);
+
+    if (userDto.email) {
+      await this.userService.failIfEmailExists(userDto.email);
+    }
+
+    if (userDto.secondPhone) {
+      await this.userService.failIfPhoneExists(userDto.secondPhone);
+      await this.userService.failIfPhoneExists(userDto.secondPhone, true);
+    }
+
     const user = await this.userService.create({
       ...userDto,
       role,

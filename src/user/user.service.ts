@@ -59,18 +59,6 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto) {
-    await this.failIfPhoneExists(dto.phone);
-    await this.failIfNicknameExists(dto.nickname);
-
-    if (dto.email) {
-      await this.failIfEmailExists(dto.email);
-    }
-
-    if (dto.secondPhone) {
-      await this.failIfPhoneExists(dto.secondPhone);
-      await this.failIfPhoneExists(dto.secondPhone, true);
-    }
-
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
     const user: UserType = {
@@ -89,9 +77,21 @@ export class UserService {
     };
 
     const created = await this.save(user);
+    const createdUser = await this.findOneByOrFail({ id: created.id });
 
-    if (user.workTime) {
-      await this.workTimeService.save({ ...user.workTime, user: [created] });
+    if (createdUser.workTime) {
+      const { user: workTimeUser } = await this.workTimeService.findOneByOrFail(
+        {
+          id: createdUser.workTime.id,
+        },
+      );
+
+      workTimeUser.push(createdUser);
+
+      await this.workTimeService.save({
+        ...createdUser.workTime,
+        user: workTimeUser,
+      });
     }
 
     return this.findOneByOrFail({ id: created.id });
