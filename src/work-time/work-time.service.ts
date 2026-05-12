@@ -13,7 +13,6 @@ import { WorkTime } from './entities/work-time.entity';
 import { CreateWorkTimeDto } from './dto/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
-import { NewWorkTimeForRest } from './types/new-work-time-for-rest';
 import { FindAllParams } from './types/findAllParams';
 import { full, essencial, tiny } from './data/relations/work-time';
 
@@ -24,65 +23,8 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
-  async findOneOrCreate(
-    dto: CreateWorkTimeDto,
-    isDefault = false,
-    isShared = false,
-  ) {
-    const workTime = await this.findOneBy({ shift: dto.shift, isShared: true });
-
-    const newWorkTime: NewWorkTimeForRest = {
-      shift: dto.shift,
-      initHour: dto.initHour,
-      endHour: dto.endHour,
-      isDefault,
-      isShared,
-    };
-
-    if (!workTime || dto.shift === Shift.Custom) {
-      const created = await this.save(newWorkTime);
-      return this.findOneByOrFail({ id: created.id });
-    }
-
-    const exists = workTime.places.find(
-      place => place.code === process.env.DEFAULT_PLACE_CODE,
-    );
-
-    if (!exists) {
-      const created = await this.save(newWorkTime);
-      return this.findOneByOrFail({ id: created.id });
-    }
-
-    return workTime;
-  }
-
-  async create(dto: CreateWorkTimeDto, place?: Place) {
-    if (!place) {
-      return this.findOneOrCreate(dto);
-    }
-
-    this.failIfShiftExistsInPlace(place, dto.shift);
-
-    if (place.workTimes.length >= 5) {
-      throw new BadRequestException(
-        'Só é possível cadastrar 5 horários por estabelecimento',
-      );
-    }
-
-    const defaultWorkTime = this.findDefaultFromPlace(place);
-    const workTime = await this.findOneOrCreate(dto, dto.isDefault, true);
-
-    workTime.places.push(place);
-
-    if (dto.isDefault && defaultWorkTime) {
-      await this.save({
-        ...defaultWorkTime,
-        isDefault: false,
-      });
-    }
-
-    const created = await this.save(workTime);
-    return this.findOneByOrFail({ id: created.id });
+  async create(dto: CreateWorkTimeDto) {
+    // the WorkTime entity will be created without relationships
   }
 
   async update(id: string, dto: UpdateWorkTimeDto, isDefault = false) {
