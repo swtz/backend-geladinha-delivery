@@ -598,3 +598,15 @@ Content-Type: application/json
     "daily": 30
   }
 }
+
+### addWorkTime_new
+# @name addWorkTimeNew
+POST {{baseUrl}}/place/add
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+
+{
+  "workTimeId": "46b7f4bf-dc1c-4491-b1e9-ed4f0d7fa274",
+  "placeId": "fe8e7249-5bae-4cd6-ae32-23879e6fa1f8",
+  "userId": null
+}

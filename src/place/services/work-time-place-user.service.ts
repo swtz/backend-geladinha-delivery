@@ -40,7 +40,10 @@ export class WorkTimePlaceUserService {
       });
     }
 
-    const created = await this.workTimeService.save(workTime);
+    const created = await this.workTimeService.save({
+      ...workTime,
+      isShared: true,
+    });
     return this.workTimeService.findOneByOrFail({ id: created.id }, true);
   }
 

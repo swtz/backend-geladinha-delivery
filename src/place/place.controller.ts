@@ -27,6 +27,7 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
 import { ResponsePlaceDto } from './dto/response-place.dto';
 import { WorkTimeDateService } from './services/work-time-date.service';
+import { WorkTimePlaceUserService } from './services/work-time-place-user.service';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -34,6 +35,7 @@ export class PlaceController {
   constructor(
     private readonly placeService: PlaceService,
     private readonly workTimeDateService: WorkTimeDateService,
+    private readonly workTimePlaceUserService: WorkTimePlaceUserService,
   ) {}
 
   @Get('date')
@@ -48,6 +50,21 @@ export class PlaceController {
       to,
     );
     return date;
+  }
+
+  @Post('add')
+  async addWorkTime_new(
+    @Body('workTimeId') workTimeId: string,
+    @Body('placeId') placeId: string,
+    @Body('userId') userId: string,
+  ) {
+    const workTime = await this.workTimePlaceUserService.addWorkTime(
+      workTimeId,
+      placeId,
+      userId,
+    );
+
+    return workTime;
   }
 
   @Post('me')

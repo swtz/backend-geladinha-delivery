@@ -47,14 +47,15 @@ export class PlaceService {
       : address;
 
     // criar um work time
-    const workTime = await this.workTimeService.findOneOrCreate(
-      dto.workTime,
-      dto.workTime.isDefault,
-      true,
-    );
+    // const workTime = await this.workTimeService.findOneOrCreate(
+    //   dto.workTime,
+    //   dto.workTime.isDefault,
+    //   true,
+    // );
+
     // criar um social medias (ainda não)
     // depois cria-se o objeto
-    const place: PlaceType = {
+    const place = {
       code: dto.code, // failIfExists
       name: dto.name, // failIfExists
       businessName: dto.businessName,
@@ -65,7 +66,7 @@ export class PlaceService {
       email: dto.email, // failIfExists
       address,
       postalBox,
-      workTimes: [workTime],
+      // workTimes: [workTime],
       owners: [owner],
     };
 
@@ -177,7 +178,7 @@ export class PlaceService {
 
   async addWorkTime(dto: CreateWorkTimeDto, id: string) {
     const place = await this.findOneByOrFail({ id });
-    await this.workTimeService.create(dto, place);
+    await this.workTimeService.create(dto);
     return this.findOneByOrFail({ id: place.id });
   }
 

@@ -67,11 +67,11 @@ export class WorkTimeController {
     return new ResponseWorkTimeDto(workTime);
   }
 
-  @Post()
-  async create(@Body() dto: CreateWorkTimeDto) {
-    const workTime = await this.workTimeService.create(dto);
-    return new ResponseWorkTimeDto(workTime);
-  }
+  // @Post()
+  // async create(@Body() dto: CreateWorkTimeDto) {
+  //   const workTime = await this.workTimeService.create(dto);
+  //   return new ResponseWorkTimeDto(workTime);
+  // }
 
   @Patch(':id')
   async update(
