@@ -8,6 +8,7 @@ import { AddressModule } from 'src/address/address.module';
 import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { UserModule } from 'src/user/user.module';
 import { WorkTimeDateService } from './services/work-time-date.service';
+import { WorkTimePlaceUserService } from './services/work-time-place-user.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { WorkTimeDateService } from './services/work-time-date.service';
     UserModule,
   ],
   controllers: [PlaceController],
-  providers: [PlaceService, WorkTimeDateService],
+  providers: [PlaceService, WorkTimeDateService, WorkTimePlaceUserService],
   exports: [PlaceService, WorkTimeDateService],
 })
 export class PlaceModule {}
