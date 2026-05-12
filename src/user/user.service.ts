@@ -68,36 +68,9 @@ export class UserService {
       password: hashedPassword,
       forceLogout: false,
       roles: [role],
-      workTime: dto.workTime
-        ? await this.workTimeService.findOneOrCreate(dto.workTime)
-        : undefined,
     };
 
     const created = await this.save(user);
-    const createdUser = await this.findOneByOrFail({ id: created.id });
-
-    if (createdUser.workTime) {
-      const { user: workTimeUser } = await this.workTimeService.findOneByOrFail(
-        {
-          id: createdUser.workTime.id,
-        },
-      );
-
-      workTimeUser.push(createdUser);
-
-      await this.workTimeService.save({
-        ...createdUser.workTime,
-        user: workTimeUser,
-      });
-    }
-
-    if (dto.workTimeId) {
-      await this.workTimeService.useIsSharedWorkTime(
-        dto.workTimeId,
-        createdUser,
-      );
-    }
-
     return this.findOneByOrFail({ id: created.id });
   }
 
