@@ -108,11 +108,11 @@ export class PayoutController {
     return parsedPayouts;
   }
 
-  // @Get(':id')
-  // async findOne(@Param('id', ParseUUIDPipe) id: string) {
-  //   const payout = await this.payoutService.findOneByOrFail({ id });
-  //   return new ResponsePayoutDto(payout);
-  // }
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const payout = await this.payoutService.findOneByOrFail({ id });
+    return new ResponsePayoutDto(payout);
+  }
 
   @Get()
   async findAll(

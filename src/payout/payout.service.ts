@@ -174,25 +174,25 @@ export class PayoutService {
   //   return this.save(payout);
   // }
 
-  // async findOneByOrFail(payoutData: Partial<Payout>) {
-  //   const payout = await this.findOneBy(payoutData);
+  async findOneByOrFail(payoutData: Partial<Payout>) {
+    const payout = await this.findOneBy(payoutData);
 
-  //   if (!payout) {
-  //     throw new NotFoundException('Pagamento não encontrado');
-  //   }
+    if (!payout) {
+      throw new NotFoundException('Pagamento não encontrado');
+    }
 
-  //   return payout;
-  // }
+    return payout;
+  }
 
-  // findOneBy(payoutData: Partial<Payout>) {
-  //   return this.payoutRepository.findOne({
-  //     where: payoutData,
-  //     relations: {
-  //       motoboy: { workTime: true },
-  //       vouchers: voucherRelations,
-  //     },
-  //   });
-  // }
+  findOneBy(payoutData: Partial<Payout>) {
+    return this.payoutRepository.findOne({
+      where: payoutData,
+      relations: {
+        motoboy: { ...mtbFull, user: true },
+        vouchers: voucherRelations,
+      },
+    });
+  }
 
   findOneByWorkDayAndMotoboy(
     workDay: Date,

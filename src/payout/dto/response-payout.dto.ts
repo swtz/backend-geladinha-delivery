@@ -33,6 +33,7 @@ export class ResponsePayoutDto {
       isClosed?: boolean;
     },
   ) {
+    this.id = payout.id;
     this.createdAt = payout.createdAt;
     this.updatedAt = payout.updatedAt;
     this.isClosed = payout.isClosed;

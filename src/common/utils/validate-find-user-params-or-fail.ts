@@ -9,7 +9,6 @@ type FindUserParams = Pick<
 export const validateFindUserParamsOrFail = (
   findUserParams: FindUserParams,
 ) => {
-  console.log(findUserParams);
   for (const param of Object.values(findUserParams)) {
     if (param !== undefined) {
       return findUserParams;
