@@ -24,7 +24,15 @@ export class WorkTimeService {
   ) {}
 
   async create(dto: CreateWorkTimeDto) {
-    // the WorkTime entity will be created without relationships
+    const workTime = {
+      shift: dto.shift,
+      initHour: dto.initHour,
+      endHour: dto.endHour,
+      isDefault: dto.isDefault ? dto.isDefault : false,
+    };
+
+    const created = await this.save(workTime);
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(id: string, dto: UpdateWorkTimeDto, isDefault = false) {

@@ -38,7 +38,10 @@ export class WorkTime {
   @Column({ default: false })
   isShared!: boolean;
 
-  @ManyToMany(() => Place, place => place.workTimes, { onDelete: 'CASCADE' })
+  @ManyToMany(() => Place, place => place.workTimes, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   places!: Place[];
 
   @OneToMany(() => User, user => user.workTime, {
