@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -23,6 +22,7 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
+import { validateFindUserParamsOrFail } from 'src/common/utils/validate-find-user-params-or-fail';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -35,17 +35,27 @@ export class SettlementController {
   @Get('preview')
   async preview(
     @Query('nickname') nickname: string,
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Query('email') email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    if (!name && !phone && !id && !nickname) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
+    const qo = validateFindUserParamsOrFail({
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    });
 
-    const qo = { name, phone, id, nickname };
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
@@ -59,19 +69,30 @@ export class SettlementController {
 
   @Post()
   async create(
-    @Body('name') name: string,
-    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('nickname') nickname: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Body('name') name: string,
+    @Body('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Body('email') email: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Body('initValue', ParseFloatPipe) initValue: number,
     @Body('description') description: string,
     @Body('from') fromDate: string,
     @Body('to') toDate: string,
   ) {
-    if (!name && !phone && !id) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
+    const qo = validateFindUserParamsOrFail({
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    });
 
-    const qo = { name, phone, id };
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 

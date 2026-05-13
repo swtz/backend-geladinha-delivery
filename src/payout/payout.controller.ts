@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -70,16 +69,28 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('name') name: string,
-    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('nickname') nickname: string,
     @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Body('name') name: string,
+    @Body('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Body('email') email: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Body('from') fromDate: string,
     @Body('to') toDate: string,
   ) {
-    if (!name && !phone && !id) {
-      throw new BadRequestException('Informe os dados para consulta');
-    }
-    const qo = { name, phone, id };
+    const qo = validateFindUserParamsOrFail({
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    });
+
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
