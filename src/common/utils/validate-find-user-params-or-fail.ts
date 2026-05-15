@@ -1,16 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
-import { User } from 'src/user/entities/user.entity';
+import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
-type FindUserParams = Pick<
-  User,
-  'nickname' | 'id' | 'name' | 'lastName' | 'email' | 'phone' | 'secondPhone'
->;
-
-export const validateFindUserParamsOrFail = (
-  findUserParams: FindUserParams,
-) => {
-  for (const param of Object.values(findUserParams)) {
-    if (param !== undefined) {
+export const validateFindUserParamsOrFail = (findUserParams: FindUserDto) => {
+  for (const value of Object.values(findUserParams)) {
+    if (value) {
       return findUserParams;
     }
   }
