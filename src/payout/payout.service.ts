@@ -18,7 +18,6 @@ import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
-import { UserResponseDtoType } from 'src/user/types/user.type';
 import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 import { full as mtbFull } from 'src/user/data/relations/delivery-man';
 import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
@@ -34,23 +33,23 @@ export class PayoutService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(motoboyData: FindUserDto, from: Date, to: Date) {
+  async preview(userData: FindUserDto, from: Date, to: Date) {
     const motoboy = await this.deliveryManService.findOneByOrFail(
-      { user: motoboyData },
+      { user: userData },
       true,
     );
     const vouchers = await this.voucherService.findAll({
       from,
       to,
       type: Voucher.DeliveryMan,
-      userData: motoboyData,
+      userData,
     });
 
     const deliveries = await this.deliveryService.findAll({
       from,
       to,
       type: Role.Motoboy,
-      userData: motoboyData,
+      userData,
     });
 
     const motoboyTips = deliveries.reduce((prev, item) => {
@@ -76,7 +75,7 @@ export class PayoutService {
 
     if (deliveries.length > 1) {
       payout.totalDeliveries = await this.deliveryService.sumDeliveryTaxCol({
-        userData: motoboyData,
+        userData,
         from,
         to,
       });
@@ -96,14 +95,14 @@ export class PayoutService {
       from,
       to,
       type: Voucher.User,
-      userData: motoboyData,
+      userData,
     });
 
     payout.total = setDecimalPlaces(payout.subtotal - payout.totalSpending, 2);
 
     const lastPayouts = await this.findAll({
       isClosed: true,
-      motoboy: { user: motoboyData },
+      motoboy: { user: userData },
     });
 
     if (lastPayouts.length === 0) {
