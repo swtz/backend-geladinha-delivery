@@ -2,7 +2,7 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Settlement } from '../entities/settlement.entity';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { UserDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user.type';
 
 export class ResponseSettlementDto {
   readonly id?: string;
@@ -21,7 +21,7 @@ export class ResponseSettlementDto {
   readonly description?: string;
   readonly currentTotal: number;
   readonly expectedTotal: number;
-  readonly operator: UserDtoType & {
+  readonly operator: UserResponseDtoType & {
     workTime?: MediumResponseWorkTime;
   };
   readonly vouchers?: ResponseVoucherDto[];

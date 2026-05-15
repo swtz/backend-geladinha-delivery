@@ -1,5 +1,5 @@
 import { Motorcycle } from 'src/user/entities/motorcycle.entity';
-import { UserDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user.type';
 
 export class ResponseMotorcycleDto {
   readonly id: string;
@@ -12,8 +12,8 @@ export class ResponseMotorcycleDto {
   readonly displacement?: string;
   readonly color: string;
   readonly isActive: boolean;
-  readonly owner: UserDtoType;
-  readonly driver: UserDtoType;
+  readonly owner: UserResponseDtoType;
+  readonly driver: UserResponseDtoType;
 
   constructor(motorcycle: Motorcycle) {
     this.id = motorcycle.id;

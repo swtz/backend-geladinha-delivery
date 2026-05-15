@@ -2,7 +2,7 @@ import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Payout } from '../entities/payout.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { UserDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user.type';
 import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 
 export class ResponsePayoutDto {
@@ -19,7 +19,7 @@ export class ResponsePayoutDto {
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly motoboy: UserDtoType & {
+  readonly motoboy: UserResponseDtoType & {
     workTime?: MediumResponseWorkTime;
     motorcycle: SmallResponseMotorcycle;
   };

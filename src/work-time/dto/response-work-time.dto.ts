@@ -1,6 +1,6 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTime } from '../entities/work-time.entity';
-import { UserDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user.type';
 
 export class ResponseWorkTimeDto {
   readonly id: string;
@@ -15,7 +15,7 @@ export class ResponseWorkTimeDto {
     businessName: string;
     phone: string;
   }[];
-  readonly user?: UserDtoType[];
+  readonly user?: UserResponseDtoType[];
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
