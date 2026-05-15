@@ -22,6 +22,7 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
 import { validateFindUserParamsOrFail } from 'src/common/utils/validate-find-user-params-or-fail';
+import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -69,27 +70,11 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('nickname') nickname: string,
-    @Body('id', new ParseUUIDPipe({ optional: true })) id: string,
-    @Body('name') name: string,
-    @Body('lastName') lastName: string,
-
-    // precisa-se validar email
-    @Body('email') email: string,
-    @Body('phone', ParseBrPhonePipe) phone: string,
-    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Body('user') userData: FindUserDto,
     @Body('from') fromDate: string,
     @Body('to') toDate: string,
   ) {
-    const qo = validateFindUserParamsOrFail({
-      nickname,
-      id,
-      name,
-      lastName,
-      email,
-      phone,
-      secondPhone,
-    });
+    const qo = validateFindUserParamsOrFail(userData);
 
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
