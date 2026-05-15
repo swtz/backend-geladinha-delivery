@@ -48,10 +48,10 @@ export class DeliveryManService {
   // }
 
   async findOneByOrFail(
-    motoboyData: FindDeliveryManByUserDataType,
+    userData: FindDeliveryManByUserDataType,
     relations = false,
   ) {
-    const motoboy = await this.findOneBy(motoboyData, relations);
+    const motoboy = await this.findOneBy(userData, relations);
 
     if (!motoboy) {
       throw new NotFoundException('Usuário não encontrado');
@@ -60,13 +60,10 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneBy(
-    motoboyData: FindDeliveryManByUserDataType,
-    relations = false,
-  ) {
+  async findOneBy(userData: FindDeliveryManByUserDataType, relations = false) {
     const fields = relations ? full : essencial;
     return this.deliveryManRepository.findOne({
-      where: motoboyData,
+      where: userData,
       relations: fields,
     });
   }
