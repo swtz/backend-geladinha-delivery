@@ -21,6 +21,7 @@ import { DeliveryManService } from 'src/user/services/delivery-man.service';
 import { UserResponseDtoType } from 'src/user/types/user.type';
 import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 import { full as mtbFull } from 'src/user/data/relations/delivery-man';
+import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
 @Injectable()
 export class PayoutService {
@@ -33,7 +34,7 @@ export class PayoutService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(motoboyData: UserResponseDtoType, from: Date, to: Date) {
+  async preview(motoboyData: FindUserDto, from: Date, to: Date) {
     const motoboy = await this.deliveryManService.findOneByOrFail(
       { user: motoboyData },
       true,
