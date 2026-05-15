@@ -196,12 +196,12 @@ export class PayoutService {
 
   findOneByWorkDayAndMotoboy(
     workDay: Date,
-    motoboyData: FindDeliveryManByUserDataType,
+    userData: FindDeliveryManByUserDataType,
   ) {
     return this.payoutRepository.findOne({
       where: {
         workDay,
-        motoboy: motoboyData,
+        motoboy: userData,
       },
       relations: { motoboy: mtbFull },
     });
