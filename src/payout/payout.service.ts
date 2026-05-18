@@ -140,7 +140,9 @@ export class PayoutService {
       );
     }
 
-    return this.save(payoutData);
+    const created = await this.save(payoutData);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(id: string, toDate: string) {
@@ -168,14 +170,19 @@ export class PayoutService {
       ...payout,
       ...newPayout,
     };
+    const updated = await this.save(mergedPayout);
 
-    return this.save(mergedPayout);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async updateIsClosed(id: string, flag: boolean) {
     const payout = await this.findOneByOrFail({ id });
+
     payout.isClosed = flag;
-    return this.save(payout);
+
+    const updated = await this.save(payout);
+
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneByOrFail(payoutData: Partial<Payout>) {
