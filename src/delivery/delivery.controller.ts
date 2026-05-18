@@ -23,11 +23,15 @@ import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ParseTimezoneDatePipe } from './pipes/parse-timezone-date.pipe';
 import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
+import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
 export class DeliveryController {
-  constructor(private readonly deliveryService: DeliveryService) {}
+  constructor(
+    private readonly deliveryService: DeliveryService,
+    private readonly workTimeDateService: WorkTimeDateService,
+  ) {}
 
   @Post('me')
   async create(
@@ -70,8 +74,8 @@ export class DeliveryController {
     @Query('email') email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
-    @Query('from', ParseTimezoneDatePipe) from: Date,
-    @Query('to', ParseTimezoneDatePipe) to: Date,
+    @Query('from') fromDate: string,
+    @Query('to') toDate: string,
     @Query(
       'paymentMethod',
       new ParseEnumPipe(PaymentMethod, { optional: true }),
@@ -79,21 +83,42 @@ export class DeliveryController {
     paymentMethod: PaymentMethod,
     @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
   ) {
+    const userData = {
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    };
+
+    const dateObject: {
+      initDate: Date | undefined;
+      endDate: Date | undefined;
+    } = { initDate: undefined, endDate: undefined };
+
+    if (fromDate && toDate) {
+      const { initDate, endDate } = await this.workTimeDateService.create(
+        userData,
+        fromDate,
+        toDate,
+      );
+
+      dateObject.initDate = initDate;
+      dateObject.endDate = endDate;
+    }
+
+    console.log('from', dateObject.initDate);
+    console.log('to', dateObject.endDate);
+
     const deliveries = await this.deliveryService.findAll({
       type,
-      userData: {
-        nickname,
-        id,
-        name,
-        lastName,
-        email,
-        phone,
-        secondPhone,
-      },
+      userData,
       isPaid,
       paymentMethod,
-      from,
-      to,
+      from: dateObject.initDate,
+      to: dateObject.endDate,
     });
     const parsedDeliveries = deliveries.map(
       delivery => new ResponseDeliveryDto(delivery),

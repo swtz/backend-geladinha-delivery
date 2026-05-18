@@ -23,6 +23,10 @@ export class WorkTimeDateService {
       code,
     });
 
+    // VALIDAR SE AO MENOS UM CAMPO DE USER ESTÁ PREENCHIDO
+    // QUEBRAR FLUXO DE ACORDO COM A RESPOSTA DO BANCO DE DADOS
+    // A SABER: USER || NULL
+
     const operator = await this.userService.findOneByOrFail(user);
 
     const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
@@ -87,9 +91,5 @@ export class WorkTimeDateService {
     // Como resolver?
 
     return dateObject;
-  }
-
-  async create_new(user: Partial<User>, from: string, to: string) {
-    // implementation
   }
 }
