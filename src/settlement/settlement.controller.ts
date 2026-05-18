@@ -111,15 +111,29 @@ export class SettlementController {
     @Query('weekDay', new ParseEnumPipe(WeekDay, { optional: true }))
     weekDay: WeekDay,
     @Query('workDay', ParseTimezoneDatePipe) workDay: Date,
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
-    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('isClosed', new ParseBoolPipe({ optional: true })) isClosed: boolean,
+    @Query('nickname') nickname: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Query('email') email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
     const settlements = await this.settlementService.findAll({
       weekDay,
       workDay,
-      operator: { name, phone, id },
+      operator: {
+        nickname,
+        id,
+        name,
+        lastName,
+        email,
+        phone,
+        secondPhone,
+      },
       isClosed,
     });
     const parsedSettlements = settlements.map(
