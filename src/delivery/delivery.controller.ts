@@ -21,7 +21,7 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ParseTimezoneDatePipe } from './pipes/parse-br-date.pipe';
+import { ParseTimezoneDatePipe } from './pipes/parse-timezone-date.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')

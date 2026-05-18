@@ -20,7 +20,7 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ResponseVoucherDto } from './dto/response-voucher.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { Voucher } from './enums/voucher.enum';
-import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
+import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')

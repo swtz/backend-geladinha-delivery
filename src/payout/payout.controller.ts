@@ -20,7 +20,7 @@ import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
-import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
+import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 import { validateFindUserParamsOrFail } from 'src/common/utils/validate-find-user-params-or-fail';
 import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 

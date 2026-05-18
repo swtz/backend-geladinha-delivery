@@ -21,7 +21,7 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
-import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-br-date.pipe';
+import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 import { validateFindUserParamsOrFail } from 'src/common/utils/validate-find-user-params-or-fail';
 
 @Roles(Role.Admin, Role.Operator)

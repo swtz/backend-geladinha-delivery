@@ -88,4 +88,8 @@ export class WorkTimeDateService {
 
     return dateObject;
   }
+
+  async create_new(user: Partial<User>, from: string, to: string) {
+    // implementation
+  }
 }
