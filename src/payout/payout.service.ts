@@ -172,11 +172,11 @@ export class PayoutService {
     return this.save(mergedPayout);
   }
 
-  // async updateIsClosed(id: string, flag: boolean) {
-  //   const payout = await this.findOneByOrFail({ id });
-  //   payout.isClosed = flag;
-  //   return this.save(payout);
-  // }
+  async updateIsClosed(id: string, flag: boolean) {
+    const payout = await this.findOneByOrFail({ id });
+    payout.isClosed = flag;
+    return this.save(payout);
+  }
 
   async findOneByOrFail(payoutData: Partial<Payout>) {
     const payout = await this.findOneBy(payoutData);
