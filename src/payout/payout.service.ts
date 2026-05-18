@@ -143,30 +143,34 @@ export class PayoutService {
     return this.save(payoutData);
   }
 
-  // async update(id: string, toDate: string) {
-  //   const payout = await this.findOneByOrFail({ id });
+  async update(id: string, toDate: string) {
+    const payout = await this.findOneByOrFail({ id });
 
-  //   if (payout.isClosed) {
-  //     throw new UnauthorizedException(
-  //       'Não é possível alterar um pagamento fechado',
-  //     );
-  //   }
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível alterar um pagamento fechado',
+      );
+    }
 
-  //   const { workDay: initDate, motoboy } = payout;
-  //   const { endDate: to } = await this.workTimeDateService.create(
-  //     { id: motoboy.id },
-  //     new Date(0).toISOString(),
-  //     toDate,
-  //   );
+    const {
+      motoboy: { user },
+      workDay: initDate,
+    } = payout;
 
-  //   const newPayout = await this.preview({ id: motoboy.id }, initDate, to);
-  //   const mergedPayout = {
-  //     ...payout,
-  //     ...newPayout,
-  //   };
+    const { endDate: to } = await this.workTimeDateService.create(
+      { id: user.id },
+      new Date(0).toISOString(),
+      toDate,
+    );
 
-  //   return this.save(mergedPayout);
-  // }
+    const newPayout = await this.preview({ id: user.id }, initDate, to);
+    const mergedPayout = {
+      ...payout,
+      ...newPayout,
+    };
+
+    return this.save(mergedPayout);
+  }
 
   // async updateIsClosed(id: string, flag: boolean) {
   //   const payout = await this.findOneByOrFail({ id });
