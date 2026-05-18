@@ -22,6 +22,7 @@ import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ParseTimezoneDatePipe } from './pipes/parse-timezone-date.pipe';
+import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -60,9 +61,15 @@ export class DeliveryController {
   @Get()
   async findAll(
     @Query('type', new ParseEnumPipe(Role, { optional: true })) type: Role,
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('nickname') nickname: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Query('email') email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('from', ParseTimezoneDatePipe) from: Date,
     @Query('to', ParseTimezoneDatePipe) to: Date,
     @Query(
@@ -74,9 +81,15 @@ export class DeliveryController {
   ) {
     const deliveries = await this.deliveryService.findAll({
       type,
-      name,
-      phone,
-      id,
+      userData: {
+        nickname,
+        id,
+        name,
+        lastName,
+        email,
+        phone,
+        secondPhone,
+      },
       isPaid,
       paymentMethod,
       from,

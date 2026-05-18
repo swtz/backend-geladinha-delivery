@@ -40,9 +40,6 @@ type DateParams = {
 
 export type FindAllParams = {
   type?: Role;
-  name?: string;
-  phone?: string;
-  id?: string;
   userData?: Partial<User>;
   isPaid?: boolean;
   paymentMethod?: PaymentMethodEnum;
@@ -61,9 +58,6 @@ abstract class AbstractFactory {
 export class DeliveryFindAllFactory extends AbstractFactory {
   factoryMethod({
     type,
-    name,
-    phone,
-    id,
     userData,
     isPaid,
     paymentMethod,
@@ -71,7 +65,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     to,
   }: FindAllParams): Query {
     const queryObject = new DeliveryFindAllQuery();
-    const data = userData === undefined ? { name, phone, id } : userData;
+    const data = !userData ? undefined : userData;
 
     queryObject.createdAt = this.getDatePeriod(from, to);
     queryObject.isPaid = isPaid;
@@ -83,7 +77,7 @@ export class DeliveryFindAllFactory extends AbstractFactory {
     }
 
     if (type === Role.Motoboy) {
-      queryObject['motoboy'] = { user: data };
+      queryObject['motoboy'] = { user: { ...data } };
     } else {
       const key = type === Role.Admin ? 'operator' : type;
       queryObject[key] = data;

@@ -19,11 +19,14 @@ export class ParseTimezoneDatePipe implements PipeTransform {
       return undefined;
     }
 
+    if (data === 'user') {
+      console.log(value);
+      return undefined;
+    }
+
     if (!isISO8601(value, { strict: true })) {
       throw new BadRequestException('Data inválida');
     }
-
-    // if (data === 'user') ...
 
     const dateObject = await this.workTimeDateService.create_new({}, '', '');
 
