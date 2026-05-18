@@ -135,25 +135,25 @@ export class PayoutController {
     return parsedPayouts;
   }
 
-  // @Roles(Role.Admin, Role.Operator)
-  // @Patch(':id')
-  // async update(
-  //   @Param('id', ParseUUIDPipe) id: string,
-  //   @Query('to') toDate: string,
-  // ) {
-  //   const payout = await this.payoutService.update(id, toDate);
-  //   return new ResponsePayoutDto(payout);
-  // }
+  @Roles(Role.Admin, Role.Operator)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('to') toDate: string,
+  ) {
+    const payout = await this.payoutService.update(id, toDate);
+    return new ResponsePayoutDto(payout);
+  }
 
-  // @Roles(Role.Admin)
-  // @Patch(':id/:flag')
-  // async updateIsClosed(
-  //   @Param('id', ParseUUIDPipe) id: string,
-  //   @Param('flag', ParseBoolPipe) flag: boolean,
-  // ) {
-  //   const payout = await this.payoutService.updateIsClosed(id, flag);
-  //   return new ResponsePayoutDto(payout);
-  // }
+  @Roles(Role.Admin)
+  @Patch(':id/:flag')
+  async updateIsClosed(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('flag', ParseBoolPipe) flag: boolean,
+  ) {
+    const payout = await this.payoutService.updateIsClosed(id, flag);
+    return new ResponsePayoutDto(payout);
+  }
 
   // @Roles(Role.Admin, Role.Operator)
   // @Delete(':id')
