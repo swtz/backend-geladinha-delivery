@@ -3,11 +3,11 @@ import { PlaceService } from '../place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
-import { DateObject } from 'src/payout/types/date-object.type';
 import { fromZonedTime } from 'date-fns-tz';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
 import { isISO8601 } from 'class-validator';
+import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
 @Injectable()
 export class WorkTimeDateService {
@@ -17,22 +17,47 @@ export class WorkTimeDateService {
     private readonly userService: UserService,
   ) {}
 
-  async create(user: Partial<User>, from: string, to: string) {
+  async create(user: FindUserDto, from: string, to: string) {
     const code = process.env.DEFAULT_PLACE_CODE;
     const place = await this.placeService.findOneByOrFail({
       code,
     });
 
-    // VALIDAR SE AO MENOS UM CAMPO DE USER ESTÁ PREENCHIDO
-    // QUEBRAR FLUXO DE ACORDO COM A RESPOSTA DO BANCO DE DADOS
-    // A SABER: USER || NULL
+    const userObject: Record<string, Partial<User> | null> = { operator: {} };
+    let hasUserData = false;
 
-    const operator = await this.userService.findOneByOrFail(user);
+    const dateObject: {
+      initHour: number;
+      endHour: number;
+      initDate: Date;
+      endDate: Date;
+    } = {
+      initHour: 0,
+      endHour: 0,
+      initDate: new Date(),
+      endDate: new Date(),
+    };
 
-    const workTime = this.workTimeService.findDefaultFromPlaceOrFail(place);
-    const { initHour, endHour } = operator.workTime
-      ? operator.workTime
-      : workTime;
+    hasUserData = Object.values(user).some(value => value !== undefined)
+      ? true
+      : false;
+
+    userObject.operator = hasUserData
+      ? await this.userService.findOneByOrFail(user)
+      : null;
+
+    if (userObject.operator && userObject.operator.workTime) {
+      const { initHour, endHour } = userObject.operator.workTime;
+
+      dateObject.initHour = initHour;
+      dateObject.endHour = endHour;
+    } else {
+      const { initHour, endHour } =
+        this.workTimeService.findDefaultFromPlaceOrFail(place);
+
+      dateObject.initHour = initHour;
+      dateObject.endHour = endHour;
+    }
 
     if (
       !isISO8601(from, { strict: true }) ||
@@ -41,13 +66,11 @@ export class WorkTimeDateService {
       throw new BadRequestException('Data inválida');
     }
 
-    // `11/12/2025 21`;
-    // `2025-12-11T21:00:00`;
     const fromDate = from.slice(0, 10);
     const toDate = to.slice(0, 10);
 
-    const twoDigitInitHour = padLeftWithChar(initHour, '0');
-    const twoDigitEndHour = padLeftWithChar(endHour, '0');
+    const twoDigitInitHour = padLeftWithChar(dateObject.initHour, '0');
+    const twoDigitEndHour = padLeftWithChar(dateObject.endHour, '0');
 
     const utcInitDate = fromZonedTime(
       `${fromDate}T${twoDigitInitHour}:00:00`,
@@ -58,21 +81,17 @@ export class WorkTimeDateService {
       'America/Sao_Paulo',
     );
 
-    const initDate = utcInitDate;
-    const endDate = utcEndDate;
-    const dateObject: DateObject = {
-      initDate,
-      endDate,
-    };
+    dateObject.initDate = utcInitDate;
+    dateObject.endDate = utcEndDate;
 
-    const initHourChanged = [21, 22, 23].includes(initHour);
-    const endHourChanged = [21, 22, 23].includes(endHour);
+    const initHourChanged = [21, 22, 23].includes(dateObject.initHour);
+    const endHourChanged = [21, 22, 23].includes(dateObject.endHour);
 
     if (!initHourChanged || !endHourChanged) {
-      if (endHour < initHour) {
+      if (dateObject.endHour < dateObject.initHour) {
         dateObject.endDate = generateRelativeDate(
           'tomorrow',
-          endHour,
+          dateObject.endHour,
           utcEndDate,
         );
       }
@@ -90,6 +109,6 @@ export class WorkTimeDateService {
     // "Eu quero a mesma data só que com o horário diferente"
     // Como resolver?
 
-    return dateObject;
+    return { initDate: dateObject.initDate, endDate: dateObject.endDate };
   }
 }
