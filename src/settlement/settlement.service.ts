@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
@@ -17,15 +16,12 @@ import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Injectable()
 export class SettlementService {
-  private readonly logger = new Logger(SettlementService.name);
-
   constructor(
     @InjectRepository(Settlement)
     private readonly settlementRepository: Repository<Settlement>,
@@ -300,19 +296,6 @@ export class SettlementService {
   }
 
   async save(settlement: Partial<Settlement>) {
-    const http400 = generateBadRequestException(
-      'Erro ao salvar caixa do televendas',
-    );
-    const created = await this.settlementRepository
-      .save(settlement)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.settlementRepository.save(settlement);
   }
 }
