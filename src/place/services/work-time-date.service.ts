@@ -34,8 +34,8 @@ export class WorkTimeDateService {
     } = {
       initHour: 0,
       endHour: 0,
-      initDate: new Date(),
-      endDate: new Date(),
+      initDate: new Date(0),
+      endDate: new Date(0),
     };
 
     hasUserData = Object.values(user).some(value => value !== undefined);
