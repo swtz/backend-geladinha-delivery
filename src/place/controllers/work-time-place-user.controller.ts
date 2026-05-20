@@ -98,8 +98,8 @@ export class WorkTimePlaceUserController {
     return new ResponsePlaceDto(place);
   }
 
-  @Get('work-time')
-  async findWorkTimes(
+  @Get('place')
+  async findAllOfPlace(
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
