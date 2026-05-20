@@ -12,7 +12,7 @@ export class WorkTimePlaceUserService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async addWorkTimeToPlace(workTimeId: string, placeId?: string) {
+  async addWorkTimeToPlace(workTimeId: string, placeId: string) {
     const workTime = await this.workTimeService.findOneByOrFail(
       { id: workTimeId },
       true,
