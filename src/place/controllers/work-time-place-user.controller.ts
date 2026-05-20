@@ -58,6 +58,23 @@ export class WorkTimePlaceUserController {
     return workTime;
   }
 
+  @Post('user')
+  async updateUserWorkTime(
+    @Body('workTimeId') workTimeId: string,
+    @Body('userId') userId: string,
+  ) {
+    if (!workTimeId || !userId) {
+      throw new BadRequestException('Preencha todos os campos');
+    }
+
+    const workTime = await this.workTimePlaceUserService.updateUserWorkTime(
+      workTimeId,
+      userId,
+    );
+
+    return workTime;
+  }
+
   // @Post('work-time')
   // async addWorkTime(
   //   @Body() dto: CreateWorkTimeDto,
