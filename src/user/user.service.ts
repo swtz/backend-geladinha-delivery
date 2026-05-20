@@ -18,7 +18,6 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from './data/relations/delivery-man';
-import { UserType } from './types/user.type';
 
 @Injectable()
 export class UserService {
@@ -54,19 +53,44 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto) {
+    const user: Partial<User> = {};
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const user: UserType = {
-      name: dto.name,
-      lastName: dto.lastName,
-      nickname: dto.nickname,
-      phone: dto.phone,
-      secondPhone: dto.secondPhone,
-      email: dto.email,
-      password: hashedPassword,
-      forceLogout: false,
-      roles: [role],
+    const filledFields = Object.keys(dto).filter(
+      (field: string) => dto[field] !== undefined,
+    );
+    const filledValues = Object.values(dto).filter(
+      value => value !== undefined,
+    );
+
+    const uniqueFieldsValidationObject = {
+      nickname: async (nickname: string) =>
+        await this.failIfNicknameExists(nickname),
+      email: async (email: string) => await this.failIfEmailExists(email),
+      phone: async (phone: string) => await this.failIfPhoneExists(phone),
+      secondPhone: async (secondPhone: string) =>
+        await this.failIfPhoneExists(secondPhone, true),
     };
+
+    let counter = 0;
+
+    for (const filledField of filledFields) {
+      const value = filledValues[counter];
+      const excludedFields = ['name', 'lastName', 'password', 'role'];
+
+      if (!excludedFields.includes(filledField)) {
+        await uniqueFieldsValidationObject[filledField](value);
+        user[filledField] = value;
+      }
+
+      counter += 1;
+    }
+
+    user.name = dto.name;
+    user.lastName = dto.lastName;
+    user.password = hashedPassword;
+    user.forceLogout = false;
+    user.roles = [role];
 
     const created = await this.save(user);
     return this.findOneByOrFail({ id: created.id });
