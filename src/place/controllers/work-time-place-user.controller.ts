@@ -40,8 +40,8 @@ export class WorkTimePlaceUserController {
     return date;
   }
 
-  @Post('add')
-  async addWorkTime_new(
+  @Post('place')
+  async addWorkTime(
     @Body('workTimeId') workTimeId: string,
     @Body('placeId') placeId: string,
     @Body('userId') userId: string,
