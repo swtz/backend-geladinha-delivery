@@ -22,10 +22,7 @@ export class WorkTimeDateService {
     const place = await this.placeService.findOneByOrFail({
       code,
     });
-
     const userObject: Record<string, Partial<User> | null> = { operator: {} };
-    let hasUserData = false;
-
     const dateObject: {
       initHour: number;
       endHour: number;
@@ -37,8 +34,7 @@ export class WorkTimeDateService {
       initDate: new Date(0),
       endDate: new Date(0),
     };
-
-    hasUserData = Object.values(user).some(value => value !== undefined);
+    const hasUserData = Object.values(user).some(value => value !== undefined);
 
     userObject.operator = hasUserData
       ? await this.userService.findOneByOrFail(user)

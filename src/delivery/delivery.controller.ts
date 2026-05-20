@@ -94,8 +94,8 @@ export class DeliveryController {
     };
 
     const dateObject: {
-      initDate: Date | undefined;
-      endDate: Date | undefined;
+      initDate?: Date;
+      endDate?: Date;
     } = { initDate: undefined, endDate: undefined };
 
     if (fromDate && toDate) {
