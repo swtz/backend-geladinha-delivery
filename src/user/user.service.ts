@@ -18,7 +18,6 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from './data/relations/delivery-man';
-import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserType } from './types/user.type';
 
 @Injectable()
@@ -28,7 +27,6 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
-    private readonly workTimeService: WorkTimeService,
   ) {}
 
   async failIfEmailExists(email: string) {

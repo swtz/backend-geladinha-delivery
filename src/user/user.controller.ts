@@ -20,7 +20,6 @@ import { Role } from 'src/common/role/roles.enum';
 import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
-import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
@@ -86,7 +85,6 @@ export class UserController {
   async updateMe(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateUserDto,
-    @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
@@ -94,7 +92,6 @@ export class UserController {
       ...dto,
       phone,
       secondPhone,
-      workTime,
     });
     return new ResponseUserDto(user);
   }
@@ -104,7 +101,6 @@ export class UserController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
-    @Body('workTime') workTime: UpdateWorkTimeDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
@@ -113,7 +109,6 @@ export class UserController {
       ...dto,
       phone,
       secondPhone,
-      workTime,
     });
     return new ResponseUserDto(updated);
   }

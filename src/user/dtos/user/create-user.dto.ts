@@ -1,18 +1,13 @@
-import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  IsUUID,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 import { Role } from 'src/common/role/roles.enum';
-import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 
 export class CreateUserDto {
   @IsString({ message: 'Formato inválido' })
@@ -46,14 +41,4 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   @MinLength(6, { message: 'A senha precisa ter no mínimo 6 caracteres' })
   password!: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => CreateWorkTimeDto)
-  @IsNotEmptyObject({ nullable: false }, { message: 'Formato inválido' })
-  workTime?: CreateWorkTimeDto;
-
-  @IsOptional()
-  @IsUUID('4', { message: 'Formato inválido' })
-  workTimeId?: string;
 }

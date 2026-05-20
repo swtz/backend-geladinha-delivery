@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import { DeliveryMan } from './entities/delivery-man.entity';
 import { Motorcycle } from './entities/motorcycle.entity';
 import { CommonModule } from 'src/common/common.module';
-import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { MotorcycleController } from './controllers/motorcycle.controller';
 import { MotorcycleService } from './services/motorcycle.service';
 import { DeliveryManMotorcycleService } from './services/delivery-man-motorcycle.service';
@@ -17,7 +16,6 @@ import { DeliveryManMotorcycleController } from './controllers/delivery-man-moto
   imports: [
     TypeOrmModule.forFeature([User, DeliveryMan, Motorcycle]),
     CommonModule,
-    WorkTimeModule,
   ],
   controllers: [
     UserController,
