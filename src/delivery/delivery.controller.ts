@@ -21,8 +21,6 @@ import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ParseTimezoneDatePipe } from './pipes/parse-timezone-date.pipe';
-import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 
 @Roles(Role.Admin, Role.Operator)
