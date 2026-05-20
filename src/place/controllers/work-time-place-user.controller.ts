@@ -41,15 +41,13 @@ export class WorkTimePlaceUserController {
   }
 
   @Post('place')
-  async addWorkTime(
+  async addWorkTimeToPlace(
     @Body('workTimeId') workTimeId: string,
     @Body('placeId') placeId: string,
-    @Body('userId') userId: string,
   ) {
-    const workTime = await this.workTimePlaceUserService.addWorkTime(
+    const workTime = await this.workTimePlaceUserService.addWorkTimeToPlace(
       workTimeId,
       placeId,
-      userId,
     );
 
     return workTime;

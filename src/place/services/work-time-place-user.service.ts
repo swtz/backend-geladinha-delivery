@@ -12,11 +12,9 @@ export class WorkTimePlaceUserService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async addWorkTime(workTimeId: string, placeId?: string, userId?: string) {
+  async addWorkTimeToPlace(workTimeId: string, placeId?: string) {
     const workTime = await this.workTimeService.findOneByOrFail(
-      {
-        id: workTimeId,
-      },
+      { id: workTimeId },
       true,
     );
     const place = await this.placeService.findOneByOrFail({ id: placeId });
@@ -46,6 +44,8 @@ export class WorkTimePlaceUserService {
     });
     return this.workTimeService.findOneByOrFail({ id: created.id }, true);
   }
+
+  async addWorkTimeToUser() {}
 
   async useIsSharedWorkTime(id: string, user: User) {
     const sharedWorkTime = await this.workTimeService.findOneByOrFail({
