@@ -193,7 +193,9 @@ export class SettlementService {
       settlementData.description = description;
     }
 
-    return this.save(settlementData);
+    const created = await this.save(settlementData);
+
+    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(id: string, toDate: string, description?: string) {
@@ -216,14 +218,19 @@ export class SettlementService {
       ...newSettlement,
       description: description ?? settlement.description,
     };
+    const updated = await this.save(mergedSettlement);
 
-    return this.save(mergedSettlement);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async updateIsClosed(id: string, flag: boolean) {
     const settlement = await this.findOneByOrFail({ id });
+
     settlement.isClosed = flag;
-    return this.save(settlement);
+
+    const updated = await this.save(settlement);
+
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneByOrFail(settlementData: Partial<Settlement>) {
