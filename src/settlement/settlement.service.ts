@@ -247,6 +247,8 @@ export class SettlementService {
     return this.settlementRepository.findOne({
       where: settlementData,
       relations: {
+        // TO CHECK
+        // É necessário retornar as relações da entidade WorkTime?
         operator: { workTime: true },
         vouchers: voucherRelations,
       },
