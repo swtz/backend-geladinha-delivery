@@ -241,18 +241,18 @@ export class PayoutService {
     });
   }
 
-  // async remove(id: string) {
-  //   const payout = await this.findOneByOrFail({ id });
+  async remove(id: string) {
+    const payout = await this.findOneByOrFail({ id });
 
-  //   if (payout.isClosed) {
-  //     throw new UnauthorizedException(
-  //       'Não é possível remover um pagamento fechado',
-  //     );
-  //   }
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível remover um pagamento fechado',
+      );
+    }
 
-  //   await this.payoutRepository.delete({ id });
-  //   return payout;
-  // }
+    await this.payoutRepository.delete({ id });
+    return payout;
+  }
 
   async save(payout: Partial<Payout>) {
     return this.payoutRepository.save(payout);

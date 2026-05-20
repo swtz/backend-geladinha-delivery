@@ -155,10 +155,10 @@ export class PayoutController {
     return new ResponsePayoutDto(payout);
   }
 
-  // @Roles(Role.Admin, Role.Operator)
-  // @Delete(':id')
-  // async remove(@Param('id', ParseUUIDPipe) id: string) {
-  //   const payout = await this.payoutService.remove(id);
-  //   return new ResponsePayoutDto(payout);
-  // }
+  @Roles(Role.Admin, Role.Operator)
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const payout = await this.payoutService.remove(id);
+    return new ResponsePayoutDto(payout);
+  }
 }
