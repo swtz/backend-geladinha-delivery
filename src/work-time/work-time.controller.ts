@@ -73,14 +73,14 @@ export class WorkTimeController {
     return new ResponseWorkTimeDto(workTime);
   }
 
-  @Patch(':id')
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateWorkTimeDto,
-  ) {
-    const workTime = await this.workTimeService.update(id, dto);
-    return new ResponseWorkTimeDto(workTime);
-  }
+  // @Patch(':id')
+  // async update(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Body() dto: UpdateWorkTimeDto,
+  // ) {
+  //   const workTime = await this.workTimeService.update(id, dto);
+  //   return new ResponseWorkTimeDto(workTime);
+  // }
 
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
