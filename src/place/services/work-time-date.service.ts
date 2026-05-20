@@ -38,26 +38,19 @@ export class WorkTimeDateService {
       endDate: new Date(),
     };
 
-    hasUserData = Object.values(user).some(value => value !== undefined)
-      ? true
-      : false;
+    hasUserData = Object.values(user).some(value => value !== undefined);
 
     userObject.operator = hasUserData
       ? await this.userService.findOneByOrFail(user)
       : null;
 
-    if (userObject.operator && userObject.operator.workTime) {
-      const { initHour, endHour } = userObject.operator.workTime;
+    const { initHour, endHour } =
+      userObject.operator && userObject.operator.workTime
+        ? userObject.operator.workTime
+        : this.workTimeService.findDefaultFromPlaceOrFail(place);
 
-      dateObject.initHour = initHour;
-      dateObject.endHour = endHour;
-    } else {
-      const { initHour, endHour } =
-        this.workTimeService.findDefaultFromPlaceOrFail(place);
-
-      dateObject.initHour = initHour;
-      dateObject.endHour = endHour;
-    }
+    dateObject.initHour = initHour;
+    dateObject.endHour = endHour;
 
     if (
       !isISO8601(from, { strict: true }) ||
