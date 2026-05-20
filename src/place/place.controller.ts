@@ -149,14 +149,14 @@ export class PlaceController {
     return parsedPlaces;
   }
 
-  @Post('work-time')
-  async addWorkTime(
-    @Body() dto: CreateWorkTimeDto,
-    @Query('placeId', ParseUUIDPipe) placeId: string,
-  ) {
-    const place = await this.placeService.addWorkTime(dto, placeId);
-    return new ResponsePlaceDto(place);
-  }
+  // @Post('work-time')
+  // async addWorkTime(
+  //   @Body() dto: CreateWorkTimeDto,
+  //   @Query('placeId', ParseUUIDPipe) placeId: string,
+  // ) {
+  //   const place = await this.placeService.addWorkTime(dto, placeId);
+  //   return new ResponsePlaceDto(place);
+  // }
 
   @Delete('me/work-time/:id')
   async removeWorkTime(
