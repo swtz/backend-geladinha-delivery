@@ -18,7 +18,6 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from './data/relations/delivery-man';
-import { UserValidators } from './types/user/user-validator.type';
 
 @Injectable()
 export class UserService {
@@ -54,36 +53,20 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto) {
-    const user: Partial<User> = {};
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
 
-    const uniqueFieldsValidationObject: UserValidators = {
-      nickname: async (nickname: string) =>
-        await this.failIfNicknameExists(nickname),
-      email: async (email: string) => await this.failIfEmailExists(email),
-      phone: async (phone: string) => await this.failIfPhoneExists(phone),
-      secondPhone: async (secondPhone: string) =>
-        await this.failIfPhoneExists(secondPhone, true),
-    } satisfies UserValidators;
-
-    for (const field of Object.keys(
-      uniqueFieldsValidationObject,
-    ) as (keyof UserValidators)[]) {
-      const value = dto[field];
-
-      if (value === undefined) continue;
-
-      await uniqueFieldsValidationObject[field](value);
-
-      user[field] = value;
-    }
-
-    user.name = dto.name;
-    user.lastName = dto.lastName;
-    user.password = hashedPassword;
-    user.forceLogout = false;
-    user.roles = [role];
+    const user = {
+      name: dto.name,
+      lastName: dto.lastName,
+      nickname: dto.nickname,
+      phone: dto.phone,
+      secondPhone: dto.secondPhone,
+      email: dto.email,
+      password: hashedPassword,
+      forceLogout: false,
+      roles: [role],
+    };
 
     const created = await this.save(user);
     return this.findOneByOrFail({ id: created.id });

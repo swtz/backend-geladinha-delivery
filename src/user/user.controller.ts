@@ -21,6 +21,7 @@ import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { UserValidators } from './types/user/user-validator.type';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -60,16 +61,25 @@ export class UserController {
     @Body('role', new ParseEnumPipe(Role)) role: Role,
     @Body() userDto: CreateUserDto,
   ) {
-    await this.userService.failIfPhoneExists(userDto.phone);
-    await this.userService.failIfNicknameExists(userDto.nickname);
+    const uniqueFieldsValidationObject: UserValidators = {
+      nickname: async (nickname: string) =>
+        await this.userService.failIfNicknameExists(nickname),
+      email: async (email: string) =>
+        await this.userService.failIfEmailExists(email),
+      phone: async (phone: string) =>
+        await this.userService.failIfPhoneExists(phone),
+      secondPhone: async (secondPhone: string) =>
+        await this.userService.failIfPhoneExists(secondPhone, true),
+    } satisfies UserValidators;
 
-    if (userDto.email) {
-      await this.userService.failIfEmailExists(userDto.email);
-    }
+    for (const field of Object.keys(
+      uniqueFieldsValidationObject,
+    ) as (keyof UserValidators)[]) {
+      const value = userDto[field];
 
-    if (userDto.secondPhone) {
-      await this.userService.failIfPhoneExists(userDto.secondPhone);
-      await this.userService.failIfPhoneExists(userDto.secondPhone, true);
+      if (value === undefined) continue;
+
+      await uniqueFieldsValidationObject[field](value);
     }
 
     const user = await this.userService.create({
