@@ -21,12 +21,15 @@ import { UpdatePasswordDto } from './dtos/user/update-password.dto';
 import { ResponseUserDto } from './dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { UserValidators } from './types/user/user-validator.type';
+import { UserFieldsValidationService } from './services/user-fields-validation.service';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userFieldsValidationService: UserFieldsValidationService,
+  ) {}
 
   @Get('me')
   async findMe(@Req() req: AuthenticatedRequest) {
@@ -61,26 +64,7 @@ export class UserController {
     @Body('role', new ParseEnumPipe(Role)) role: Role,
     @Body() userDto: CreateUserDto,
   ) {
-    const uniqueFieldsValidationObject: UserValidators = {
-      nickname: async (nickname: string) =>
-        await this.userService.failIfNicknameExists(nickname),
-      email: async (email: string) =>
-        await this.userService.failIfEmailExists(email),
-      phone: async (phone: string) =>
-        await this.userService.failIfPhoneExists(phone),
-      secondPhone: async (secondPhone: string) =>
-        await this.userService.failIfPhoneExists(secondPhone, true),
-    } satisfies UserValidators;
-
-    for (const field of Object.keys(
-      uniqueFieldsValidationObject,
-    ) as (keyof UserValidators)[]) {
-      const value = userDto[field];
-
-      if (value === undefined) continue;
-
-      await uniqueFieldsValidationObject[field](value);
-    }
+    await this.userFieldsValidationService.validateUniqueFields(userDto);
 
     const user = await this.userService.create({
       ...userDto,
