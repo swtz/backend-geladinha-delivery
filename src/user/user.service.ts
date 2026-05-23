@@ -78,89 +78,17 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
+    const { nickname, phone, email } = dto;
+
     user.name = dto.name ?? user.name;
     user.lastName = dto.lastName ?? user.lastName;
 
-    const dtoFields = Object.entries(dto);
-    const dtoValues = Object.values(dto);
-    const filledValues: string[] = dtoValues.filter(
-      value => value !== undefined,
-    );
-    const filledFields = dtoFields.filter(
-      (field: string[]) => field[1] !== undefined,
-    );
-
-    const object = {
-      nickname: async (nickname: string) =>
-        await this.failIfNicknameExists(nickname),
-      email: async (email: string) => await this.failIfEmailExists(email),
-      phone: async (phone: string) => await this.failIfPhoneExists(phone),
-      secondPhone: async (secondPhone: string) =>
-        await this.failIfPhoneExists(secondPhone, true),
-    };
-
-    let counter = 0;
-
-    for (const arrayField of filledFields) {
-      const field = arrayField[0];
-      const value = filledValues[counter];
-
-      await object[field](value);
-
-      user[field] = value;
+    if (nickname || phone || email) {
+      user.nickname = dto.nickname ?? user.nickname;
+      user.phone = dto.phone ?? user.phone;
+      user.email = dto.email ?? user.email;
       user.forceLogout = true;
-
-      counter += 1;
     }
-
-    // if (dto.workTime) {
-    //   const { id, shift, initHour, endHour } = dto.workTime;
-    //   const hasAllData = !!(shift && initHour && endHour);
-    //   const hasSomeData = !!(shift || initHour || endHour);
-    //   const hasWorkTime = user.workTime;
-
-    //   if (id) {
-    //     user.workTime = await this.workTimeService
-    //       .findOneBy({ id, isShared: true })
-    //       .then(result => {
-    //         if (!result) {
-    //           return this.workTimeService.findOneOwnedByOrFail(
-    //             user,
-    //             { id },
-    //             false,
-    //           );
-    //         }
-    //         return result;
-    //       });
-    //   } else if (hasAllData) {
-    //     if (!hasWorkTime || dto.workTime.shift === Shift.Custom) {
-    //       const created: NewWorkTimeForRest = {
-    //         shift,
-    //         initHour,
-    //         endHour,
-    //         isDefault: false,
-    //         isShared: false,
-    //       };
-
-    //       user.workTime = await this.workTimeService.save({
-    //         ...created,
-    //         user,
-    //       });
-    //     } else {
-    //       user.workTime = await this.workTimeService.update(
-    //         user.workTime.id,
-    //         dto.workTime,
-    //       );
-    //     }
-    //   } else if (hasSomeData) {
-    //     user.workTime = await this.workTimeService.update(
-    //       user.workTime.id,
-    //       dto.workTime,
-    //     );
-    //   } else {
-    //     throw new InternalServerErrorException('ERROR FROM WORK TIME FRAME');
-    //   }
-    // }
 
     const updated = await this.save(user);
     return this.findOneByOrFail({ id: updated.id });

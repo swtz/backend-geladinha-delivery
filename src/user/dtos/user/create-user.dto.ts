@@ -27,11 +27,11 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  secondPhone?: string;
+  secondPhone: string | undefined;
 
   @IsOptional()
   @IsEmail({}, { message: 'E-mail inválido' })
-  email?: string;
+  email: string | undefined;
 
   @IsEnum(Role, { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo função não pode estar vazio' })

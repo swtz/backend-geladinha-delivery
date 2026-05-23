@@ -61,15 +61,17 @@ export class UserController {
   @Post()
   async create(
     @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Body('role', new ParseEnumPipe(Role)) role: Role,
-    @Body() userDto: CreateUserDto,
+    @Body() dto: CreateUserDto,
   ) {
-    await this.userFieldsValidationService.validateUniqueFields(userDto);
+    await this.userFieldsValidationService.validateUniqueFields(dto);
 
     const user = await this.userService.create({
-      ...userDto,
+      ...dto,
       role,
       phone,
+      secondPhone,
     });
 
     return new ResponseUserDto(user);
@@ -82,11 +84,18 @@ export class UserController {
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
+    await this.userFieldsValidationService.validateUniqueFields({
+      ...dto,
+      phone,
+      secondPhone,
+    });
+
     const user = await this.userService.update(req.user, {
       ...dto,
       phone,
       secondPhone,
     });
+
     return new ResponseUserDto(user);
   }
 
@@ -99,11 +108,19 @@ export class UserController {
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
     const user = await this.userService.findOneByOrFail({ id });
+
+    await this.userFieldsValidationService.validateUniqueFields({
+      ...dto,
+      phone,
+      secondPhone,
+    });
+
     const updated = await this.userService.update(user, {
       ...dto,
       phone,
       secondPhone,
     });
+
     return new ResponseUserDto(updated);
   }
 
