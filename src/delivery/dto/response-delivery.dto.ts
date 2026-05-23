@@ -2,9 +2,9 @@ import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
 import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
-import { UserResponseDtoType } from 'src/user/types/user.type';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
+import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseDeliveryDto {
   readonly id: string;

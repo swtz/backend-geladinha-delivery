@@ -18,6 +18,7 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from './data/relations/delivery-man';
+import { UserValidators } from './types/user/user-validator.type';
 
 @Injectable()
 export class UserService {
@@ -56,34 +57,26 @@ export class UserService {
     const user: Partial<User> = {};
     const role = await this.roleService.findOneOrCreate(dto.role);
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const filledFields = Object.keys(dto).filter(
-      (field: string) => dto[field] !== undefined,
-    );
-    const filledValues = Object.values(dto).filter(
-      value => value !== undefined,
-    );
 
-    const uniqueFieldsValidationObject = {
+    const uniqueFieldsValidationObject: UserValidators = {
       nickname: async (nickname: string) =>
         await this.failIfNicknameExists(nickname),
       email: async (email: string) => await this.failIfEmailExists(email),
       phone: async (phone: string) => await this.failIfPhoneExists(phone),
       secondPhone: async (secondPhone: string) =>
         await this.failIfPhoneExists(secondPhone, true),
-    };
+    } satisfies UserValidators;
 
-    let counter = 0;
+    for (const field of Object.keys(
+      uniqueFieldsValidationObject,
+    ) as (keyof UserValidators)[]) {
+      const value = dto[field];
 
-    for (const filledField of filledFields) {
-      const value = filledValues[counter];
-      const excludedFields = ['name', 'lastName', 'password', 'role'];
+      if (value === undefined) continue;
 
-      if (!excludedFields.includes(filledField)) {
-        await uniqueFieldsValidationObject[filledField](value);
-        user[filledField] = value;
-      }
+      await uniqueFieldsValidationObject[field](value);
 
-      counter += 1;
+      user[field] = value;
     }
 
     user.name = dto.name;

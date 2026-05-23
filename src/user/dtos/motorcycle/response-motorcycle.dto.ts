@@ -1,5 +1,5 @@
 import { Motorcycle } from 'src/user/entities/motorcycle.entity';
-import { UserResponseDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseMotorcycleDto {
   readonly id: string;

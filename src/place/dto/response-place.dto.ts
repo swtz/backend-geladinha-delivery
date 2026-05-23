@@ -1,7 +1,7 @@
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Place } from '../entities/place.entity';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
-import { UserResponseDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponsePlaceDto {
   readonly id: string;

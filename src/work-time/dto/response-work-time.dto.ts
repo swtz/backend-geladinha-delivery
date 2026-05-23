@@ -1,6 +1,6 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTime } from '../entities/work-time.entity';
-import { UserResponseDtoType } from 'src/user/types/user.type';
+import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseWorkTimeDto {
   readonly id: string;
