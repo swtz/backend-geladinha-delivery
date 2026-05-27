@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,10 +27,6 @@ export class AddressService {
   }
 
   async update(dto: UpdateAddressDto, customerId: string) {
-    if (!dto.id) {
-      throw new BadRequestException('Campo ID não pode estar vazio');
-    }
-
     const ownedAddress = await this.findOneOwnedOrFail(
       { id: dto.id },
       {

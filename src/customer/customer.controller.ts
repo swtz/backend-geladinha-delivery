@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -78,6 +79,13 @@ export class CustomerController {
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
+    const hasAddressData = Object.keys(address).length > 1;
+    const hasAddressId = address.id !== undefined;
+
+    if (!hasAddressData || !hasAddressId) {
+      throw new BadRequestException('Dados do endereço incompletos');
+    }
+
     const customer = await this.customerService.update(
       { ...dto, address, phone },
       id,
