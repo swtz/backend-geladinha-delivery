@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -10,14 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { formatBrPostalCode } from 'src/common/utils/format-br-postal-code';
 import { trimWhiteSpacesFromDto } from 'src/common/utils/trim-white-spaces-from-dto';
 
 @Injectable()
 export class AddressService {
-  private readonly logger = new Logger(AddressService.name);
-
   constructor(
     @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
@@ -154,17 +150,6 @@ export class AddressService {
   }
 
   async save(address: Partial<Address>) {
-    const http400 = generateBadRequestException('Erro ao salvar endereço');
-    const created = await this.addressRepository
-      .save(address)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.addressRepository.save(address);
   }
 }
