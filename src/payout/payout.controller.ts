@@ -21,8 +21,9 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
-import { validateFindUserParamsOrFail } from 'src/common/utils/validate-find-user-params-or-fail';
+import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -46,7 +47,7 @@ export class PayoutController {
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = validateFindUserParamsOrFail({
+    const qo = validateFindOneParamsOrFail<Partial<User>>({
       nickname,
       id,
       name,
@@ -74,7 +75,7 @@ export class PayoutController {
     @Body('from') fromDate: string,
     @Body('to') toDate: string,
   ) {
-    const qo = validateFindUserParamsOrFail(userData);
+    const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
 
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);

@@ -7,7 +7,6 @@ import { fromZonedTime } from 'date-fns-tz';
 import { generateRelativeDate } from 'src/common/utils/generate-date';
 import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
 import { isISO8601 } from 'class-validator';
-import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
 
 @Injectable()
 export class WorkTimeDateService {
@@ -17,7 +16,7 @@ export class WorkTimeDateService {
     private readonly userService: UserService,
   ) {}
 
-  async create(user: FindUserDto, from: string, to: string) {
+  async create(user: Partial<User>, from: string, to: string) {
     const code = process.env.DEFAULT_PLACE_CODE;
     const place = await this.placeService.findOneByOrFail({
       code,
