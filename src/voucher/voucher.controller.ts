@@ -20,7 +20,9 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { ResponseVoucherDto } from './dto/response-voucher.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { Voucher } from './enums/voucher.enum';
+import { Voucher as VoucherEntity } from './entities/voucher.entity';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
+import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
 @Controller('voucher')
@@ -102,7 +104,9 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const voucher = await this.voucherService.update(dto, req.user, id);
+    const safeDto = validateFindOneParamsOrFail<Partial<VoucherEntity>>(dto);
+    const voucher = await this.voucherService.update(safeDto, req.user, id);
+
     return new ResponseVoucherDto(voucher);
   }
 

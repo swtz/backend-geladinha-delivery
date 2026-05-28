@@ -105,10 +105,6 @@ export class VoucherService {
   }
 
   async update(dto: UpdateVoucherDto, user: User, voucherId: string) {
-    if (!dto.amount && !dto.description) {
-      throw new BadRequestException('Dados não enviados');
-    }
-
     const voucher = await this.findOneOwnedByOrFail({ id: voucherId }, user);
 
     voucher.amount = dto.amount ?? voucher.amount;

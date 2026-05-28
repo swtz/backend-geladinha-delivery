@@ -15,10 +15,12 @@ export function validateFindOneParamsOrFail<T extends Record<string, unknown>>(
     if (!hasId || !hasValidId) {
       throw error;
     }
+
+    return dto;
   }
 
-  if (hasDefinedParam) {
-    return dto;
+  if (!hasDefinedParam) {
+    throw error;
   }
 
   return dto;
