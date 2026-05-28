@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -20,6 +19,8 @@ import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { ResponseCustomerDto } from './dto/response-customer.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
+import { Address } from 'src/address/entities/address.entity';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -79,15 +80,12 @@ export class CustomerController {
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const hasAddressData = Object.keys(address).length > 1;
-    const hasAddressId = address.id !== undefined;
-
-    if (!hasAddressData || !hasAddressId) {
-      throw new BadRequestException('Dados do endereço incompletos');
-    }
-
+    const safeDto = validateFindOneParamsOrFail<Partial<Address>>(
+      address,
+      true,
+    );
     const customer = await this.customerService.update(
-      { ...dto, address, phone },
+      { ...dto, address: { ...safeDto }, phone },
       id,
     );
     return new ResponseCustomerDto(customer);
