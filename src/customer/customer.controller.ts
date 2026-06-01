@@ -16,7 +16,6 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
-import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { ResponseCustomerDto } from './dto/response-customer.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
@@ -46,17 +45,6 @@ export class CustomerController {
       !name && !phone && !id ? { name: 'unknown' } : { name, phone, id };
     const customer = await this.customerService.findOneByOrFail(qo);
     return new ResponseCustomerDto(customer);
-  }
-
-  @Get(':id/address')
-  async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
-    const addresses = await this.customerService.findAddressesByCustomer({
-      id,
-    });
-    const parsedAddresses = addresses.map(
-      address => new ResponseAddressDto(address),
-    );
-    return parsedAddresses;
   }
 
   @Post()
@@ -95,20 +83,5 @@ export class CustomerController {
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const customer = await this.customerService.remove(id);
     return new ResponseCustomerDto(customer);
-  }
-
-  @Post(':id/address')
-  async addAddress(
-    @Body() dto: CreateAddressDto,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    const customer = await this.customerService.addAddress(dto, id);
-    return new ResponseCustomerDto(customer);
-  }
-
-  @Delete('address/:id')
-  async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
-    const address = await this.customerService.removeAddress(id);
-    return new ResponseAddressDto(address);
   }
 }
