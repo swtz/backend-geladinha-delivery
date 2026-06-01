@@ -16,8 +16,17 @@ export class Customer {
   @Column()
   name!: string;
 
+  @Column({ nullable: true })
+  lastName!: string;
+
+  @Column({ nullable: true })
+  nickname!: string;
+
   @Column({ unique: true })
   phone!: string;
+
+  @Column({ nullable: true, unique: true })
+  secondPhone!: string;
 
   @CreateDateColumn()
   createdAt!: Date;
