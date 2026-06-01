@@ -49,6 +49,10 @@ export class Address {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @ManyToOne(() => Customer, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Customer, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    nullable: true,
+  })
   customer!: Customer;
 }
