@@ -36,6 +36,7 @@ export class Customer {
 
   @OneToMany(() => Address, address => address.customer, {
     onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
   addresses!: Address[];
 }
