@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,20 +20,31 @@ export class CustomerService {
     private readonly addressService: AddressService,
   ) {}
 
-  async failIfPhoneExists(phone: string) {
-    const exists = await this.customerRepository.existsBy({ phone });
+  async failIfPhoneExists(phone: string, isSecondPhone = false) {
+    const exists = await this.findByPhone(phone, isSecondPhone);
 
     if (exists) {
-      throw new BadRequestException(
-        `O número ${phone} já pertence a um cliente`,
+      throw new ConflictException('Telefone já existe');
+    }
+  }
+
+  async failIfNicknameExists(nickname: string) {
+    const exists = await this.customerRepository.existsBy({ nickname });
+
+    if (exists) {
+      throw new ConflictException(
+        `O número ${nickname} já pertence a um cliente`,
       );
     }
   }
 
   async create(dto: CreateCustomerDto) {
+    await this.failIfNicknameExists(dto.nickname);
     await this.failIfPhoneExists(dto.phone);
-    // secondPhone;
-    // nickname;
+
+    if (dto.secondPhone) {
+      await this.failIfPhoneExists(dto.secondPhone, true);
+    }
 
     const customer = {
       name: dto.name,
@@ -104,6 +116,20 @@ export class CustomerService {
       where: customerData,
       relations: { addresses: true },
     });
+  }
+
+  findByPhone(phone: string, isSecondPhone = false) {
+    const qo: { phone: undefined | string; secondPhone: undefined | string } = {
+      phone,
+      secondPhone: undefined,
+    };
+
+    if (isSecondPhone) {
+      qo.phone = undefined;
+      qo.secondPhone = phone;
+    }
+
+    return this.customerRepository.findOneBy(qo);
   }
 
   async remove(id: string) {

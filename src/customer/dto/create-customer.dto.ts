@@ -13,7 +13,7 @@ export class CreateCustomerDto {
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo sobrenome não pode estar vazio' })
-  lastName!: string;
+  lastName: string | undefined;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo apelido não pode estar vazio' })
@@ -24,5 +24,5 @@ export class CreateCustomerDto {
 
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
-  secondPhone!: string;
+  secondPhone: string | undefined;
 }
