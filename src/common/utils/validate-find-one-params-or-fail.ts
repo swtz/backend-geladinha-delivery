@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 
 export function validateFindOneParamsOrFail<T extends Record<string, unknown>>(
   dto: Partial<T>,
-  forUpdate?: boolean,
+  idFromDto?: boolean,
 ): Partial<T> {
   const hasId = Object.hasOwn(dto, 'id');
   const hasValidId = !!dto['id'];
@@ -11,7 +11,7 @@ export function validateFindOneParamsOrFail<T extends Record<string, unknown>>(
   });
   const error = new BadRequestException('Informe os dados para consulta');
 
-  if (forUpdate) {
+  if (idFromDto) {
     if (!hasId || !hasValidId) {
       throw error;
     }

@@ -117,8 +117,12 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const voucher = await this.voucherService.updateForEntity(
+    const safeDto = validateFindOneParamsOrFail<Partial<VoucherEntity>>(
       dto,
+      true,
+    );
+    const voucher = await this.voucherService.updateForEntity(
+      safeDto,
       req.user,
       id,
     );
