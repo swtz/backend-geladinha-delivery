@@ -14,7 +14,6 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { ResponseCustomerDto } from './dto/response-customer.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
@@ -50,14 +49,9 @@ export class CustomerController {
   @Post()
   async create(
     @Body() dto: CreateCustomerDto,
-    @Body('address') address: CreateAddressDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
   ) {
-    const customer = await this.customerService.create({
-      ...dto,
-      address,
-      phone,
-    });
+    const customer = await this.customerService.create({ ...dto, phone });
     return new ResponseCustomerDto(customer);
   }
 
