@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -11,12 +10,9 @@ import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
-import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class CustomerService {
-  private readonly logger = new Logger(CustomerService.name);
-
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
@@ -35,11 +31,15 @@ export class CustomerService {
 
   async create(dto: CreateCustomerDto) {
     await this.failIfPhoneExists(dto.phone);
-    const address = await this.addressService.create(dto.address);
+    // secondPhone;
+    // nickname;
+
     const customer = {
       name: dto.name,
+      lastName: dto.lastName,
+      nickname: dto.nickname,
       phone: dto.phone,
-      addresses: [address],
+      secondPhone: dto.secondPhone,
     };
 
     return this.save(customer);
@@ -113,18 +113,7 @@ export class CustomerService {
   }
 
   async save(customer: Partial<Customer>) {
-    const http400 = generateBadRequestException('Erro ao salvar cliente');
-    const created = await this.customerRepository
-      .save(customer)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.customerRepository.save(customer);
   }
 
   findAddressesByCustomer(customer: Partial<Customer>) {
