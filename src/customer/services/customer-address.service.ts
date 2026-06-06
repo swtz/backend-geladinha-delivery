@@ -3,7 +3,9 @@ import { CustomerService } from '../customer.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CustomerAddressService {
   constructor(
     private readonly addressService: AddressService,

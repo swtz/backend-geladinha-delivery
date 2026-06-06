@@ -28,15 +28,11 @@ export class CustomerAddressController {
 
   @Post()
   async create(
-    @Body() customerDto: CreateCustomerDto,
-    @Body() addressDto: CreateAddressDto,
-    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('customer') customerDto: CreateCustomerDto,
+    @Body('address') addressDto: CreateAddressDto,
   ) {
     const customerWithAddress = await this.customerAddressService.create(
-      {
-        ...customerDto,
-        phone,
-      },
+      customerDto,
       addressDto,
     );
     return new ResponseCustomerDto(customerWithAddress);
