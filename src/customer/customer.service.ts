@@ -134,34 +134,34 @@ export class CustomerService {
     return this.addressService.findAllOwned(customer);
   }
 
-  async addAddress(dto: CreateAddressDto, id: string) {
-    if (dto.isDefault === undefined || dto.isDefault === null) {
-      throw new BadRequestException(
-        'Campo endereço padrão não pode estar vazio',
-      );
-    }
+  // async addAddress(dto: CreateAddressDto, id: string) {
+  //   if (dto.isDefault === undefined || dto.isDefault === null) {
+  //     throw new BadRequestException(
+  //       'Campo endereço padrão não pode estar vazio',
+  //     );
+  //   }
 
-    const customer = await this.findOneByOrFail({ id });
+  //   const customer = await this.findOneByOrFail({ id });
 
-    if (customer.addresses.length >= 3) {
-      throw new BadRequestException(
-        'Só é possível cadastrar 3 endereços por cliente',
-      );
-    }
+  //   if (customer.addresses.length >= 3) {
+  //     throw new BadRequestException(
+  //       'Só é possível cadastrar 3 endereços por cliente',
+  //     );
+  //   }
 
-    if (dto.isDefault) {
-      const ownedAddress = await this.addressService.findOneOwnedOrFail(
-        { isDefault: true },
-        { id },
-      );
+  //   if (dto.isDefault) {
+  //     const ownedAddress = await this.addressService.findOneOwnedOrFail(
+  //       { isDefault: true },
+  //       { id },
+  //     );
 
-      await this.addressService.save({ ...ownedAddress, isDefault: false });
-    }
+  //     await this.addressService.save({ ...ownedAddress, isDefault: false });
+  //   }
 
-    await this.addressService.create(dto, dto.isDefault, customer);
+  //   await this.addressService.create(dto, dto.isDefault, customer);
 
-    return this.findOneByOrFail({ id });
-  }
+  //   return this.findOneByOrFail({ id });
+  // }
 
   async removeAddress(id: string) {
     const address = await this.addressService.findOneByOrFail({ id });
