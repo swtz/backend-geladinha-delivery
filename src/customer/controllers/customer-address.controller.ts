@@ -12,13 +12,33 @@ import { CustomerService } from '../customer.service';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { ResponseCustomerDto } from '../dto/response-customer.dto';
+import { CreateCustomerDto } from '../dto/create-customer.dto';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { CustomerAddressService } from '../services/customer-address.service';
 
 @Controller('customer-address')
 export class CustomerAddressController {
   constructor(
     private readonly addressService: AddressService,
     private readonly customerService: CustomerService,
+    private readonly customerAddressService: CustomerAddressService,
   ) {}
+
+  @Post()
+  async create(
+    @Body() customerDto: CreateCustomerDto,
+    @Body() addressDto: CreateAddressDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ) {
+    const customerWithAddress = await this.customerAddressService.create(
+      {
+        ...customerDto,
+        phone,
+      },
+      addressDto,
+    );
+    return new ResponseCustomerDto(customerWithAddress);
+  }
 
   @Get(':id/address')
   async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {

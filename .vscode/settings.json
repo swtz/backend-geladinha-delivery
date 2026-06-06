@@ -1,5 +1,6 @@
 {
-  "cSpell.words": [
-    "whatsapp"
-  ]
+  "cSpell.words": ["whatsapp"],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

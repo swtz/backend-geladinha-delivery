@@ -6,13 +6,11 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
-  Post,
   Query,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { ResponseCustomerDto } from './dto/response-customer.dto';
@@ -43,15 +41,6 @@ export class CustomerController {
     const qo =
       !name && !phone && !id ? { name: 'unknown' } : { name, phone, id };
     const customer = await this.customerService.findOneByOrFail(qo);
-    return new ResponseCustomerDto(customer);
-  }
-
-  @Post()
-  async create(
-    @Body() dto: CreateCustomerDto,
-    @Body('phone', ParseBrPhonePipe) phone: string,
-  ) {
-    const customer = await this.customerService.create({ ...dto, phone });
     return new ResponseCustomerDto(customer);
   }
 
