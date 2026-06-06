@@ -15,14 +15,9 @@ export class AddressService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  create(
-    dto: CreateAddressDto | UpdateAddressDto,
-    isDefault = true,
-    customer?: Customer,
-  ) {
+  create(dto: CreateAddressDto | UpdateAddressDto, isDefault = true) {
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
-
-    const newAddress = this.generateAddress(dto, isDefault, customer);
+    const newAddress = this.generateAddress(dto, isDefault);
     return this.save(newAddress);
   }
 
@@ -65,11 +60,7 @@ export class AddressService {
     return this.save(ownedAddress);
   }
 
-  generateAddress(
-    dto: CreateAddressDto | UpdateAddressDto,
-    isDefault = true,
-    customer?: Customer,
-  ) {
+  generateAddress(dto: CreateAddressDto | UpdateAddressDto, isDefault = true) {
     const address: Partial<Address> = {
       street: dto.street,
       number: dto.number,
@@ -84,10 +75,6 @@ export class AddressService {
       location: dto.location,
       isDefault,
     };
-
-    if (customer) {
-      return { ...address, customer };
-    }
 
     return address;
   }
