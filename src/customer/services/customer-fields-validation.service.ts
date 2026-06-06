@@ -12,8 +12,8 @@ export class CustomerFieldsValidationService {
     const uniqueFieldsValidationObject: CustomerValidators = {
       nickname: async (nickname: string) =>
         await this.customerService.failIfNicknameExists(nickname),
-      // email: async (email: string) =>
-      //   await this.customerService.failIfEmailExists(email),
+      email: async (email: string) =>
+        await this.customerService.failIfEmailExists(email),
       phone: async (phone: string) =>
         await this.customerService.failIfPhoneExists(phone),
       secondPhone: async (secondPhone: string) =>

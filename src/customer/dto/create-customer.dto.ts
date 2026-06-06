@@ -25,4 +25,9 @@ export class CreateCustomerDto {
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
   secondPhone: string | undefined;
+
+  @IsOptional()
+  @IsString({ message: 'Formato inválido' })
+  @IsNotEmpty({ message: 'Campo email não pode estar vazio' })
+  email: string | undefined;
 }

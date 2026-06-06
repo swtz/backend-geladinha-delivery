@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 
 @Injectable()
 export class CustomerService {
@@ -34,6 +33,16 @@ export class CustomerService {
     if (exists) {
       throw new ConflictException(
         `O número ${nickname} já pertence a um cliente`,
+      );
+    }
+  }
+
+  async failIfEmailExists(email: string) {
+    const exists = await this.customerRepository.existsBy({ email });
+
+    if (exists) {
+      throw new ConflictException(
+        `O endereço ${email} já pertence a um cliente`,
       );
     }
   }
@@ -62,6 +71,9 @@ export class CustomerService {
 
     customer.name = dto.name ?? customer.name;
     customer.lastName = dto.lastName ?? customer.lastName;
+    customer.nickname = dto.nickname ?? customer.nickname;
+    customer.phone = dto.phone ?? customer.phone;
+    customer.email = dto.email ?? customer.email;
 
     const updated = await this.save(customer);
     return this.findOneByOrFail({ id: updated.id });

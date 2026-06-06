@@ -1,7 +1,7 @@
 type CreateCustomerDtoForValidator = {
   nickname: string;
   phone: string;
-  // email: string | undefined;
+  email: string | undefined;
   secondPhone: string | undefined;
 };
 

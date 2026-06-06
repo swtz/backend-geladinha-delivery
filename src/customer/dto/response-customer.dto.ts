@@ -8,6 +8,7 @@ export class ResponseCustomerDto {
   readonly nickname?: string;
   readonly phone: string;
   readonly secondPhone?: string;
+  readonly email?: string;
   readonly addresses: ResponseAddressDto[];
 
   constructor(customer: Customer) {
@@ -17,6 +18,7 @@ export class ResponseCustomerDto {
     this.nickname = customer.nickname;
     this.phone = customer.phone;
     this.secondPhone = customer.secondPhone;
+    this.email = customer.email;
     this.addresses = customer.addresses.map(address => {
       return new ResponseAddressDto(address);
     });

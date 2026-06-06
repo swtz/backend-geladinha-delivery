@@ -26,6 +26,9 @@ export class Customer {
   phone!: string;
 
   @Column({ nullable: true, unique: true })
+  email!: string;
+
+  @Column({ nullable: true, unique: true })
   secondPhone!: string;
 
   @CreateDateColumn()
