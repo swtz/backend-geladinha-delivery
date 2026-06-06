@@ -58,41 +58,29 @@ export class CustomerService {
   }
 
   async update(dto: UpdateCustomerDto, id: string) {
-    const existsCustomerData = Object.values(dto).filter(Boolean);
     const customer = await this.findOneByOrFail({ id });
 
-    if (existsCustomerData.length === 0 && dto.address === undefined) {
-      throw new BadRequestException('Dados não enviados');
-    }
+    customer.name = dto.name ?? customer.name;
+    customer.lastName = dto.lastName ?? customer.lastName;
 
-    if (existsCustomerData.length > 0) {
-      if (dto.phone && dto.phone !== customer.phone) {
-        await this.failIfPhoneExists(dto.phone);
-        customer.phone = dto.phone;
-      }
-
-      customer.name = dto.name ?? customer.name;
-    }
-
-    if (dto.address && dto.address.id !== null) {
-      if (dto.address.isDefault) {
-        const address = await this.addressService.findOneOwnedOrFail(
-          { isDefault: true },
-          { id },
-        );
-
-        if (dto.address.id !== address.id) {
-          await this.addressService.save({ ...address, isDefault: false });
-        }
-      }
-
-      await this.addressService.update(dto.address, id);
-    }
-
-    await this.save(customer);
-
-    return this.findOneByOrFail({ id });
+    const updated = await this.save(customer);
+    return this.findOneByOrFail({ id: updated.id });
   }
+
+  // if (dto.address && dto.address.id !== null) {
+  //   if (dto.address.isDefault) {
+  //     const address = await this.addressService.findOneOwnedOrFail(
+  //       { isDefault: true },
+  //       { id },
+  //     );
+
+  //     if (dto.address.id !== address.id) {
+  //       await this.addressService.save({ ...address, isDefault: false });
+  //     }
+  //   }
+
+  //   await this.addressService.update(dto.address, id);
+  // }
 
   findAll() {
     return this.customerRepository.find({
