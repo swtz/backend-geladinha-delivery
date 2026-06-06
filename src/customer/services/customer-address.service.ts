@@ -13,13 +13,13 @@ export class CustomerAddressService {
   ) {}
 
   async create(customerDto: CreateCustomerDto, addressDto: CreateAddressDto) {
-    const fields = Object.keys(customerDto).filter(
-      field => typeof customerDto[field] === 'string',
-    );
+    const arrayDto = Object.entries(customerDto);
 
-    for (const field of fields) {
-      transformToLowerCase(customerDto[field] as string);
-    }
+    arrayDto.forEach(([k, v]) => {
+      if (typeof v === 'string') {
+        customerDto[k] = transformToLowerCase(v);
+      }
+    });
 
     const customer = await this.customerService.create(customerDto);
     const address = await this.addressService.create(addressDto);
