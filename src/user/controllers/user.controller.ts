@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseEnumPipe,
@@ -65,6 +66,10 @@ export class UserController {
     @Body('role', new ParseEnumPipe(Role)) role: Role,
     @Body() dto: CreateUserDto,
   ) {
+    if (role === Role.Motoboy || dto.role === Role.Motoboy) {
+      return new ForbiddenException('Acesso negado');
+    }
+
     await this.userFieldsValidationService.validateUniqueFields(dto);
 
     const user = await this.userService.create({
