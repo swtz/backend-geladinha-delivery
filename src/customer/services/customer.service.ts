@@ -11,6 +11,7 @@ import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { formatPhone } from 'src/common/utils/format-phone';
+import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';
 
 @Injectable()
 export class CustomerService {
@@ -69,11 +70,21 @@ export class CustomerService {
 
   async update(dto: UpdateCustomerDto, id: string) {
     const customer = await this.findOneByOrFail({ id });
+    const arrayDto = Object.entries(dto);
+
+    arrayDto.forEach(([k, v]) => {
+      if (typeof v === 'string') {
+        dto[k] = transformToLowerCase(v);
+      }
+    });
 
     customer.name = dto.name ?? customer.name;
     customer.lastName = dto.lastName ?? customer.lastName;
     customer.nickname = dto.nickname ?? customer.nickname;
-    customer.phone = dto.phone ?? customer.phone;
+    customer.phone = dto.phone ? formatPhone(dto.phone) : customer.phone;
+    customer.secondPhone = dto.secondPhone
+      ? formatPhone(dto.secondPhone)
+      : customer.secondPhone;
     customer.email = dto.email ?? customer.email;
 
     const updated = await this.save(customer);

@@ -13,7 +13,6 @@ import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { ResponseCustomerDto } from '../dto/response-customer.dto';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
-import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { CustomerAddressService } from '../services/customer-address.service';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerFieldsValidationService } from '../services/customer-fields-validation.service';
@@ -41,11 +40,10 @@ export class CustomerAddressController {
   @Patch(':id')
   async update(
     @Body() dto: UpdateCustomerDto,
-    @Body('phone', ParseBrPhonePipe) phone: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     await this.customerFieldsValidationService.validateUniqueFields(dto);
-    const customer = await this.customerService.update({ ...dto, phone }, id);
+    const customer = await this.customerService.update(dto, id);
     return new ResponseCustomerDto(customer);
   }
 
