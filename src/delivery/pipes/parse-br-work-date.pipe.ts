@@ -1,6 +1,6 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { parseBrDate } from 'src/common/utils/parse-br-date';
-import { PlaceService } from 'src/place/place.service';
+import { PlaceService } from 'src/place/services/place.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 
 @Injectable()

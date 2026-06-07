@@ -12,18 +12,18 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { PlaceService } from './place.service';
+import { PlaceService } from '../services/place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
-import { CreatePlaceDto } from './dto/create-place.dto';
+import { CreatePlaceDto } from '../dto/create-place.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
-import { UpdatePlaceDto } from './dto/update-place.dto';
+import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ResponsePlaceDto } from './dto/response-place.dto';
+import { ResponsePlaceDto } from '../dto/response-place.dto';
 
 @Roles(Role.Admin)
 @Controller('place')

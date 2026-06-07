@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PlaceService } from '../place.service';
-import { UserService } from 'src/user/user.service';
+import { PlaceService } from './place.service';
+import { UserService } from 'src/user/services/user.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 

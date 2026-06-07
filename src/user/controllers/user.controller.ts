@@ -11,17 +11,17 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dtos/user/create-user.dto';
-import { UpdateUserDto } from './dtos/user/update-user.dto';
+import { UserService } from '../services/user.service';
+import { CreateUserDto } from '../dtos/user/create-user.dto';
+import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { UpdatePasswordDto } from './dtos/user/update-password.dto';
-import { ResponseUserDto } from './dtos/user/response-user.dto';
-import { ParseBrPhonePipe } from './pipes/format-br-phone.pipe';
+import { UpdatePasswordDto } from '../dtos/user/update-password.dto';
+import { ResponseUserDto } from '../dtos/user/response-user.dto';
+import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { UserFieldsValidationService } from './services/user-fields-validation.service';
+import { UserFieldsValidationService } from '../services/user-fields-validation.service';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)

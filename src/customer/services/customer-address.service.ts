@@ -1,5 +1,5 @@
 import { AddressService } from 'src/address/address.service';
-import { CustomerService } from '../customer.service';
+import { CustomerService } from '../services/customer.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';

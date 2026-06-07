@@ -12,7 +12,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { WorkTimePlaceUserService } from '../services/work-time-place-user.service';
-import { PlaceService } from '../place.service';
+import { PlaceService } from '../services/place.service';
 import { ResponsePlaceDto } from '../dto/response-place.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';

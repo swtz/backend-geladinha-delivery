@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CustomerService } from '../customer.service';
+import { CustomerService } from '../services/customer.service';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { ResponseCustomerDto } from '../dto/response-customer.dto';

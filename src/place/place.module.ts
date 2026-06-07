@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PlaceService } from './place.service';
-import { PlaceController } from './place.controller';
+import { PlaceService } from './services/place.service';
+import { PlaceController } from './controllers/place.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Place } from './entities/place.entity';
 import { SocialMedias } from './entities/social-medias.entity';

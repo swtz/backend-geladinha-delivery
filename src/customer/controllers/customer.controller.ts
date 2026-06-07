@@ -6,10 +6,10 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import { CustomerService } from './customer.service';
+import { CustomerService } from '../services/customer.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { ResponseCustomerDto } from './dto/response-customer.dto';
+import { ResponseCustomerDto } from '../dto/response-customer.dto';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
 @Roles(Role.Admin, Role.Operator)

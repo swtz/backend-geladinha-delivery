@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user/services/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';

@@ -4,17 +4,17 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Place } from './entities/place.entity';
+import { Place } from '../entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateBadRequestException } from 'src/common/generate-exception';
-import { CreatePlaceDto } from './dto/create-place.dto';
+import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
-import { PlaceType } from './types/place.type';
-import { UpdatePlaceDto } from './dto/update-place.dto';
+import { PlaceType } from '../types/place.type';
+import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user/services/user.service';
 import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';

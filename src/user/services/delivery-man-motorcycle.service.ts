@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from '../user.service';
+import { UserService } from './user.service';
 import { MotorcycleService } from './motorcycle.service';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';

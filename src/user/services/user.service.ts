@@ -5,19 +5,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dtos/user/create-user.dto';
+import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
-import { UpdateUserDto } from './dtos/user/update-user.dto';
-import { UpdatePasswordDto } from './dtos/user/update-password.dto';
+import { UpdateUserDto } from '../dtos/user/update-user.dto';
+import { UpdatePasswordDto } from '../dtos/user/update-password.dto';
 import { RoleService } from 'src/common/role/role.service';
 import { Role, Role as RoleEnum } from 'src/common/role/roles.enum';
-import { essencial, full } from './data/relations/user';
+import { essencial, full } from '../data/relations/user';
 import {
   essencial as mtbEssencial,
   full as mtbFull,
-} from './data/relations/delivery-man';
+} from '../data/relations/delivery-man';
 
 @Injectable()
 export class UserService {
