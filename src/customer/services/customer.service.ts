@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
+import { formatPhone } from 'src/common/utils/format-phone';
 
 @Injectable()
 export class CustomerService {
@@ -59,8 +60,8 @@ export class CustomerService {
       name: dto.name,
       lastName: dto.lastName,
       nickname: dto.nickname,
-      phone: dto.phone,
-      secondPhone: dto.secondPhone,
+      phone: formatPhone(dto.phone),
+      secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : undefined,
     };
 
     return this.save(customer);
