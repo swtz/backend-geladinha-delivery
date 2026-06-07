@@ -35,26 +35,6 @@ export class CustomerAddressService {
     return this.customerService.findOneByOrFail({ id: created.id });
   }
 
-  // update()
-  // if (dto.address && dto.address.id !== null) {
-  //   if (dto.address.isDefault) {
-  //     const address = await this.addressService.findOneOwnedOrFail(
-  //       { isDefault: true },
-  //       { id },
-  //     );
-
-  //     if (dto.address.id !== address.id) {
-  //       await this.addressService.save({ ...address, isDefault: false });
-  //     }
-  //   }
-
-  //   await this.addressService.update(dto.address, id);
-  // }
-
-  // findAddressesByCustomer(customer: Partial<Customer>) {
-  //   return this.addressService.findAllOwned(customer);
-  // }
-
   async addAddress(dto: CreateAddressDto, id: string) {
     const customer = await this.customerService.findOneByOrFail({ id });
     const wantsDefault = !!dto.isDefault;
