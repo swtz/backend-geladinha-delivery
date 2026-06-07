@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CustomerService } from '../services/customer.service';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
@@ -16,8 +17,9 @@ import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CustomerAddressService } from '../services/customer-address.service';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerFieldsValidationService } from '../services/customer-fields-validation.service';
+import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 
-@Controller('customer-address')
+@Controller('customer')
 export class CustomerAddressController {
   constructor(
     private readonly customerService: CustomerService,
@@ -44,6 +46,33 @@ export class CustomerAddressController {
   ) {
     await this.customerFieldsValidationService.validateUniqueFields(dto);
     const customer = await this.customerService.update(dto, id);
+    return new ResponseCustomerDto(customer);
+  }
+
+  @Get()
+  async findAll() {
+    const customers = await this.customerService.findAll();
+    const parsedCustomers = customers.map(
+      customer => new ResponseCustomerDto(customer),
+    );
+    return parsedCustomers;
+  }
+
+  @Get('find')
+  async findOne(
+    @Query('name') name: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+  ) {
+    const qo =
+      !name && !phone && !id ? { name: 'unknown' } : { name, phone, id };
+    const customer = await this.customerService.findOneByOrFail(qo);
+    return new ResponseCustomerDto(customer);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const customer = await this.customerService.remove(id);
     return new ResponseCustomerDto(customer);
   }
 

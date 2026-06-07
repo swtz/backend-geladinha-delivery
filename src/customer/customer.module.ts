@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CustomerService } from './services/customer.service';
-import { CustomerController } from './controllers/customer.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { AddressModule } from 'src/address/address.module';
@@ -10,7 +9,7 @@ import { CustomerFieldsValidationService } from './services/customer-fields-vali
 
 @Module({
   imports: [TypeOrmModule.forFeature([Customer]), AddressModule],
-  controllers: [CustomerController, CustomerAddressController],
+  controllers: [CustomerAddressController],
   providers: [
     CustomerService,
     CustomerAddressService,
