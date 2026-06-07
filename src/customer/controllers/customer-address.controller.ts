@@ -60,13 +60,25 @@ export class CustomerAddressController {
 
   @Get('find')
   async findOne(
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('nickname') nickname: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Query('email') email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
-    const qo =
-      !name && !phone && !id ? { name: 'unknown' } : { name, phone, id };
-    const customer = await this.customerService.findOneByOrFail(qo);
+    const customer = await this.customerService.findOneByOrFail({
+      nickname,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    });
+
     return new ResponseCustomerDto(customer);
   }
 
