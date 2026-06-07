@@ -99,14 +99,14 @@ export class CustomerAddressController {
   //   return parsedAddresses;
   // }
 
-  // @Post(':id/address')
-  // async addAddress(
-  //   @Body() dto: CreateAddressDto,
-  //   @Param('id', ParseUUIDPipe) id: string,
-  // ) {
-  //   const customer = await this.customerService.addAddress(dto, id);
-  //   return new ResponseCustomerDto(customer);
-  // }
+  @Post(':id/address')
+  async addAddress(
+    @Body() dto: CreateAddressDto,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const customer = await this.customerAddressService.addAddress(dto, id);
+    return new ResponseCustomerDto(customer);
+  }
 
   // @Delete('address/:id')
   // async removeAddress(@Param('id', ParseUUIDPipe) id: string) {

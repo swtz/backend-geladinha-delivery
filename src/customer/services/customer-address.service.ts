@@ -3,7 +3,7 @@ import { CustomerService } from '../services/customer.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 @Injectable()
 export class CustomerAddressService {
@@ -51,34 +51,28 @@ export class CustomerAddressService {
   //   return this.addressService.findAllOwned(customer);
   // }
 
-  // async addAddress(dto: CreateAddressDto, id: string) {
-  //   if (dto.isDefault === undefined || dto.isDefault === null) {
-  //     throw new BadRequestException(
-  //       'Campo endereço padrão não pode estar vazio',
-  //     );
-  //   }
+  async addAddress(dto: CreateAddressDto, id: string) {
+    const customer = await this.customerService.findOneByOrFail({ id });
+    const wantsDefault = !!dto.isDefault;
 
-  //   const customer = await this.findOneByOrFail({ id });
+    if (customer.addresses.length >= 3) {
+      throw new UnprocessableEntityException(
+        'Só é possível cadastrar 3 endereços no máximo',
+      );
+    }
+    if (wantsDefault) {
+      const defaultAddress = await this.addressService.findOneOwnedOrFail(
+        { isDefault: true },
+        { id },
+      );
 
-  //   if (customer.addresses.length >= 3) {
-  //     throw new BadRequestException(
-  //       'Só é possível cadastrar 3 endereços por cliente',
-  //     );
-  //   }
-
-  //   if (dto.isDefault) {
-  //     const ownedAddress = await this.addressService.findOneOwnedOrFail(
-  //       { isDefault: true },
-  //       { id },
-  //     );
-
-  //     await this.addressService.save({ ...ownedAddress, isDefault: false });
-  //   }
-
-  //   await this.addressService.create(dto, dto.isDefault, customer);
-
-  //   return this.findOneByOrFail({ id });
-  // }
+      await this.addressService.save({ ...defaultAddress, isDefault: false });
+    }
+    const address = await this.addressService.create(dto, wantsDefault);
+    customer.addresses.push(address);
+    const updated = await this.customerService.save(customer);
+    return this.customerService.findOneByOrFail({ id: updated.id });
+  }
 
   // async removeAddress(id: string) {
   //   const address = await this.addressService.findOneByOrFail({ id });
