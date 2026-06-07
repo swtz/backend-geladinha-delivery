@@ -88,16 +88,16 @@ export class CustomerAddressController {
     return new ResponseCustomerDto(customer);
   }
 
-  @Get(':id/address')
-  async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
-    const addresses = await this.customerService.findAddressesByCustomer({
-      id,
-    });
-    const parsedAddresses = addresses.map(
-      address => new ResponseAddressDto(address),
-    );
-    return parsedAddresses;
-  }
+  // @Get(':id/address')
+  // async findAddressesByCustomer(@Param('id', ParseUUIDPipe) id: string) {
+  //   const addresses = await this.customerService.findAddressesByCustomer({
+  //     id,
+  //   });
+  //   const parsedAddresses = addresses.map(
+  //     address => new ResponseAddressDto(address),
+  //   );
+  //   return parsedAddresses;
+  // }
 
   // @Post(':id/address')
   // async addAddress(
@@ -108,9 +108,9 @@ export class CustomerAddressController {
   //   return new ResponseCustomerDto(customer);
   // }
 
-  @Delete('address/:id')
-  async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
-    const address = await this.customerService.removeAddress(id);
-    return new ResponseAddressDto(address);
-  }
+  // @Delete('address/:id')
+  // async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
+  //   const address = await this.customerService.removeAddress(id);
+  //   return new ResponseAddressDto(address);
+  // }
 }

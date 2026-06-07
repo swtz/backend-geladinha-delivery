@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,7 +7,6 @@ import {
 import { Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AddressService } from 'src/address/address.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { formatPhone } from 'src/common/utils/format-phone';
@@ -20,7 +18,6 @@ export class CustomerService implements Service {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
-    private readonly addressService: AddressService,
   ) {}
   transformDtoFields<T extends object>(dto: T): T {
     if (typeof dto !== 'object') {
@@ -105,21 +102,6 @@ export class CustomerService implements Service {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  // if (dto.address && dto.address.id !== null) {
-  //   if (dto.address.isDefault) {
-  //     const address = await this.addressService.findOneOwnedOrFail(
-  //       { isDefault: true },
-  //       { id },
-  //     );
-
-  //     if (dto.address.id !== address.id) {
-  //       await this.addressService.save({ ...address, isDefault: false });
-  //     }
-  //   }
-
-  //   await this.addressService.update(dto.address, id);
-  // }
-
   findAll() {
     return this.customerRepository.find({
       order: { createdAt: 'DESC' },
@@ -166,55 +148,5 @@ export class CustomerService implements Service {
 
   async save(customer: Partial<Customer>) {
     return this.customerRepository.save(customer);
-  }
-
-  findAddressesByCustomer(customer: Partial<Customer>) {
-    return this.addressService.findAllOwned(customer);
-  }
-
-  // async addAddress(dto: CreateAddressDto, id: string) {
-  //   if (dto.isDefault === undefined || dto.isDefault === null) {
-  //     throw new BadRequestException(
-  //       'Campo endereço padrão não pode estar vazio',
-  //     );
-  //   }
-
-  //   const customer = await this.findOneByOrFail({ id });
-
-  //   if (customer.addresses.length >= 3) {
-  //     throw new BadRequestException(
-  //       'Só é possível cadastrar 3 endereços por cliente',
-  //     );
-  //   }
-
-  //   if (dto.isDefault) {
-  //     const ownedAddress = await this.addressService.findOneOwnedOrFail(
-  //       { isDefault: true },
-  //       { id },
-  //     );
-
-  //     await this.addressService.save({ ...ownedAddress, isDefault: false });
-  //   }
-
-  //   await this.addressService.create(dto, dto.isDefault, customer);
-
-  //   return this.findOneByOrFail({ id });
-  // }
-
-  async removeAddress(id: string) {
-    const address = await this.addressService.findOneByOrFail({ id });
-    const customer = await this.findOneByOrFail({ id: address.customer.id });
-
-    if (address.isDefault) {
-      throw new BadRequestException(
-        'Não é possível excluir o endereço que está como padrão',
-      );
-    }
-
-    if (customer.addresses.length === 1) {
-      throw new BadRequestException('Cliente precisa ter ao menos 1 endereço');
-    }
-
-    return this.addressService.remove(id);
   }
 }
