@@ -108,9 +108,9 @@ export class CustomerAddressController {
     return new ResponseCustomerDto(customer);
   }
 
-  // @Delete('address/:id')
-  // async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
-  //   const address = await this.customerService.removeAddress(id);
-  //   return new ResponseAddressDto(address);
-  // }
+  @Delete('address/:id')
+  async removeAddress(@Param('id', ParseUUIDPipe) id: string) {
+    const address = await this.customerAddressService.removeAddress(id);
+    return new ResponseAddressDto(address);
+  }
 }
