@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
@@ -12,14 +13,31 @@ import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { formatPhone } from 'src/common/utils/format-phone';
 import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';
+import { Service } from 'src/common/protocols/service/service';
 
 @Injectable()
-export class CustomerService {
+export class CustomerService implements Service {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
     private readonly addressService: AddressService,
   ) {}
+  transformDtoFields<T extends object>(dto: T): T {
+    if (typeof dto !== 'object') {
+      throw new UnprocessableEntityException('Formato não permitido');
+    }
+
+    const copy = { ...dto };
+    const arrayDto = Object.entries(copy);
+
+    arrayDto.forEach(([k, v]) => {
+      if (typeof v === 'string') {
+        copy[k] = transformToLowerCase(v);
+      }
+    });
+
+    return copy;
+  }
 
   async failIfPhoneExists(phone: string, isSecondPhone = false) {
     const exists = await this.findByPhone(phone, isSecondPhone);
@@ -70,22 +88,18 @@ export class CustomerService {
 
   async update(dto: UpdateCustomerDto, id: string) {
     const customer = await this.findOneByOrFail({ id });
-    const arrayDto = Object.entries(dto);
+    const parsedDto = this.transformDtoFields<UpdateCustomerDto>(dto);
 
-    arrayDto.forEach(([k, v]) => {
-      if (typeof v === 'string') {
-        dto[k] = transformToLowerCase(v);
-      }
-    });
-
-    customer.name = dto.name ?? customer.name;
-    customer.lastName = dto.lastName ?? customer.lastName;
-    customer.nickname = dto.nickname ?? customer.nickname;
-    customer.phone = dto.phone ? formatPhone(dto.phone) : customer.phone;
-    customer.secondPhone = dto.secondPhone
-      ? formatPhone(dto.secondPhone)
+    customer.name = parsedDto.name ?? customer.name;
+    customer.lastName = parsedDto.lastName ?? customer.lastName;
+    customer.nickname = parsedDto.nickname ?? customer.nickname;
+    customer.phone = parsedDto.phone
+      ? formatPhone(parsedDto.phone)
+      : customer.phone;
+    customer.secondPhone = parsedDto.secondPhone
+      ? formatPhone(parsedDto.secondPhone)
       : customer.secondPhone;
-    customer.email = dto.email ?? customer.email;
+    customer.email = parsedDto.email ?? customer.email;
 
     const updated = await this.save(customer);
     return this.findOneByOrFail({ id: updated.id });
