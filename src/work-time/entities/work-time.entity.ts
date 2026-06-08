@@ -27,10 +27,10 @@ export class WorkTime {
   shift!: Shift;
 
   @Column()
-  initHour!: number;
+  initHour!: Date;
 
   @Column()
-  endHour!: number;
+  endHour!: Date;
 
   @Column({ default: false })
   isDefault!: boolean;
