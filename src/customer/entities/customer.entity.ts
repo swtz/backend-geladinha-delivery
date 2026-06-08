@@ -16,10 +16,10 @@ export class Customer {
   @Column()
   name!: string;
 
-  @Column({ nullable: true })
+  @Column()
   lastName!: string;
 
-  @Column({ nullable: true })
+  @Column({ unique: true })
   nickname!: string;
 
   @Column({ unique: true })

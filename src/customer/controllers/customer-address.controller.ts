@@ -18,7 +18,10 @@ import { CustomerAddressService } from '../services/customer-address.service';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { CustomerFieldsValidationService } from '../services/customer-fields-validation.service';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Admin, Role.Operator)
 @Controller('customer')
 export class CustomerAddressController {
   constructor(
@@ -82,6 +85,7 @@ export class CustomerAddressController {
     return new ResponseCustomerDto(customer);
   }
 
+  @Roles(Role.Admin)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const customer = await this.customerService.remove(id);

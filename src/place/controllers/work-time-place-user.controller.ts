@@ -18,7 +18,10 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
 import { WorkTimeDateService } from '../services/work-time-date.service';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Admin)
 @Controller('work-time-place-user')
 export class WorkTimePlaceUserController {
   constructor(
