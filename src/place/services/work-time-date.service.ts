@@ -23,13 +23,13 @@ export class WorkTimeDateService {
     });
     const userObject: Record<string, Partial<User> | null> = { operator: {} };
     const dateObject: {
-      initHour: number;
-      endHour: number;
+      initHour: string;
+      endHour: string;
       initDate: Date;
       endDate: Date;
     } = {
-      initHour: 0,
-      endHour: 0,
+      initHour: '',
+      endHour: '',
       initDate: new Date(0),
       endDate: new Date(0),
     };
@@ -72,18 +72,18 @@ export class WorkTimeDateService {
     dateObject.initDate = utcInitDate;
     dateObject.endDate = utcEndDate;
 
-    const initHourChanged = [21, 22, 23].includes(dateObject.initHour);
-    const endHourChanged = [21, 22, 23].includes(dateObject.endHour);
+    // const initHourChanged = [21, 22, 23].includes(dateObject.initHour);
+    // const endHourChanged = [21, 22, 23].includes(dateObject.endHour);
 
-    if (!initHourChanged || !endHourChanged) {
-      if (dateObject.endHour < dateObject.initHour) {
-        dateObject.endDate = generateRelativeDate(
-          'tomorrow',
-          dateObject.endHour,
-          utcEndDate,
-        );
-      }
-    }
+    // if (!initHourChanged || !endHourChanged) {
+    //   if (dateObject.endHour < dateObject.initHour) {
+    //     dateObject.endDate = generateRelativeDate(
+    //       'tomorrow',
+    //       dateObject.endHour,
+    //       utcEndDate,
+    //     );
+    //   }
+    // }
 
     // se initHour || endHour in [21, 22, 23]
     // Eu sei que initDate || endDate em UTC

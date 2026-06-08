@@ -20,13 +20,13 @@ export class IntervalTime {
   updatedAt!: Date;
 
   @Column()
-  initHour!: Date;
+  initHour!: string;
 
   @Column()
-  endHour!: Date;
+  endHour!: string;
 
-  @Column()
-  duration!: Date;
+  @Column({ default: '' })
+  duration!: string;
 
   @ManyToOne(() => WorkTime)
   workTime!: WorkTime;

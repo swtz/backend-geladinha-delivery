@@ -3,9 +3,9 @@ import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-t
 
 export class ResponseIntervalTimeDto {
   readonly id: string;
-  readonly initHour: Date;
-  readonly endHour: Date;
-  readonly duration: Date;
+  readonly initHour: string;
+  readonly endHour: string;
+  readonly duration: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly workTime: SmallResponseWorkTime;
@@ -17,7 +17,6 @@ export class ResponseIntervalTimeDto {
     this.duration = intervalTime.duration;
     this.createdAt = intervalTime.createdAt;
     this.updatedAt = intervalTime.updatedAt;
-    this.id = intervalTime.id;
     this.workTime = {
       id: intervalTime.workTime.id,
       shift: intervalTime.workTime.shift,

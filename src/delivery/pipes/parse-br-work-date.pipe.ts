@@ -26,13 +26,13 @@ export class ParseBrWorkDatePipe implements PipeTransform {
     const { initHour, endHour } = workTime;
     const parsedValue = value.split('-').join('/');
 
-    if (data === 'from') {
-      return parseBrDate(initHour, parsedValue);
-    }
+    // if (data === 'from') {
+    //   return parseBrDate(initHour, parsedValue);
+    // }
 
-    if (data === 'to') {
-      return parseBrDate(endHour, parsedValue);
-    }
+    // if (data === 'to') {
+    //   return parseBrDate(endHour, parsedValue);
+    // }
 
     return undefined;
   }
