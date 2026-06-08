@@ -32,6 +32,9 @@ export class WorkTime {
   @Column()
   endHour!: Date;
 
+  @Column()
+  duration!: Date;
+
   @Column({ default: false })
   isDefault!: boolean;
 
