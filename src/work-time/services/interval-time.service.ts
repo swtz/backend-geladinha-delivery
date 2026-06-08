@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIntervalTimeDto } from '../dto/interval-time/create-interval-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -21,9 +21,21 @@ export class IntervalTimeService {
     };
 
     const created = await this.intervalTimeRepository.save(interval);
-    return this.intervalTimeRepository.findOneOrFail({
-      where: { id: created.id },
+    return this.findOneByOrFail({ id: created.id });
+  }
+
+  async findOneBy(intervalTimeData: Partial<IntervalTime>) {
+    return this.intervalTimeRepository.findOne({
+      where: intervalTimeData,
       relations: { workTime: true },
     });
+  }
+
+  async findOneByOrFail(intervalTimeData: Partial<IntervalTime>) {
+    const intervalTime = await this.findOneBy(intervalTimeData);
+    if (!intervalTime) {
+      throw new NotFoundException('Tempo de intervalo não encontrado');
+    }
+    return intervalTime;
   }
 }
