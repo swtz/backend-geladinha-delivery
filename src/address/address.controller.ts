@@ -1,6 +1,16 @@
-import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+} from '@nestjs/common';
 import { AddressService } from './address.service';
 import { ResponseAddressDto } from './dto/response-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
+import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
+import { Address } from './entities/address.entity';
 
 @Controller('address')
 export class AddressController {
@@ -19,5 +29,15 @@ export class AddressController {
       address => new ResponseAddressDto(address),
     );
     return parsedAddresses;
+  }
+
+  @Patch(':id')
+  async update(
+    @Body() dto: UpdateAddressDto,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const parsedDto = validateFindOneParamsOrFail<Partial<Address>>(dto);
+    const address = await this.addressService.update(parsedDto, id);
+    return new ResponseAddressDto(address);
   }
 }

@@ -21,43 +21,34 @@ export class AddressService {
     return this.save(newAddress);
   }
 
-  async update(dto: UpdateAddressDto, customerId: string) {
-    const ownedAddress = await this.findOneOwnedOrFail(
-      { id: dto.id },
-      {
-        id: customerId,
-      },
-    );
-
+  async update(dto: UpdateAddressDto, id: string) {
+    const address = await this.findOneByOrFail({ id });
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
-    ownedAddress.city = dto.city ?? ownedAddress.city;
-    ownedAddress.complement = dto.complement ?? ownedAddress.complement;
-    ownedAddress.neighborhood = dto.neighborhood ?? ownedAddress.neighborhood;
-    ownedAddress.referencePoint =
-      dto.referencePoint ?? ownedAddress.referencePoint;
-    ownedAddress.street = dto.street ?? ownedAddress.street;
-    ownedAddress.number = dto.number ?? ownedAddress.number;
-    ownedAddress.postalCode = dto.postalCode
+    address.city = dto.city ?? address.city;
+    address.complement = dto.complement ?? address.complement;
+    address.neighborhood = dto.neighborhood ?? address.neighborhood;
+    address.referencePoint = dto.referencePoint ?? address.referencePoint;
+    address.street = dto.street ?? address.street;
+    address.number = dto.number ?? address.number;
+    address.postalCode = dto.postalCode
       ? formatBrPostalCode(dto.postalCode)
-      : ownedAddress.postalCode;
-    ownedAddress.location = dto.location ?? ownedAddress.location;
-    ownedAddress.stateCode = dto.stateCode ?? ownedAddress.stateCode;
-    ownedAddress.isDefault = !dto.isDefault
-      ? ownedAddress.isDefault
-      : dto.isDefault;
+      : address.postalCode;
+    address.location = dto.location ?? address.location;
+    address.stateCode = dto.stateCode ?? address.stateCode;
+    address.isDefault = !dto.isDefault ? address.isDefault : dto.isDefault;
 
     Object.keys(dto).forEach(key => {
       if (dto[key] === null) {
-        ownedAddress[key] = '';
+        address[key] = '';
 
         if (key === 'number') {
-          ownedAddress[key] = 'S/N';
+          address[key] = 'S/N';
         }
       }
     });
-
-    return this.save(ownedAddress);
+    const updated = await this.save(address);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   generateAddress(dto: CreateAddressDto | UpdateAddressDto, isDefault = true) {

@@ -11,7 +11,6 @@ import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
-import { PlaceType } from '../types/place.type';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
@@ -98,22 +97,22 @@ export class PlaceService {
     // entities
     // place.address
     // if dto.address → dto.address.id ? findOne : create
-    if (dto.address) {
-      if (dto.address.id) {
-        place.address = await this.addressService.findOneByOrFail({ id });
-      } else {
-        place.address = await this.addressService.create(dto.address);
-      }
-    }
+    // if (dto.address) {
+    //   if (dto.address.id) {
+    //     place.address = await this.addressService.findOneByOrFail({ id });
+    //   } else {
+    //     place.address = await this.addressService.create(dto.address);
+    //   }
+    // }
 
     // place.postalBox
-    if (dto.postalBox) {
-      if (dto.postalBox.id) {
-        place.postalBox = await this.addressService.findOneByOrFail({ id });
-      } else {
-        place.postalBox = await this.addressService.create(dto.postalBox);
-      }
-    }
+    // if (dto.postalBox) {
+    //   if (dto.postalBox.id) {
+    //     place.postalBox = await this.addressService.findOneByOrFail({ id });
+    //   } else {
+    //     place.postalBox = await this.addressService.create(dto.postalBox);
+    //   }
+    // }
 
     // place.workTimes
     // Os horários serão atualizados por meio de uma rota
