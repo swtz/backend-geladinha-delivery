@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsISO8601, IsNotEmpty } from 'class-validator';
 
 export class CreateIntervalTimeDto {
   @IsNotEmpty({ message: 'Campo horário inicial não pode estar vazio' })
-  @IsString({ message: 'Horário inválido' })
+  @IsISO8601({ strict: true }, { message: 'Horário inválido' })
   initHour!: string;
 
   @IsNotEmpty({ message: 'Campo horário final não pode estar vazio' })
-  @IsString({ message: 'Horário inválido' })
+  @IsISO8601({ strict: true }, { message: 'Horário inválido' })
   endHour!: string;
 }

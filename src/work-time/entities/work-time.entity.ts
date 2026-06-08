@@ -32,7 +32,7 @@ export class WorkTime {
   @Column()
   endHour!: Date;
 
-  @Column()
+  @Column({ nullable: true })
   duration!: Date;
 
   @Column({ default: false })
