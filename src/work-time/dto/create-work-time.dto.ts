@@ -2,8 +2,8 @@ import {
   IsBoolean,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
+  IsString,
 } from 'class-validator';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 
@@ -12,13 +12,13 @@ export class CreateWorkTimeDto {
   @IsEnum(Shift, { message: 'Turno inválido' })
   shift!: Shift;
 
-  @IsNotEmpty({ message: 'Campo hora inicial não pode estar vazio' })
-  @IsNumber({}, { message: 'Número inválido' })
-  initHour!: number;
+  @IsNotEmpty({ message: 'Campo horário inicial não pode estar vazio' })
+  @IsString({ message: 'Horário inválido' })
+  initHour!: string;
 
-  @IsNotEmpty({ message: 'Campo hora final não pode estar vazio' })
-  @IsNumber({}, { message: 'Número inválido' })
-  endHour!: number;
+  @IsNotEmpty({ message: 'Campo horário final não pode estar vazio' })
+  @IsString({ message: 'Horário inválido' })
+  endHour!: string;
 
   @IsOptional()
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })

@@ -5,8 +5,9 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 export class ResponseWorkTimeDto {
   readonly id: string;
   readonly shift: Shift;
-  readonly initHour: number;
-  readonly endHour: number;
+  readonly initHour: Date;
+  readonly endHour: Date;
+  readonly duration: Date;
   readonly isDefault: boolean;
   readonly isShared: boolean;
   readonly places?: {
@@ -22,6 +23,7 @@ export class ResponseWorkTimeDto {
     this.shift = workTime.shift;
     this.initHour = workTime.initHour;
     this.endHour = workTime.endHour;
+    this.duration = workTime.duration;
     this.isDefault = workTime.isDefault;
     this.isShared = workTime.isShared;
     this.places = workTime.places
