@@ -59,3 +59,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 db.sqlite
 /rest-client
 user-service-create-manual-testing.ts
+work-time-service-create-manual-testing.ts

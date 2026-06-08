@@ -15,6 +15,9 @@ import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { FindAllParams } from './types/findAllParams';
 import { full, essencial, tiny } from './data/relations/work-time';
+import { fromZonedTime } from 'date-fns-tz';
+import { intervalToDuration } from 'date-fns';
+import { padLeftWithChar } from 'work-time-service-create-manual-testing';
 
 @Injectable()
 export class WorkTimeService {
@@ -24,13 +27,27 @@ export class WorkTimeService {
   ) {}
 
   async create(dto: CreateWorkTimeDto) {
+    const initHour = fromZonedTime(dto.initHour, 'America/Sao_Paulo');
+    const endHour = fromZonedTime(dto.endHour, 'America/Sao_Paulo');
+    const rawInitHour = initHour.toISOString().slice(11, 19);
+    const rawEndHour = endHour.toISOString().slice(11, 19);
+
+    const { hours, minutes, seconds } = intervalToDuration({
+      start: initHour,
+      end: endHour,
+    });
+    const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
+    const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
+    const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
+    const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
+
     const workTime = {
       shift: dto.shift,
-      initHour: dto.initHour,
-      endHour: dto.endHour,
+      initHour: rawInitHour,
+      endHour: rawEndHour,
+      duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
     };
-
     const created = await this.save(workTime);
     return this.findOneByOrFail({ id: created.id });
   }
