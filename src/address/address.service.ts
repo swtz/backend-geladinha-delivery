@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -70,10 +75,10 @@ export class AddressService {
     return address;
   }
 
-  async findOneByOrFail(addressData: Partial<Address>) {
+  async findOneByOrFail(addressData: Partial<Address>, relations = false) {
     const address = await this.addressRepository.findOne({
       where: addressData,
-      relations: { customer: true },
+      relations: { customer: { addresses: relations } },
     });
 
     if (!address) {
@@ -114,7 +119,17 @@ export class AddressService {
   }
 
   async remove(id: string) {
-    const address = await this.findOneByOrFail({ id });
+    const address = await this.findOneByOrFail({ id }, true);
+    if (address.customer.addresses.length === 1) {
+      throw new UnprocessableEntityException(
+        'Cliente precisa ter ao menos 1 endereço',
+      );
+    }
+    if (address.isDefault) {
+      throw new ForbiddenException(
+        'Não é possível excluir o endereço que está como padrão',
+      );
+    }
     await this.addressRepository.delete({ id });
     return address;
   }

@@ -3,11 +3,7 @@ import { CustomerService } from '../services/customer.service';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { transformToLowerCase } from 'src/common/utils/transform-to-lower-case';
-import {
-  ForbiddenException,
-  Injectable,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 @Injectable()
 export class CustomerAddressService {
@@ -59,21 +55,6 @@ export class CustomerAddressService {
   }
 
   async removeAddress(id: string) {
-    const address = await this.addressService.findOneByOrFail({ id });
-    const customer = await this.customerService.findOneByOrFail({
-      id: address.customer.id,
-    });
-
-    if (customer.addresses.length === 1) {
-      throw new UnprocessableEntityException(
-        'Cliente precisa ter ao menos 1 endereço',
-      );
-    }
-    if (address.isDefault) {
-      throw new ForbiddenException(
-        'Não é possível excluir o endereço que está como padrão',
-      );
-    }
     return this.addressService.remove(id);
   }
 }

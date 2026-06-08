@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -38,6 +39,12 @@ export class AddressController {
   ) {
     const parsedDto = validateFindOneParamsOrFail<Partial<Address>>(dto);
     const address = await this.addressService.update(parsedDto, id);
+    return new ResponseAddressDto(address);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const address = await this.addressService.remove(id);
     return new ResponseAddressDto(address);
   }
 }
