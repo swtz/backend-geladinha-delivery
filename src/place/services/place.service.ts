@@ -14,9 +14,9 @@ import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
-import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
 
 @Injectable()
 export class PlaceService {

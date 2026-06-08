@@ -18,7 +18,7 @@ import { CreatePlaceDto } from '../dto/create-place.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
-import { CreateWorkTimeDto } from 'src/work-time/dto/create-work-time.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';

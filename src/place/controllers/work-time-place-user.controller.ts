@@ -15,8 +15,8 @@ import { WorkTimePlaceUserService } from '../services/work-time-place-user.servi
 import { PlaceService } from '../services/place.service';
 import { ResponsePlaceDto } from '../dto/response-place.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
-import { ResponseWorkTimeDto } from 'src/work-time/dto/response-work-time.dto';
-import { UpdateWorkTimeDto } from 'src/work-time/dto/update-work-time.dto';
+import { ResponseWorkTimeDto } from 'src/work-time/dto/work-time/response-work-time.dto';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
 import { WorkTimeDateService } from '../services/work-time-date.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
