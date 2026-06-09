@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -52,9 +51,8 @@ export class WorkTimeService {
     return this.findOneByOrFail({ id: created.id });
   }
 
-  async update(id: string, dto: UpdateWorkTimeDto, isDefault = false) {
+  async update(id: string, dto: UpdateWorkTimeDto) {
     const workTime = await this.findOneByOrFail({ id });
-
     if (workTime.isShared) {
       throw new UnauthorizedException(
         'Um estabelecimento possui esse horário.\n Não foi possível atualizar',
@@ -64,50 +62,10 @@ export class WorkTimeService {
     workTime.shift = dto.shift ?? workTime.shift;
     workTime.initHour = dto.initHour ?? workTime.initHour;
     workTime.endHour = dto.endHour ?? workTime.endHour;
-    workTime.isDefault = isDefault;
+    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
     const created = await this.save(workTime);
     return this.findOneByOrFail({ id: created.id });
-  }
-
-  async updateShared(placeId: string, dto: UpdateWorkTimeDto, user: User) {
-    if (!dto.id) {
-      throw new BadRequestException('Campo ID é obrigatório');
-    }
-
-    const workTime = await this.findOneByOrFail({ id: dto.id, isShared: true });
-    const place = workTime.places.find(item => item.id === placeId);
-
-    if (!place) {
-      throw new NotFoundException(
-        'Estabelecimento não possui o horário de serviço',
-      );
-    }
-
-    const isOwner = place.owners.some(item => item.id === user.id);
-
-    if (!isOwner) {
-      throw new UnauthorizedException('Acesso negado');
-    }
-
-    if (dto.isDefault) {
-      const defaultWorkTime = this.findDefaultFromPlace(place);
-
-      if (defaultWorkTime) {
-        await this.workTimeRepository.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
-    }
-
-    workTime.shift = dto.shift ?? workTime.shift;
-    workTime.initHour = dto.initHour ?? workTime.initHour;
-    workTime.endHour = dto.endHour ?? workTime.endHour;
-    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
-
-    const updated = await this.save(workTime);
-    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {

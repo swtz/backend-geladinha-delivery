@@ -22,7 +22,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 
 @Roles(Role.Admin)
-@Controller('work-time-place-user')
+@Controller('work-time-place')
 export class WorkTimePlaceUserController {
   constructor(
     private readonly workTimePlaceUserService: WorkTimePlaceUserService,
@@ -44,7 +44,7 @@ export class WorkTimePlaceUserController {
     return date;
   }
 
-  @Post('place')
+  @Post()
   async addWorkTimeToPlace(
     @Body('workTimeId') workTimeId: string,
     @Body('placeId') placeId: string,
@@ -87,18 +87,18 @@ export class WorkTimePlaceUserController {
   //   return new ResponsePlaceDto(place);
   // }
 
-  @Patch('me/:id/work-time')
-  async updateSharedWorkTime(
+  @Patch('me/:id')
+  async updateShared(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateWorkTimeDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const place = await this.placeService.updateSharedWorkTime(
-      dto,
+    const workTime = await this.workTimePlaceUserService.updateShared(
       id,
+      dto,
       req.user,
     );
-    return new ResponsePlaceDto(place);
+    return new ResponseWorkTimeDto(workTime);
   }
 
   @Get('place')

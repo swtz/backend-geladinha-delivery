@@ -1,8 +1,13 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { UserService } from 'src/user/services/user.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { User } from 'src/user/entities/user.entity';
+import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -65,5 +70,51 @@ export class WorkTimePlaceUserService {
 
     const updatedWorkTime = await this.workTimeService.save(sharedWorkTime);
     return this.workTimeService.findOneByOrFail({ id: updatedWorkTime.id });
+  }
+
+  async updateShared(id: string, dto: UpdateWorkTimeDto, user: User) {
+    const workTime = await this.workTimeService.findOneByOrFail({
+      id,
+      isShared: true,
+    });
+    const { places } = workTime;
+
+    let isOwner = false;
+    let info: { owner?: string; place?: string } = {};
+    places.forEach(place => {
+      isOwner = place.owners.some(owner => {
+        if (owner.id === user.id) {
+          info = {
+            owner: owner.id,
+            place: place.id,
+          };
+        }
+        return owner.id === user.id;
+      });
+    });
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+    const place = await this.placeService.findOneByOrFail({
+      id: info.place,
+    });
+    if (dto.isDefault) {
+      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
+
+      if (defaultWorkTime) {
+        await this.workTimeService.save({
+          ...defaultWorkTime,
+          isDefault: false,
+        });
+      }
+    }
+
+    workTime.shift = dto.shift ?? workTime.shift;
+    workTime.initHour = dto.initHour ?? workTime.initHour;
+    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
+
+    const updated = await this.workTimeService.save(workTime);
+    return this.workTimeService.findOneByOrFail({ id: updated.id });
   }
 }
