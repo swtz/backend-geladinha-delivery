@@ -34,16 +34,29 @@ export class WorkTimeController {
     isDefault: boolean,
     @Query('isShared', new ParseBoolPipe({ optional: true }))
     isShared: boolean,
-    @Query('name') name: string,
-    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('nickname') nickname: string,
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+
+    // precisa-se validar email
+    @Query('email') email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
-    const qo = !name && !phone && !id ? {} : { name, phone, id };
     const workTimes = await this.workTimeService.findAll({
       shift,
       isDefault,
       isShared,
-      user: qo,
+      user: {
+        nickname,
+        id,
+        name,
+        lastName,
+        email,
+        phone,
+        secondPhone,
+      },
     });
     const parsedWorkTimes = workTimes.map(
       item => new ResponseWorkTimeDto(item),
