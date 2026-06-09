@@ -54,16 +54,6 @@ export class WorkTimePlaceUserService {
     return this.placeService.findOneByOrFail({ id: created.id });
   }
 
-  async updateUserWorkTime(workTimeId: string, userId: string) {
-    const workTime = await this.workTimeService.findOneByOrFail({
-      id: workTimeId,
-    });
-    const user = await this.userService.findOneByOrFail({ id: userId });
-
-    await this.userService.save({ ...user, workTime });
-    return this.workTimeService.findOneByOrFail({ id: workTime.id });
-  }
-
   async useIsSharedWorkTime(id: string, user: User) {
     const sharedWorkTime = await this.workTimeService.findOneByOrFail({
       id,
