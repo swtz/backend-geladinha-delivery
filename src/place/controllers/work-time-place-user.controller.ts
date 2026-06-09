@@ -20,6 +20,7 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.
 import { WorkTimeDateService } from '../services/work-time-date.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time-place')
@@ -44,21 +45,18 @@ export class WorkTimePlaceUserController {
     return date;
   }
 
-  @Post()
-  async addWorkTimeToPlace(
-    @Body('workTimeId') workTimeId: string,
-    @Body('placeId') placeId: string,
+  @Post(':id')
+  async addToPlace(
+    @Param('id') id: string,
+    @Body() dto: CreateWorkTimeDto,
+    @Req() req: AuthenticatedRequest,
   ) {
-    if (!workTimeId || !placeId) {
-      throw new BadRequestException('Preencha todos os campos');
-    }
-
-    const workTime = await this.workTimePlaceUserService.addWorkTimeToPlace(
-      workTimeId,
-      placeId,
+    const place = await this.workTimePlaceUserService.addToPlace(
+      id,
+      dto,
+      req.user,
     );
-
-    return workTime;
+    return new ResponsePlaceDto(place);
   }
 
   @Post('user')
@@ -77,15 +75,6 @@ export class WorkTimePlaceUserController {
 
     return workTime;
   }
-
-  // @Post('work-time')
-  // async addWorkTime(
-  //   @Body() dto: CreateWorkTimeDto,
-  //   @Query('placeId', ParseUUIDPipe) placeId: string,
-  // ) {
-  //   const place = await this.placeService.addWorkTime(dto, placeId);
-  //   return new ResponsePlaceDto(place);
-  // }
 
   @Patch('me/:id')
   async updateShared(

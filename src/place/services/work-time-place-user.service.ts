@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -8,6 +9,7 @@ import { UserService } from 'src/user/services/user.service';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
+import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -17,37 +19,39 @@ export class WorkTimePlaceUserService {
     private readonly workTimeService: WorkTimeService,
   ) {}
 
-  async addWorkTimeToPlace(workTimeId: string, placeId: string) {
-    const workTime = await this.workTimeService.findOneByOrFail(
-      { id: workTimeId },
-      true,
-    );
-    const place = await this.placeService.findOneByOrFail({ id: placeId });
+  async addToPlace(id: string, dto: CreateWorkTimeDto, user: User) {
+    const place = await this.placeService.findOneByOrFail({ id });
 
-    this.workTimeService.failIfShiftExistsInPlace(place, workTime.shift);
+    const isOwner = place.owners.some(owner => owner.id === user.id);
+    if (!isOwner) {
+      throw new ForbiddenException('Acesso negado');
+    }
 
     if (place.workTimes.length >= 5) {
       throw new InternalServerErrorException(
         'Só é possível cadastrar 5 horários por estabelecimento',
       );
     }
+    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
-    const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
+    const workTime = await this.workTimeService.create(dto);
+    workTime.isShared = true;
+    workTime.isDefault = !!dto.isDefault;
 
-    workTime.places.push(place);
+    const defaultWorkTime = dto.isDefault
+      ? this.workTimeService.findDefaultFromPlace(place)
+      : undefined;
 
-    if (workTime.isDefault && defaultWorkTime) {
+    if (defaultWorkTime) {
       await this.workTimeService.save({
         ...defaultWorkTime,
         isDefault: false,
       });
     }
+    place.workTimes.push(workTime);
 
-    const created = await this.workTimeService.save({
-      ...workTime,
-      isShared: true,
-    });
-    return this.workTimeService.findOneByOrFail({ id: created.id }, true);
+    const created = await this.placeService.save(place);
+    return this.placeService.findOneByOrFail({ id: created.id });
   }
 
   async updateUserWorkTime(workTimeId: string, userId: string) {
