@@ -24,7 +24,7 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.
 
 @Roles(Role.Admin)
 @Controller('work-time-place')
-export class WorkTimePlaceUserController {
+export class WorkTimePlaceController {
   constructor(
     private readonly workTimePlaceUserService: WorkTimePlaceUserService,
     private readonly placeService: PlaceService,
@@ -57,9 +57,9 @@ export class WorkTimePlaceUserController {
     return parsedWorkTimes;
   }
 
-  @Post(':id')
+  @Post('me/:id')
   async addToPlace(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreateWorkTimeDto,
     @Req() req: AuthenticatedRequest,
   ) {
