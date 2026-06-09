@@ -28,6 +28,10 @@ export class IntervalTime {
   @Column({ default: '' })
   duration!: string;
 
-  @ManyToOne(() => WorkTime)
+  @ManyToOne(() => WorkTime, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    nullable: false,
+  })
   workTime!: WorkTime;
 }

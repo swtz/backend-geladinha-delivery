@@ -155,10 +155,12 @@ export class WorkTimePlaceUserService {
       );
     }
 
-    // workTime.user === null funciona?
-    // explicar para o chatGPT a situação
-    // -_-
+    const removed = await this.workTimeService.save({
+      ...workTime,
+      isDefault: false,
+      isShared: false,
+    });
 
-    return this.workTimeService.remove(id);
+    return this.workTimeService.remove(removed.id);
   }
 }

@@ -45,9 +45,9 @@ export class WorkTimePlaceUserController {
     return date;
   }
 
-  @Get(':id')
+  @Get()
   async findAllOfPlace(
-    @Param('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
   ) {
     const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
     const { workTimes } = await this.placeService.findOneByOrFail(qo);
