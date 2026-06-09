@@ -14,7 +14,6 @@ import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
-import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 
 @Injectable()
@@ -172,12 +171,6 @@ export class PlaceService {
         owners: true,
       },
     });
-  }
-
-  async removeWorkTime(id: string, workTimeId: string, user: User) {
-    const place = await this.findOneByOrFail({ id });
-    await this.workTimeService.removeShared(id, workTimeId, user);
-    return this.findOneByOrFail({ id: place.id });
   }
 
   async remove(id: string, user: User) {

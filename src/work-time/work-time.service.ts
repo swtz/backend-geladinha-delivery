@@ -171,38 +171,6 @@ export class WorkTimeService {
     return workTime;
   }
 
-  async removeShared(placeId: string, id: string, user: User) {
-    const workTime = await this.findOneByOrFail({ id, isShared: true });
-    const place = workTime.places.find(item => item.id === placeId);
-
-    if (!place) {
-      throw new NotFoundException(
-        'Estabelecimento não possui o horário de serviço',
-      );
-    }
-
-    const isOwner = place.owners.some(item => item.id === user.id);
-
-    if (!isOwner) {
-      throw new UnauthorizedException('Acesso negado');
-    }
-
-    if (workTime.isDefault) {
-      throw new UnauthorizedException(
-        'Esse horário de serviço é o padrão em algum estabelecimento',
-      );
-    }
-
-    if (place.workTimes.length <= 1) {
-      throw new UnauthorizedException(
-        `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
-      );
-    }
-
-    await this.workTimeRepository.delete({ id });
-    return workTime;
-  }
-
   async save(workTimeData: Partial<WorkTime>) {
     return await this.workTimeRepository.save(workTimeData);
   }

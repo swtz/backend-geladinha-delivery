@@ -121,4 +121,44 @@ export class WorkTimePlaceUserService {
     const updated = await this.workTimeService.save(workTime);
     return this.workTimeService.findOneByOrFail({ id: updated.id });
   }
+
+  async removeShared(id: string, user: User) {
+    const workTime = await this.workTimeService.findOneByOrFail({
+      id,
+      isShared: true,
+    });
+    const { places } = workTime;
+
+    let isOwner = false;
+    let info: { owner?: string; place?: string } = {};
+    places.forEach(place => {
+      isOwner = place.owners.some(owner => {
+        if (owner.id === user.id) {
+          info = {
+            owner: owner.id,
+            place: place.id,
+          };
+        }
+        return owner.id === user.id;
+      });
+    });
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+
+    const place = await this.placeService.findOneByOrFail({
+      id: info.place,
+    });
+    if (place.workTimes.length <= 1) {
+      throw new UnauthorizedException(
+        `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+      );
+    }
+
+    // workTime.user === null funciona?
+    // explicar para o chatGPT a situação
+    // -_-
+
+    return this.workTimeService.remove(id);
+  }
 }

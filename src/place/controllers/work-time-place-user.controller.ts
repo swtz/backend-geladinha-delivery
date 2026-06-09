@@ -85,14 +85,16 @@ export class WorkTimePlaceUserController {
     return new ResponseWorkTimeDto(workTime);
   }
 
-  @Delete('me/work-time/:id')
-  async removeWorkTime(
+  @Delete('me/:id')
+  async removeShared(
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('placeId', ParseUUIDPipe) placeId: string,
   ) {
-    const place = await this.placeService.removeWorkTime(placeId, id, req.user);
-    return new ResponsePlaceDto(place);
+    const workTime = await this.workTimePlaceUserService.removeShared(
+      id,
+      req.user,
+    );
+    return new ResponseWorkTimeDto(workTime);
   }
 
   @Post('user')
