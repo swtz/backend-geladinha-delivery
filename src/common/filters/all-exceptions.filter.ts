@@ -60,9 +60,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
           break;
 
         case '23503':
-          status = HttpStatus.BAD_REQUEST;
-          messages = ['Invalid reference'];
-          errorName = 'Bad Request';
+          status = HttpStatus.INTERNAL_SERVER_ERROR;
+          messages = ['ENTITY FIELD ERROR'];
+          errorName = 'Internal Server Error';
           break;
 
         default:
