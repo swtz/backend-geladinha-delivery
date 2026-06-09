@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Put } from '@nestjs/common';
 import { WorkTimePlaceUserService } from '../services/work-time-place-user.service';
 import { WorkTimeDateService } from '../services/work-time-date.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -32,9 +25,15 @@ export class WorkTimeUserController {
     return new ResponseUserDto(user);
   }
 
-  @Patch('shared/:id/:wkid')
+  @Put('shared/:userId/:workTimeId')
   async setSharedToUser(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Param('wkid', ParseUUIDPipe) wkid: string,
-  ) {}
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @Param('workTimeId', ParseUUIDPipe) workTimeId: string,
+  ) {
+    const user = await this.workTimePlaceUserService.setSharedToUser(
+      userId,
+      workTimeId,
+    );
+    return new ResponseUserDto(user);
+  }
 }

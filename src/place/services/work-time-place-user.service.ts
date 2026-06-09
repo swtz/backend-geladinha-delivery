@@ -165,4 +165,21 @@ export class WorkTimePlaceUserService {
     const updated = await this.userService.save(user);
     return this.userService.findOneByOrFail({ id: updated.id });
   }
+
+  async setSharedToUser(userId: string, workTimeId: string) {
+    const user = await this.userService.findOneByOrFail({ id: userId });
+    const workTime = await this.workTimeService.findOneByOrFail({
+      id: workTimeId,
+      isShared: true,
+    });
+    const { workTime: oldWorkTime } = user;
+
+    if (oldWorkTime && !oldWorkTime.isShared) {
+      await this.workTimeService.remove(oldWorkTime.id);
+    }
+    user.workTime = workTime;
+
+    const updated = await this.userService.save(user);
+    return this.userService.findOneByOrFail({ id: updated.id });
+  }
 }
