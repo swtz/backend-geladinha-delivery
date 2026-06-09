@@ -8,7 +8,6 @@ import {
   ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
-  Post,
   Query,
   Req,
 } from '@nestjs/common';
@@ -16,7 +15,6 @@ import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTimeService } from './work-time.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
 import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
@@ -77,12 +75,6 @@ export class WorkTimeController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const workTime = await this.workTimeService.findOneByOrFail({ id }, true);
-    return new ResponseWorkTimeDto(workTime);
-  }
-
-  @Post()
-  async create(@Body() dto: CreateWorkTimeDto) {
-    const workTime = await this.workTimeService.create(dto);
     return new ResponseWorkTimeDto(workTime);
   }
 
