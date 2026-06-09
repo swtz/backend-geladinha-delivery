@@ -45,6 +45,18 @@ export class WorkTimePlaceUserController {
     return date;
   }
 
+  @Get(':id')
+  async findAllOfPlace(
+    @Param('id', new ParseUUIDPipe({ optional: true })) id: string,
+  ) {
+    const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
+    const { workTimes } = await this.placeService.findOneByOrFail(qo);
+    const parsedWorkTimes = workTimes.map(
+      item => new ResponseWorkTimeDto(item),
+    );
+    return parsedWorkTimes;
+  }
+
   @Post(':id')
   async addToPlace(
     @Param('id') id: string,
@@ -56,6 +68,30 @@ export class WorkTimePlaceUserController {
       dto,
       req.user,
     );
+    return new ResponsePlaceDto(place);
+  }
+
+  @Patch('me/:id')
+  async updateShared(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWorkTimeDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const workTime = await this.workTimePlaceUserService.updateShared(
+      id,
+      dto,
+      req.user,
+    );
+    return new ResponseWorkTimeDto(workTime);
+  }
+
+  @Delete('me/work-time/:id')
+  async removeWorkTime(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('placeId', ParseUUIDPipe) placeId: string,
+  ) {
+    const place = await this.placeService.removeWorkTime(placeId, id, req.user);
     return new ResponsePlaceDto(place);
   }
 
@@ -74,41 +110,5 @@ export class WorkTimePlaceUserController {
     );
 
     return workTime;
-  }
-
-  @Patch('me/:id')
-  async updateShared(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateWorkTimeDto,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    const workTime = await this.workTimePlaceUserService.updateShared(
-      id,
-      dto,
-      req.user,
-    );
-    return new ResponseWorkTimeDto(workTime);
-  }
-
-  @Get('place')
-  async findAllOfPlace(
-    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
-  ) {
-    const qo = id ? { id } : { code: process.env.DEFAULT_PLACE_CODE };
-    const { workTimes } = await this.placeService.findOneByOrFail(qo);
-    const parsedWorkTimes = workTimes.map(
-      item => new ResponseWorkTimeDto(item),
-    );
-    return parsedWorkTimes;
-  }
-
-  @Delete('me/work-time/:id')
-  async removeWorkTime(
-    @Req() req: AuthenticatedRequest,
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('placeId', ParseUUIDPipe) placeId: string,
-  ) {
-    const place = await this.placeService.removeWorkTime(placeId, id, req.user);
-    return new ResponsePlaceDto(place);
   }
 }
