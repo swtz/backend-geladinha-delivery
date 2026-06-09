@@ -12,6 +12,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { UserService } from 'src/user/services/user.service';
+import { ResponseUserDto } from 'src/user/dtos/user/response-user.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time-user')
@@ -26,11 +27,14 @@ export class WorkTimeUserController {
   async setToUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreateWorkTimeDto,
-  ) {}
+  ) {
+    const user = await this.workTimePlaceUserService.setToUser(id, dto);
+    return new ResponseUserDto(user);
+  }
 
   @Patch('shared/:id/:wkid')
   async setSharedToUser(
     @Param('id', ParseUUIDPipe) id: string,
-    @Param('wkid', ParseUUIDPipe) id: string,
+    @Param('wkid', ParseUUIDPipe) wkid: string,
   ) {}
 }

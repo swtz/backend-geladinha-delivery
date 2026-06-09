@@ -10,6 +10,7 @@ import { UserModule } from 'src/user/user.module';
 import { WorkTimeDateService } from './services/work-time-date.service';
 import { WorkTimePlaceUserService } from './services/work-time-place-user.service';
 import { WorkTimePlaceController } from './controllers/work-time-place.controller';
+import { WorkTimeUserController } from './controllers/work-time-user.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,11 @@ import { WorkTimePlaceController } from './controllers/work-time-place.controlle
     WorkTimeModule,
     UserModule,
   ],
-  controllers: [PlaceController, WorkTimePlaceController],
+  controllers: [
+    PlaceController,
+    WorkTimePlaceController,
+    WorkTimeUserController,
+  ],
   providers: [PlaceService, WorkTimeDateService, WorkTimePlaceUserService],
   exports: [PlaceService, WorkTimeDateService],
 })

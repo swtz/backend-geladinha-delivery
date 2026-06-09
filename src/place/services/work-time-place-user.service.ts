@@ -153,4 +153,16 @@ export class WorkTimePlaceUserService {
 
     return this.workTimeService.remove(removed.id);
   }
+
+  async setToUser(id: string, dto: CreateWorkTimeDto) {
+    const user = await this.userService.findOneByOrFail({ id });
+    const { workTime: oldWorkTime } = user;
+    const workTime = await this.workTimeService.create(dto);
+    if (oldWorkTime) {
+      await this.workTimeService.remove(oldWorkTime.id);
+    }
+    user.workTime = workTime;
+    const updated = await this.userService.save(user);
+    return this.userService.findOneByOrFail({ id: updated.id });
+  }
 }
