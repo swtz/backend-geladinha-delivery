@@ -93,20 +93,19 @@ export class WorkTimePlaceUserService {
       id: info.place,
     });
     if (dto.isDefault) {
-      const defaultWorkTime = this.workTimeService.findDefaultFromPlace(place);
+      const defaultWorkTime =
+        this.workTimeService.findDefaultFromPlaceOrFail(place);
 
-      if (defaultWorkTime) {
-        await this.workTimeService.save({
-          ...defaultWorkTime,
-          isDefault: false,
-        });
-      }
+      await this.workTimeService.save({
+        ...defaultWorkTime,
+        isDefault: false,
+      });
+      workTime.isDefault = dto.isDefault;
     }
 
     workTime.shift = dto.shift ?? workTime.shift;
     workTime.initHour = dto.initHour ?? workTime.initHour;
     workTime.endHour = dto.endHour ?? workTime.endHour;
-    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
     const updated = await this.workTimeService.save(workTime);
     return this.workTimeService.findOneByOrFail({ id: updated.id });
