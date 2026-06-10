@@ -232,7 +232,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read one user
 # @name readOneUser
-GET {{baseUrl}}/user/77765315-68b7-43c2-83f4-c4140afb244e
+GET {{baseUrl}}/user/cad9baec-d123-476b-89b5-b5293eee74cb
 Authorization: Bearer {{JwtToken}}
 
 ### Read all users
@@ -582,13 +582,13 @@ Content-Type: application/json
   "user": {
     "name": "Olavo",
     "lastName": "Rodrigues",
-    "nickname": "ninguem",
-    "phone": "(48) 99988-5599",
+    "nickname": "queria",
+    "phone": "(48) 99988-7766",
     "role": "motoboy",
     "password": "123456"
   },
   "motorcycle": {
-    "licensePlate": "oem4j76",
+    "licensePlate": "oem2j98",
     "brand": "Honda",
     "model": "Titan",
     "year": "2014",

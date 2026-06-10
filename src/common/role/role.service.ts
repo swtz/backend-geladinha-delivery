@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role as RoleEntity } from './entities/role.entity';
 import { Role } from './roles.enum';
-import { generateBadRequestException } from '../generate-exception';
 
 @Injectable()
 export class RoleService {
@@ -47,17 +46,6 @@ export class RoleService {
   }
 
   async save(roleData: Partial<RoleEntity>) {
-    const http400 = generateBadRequestException('Erro ao criar função');
-    const created = await this.roleRepository
-      .save(roleData)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.roleRepository.save(roleData);
   }
 }

@@ -4,10 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { MotorcycleType } from '../types/motorcycle.type';
 import { User } from 'src/user/entities/user.entity';
@@ -16,8 +14,6 @@ import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()
 export class MotorcycleService {
-  private readonly logger = new Logger(MotorcycleService.name);
-
   constructor(
     @InjectRepository(Motorcycle)
     private readonly motorcycleRepository: Repository<Motorcycle>,
@@ -74,18 +70,6 @@ export class MotorcycleService {
   }
 
   async save(motorcycle: Partial<Motorcycle>) {
-    const http400 = generateBadRequestException('Erro ao salvar a moto');
-
-    const created = this.motorcycleRepository
-      .save(motorcycle)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+    return this.motorcycleRepository.save(motorcycle);
   }
 }

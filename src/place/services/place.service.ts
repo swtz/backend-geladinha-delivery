@@ -1,31 +1,25 @@
 import {
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Place } from '../entities/place.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { generateBadRequestException } from 'src/common/generate-exception';
 import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
-import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { formatPhone } from 'src/common/utils/format-phone';
 
 @Injectable()
 export class PlaceService {
-  private readonly logger = new Logger(PlaceService.name);
-
   constructor(
     @InjectRepository(Place)
     private readonly placeRepository: Repository<Place>,
     private readonly addressService: AddressService,
-    private readonly workTimeService: WorkTimeService,
     private readonly userService: UserService,
   ) {}
 
@@ -195,20 +189,7 @@ export class PlaceService {
     return place;
   }
 
-  async save(placeData: Partial<Place>) {
-    const http400 = generateBadRequestException(
-      'Erro ao salvar o estabelecimento',
-    );
-    const created = await this.placeRepository
-      .save(placeData)
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          this.logger.error(http400.message, err.stack);
-        }
-
-        throw http400;
-      });
-
-    return created;
+  async save(place: Partial<Place>) {
+    return this.placeRepository.save(place);
   }
 }

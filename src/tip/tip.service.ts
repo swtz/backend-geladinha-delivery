@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
-import { generateBadRequestException } from 'src/common/generate-exception';
 
 @Injectable()
 export class TipService {
@@ -63,15 +62,6 @@ export class TipService {
   }
 
   async save(tip: Partial<Tip>) {
-    const http400 = generateBadRequestException('Erro ao salvar gorjeta');
-    const created = await this.tipRepository.save(tip).catch((err: unknown) => {
-      if (err instanceof Error) {
-        this.logger.error(http400.message, err.stack);
-      }
-
-      throw http400;
-    });
-
-    return created;
+    return this.tipRepository.save(tip);
   }
 }
