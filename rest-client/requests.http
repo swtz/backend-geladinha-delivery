@@ -580,15 +580,15 @@ Content-Type: application/json
 
 {
   "user": {
-    "name": "Gabriel",
+    "name": "Olavo",
     "lastName": "Rodrigues",
-    "nickname": "alemao",
-    "phone": "(48) 99988-5578",
+    "nickname": "ninguem",
+    "phone": "(48) 99988-5599",
     "role": "motoboy",
     "password": "123456"
   },
   "motorcycle": {
-    "licensePlate": "oem8j76",
+    "licensePlate": "oem4j76",
     "brand": "Honda",
     "model": "Titan",
     "year": "2014",

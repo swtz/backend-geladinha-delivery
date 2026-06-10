@@ -19,7 +19,7 @@ export class DeliveryManMotorcycleService {
     deliveryManDto: CreateDeliveryManDto,
     motorcycleDto: CreateMotorcycleDto,
   ) {
-    const user = await this.userService.create(userDto);
+    const user = await this.userService.create(userDto); // TRANSACTIONS
     const owner = motorcycleDto.owner
       ? await this.userService.findOneByOrFail({
           id: motorcycleDto.owner,
