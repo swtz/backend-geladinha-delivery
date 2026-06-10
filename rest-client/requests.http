@@ -86,24 +86,25 @@ Content-Type: application/json
 
 ### Update shared work time
 # @name updateWorkTime
-PATCH {{baseUrl}}/place/me/5c156016-f744-439e-8400-9e6dfaef0582/work-time
+PATCH {{baseUrl}}/work-time-place/me/7ce7e1ca-efcc-4d67-a382-ada3c1340599
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "id": "c522631e-be63-474c-a75b-6fe649987815",
-  "initHour": 9,
-  "endHour": 4
+  "shift": "padrão",
+  "initHour": "2026-06-10T18:00:00",
+  "endHour": "2026-06-11T04:00:00",
+  "isDefault": true
 }
 
 ### Remove shared work time
 # @name removeSharedWorkTime
-DELETE {{baseUrl}}/place/me/work-time/59358951-b3bf-419c-8a8a-976b25f372f2?placeId=c6ad6d5f-1387-4941-80d0-ac57abde5238
+DELETE {{baseUrl}}/work-time-place/me/ac581ce5-f052-4489-ab97-033e2d86e62f
 Authorization: Bearer {{JwtToken}}
 
 ### find place work times
 # @name findPlaceWorkTimes
-GET {{baseUrl}}/place/work-time
+GET {{baseUrl}}/work-time-place
 Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################
@@ -116,8 +117,8 @@ Content-Type: application/json
 
 {
   "shift": "madrugada",
-  "initHour": "2026-06-10T23:00:00",
-  "endHour": "2026-06-11T22:00:00"
+  "initHour": "2026-06-10T19:30:00",
+  "endHour": "2026-06-11T03:00:00"
 }
 
 ### Update work time
@@ -132,7 +133,7 @@ Content-Type: application/json
 
 ### Find work time
 # @name findWorkTime
-GET {{baseUrl}}/work-time/cd3f9bd3-0b24-4ffb-ba87-3c1f25a48eb4
+GET {{baseUrl}}/work-time/24757200-8dc0-4c9f-8c9f-2145d9fa4bd3
 Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
@@ -147,7 +148,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Remove work time
 # @name removeWorkTime
-DELETE {{baseUrl}}/work-time/cece908b-f0a4-4c42-8040-60f7947d9272
+DELETE {{baseUrl}}/work-time/ac581ce5-f052-4489-ab97-033e2d86e62f
 Authorization: Bearer {{JwtToken}}
 
 ################### USER ###################
@@ -442,7 +443,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview motoboy payout
 # @name previewPayout
-GET {{baseUrl}}/payout/preview?name=Anthos
+GET {{baseUrl}}/payout/preview?from=2026-06-10&to=2026-06-11&id=7ce7e1ca-efcc-4d67-a382-ada3c1340599
 Authorization: Bearer {{JwtToken}}
 
 ### Create motoboy payout
@@ -495,7 +496,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Preview settlement
 # @name previewSettlement
-GET {{baseUrl}}/settlement/preview?name=Leonardo&from=2025-11-17&to=2025-11-17
+GET {{baseUrl}}/settlement/preview?from=2026-06-10&to=2026-06-11&id=0694f8ac-bac1-454e-9059-77737e064f47
 Authorization: Bearer {{JwtToken}}
 
 ### Create settlement
@@ -552,7 +553,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Get dateObject
 # @name getDateObject
-GET {{baseUrl}}/work-time-place/date?from=2026-06-10&to=2026-06-11
+GET {{baseUrl}}/work-time-place/date?from=2026-06-10&to=2026-06-10
 Authorization: Bearer {{JwtToken}}
 
 ### Create motorcycle

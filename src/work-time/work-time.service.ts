@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -14,7 +15,7 @@ import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { FindAllParams } from './types/findAllParams';
 import { full, essencial, tiny } from './data/relations/work-time';
-import { intervalToDuration } from 'date-fns';
+import { getUnixTime, intervalToDuration, isSameDay } from 'date-fns';
 import { padLeftWithChar } from 'work-time-service-create-manual-testing';
 
 @Injectable()
@@ -27,11 +28,21 @@ export class WorkTimeService {
   async create(dto: CreateWorkTimeDto) {
     const initHour = dto.initHour.slice(11, 19);
     const endHour = dto.endHour.slice(11, 19);
+    const isAnotherDay = getUnixTime(dto.initHour) > getUnixTime(dto.endHour);
+    if (getUnixTime(dto.initHour) > getUnixTime(dto.endHour)) {
+      throw new BadRequestException(
+        'A data inicial não pode ser maior do que a data final',
+      );
+    }
+    if (isSameDay(dto.initHour, dto.endHour) && isAnotherDay) {
+      throw new BadRequestException(
+        `A data final termina no dia seguinte à data inicial`,
+      );
+    }
 
-    // checar se endHour < initHour, por conta da duração do intervalo
     const { hours, minutes, seconds } = intervalToDuration({
-      start: initHour,
-      end: endHour,
+      start: dto.initHour,
+      end: dto.endHour,
     });
     const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
     const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
