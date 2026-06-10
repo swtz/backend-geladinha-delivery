@@ -78,14 +78,15 @@ export class UserService {
   }
 
   async update(user: User, dto: UpdateUserDto) {
-    const { nickname, phone, email } = dto;
+    const { nickname, phone, email, secondPhone } = dto;
 
     user.name = dto.name ?? user.name;
     user.lastName = dto.lastName ?? user.lastName;
 
-    if (nickname || phone || email) {
+    if (nickname || phone || email || secondPhone) {
       user.nickname = dto.nickname ?? user.nickname;
       user.phone = dto.phone ?? user.phone;
+      user.secondPhone = dto.secondPhone ?? user.secondPhone;
       user.email = dto.email ?? user.email;
       user.forceLogout = true;
     }

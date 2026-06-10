@@ -15,6 +15,7 @@ import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
 import { Shift } from 'src/common/enums/work-shifts.enum';
+import { formatPhone } from 'src/common/utils/format-phone';
 
 @Injectable()
 export class PlaceService {
@@ -58,8 +59,8 @@ export class PlaceService {
       businessName: dto.businessName,
       cnpj,
       cpf,
-      phone: dto.phone, // failIfExists
-      secondPhone: dto.secondPhone ?? dto.phone,
+      phone: formatPhone(dto.phone), // failIfExists
+      secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : dto.phone,
       email: dto.email, // failIfExists
       address,
       postalBox,
@@ -77,11 +78,13 @@ export class PlaceService {
     // unique
     place.code = dto.code ?? place.code;
     place.name = dto.name ?? place.name;
-    place.phone = dto.phone ?? place.phone;
+    place.phone = dto.phone ? formatPhone(dto.phone) : place.phone;
+    place.secondPhone = dto.secondPhone
+      ? formatPhone(dto.secondPhone)
+      : place.secondPhone;
     place.email = dto.email ?? place.email;
     place.cpf = dto.cpf ?? place.cpf;
     place.cnpj = dto.cnpj ?? place.cnpj;
-    place.secondPhone = dto.secondPhone ?? place.secondPhone;
 
     // custom
     place.businessName = dto.businessName ?? place.businessName;
