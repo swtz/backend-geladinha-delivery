@@ -14,7 +14,6 @@ import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { FindAllParams } from './types/findAllParams';
 import { full, essencial, tiny } from './data/relations/work-time';
-import { fromZonedTime } from 'date-fns-tz';
 import { intervalToDuration } from 'date-fns';
 import { padLeftWithChar } from 'work-time-service-create-manual-testing';
 
@@ -26,11 +25,10 @@ export class WorkTimeService {
   ) {}
 
   async create(dto: CreateWorkTimeDto) {
-    const initHour = fromZonedTime(dto.initHour, 'America/Sao_Paulo');
-    const endHour = fromZonedTime(dto.endHour, 'America/Sao_Paulo');
-    const rawInitHour = initHour.toISOString().slice(11, 19);
-    const rawEndHour = endHour.toISOString().slice(11, 19);
+    const initHour = dto.initHour.slice(11, 19);
+    const endHour = dto.endHour.slice(11, 19);
 
+    // checar se endHour < initHour, por conta da duração do intervalo
     const { hours, minutes, seconds } = intervalToDuration({
       start: initHour,
       end: endHour,
@@ -42,8 +40,8 @@ export class WorkTimeService {
 
     const workTime = {
       shift: dto.shift,
-      initHour: rawInitHour,
-      endHour: rawEndHour,
+      initHour,
+      endHour,
       duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
     };

@@ -108,16 +108,16 @@ Authorization: Bearer {{JwtToken}}
 
 ################### WORK TIME ###################
 
-### Create work time
+### Set user work time
 # @name CreateWorkTime
-POST {{baseUrl}}/work-time
+PUT {{baseUrl}}/work-time-user/0694f8ac-bac1-454e-9059-77737e064f47
 Authorization: Bearer {{JwtToken}}
 Content-Type: application/json
 
 {
-  "shift": "manhã",
-  "initHour": 7,
-  "endHour": 15
+  "shift": "madrugada",
+  "initHour": "2026-06-10T23:00:00",
+  "endHour": "2026-06-11T22:00:00"
 }
 
 ### Update work time
@@ -132,7 +132,7 @@ Content-Type: application/json
 
 ### Find work time
 # @name findWorkTime
-GET {{baseUrl}}/work-time/d21b13b5-48a6-48c7-8dac-0233a3909df1
+GET {{baseUrl}}/work-time/cd3f9bd3-0b24-4ffb-ba87-3c1f25a48eb4
 Authorization: Bearer {{JwtToken}}
 
 ### Find all work times
@@ -552,7 +552,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Get dateObject
 # @name getDateObject
-GET {{baseUrl}}/place/date?fromDay=10
+GET {{baseUrl}}/work-time-place/date?from=2026-06-10&to=2026-06-11
 Authorization: Bearer {{JwtToken}}
 
 ### Create motorcycle

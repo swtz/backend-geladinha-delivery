@@ -4,8 +4,7 @@ import { WorkTimeService } from 'src/work-time/work-time.service';
 import { UserService } from 'src/user/services/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { fromZonedTime } from 'date-fns-tz';
-import { generateRelativeDate } from 'src/common/utils/generate-date';
-import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
+import { getUnixTime, isSameDay } from 'date-fns';
 import { isISO8601 } from 'class-validator';
 
 @Injectable()
@@ -16,87 +15,58 @@ export class WorkTimeDateService {
     private readonly userService: UserService,
   ) {}
 
-  async create(user: Partial<User>, from: string, to: string) {
-    const code = process.env.DEFAULT_PLACE_CODE;
-    const place = await this.placeService.findOneByOrFail({
-      code,
-    });
-    const userObject: Record<string, Partial<User> | null> = { operator: {} };
-    const dateObject: {
-      initHour: string;
-      endHour: string;
-      initDate: Date;
-      endDate: Date;
-    } = {
-      initHour: '',
-      endHour: '',
-      initDate: new Date(0),
-      endDate: new Date(0),
-    };
-    const hasUserData = Object.values(user).some(value => value !== undefined);
-
-    userObject.operator = hasUserData
-      ? await this.userService.findOneByOrFail(user)
-      : null;
-
-    const { initHour, endHour } =
-      userObject.operator && userObject.operator.workTime
-        ? userObject.operator.workTime
-        : this.workTimeService.findDefaultFromPlaceOrFail(place);
-
-    dateObject.initHour = initHour;
-    dateObject.endHour = endHour;
-
+  async create(
+    user: Partial<User>,
+    from: string,
+    to: string,
+    tz = 'America/Sao_Paulo',
+  ) {
     if (
       !isISO8601(from, { strict: true }) ||
       !isISO8601(to, { strict: true })
     ) {
       throw new BadRequestException('Data inválida');
     }
+    const code = process.env.DEFAULT_PLACE_CODE;
+    const place = await this.placeService.findOneByOrFail({
+      code,
+    });
+    const hasUserData = Object.values(user).some(value => value !== undefined);
+    const userObject: Record<string, Partial<User> | null> = {
+      operator: hasUserData
+        ? await this.userService.findOneByOrFail(user)
+        : null,
+    };
+    const { initHour, endHour } = userObject.operator?.workTime
+      ? userObject.operator.workTime
+      : this.workTimeService.findDefaultFromPlaceOrFail(place);
 
     const fromDate = from.slice(0, 10);
     const toDate = to.slice(0, 10);
+    if (getUnixTime(fromDate) > getUnixTime(toDate)) {
+      throw new BadRequestException(
+        'A data inicial não pode ser maior do que a data final',
+      );
+    }
 
-    const twoDigitInitHour = padLeftWithChar(dateObject.initHour, '0');
-    const twoDigitEndHour = padLeftWithChar(dateObject.endHour, '0');
+    const utcInitDate = fromZonedTime(`${fromDate}T${initHour}`, tz);
+    const utcEndDate = fromZonedTime(`${toDate}T${endHour}`, tz);
+    const isAnotherDay =
+      getUnixTime(`${fromDate}T${initHour}`) >
+      getUnixTime(`${fromDate}T${endHour}`);
 
-    const utcInitDate = fromZonedTime(
-      `${fromDate}T${twoDigitInitHour}:00:00`,
-      'America/Sao_Paulo',
-    );
-    const utcEndDate = fromZonedTime(
-      `${toDate}T${twoDigitEndHour}:00:00`,
-      'America/Sao_Paulo',
-    );
+    const prettyDate = utcInitDate.toLocaleDateString('pt-BR', {
+      dateStyle: 'short',
+    });
+    if (isSameDay(fromDate, toDate) && isAnotherDay) {
+      throw new BadRequestException(
+        `A data final termina no dia seguinte à ${prettyDate}`,
+      );
+    }
 
-    dateObject.initDate = utcInitDate;
-    dateObject.endDate = utcEndDate;
-
-    // const initHourChanged = [21, 22, 23].includes(dateObject.initHour);
-    // const endHourChanged = [21, 22, 23].includes(dateObject.endHour);
-
-    // if (!initHourChanged || !endHourChanged) {
-    //   if (dateObject.endHour < dateObject.initHour) {
-    //     dateObject.endDate = generateRelativeDate(
-    //       'tomorrow',
-    //       dateObject.endHour,
-    //       utcEndDate,
-    //     );
-    //   }
-    // }
-
-    // se initHour || endHour in [21, 22, 23]
-    // Eu sei que initDate || endDate em UTC
-    // ficará com a data do dia posterior
-
-    // se initHour in [21, 22, 23]
-    // se endHour not in [21, 22 ,23]
-    // generateRelativeDate(initDate, endHour)
-
-    // Se surgir a necessidade:
-    // "Eu quero a mesma data só que com o horário diferente"
-    // Como resolver?
-
-    return { initDate: dateObject.initDate, endDate: dateObject.endDate };
+    return {
+      initDate: utcInitDate,
+      endDate: utcEndDate,
+    };
   }
 }
