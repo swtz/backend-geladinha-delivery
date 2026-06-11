@@ -6,6 +6,7 @@ import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { DeliveryManService } from './delivery-man.service';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
 import { DataSource } from 'typeorm';
+import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 
 @Injectable()
 export class DeliveryManMotorcycleService {
