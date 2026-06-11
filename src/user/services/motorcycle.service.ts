@@ -11,6 +11,7 @@ import { MotorcycleType } from '../types/motorcycle.type';
 import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { essencial, full } from '../data/relations/delivery-man';
+import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 
 @Injectable()
 export class MotorcycleService {
@@ -59,6 +60,19 @@ export class MotorcycleService {
     const created = await this.save(motorcycle, manager);
 
     return this.findOneByOrFail({ id: created.id }, true, manager);
+  }
+
+  async update(id: string, dto: UpdateMotorcycleDto, manager?: EntityManager) {
+    const motorcycle = await this.findOneByOrFail({ id }, true, manager);
+    motorcycle.brand = dto.brand ?? motorcycle.brand;
+    motorcycle.color = dto.color ?? motorcycle.color;
+    motorcycle.model = dto.model ?? motorcycle.model;
+    motorcycle.year = dto.year ?? motorcycle.year;
+    motorcycle.displacement = dto.displacement ?? motorcycle.displacement;
+    motorcycle.isActive = dto.isActive ?? motorcycle.isActive;
+
+    const updated = await this.save(motorcycle, manager);
+    return this.findOneByOrFail({ id: updated.id }, true, manager);
   }
 
   async findOneByOrFail(
