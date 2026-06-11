@@ -1,4 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { DeliveryManMotorcycleService } from '../services/delivery-man-motorcycle.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
@@ -6,6 +14,7 @@ import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
 import { UserFieldsValidationService } from '../services/user-fields-validation.service';
+import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -25,6 +34,30 @@ export class DeliveryManMotorcycleController {
     const deliveryMan = await this.deliveryManMotorcycleService.create(
       userDto,
       deliveryManDto,
+      motorcycleDto,
+    );
+    return deliveryMan;
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+  ) {
+    const deliveryMan = await this.deliveryManMotorcycleService.update(
+      id,
+      motorcycleDto,
+    );
+    return deliveryMan;
+  }
+
+  @Patch('restrict/:id')
+  async updateRestrictMotorcycle(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+  ) {
+    const deliveryMan = await this.deliveryManMotorcycleService.update(
+      id,
       motorcycleDto,
     );
     return deliveryMan;

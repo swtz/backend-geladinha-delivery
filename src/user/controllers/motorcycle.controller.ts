@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { MotorcycleService } from '../services/motorcycle.service';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 
@@ -9,5 +16,11 @@ export class MotorcycleController {
   @Post()
   create(@Body() dto: CreateMotorcycleDto) {
     return this.motorcycleService.create(dto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const motorcycle = await this.motorcycleService.remove(id);
+    return motorcycle;
   }
 }

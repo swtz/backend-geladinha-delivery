@@ -5,7 +5,7 @@ import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { DeliveryManService } from './delivery-man.service';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 
 @Injectable()
@@ -60,74 +60,69 @@ export class DeliveryManMotorcycleService {
     });
   }
 
-  async update(
-    id: string,
-    motorcycleDto: UpdateMotorcycleDto,
-    daily?: number,
-    manager?: EntityManager,
-  ) {
-    const motoboy = await this.deliveryManService.findOneByOrFail(
-      { user: { id } },
-      false,
-      manager,
-    );
-    motoboy.daily = daily ?? motoboy.daily;
-
-    const motorcycle = await this.motorcycleService.update(
-      motoboy.id,
-      motorcycleDto,
-    );
-    const updated = await this.deliveryManService.save(
-      { ...motoboy, motorcycle },
-      manager,
-    );
-
-    return this.deliveryManService.findOneByOrFail(
-      { user: { id: updated.id } },
-      true,
-      manager,
-    );
-  }
-
-  async updateRestrictMotorcycle(
-    id: string,
-    dto: UpdateMotorcycleDto,
-    manager?: EntityManager,
-  ) {
-    const motorcycle = await this.motorcycleService.findOneByOrFail(
-      { id },
-      true,
-      manager,
-    );
-    motorcycle.brand = dto.brand ?? motorcycle.brand;
-    motorcycle.color = dto.color ?? motorcycle.color;
-    motorcycle.model = dto.model ?? motorcycle.model;
-    motorcycle.year = dto.year ?? motorcycle.year;
-    motorcycle.displacement = dto.displacement ?? motorcycle.displacement;
-    motorcycle.isActive = dto.isActive ?? motorcycle.isActive;
-    motorcycle.driver = await this.deliveryManService.findOneByOrFail(
-      { user: { id: dto.driver } },
-      true,
-      manager,
-    );
-    motorcycle.owner = await this.userService.findOneByOrFail(
-      { id: dto.owner },
-      undefined,
-      manager,
-    );
-    if (dto.licensePlate) {
-      await this.motorcycleService.failIfLicensePlateExists(
-        dto.licensePlate,
+  async update(id: string, motorcycleDto: UpdateMotorcycleDto, daily?: number) {
+    return this.dataSource.transaction(async manager => {
+      const motoboy = await this.deliveryManService.findOneByOrFail(
+        { user: { id } },
+        false,
         manager,
       );
-      motorcycle.licensePlate = dto.licensePlate;
-    }
+      motoboy.daily = daily ?? motoboy.daily;
 
-    const updated = await this.motorcycleService.save(motorcycle, manager);
-    return this.motorcycleService.findOneByOrFail(
-      { id: updated.id },
-      true,
-      manager,
-    );
+      const motorcycle = await this.motorcycleService.update(
+        motoboy.id,
+        motorcycleDto,
+      );
+      const updated = await this.deliveryManService.save(
+        { ...motoboy, motorcycle },
+        manager,
+      );
+
+      return this.deliveryManService.findOneByOrFail(
+        { user: { id: updated.id } },
+        true,
+        manager,
+      );
+    });
+  }
+
+  async updateRestrictMotorcycle(id: string, dto: UpdateMotorcycleDto) {
+    return this.dataSource.transaction(async manager => {
+      const motorcycle = await this.motorcycleService.findOneByOrFail(
+        { id },
+        true,
+        manager,
+      );
+      motorcycle.brand = dto.brand ?? motorcycle.brand;
+      motorcycle.color = dto.color ?? motorcycle.color;
+      motorcycle.model = dto.model ?? motorcycle.model;
+      motorcycle.year = dto.year ?? motorcycle.year;
+      motorcycle.displacement = dto.displacement ?? motorcycle.displacement;
+      motorcycle.isActive = dto.isActive ?? motorcycle.isActive;
+      motorcycle.driver = await this.deliveryManService.findOneByOrFail(
+        { user: { id: dto.driver } },
+        true,
+        manager,
+      );
+      motorcycle.owner = await this.userService.findOneByOrFail(
+        { id: dto.owner },
+        undefined,
+        manager,
+      );
+      if (dto.licensePlate) {
+        await this.motorcycleService.failIfLicensePlateExists(
+          dto.licensePlate,
+          manager,
+        );
+        motorcycle.licensePlate = dto.licensePlate;
+      }
+
+      const updated = await this.motorcycleService.save(motorcycle, manager);
+      return this.motorcycleService.findOneByOrFail(
+        { id: updated.id },
+        true,
+        manager,
+      );
+    });
   }
 }
