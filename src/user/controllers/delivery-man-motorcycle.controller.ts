@@ -3,9 +3,11 @@ import {
   Controller,
   Get,
   Param,
+  ParseFloatPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { DeliveryManMotorcycleService } from '../services/delivery-man-motorcycle.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -18,6 +20,7 @@ import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 import { DeliveryManService } from '../services/delivery-man.service';
 import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-man.dto';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -52,14 +55,29 @@ export class DeliveryManMotorcycleController {
     return new ResponseDeliveryManDto(deliveryMan);
   }
 
+  @Roles(Role.Motoboy)
+  @Patch('me')
+  async updateMe(
+    @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const deliveryMan = await this.deliveryManMotorcycleService.update(
+      req.user.id,
+      motorcycleDto,
+    );
+    return new ResponseDeliveryManDto(deliveryMan);
+  }
+
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+    @Body('daily', new ParseFloatPipe({ optional: true })) daily: number,
   ) {
     const deliveryMan = await this.deliveryManMotorcycleService.update(
       id,
       motorcycleDto,
+      daily,
     );
     return new ResponseDeliveryManDto(deliveryMan);
   }

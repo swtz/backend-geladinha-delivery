@@ -70,16 +70,12 @@ export class DeliveryManMotorcycleService {
       motoboy.daily = daily ?? motoboy.daily;
 
       const motorcycle = await this.motorcycleService.update(
-        motoboy.id,
+        motoboy.motorcycle.id,
         motorcycleDto,
       );
-      const updated = await this.deliveryManService.save(
-        { ...motoboy, motorcycle },
-        manager,
-      );
-
+      await this.deliveryManService.save({ ...motoboy, motorcycle }, manager);
       return this.deliveryManService.findOneByOrFail(
-        { user: { id: updated.id } },
+        { user: { id } },
         true,
         manager,
       );
