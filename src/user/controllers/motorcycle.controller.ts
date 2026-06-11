@@ -19,8 +19,9 @@ export class MotorcycleController {
   constructor(private readonly motorcycleService: MotorcycleService) {}
 
   @Post()
-  create(@Body() dto: CreateMotorcycleDto) {
-    return this.motorcycleService.create(dto);
+  async create(@Body() dto: CreateMotorcycleDto) {
+    const motorcycle = await this.motorcycleService.create(dto);
+    return new ResponseMotorcycleDto(motorcycle);
   }
 
   @Get()
@@ -69,6 +70,6 @@ export class MotorcycleController {
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const motorcycle = await this.motorcycleService.remove(id);
-    return motorcycle;
+    return new ResponseMotorcycleDto(motorcycle);
   }
 }

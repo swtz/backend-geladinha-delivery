@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { DeliveryManMotorcycleService } from '../services/delivery-man-motorcycle.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -18,6 +19,7 @@ import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 import { DeliveryManService } from '../services/delivery-man.service';
 import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-man.dto';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -48,6 +50,20 @@ export class DeliveryManMotorcycleController {
     const deliveryMan = await this.deliveryManService.findOneByOrFail(
       { user: { id } },
       true,
+    );
+    return new ResponseDeliveryManDto(deliveryMan);
+  }
+
+  @Roles(Role.Motoboy)
+  @Patch('me/:id')
+  async updateMe(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const deliveryMan = await this.deliveryManMotorcycleService.update(
+      req.user.id,
+      motorcycleDto,
     );
     return new ResponseDeliveryManDto(deliveryMan);
   }
