@@ -62,6 +62,15 @@ export class DeliveryManService {
     });
   }
 
+  async findAllMotoboy() {
+    const motoboys = await this.deliveryManRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: essencial,
+    });
+
+    return motoboys;
+  }
+
   async save(deliveryMan: Partial<DeliveryMan>, manager?: EntityManager) {
     const repo = manager
       ? manager.getRepository(DeliveryMan)
