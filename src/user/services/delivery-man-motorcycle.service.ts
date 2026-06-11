@@ -58,4 +58,13 @@ export class DeliveryManMotorcycleService {
       );
     });
   }
+
+  async update(id: string, motorcycleDto: UpdateMotorcycleDto, daily?: number) {
+    const motoboy = await this.deliveryManService.findOneByOrFail({
+      user: { id },
+    });
+    const motorcycle = await this.motorcycleService.update(motorcycleDto);
+    motoboy.daily = daily ?? motoboy.daily;
+    return motoboy;
+  }
 }
