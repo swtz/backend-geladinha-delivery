@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
@@ -52,8 +52,8 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto) {
-    const role = await this.roleService.findOneOrCreate(dto.role);
+  async create(dto: CreateUserDto, manager?: EntityManager) {
+    const role = await this.roleService.findOneOrCreate(dto.role, manager);
     const hashedPassword = await this.hashingService.hash(dto.password);
 
     const user = {
@@ -68,8 +68,8 @@ export class UserService {
       roles: [role],
     };
 
-    const created = await this.save(user);
-    return this.findOneByOrFail({ id: created.id });
+    const created = await this.save(user, manager);
+    return this.findOneByOrFail({ id: created.id }, undefined, manager);
   }
 
   async getAllRoleNames(userData: Partial<User>) {
@@ -128,8 +128,9 @@ export class UserService {
   async findOneByOrFail(
     userData: Partial<User>,
     relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+    manager?: EntityManager,
   ) {
-    const user = await this.findOneBy(userData, relations);
+    const user = await this.findOneBy(userData, relations, manager);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -141,7 +142,9 @@ export class UserService {
   async findOneBy(
     userData: Partial<User>,
     relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
+    manager?: EntityManager,
   ) {
+    const repo = manager ? manager.getRepository(User) : this.userRepository;
     const aux: {
       userFields: Record<string, any>;
       deliveryManFields: Record<string, any>;
@@ -162,7 +165,7 @@ export class UserService {
       aux.userFields = essencial;
     }
 
-    return this.userRepository.findOne({
+    return repo.findOne({
       where: userData,
       relations: { ...aux.userFields, deliveryMan: aux.deliveryManFields },
     });
@@ -188,8 +191,9 @@ export class UserService {
     return user;
   }
 
-  async save(user: Partial<User>) {
-    return this.userRepository.save(user);
+  async save(user: Partial<User>, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(User) : this.userRepository;
+    return repo.save(user);
   }
 
   async getUserAndEntityAuth(user: User, id: string) {

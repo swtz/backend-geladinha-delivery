@@ -580,19 +580,19 @@ Content-Type: application/json
 
 {
   "user": {
-    "name": "Olavo",
-    "lastName": "Rodrigues",
-    "nickname": "queria",
-    "phone": "(48) 99988-7766",
+    "name": "Keria",
+    "lastName": "Fastor",
+    "nickname": "cheiro",
+    "phone": "(48) 99988-7160",
     "role": "motoboy",
     "password": "123456"
   },
   "motorcycle": {
-    "licensePlate": "oem2j98",
+    "licensePlate": "oem2j78",
     "brand": "Honda",
     "model": "Titan",
-    "year": "2014",
-    "color": "Preto",
+    "year": "2022",
+    "color": "Vermelho",
     "owner": "0694f8ac-bac1-454e-9059-77737e064f47"
   },
   "deliveryMan": {

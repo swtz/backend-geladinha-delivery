@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
@@ -18,14 +18,19 @@ export class DeliveryManService {
     private readonly deliveryManRepository: Repository<DeliveryMan>,
   ) {}
 
-  async create(dto: CreateDeliveryManDto, user: User, motorcycle: Motorcycle) {
+  async create(
+    dto: CreateDeliveryManDto,
+    user: User,
+    motorcycle: Motorcycle,
+    manager?: EntityManager,
+  ) {
     const deliveryMan: DeliveryManType = {
       daily: dto.daily,
       motorcycle,
       user,
     };
 
-    return this.save(deliveryMan);
+    return this.save(deliveryMan, manager);
   }
 
   // async updateMotoboyFields(
@@ -50,8 +55,9 @@ export class DeliveryManService {
   async findOneByOrFail(
     userData: FindDeliveryManByUserDataType,
     relations = false,
+    manager?: EntityManager,
   ) {
-    const motoboy = await this.findOneBy(userData, relations);
+    const motoboy = await this.findOneBy(userData, relations, manager);
 
     if (!motoboy) {
       throw new NotFoundException('Usuário não encontrado');
@@ -60,9 +66,16 @@ export class DeliveryManService {
     return motoboy;
   }
 
-  async findOneBy(userData: FindDeliveryManByUserDataType, relations = false) {
+  async findOneBy(
+    userData: FindDeliveryManByUserDataType,
+    relations = false,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(DeliveryMan)
+      : this.deliveryManRepository;
     const fields = relations ? full : essencial;
-    return this.deliveryManRepository.findOne({
+    return repo.findOne({
       where: userData,
       relations: fields,
     });
@@ -77,7 +90,10 @@ export class DeliveryManService {
     return motoboys;
   }
 
-  async save(deliveryMan: Partial<DeliveryMan>) {
-    return this.deliveryManRepository.save(deliveryMan);
+  async save(deliveryMan: Partial<DeliveryMan>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(DeliveryMan)
+      : this.deliveryManRepository;
+    return repo.save(deliveryMan);
   }
 }

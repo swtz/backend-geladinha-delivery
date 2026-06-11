@@ -5,6 +5,7 @@ import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { DeliveryManService } from './delivery-man.service';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class DeliveryManMotorcycleService {
@@ -12,6 +13,7 @@ export class DeliveryManMotorcycleService {
     private readonly userService: UserService,
     private readonly deliveryManService: DeliveryManService,
     private readonly motorcycleService: MotorcycleService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -19,26 +21,41 @@ export class DeliveryManMotorcycleService {
     deliveryManDto: CreateDeliveryManDto,
     motorcycleDto: CreateMotorcycleDto,
   ) {
-    const user = await this.userService.create(userDto); // TRANSACTIONS
-    const owner = motorcycleDto.owner
-      ? await this.userService.findOneByOrFail({
-          id: motorcycleDto.owner,
-        })
-      : undefined;
+    return this.dataSource.transaction(async manager => {
+      const user = await this.userService.create(userDto, manager); // TRANSACTIONS
 
-    const motorcycle = await this.motorcycleService.create(
-      motorcycleDto,
-      owner,
-    );
+      const owner = motorcycleDto.owner
+        ? await this.userService.findOneByOrFail(
+            { id: motorcycleDto.owner },
+            undefined,
+            manager,
+          )
+        : undefined;
 
-    const motoboy = await this.deliveryManService.create(
-      deliveryManDto,
-      user,
-      motorcycle,
-    );
+      const motorcycle = await this.motorcycleService.create(
+        motorcycleDto,
+        owner,
+        undefined,
+        manager,
+      );
 
-    await this.motorcycleService.save({ ...motorcycle, driver: motoboy });
+      const motoboy = await this.deliveryManService.create(
+        deliveryManDto,
+        user,
+        motorcycle,
+        manager,
+      );
 
-    return this.userService.findOneByOrFail({ id: user.id }, 'motoboy-full');
+      await this.motorcycleService.save(
+        { ...motorcycle, driver: motoboy },
+        manager,
+      );
+
+      return this.userService.findOneByOrFail(
+        { id: user.id },
+        'motoboy-full',
+        manager,
+      );
+    });
   }
 }

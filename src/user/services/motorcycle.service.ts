@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -19,8 +19,14 @@ export class MotorcycleService {
     private readonly motorcycleRepository: Repository<Motorcycle>,
   ) {}
 
-  async failIfLicensePlateExists(licensePlate: string) {
-    const exists = await this.motorcycleRepository.existsBy({
+  async failIfLicensePlateExists(
+    licensePlate: string,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(Motorcycle)
+      : this.motorcycleRepository;
+    const exists = await repo.existsBy({
       licensePlate,
     });
 
@@ -29,10 +35,15 @@ export class MotorcycleService {
     }
   }
 
-  async create(dto: CreateMotorcycleDto, owner?: User, driver?: DeliveryMan) {
+  async create(
+    dto: CreateMotorcycleDto,
+    owner?: User,
+    driver?: DeliveryMan,
+    manager?: EntityManager,
+  ) {
     const licensePlate = dto.licensePlate.toUpperCase();
 
-    await this.failIfLicensePlateExists(licensePlate);
+    await this.failIfLicensePlateExists(licensePlate, manager);
 
     const motorcycle: MotorcycleType = {
       licensePlate,
@@ -45,13 +56,17 @@ export class MotorcycleService {
       owner,
       driver,
     };
-    const created = await this.save(motorcycle);
+    const created = await this.save(motorcycle, manager);
 
-    return this.findOneByOrFail({ id: created.id });
+    return this.findOneByOrFail({ id: created.id }, true, manager);
   }
 
-  async findOneByOrFail(motorcycleData: Partial<Motorcycle>, relations = true) {
-    const motorcycle = await this.findOneBy(motorcycleData, relations);
+  async findOneByOrFail(
+    motorcycleData: Partial<Motorcycle>,
+    relations = true,
+    manager?: EntityManager,
+  ) {
+    const motorcycle = await this.findOneBy(motorcycleData, relations, manager);
 
     if (!motorcycle) {
       throw new NotFoundException('Essa moto não existe');
@@ -60,16 +75,25 @@ export class MotorcycleService {
     return motorcycle;
   }
 
-  findOneBy(motorcycleData: Partial<Motorcycle>, relations = true) {
+  findOneBy(
+    motorcycleData: Partial<Motorcycle>,
+    relations = true,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(Motorcycle)
+      : this.motorcycleRepository;
     const fields = relations ? full : essencial;
-
-    return this.motorcycleRepository.findOne({
+    return repo.findOne({
       where: motorcycleData,
       relations: { owner: true, driver: fields },
     });
   }
 
-  async save(motorcycle: Partial<Motorcycle>) {
-    return this.motorcycleRepository.save(motorcycle);
+  async save(motorcycle: Partial<Motorcycle>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Motorcycle)
+      : this.motorcycleRepository;
+    return repo.save(motorcycle);
   }
 }
