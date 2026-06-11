@@ -12,8 +12,8 @@ export class ResponseMotorcycleDto {
   readonly displacement?: string;
   readonly color: string;
   readonly isActive: boolean;
-  readonly owner: UserResponseDtoType;
-  readonly driver: UserResponseDtoType;
+  readonly owner?: UserResponseDtoType;
+  readonly driver?: UserResponseDtoType;
 
   constructor(motorcycle: Motorcycle) {
     this.id = motorcycle.id;
@@ -26,7 +26,19 @@ export class ResponseMotorcycleDto {
     this.displacement = motorcycle.displacement;
     this.color = motorcycle.color;
     this.isActive = motorcycle.isActive;
-    this.owner = motorcycle.owner;
-    this.driver = motorcycle.driver.user;
+    this.owner = motorcycle.owner
+      ? {
+          id: motorcycle.owner.id,
+          name: motorcycle.owner.name,
+          phone: motorcycle.owner.phone,
+        }
+      : undefined;
+    this.driver = motorcycle.driver.user
+      ? {
+          id: motorcycle.driver.user.id,
+          name: motorcycle.driver.user.name,
+          phone: motorcycle.driver.user.phone,
+        }
+      : undefined;
   }
 }

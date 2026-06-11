@@ -17,6 +17,7 @@ import { UserFieldsValidationService } from '../services/user-fields-validation.
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 import { DeliveryManService } from '../services/delivery-man.service';
 import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-man.dto';
+import { ResponseUserDto } from '../dtos/user/response-user.dto';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -39,7 +40,7 @@ export class DeliveryManMotorcycleController {
       deliveryManDto,
       motorcycleDto,
     );
-    return deliveryMan;
+    return new ResponseUserDto(deliveryMan);
   }
 
   @Get(':id')
@@ -60,7 +61,7 @@ export class DeliveryManMotorcycleController {
       id,
       motorcycleDto,
     );
-    return deliveryMan;
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @Patch('restrict/:id')
@@ -72,6 +73,6 @@ export class DeliveryManMotorcycleController {
       id,
       motorcycleDto,
     );
-    return deliveryMan;
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 }
