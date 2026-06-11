@@ -616,3 +616,13 @@ Content-Type: application/json
   "placeId": "fe8e7249-5bae-4cd6-ae32-23879e6fa1f8",
   "userId": null
 }
+
+### find one motorcycle
+# @name findOneMotorcycle
+GET {{baseUrl}}/motorcycle/a18b1f9d-d664-4932-a4e9-87d73d4b8c73
+Authorization: Bearer {{JwtToken}}
+
+### find all motorcycles
+# @name findAllMotorcycles
+GET {{baseUrl}}/motorcycle?nickname=leo-surfista22
+Authorization: Bearer {{JwtToken}}

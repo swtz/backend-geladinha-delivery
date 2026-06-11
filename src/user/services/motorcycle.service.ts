@@ -75,6 +75,29 @@ export class MotorcycleService {
     return this.findOneByOrFail({ id: updated.id }, true, manager);
   }
 
+  async findAll({
+    brand,
+    color,
+    displacement,
+    isActive,
+    model,
+    year,
+    owner,
+  }: Omit<Partial<Motorcycle>, 'owner'> & { owner: Partial<User> }) {
+    return this.motorcycleRepository.find({
+      where: {
+        brand,
+        color,
+        displacement,
+        isActive,
+        model,
+        year,
+        owner,
+      },
+      relations: { owner: true, driver: { motorcycle: true, user: true } },
+    });
+  }
+
   async findOneByOrFail(
     motorcycleData: Partial<Motorcycle>,
     relations = true,

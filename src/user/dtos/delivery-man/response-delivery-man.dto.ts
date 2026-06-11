@@ -12,7 +12,7 @@ export class ResponseDeliveryManDto {
   readonly user: UserResponseDtoType;
   readonly motorcycle: Pick<
     ResponseMotorcycleDto,
-    'licensePlate' | 'brand' | 'color' | 'displacement'
+    'id' | 'licensePlate' | 'brand' | 'color' | 'displacement'
   >;
 
   constructor(deliveryMan: DeliveryMan) {
@@ -26,6 +26,7 @@ export class ResponseDeliveryManDto {
       phone: deliveryMan.user.phone,
     };
     this.motorcycle = {
+      id: deliveryMan.motorcycle.id,
       brand: deliveryMan.motorcycle.brand,
       color: deliveryMan.motorcycle.color,
       displacement: deliveryMan.motorcycle.displacement,
