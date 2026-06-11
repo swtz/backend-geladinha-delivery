@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Delete,
+  Get,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -15,6 +15,8 @@ import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
 import { UserFieldsValidationService } from '../services/user-fields-validation.service';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
+import { DeliveryManService } from '../services/delivery-man.service';
+import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-man.dto';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -22,6 +24,7 @@ export class DeliveryManMotorcycleController {
   constructor(
     private readonly deliveryManMotorcycleService: DeliveryManMotorcycleService,
     private readonly userFieldsValidationService: UserFieldsValidationService,
+    private readonly deliveryManService: DeliveryManService,
   ) {}
 
   @Post()
@@ -37,6 +40,15 @@ export class DeliveryManMotorcycleController {
       motorcycleDto,
     );
     return deliveryMan;
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const deliveryMan = await this.deliveryManService.findOneByOrFail(
+      { user: { id } },
+      true,
+    );
+    return new ResponseDeliveryManDto(deliveryMan);
   }
 
   @Patch(':id')

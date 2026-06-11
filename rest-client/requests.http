@@ -237,7 +237,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Read all users
 # @name readAllUsers
-GET {{baseUrl}}/user?role=admin
+GET {{baseUrl}}/user?role=motoboy
 Authorization: Bearer {{JwtToken}}
 
 ### Read all motoboys
@@ -599,6 +599,11 @@ Content-Type: application/json
     "daily": 30
   }
 }
+
+### find one motoboy
+# @name findOneMotoboy
+GET {{baseUrl}}/motoboy/6ae3e5ff-12db-422f-bd91-d893ac4c4039
+Authorization: Bearer {{JwtToken}}
 
 ### addWorkTime_new
 # @name addWorkTimeNew
