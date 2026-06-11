@@ -104,6 +104,12 @@ export class MotorcycleService {
     });
   }
 
+  async remove(id: string) {
+    const motorcycle = await this.findOneByOrFail({ id });
+    await this.motorcycleRepository.delete({ id });
+    return motorcycle;
+  }
+
   async save(motorcycle: Partial<Motorcycle>, manager?: EntityManager) {
     const repo = manager
       ? manager.getRepository(Motorcycle)
