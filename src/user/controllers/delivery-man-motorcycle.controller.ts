@@ -55,6 +55,12 @@ export class DeliveryManMotorcycleController {
     return new ResponseDeliveryManDto(deliveryMan);
   }
 
+  @Get()
+  async findAll() {
+    const deliveryMen = await this.deliveryManService.findAllMotoboy();
+    return deliveryMen;
+  }
+
   @Roles(Role.Motoboy)
   @Patch('me')
   async updateMe(

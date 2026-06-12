@@ -605,6 +605,11 @@ Content-Type: application/json
 GET {{baseUrl}}/motoboy/6ae3e5ff-12db-422f-bd91-d893ac4c4039
 Authorization: Bearer {{JwtToken}}
 
+### find all motoboys
+# @name findAllMotoboys
+GET {{baseUrl}}/motoboy
+Authorization: Bearer {{JwtToken}}
+
 ### addWorkTime_new
 # @name addWorkTimeNew
 POST {{baseUrl}}/place/add

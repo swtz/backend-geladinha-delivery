@@ -65,7 +65,7 @@ export class DeliveryManService {
   async findAllMotoboy() {
     const motoboys = await this.deliveryManRepository.find({
       order: { createdAt: 'DESC' },
-      relations: essencial,
+      relations: full,
     });
 
     return motoboys;
