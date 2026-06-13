@@ -36,17 +36,23 @@ export class CustomerService implements Service {
     return copy;
   }
 
-  async failIfPhoneExists(phone: string, isSecondPhone = false) {
-    const exists = await this.findByPhone(phone, isSecondPhone);
+  async failIfPhoneExists(
+    phone: string,
+    isSecondPhone = false,
+    manager?: EntityManager,
+  ) {
+    const exists = await this.findByPhone(phone, isSecondPhone, manager);
 
     if (exists) {
       throw new ConflictException('Telefone já existe');
     }
   }
 
-  async failIfNicknameExists(nickname: string) {
-    const exists = await this.customerRepository.existsBy({ nickname });
-
+  async failIfNicknameExists(nickname: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Customer)
+      : this.customerRepository;
+    const exists = await repo.existsBy({ nickname });
     if (exists) {
       throw new ConflictException(
         `O número ${nickname} já pertence a um cliente`,
@@ -54,9 +60,11 @@ export class CustomerService implements Service {
     }
   }
 
-  async failIfEmailExists(email: string) {
-    const exists = await this.customerRepository.existsBy({ email });
-
+  async failIfEmailExists(email: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Customer)
+      : this.customerRepository;
+    const exists = await repo.existsBy({ email });
     if (exists) {
       throw new ConflictException(
         `O endereço ${email} já pertence a um cliente`,
@@ -64,12 +72,12 @@ export class CustomerService implements Service {
     }
   }
 
-  async create(dto: CreateCustomerDto) {
-    await this.failIfNicknameExists(dto.nickname);
-    await this.failIfPhoneExists(dto.phone);
+  async create(dto: CreateCustomerDto, manager?: EntityManager) {
+    await this.failIfNicknameExists(dto.nickname, manager);
+    await this.failIfPhoneExists(dto.phone, false, manager);
 
     if (dto.secondPhone) {
-      await this.failIfPhoneExists(dto.secondPhone, true);
+      await this.failIfPhoneExists(dto.secondPhone, true, manager);
     }
 
     const customer = {
@@ -80,7 +88,7 @@ export class CustomerService implements Service {
       secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : undefined,
     };
 
-    return this.save(customer);
+    return this.save(customer, manager);
   }
 
   async update(dto: UpdateCustomerDto, id: string) {
@@ -132,7 +140,10 @@ export class CustomerService implements Service {
     });
   }
 
-  findByPhone(phone: string, isSecondPhone = false) {
+  findByPhone(phone: string, isSecondPhone = false, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Customer)
+      : this.customerRepository;
     const qo: { phone: undefined | string; secondPhone: undefined | string } = {
       phone,
       secondPhone: undefined,
@@ -143,7 +154,7 @@ export class CustomerService implements Service {
       qo.secondPhone = phone;
     }
 
-    return this.customerRepository.findOneBy(qo);
+    return repo.findOneBy(qo);
   }
 
   async remove(id: string) {
@@ -152,7 +163,10 @@ export class CustomerService implements Service {
     return customer;
   }
 
-  async save(customer: Partial<Customer>) {
-    return this.customerRepository.save(customer);
+  async save(customer: Partial<Customer>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Customer)
+      : this.customerRepository;
+    return repo.save(customer);
   }
 }

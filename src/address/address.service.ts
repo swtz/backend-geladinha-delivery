@@ -20,10 +20,14 @@ export class AddressService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  create(dto: CreateAddressDto | UpdateAddressDto, isDefault = true) {
+  create(
+    dto: CreateAddressDto | UpdateAddressDto,
+    isDefault = true,
+    manager?: EntityManager,
+  ) {
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
     const newAddress = this.generateAddress(dto, isDefault);
-    return this.save(newAddress);
+    return this.save(newAddress, manager);
   }
 
   async update(dto: UpdateAddressDto, id: string) {
@@ -75,16 +79,21 @@ export class AddressService {
     return address;
   }
 
-  async findOneByOrFail(addressData: Partial<Address>, relations = false) {
-    const address = await this.addressRepository.findOne({
+  async findOneByOrFail(
+    addressData: Partial<Address>,
+    relations = false,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(Address)
+      : this.addressRepository;
+    const address = await repo.findOne({
       where: addressData,
       relations: { customer: { addresses: relations } },
     });
-
     if (!address) {
       throw new NotFoundException('Endereço não encontrado');
     }
-
     return address;
   }
 
@@ -122,8 +131,11 @@ export class AddressService {
     return addresses;
   }
 
-  async remove(id: string) {
-    const address = await this.findOneByOrFail({ id }, true);
+  async remove(id: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Address)
+      : this.addressRepository;
+    const address = await this.findOneByOrFail({ id }, false, manager);
     if (address.customer.addresses.length === 1) {
       throw new UnprocessableEntityException(
         'Cliente precisa ter ao menos 1 endereço',
@@ -134,11 +146,14 @@ export class AddressService {
         'Não é possível excluir o endereço que está como padrão',
       );
     }
-    await this.addressRepository.delete({ id });
+    await repo.delete({ id });
     return address;
   }
 
-  async save(address: Partial<Address>) {
-    return this.addressRepository.save(address);
+  async save(address: Partial<Address>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Address)
+      : this.addressRepository;
+    return repo.save(address);
   }
 }
