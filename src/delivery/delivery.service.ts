@@ -81,82 +81,109 @@ export class DeliveryService {
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
-    const delivery = await this.findOneOwnedByOrFail(operator, { id });
-
-    if (dto.motoboy && dto.motoboy !== delivery.motoboy.id) {
-      const newMotoboy = await this.deliveryManService.findOneByOrFail({
-        user: { id: dto.motoboy },
-      });
-
-      if (delivery.tip !== null) {
-        await this.tipService.update({
-          id: delivery.tip.id,
-          motoboy: newMotoboy,
-        });
-      }
-
-      delivery.motoboy = newMotoboy;
-    }
-
-    if (
-      dto.address &&
-      dto.customer === delivery.customer.id &&
-      dto.address !== delivery.address.id
-    ) {
-      const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
-        { id: dto.address },
-        { id: delivery.customer.id },
-      );
-      delivery.address = newOwnedAddress;
-    }
-
-    if (dto.customer && dto.customer !== delivery.customer.id) {
-      const newCustomer = await this.customerService.findOneByOrFail({
-        id: dto.customer,
-      });
-      const newDefaultAddress = await this.addressService.findOneOwnedOrFail(
-        { isDefault: true },
-        { id: dto.customer },
+    return this.dataSource.transaction(async manager => {
+      const delivery = await this.findOneOwnedByOrFail(
+        operator,
+        { id },
+        manager,
       );
 
-      delivery.customer = newCustomer;
-      delivery.address = newDefaultAddress;
-    }
+      if (dto.motoboy && dto.motoboy !== delivery.motoboy.id) {
+        const newMotoboy = await this.deliveryManService.findOneByOrFail(
+          { user: { id: dto.motoboy } },
+          false,
+          manager,
+        );
 
-    if (
-      dto.paymentMethod &&
-      dto.paymentMethod !== delivery.paymentMethod.name
-    ) {
-      const newPaymentMethod = await this.paymentMethodService.findOneOrCreate(
-        dto.paymentMethod,
-      );
+        if (delivery.tip !== null) {
+          await this.tipService.update(
+            {
+              id: delivery.tip.id,
+              motoboy: newMotoboy,
+            },
+            manager,
+          );
+        }
 
-      delivery.paymentMethod = newPaymentMethod;
-    }
-
-    if (dto.tip || dto.tip === 0) {
-      if (delivery.tip === null) {
-        delivery.tip = await this.tipService.create(dto.tip, delivery.motoboy);
+        delivery.motoboy = newMotoboy;
       }
 
-      if (dto.tip !== delivery.tip.amount) {
-        delivery.tip = await this.tipService.update({
-          id: delivery.tip.id,
-          amount: dto.tip,
-        });
+      if (
+        dto.address &&
+        dto.customer === delivery.customer.id &&
+        dto.address !== delivery.address.id
+      ) {
+        const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
+          { id: dto.address },
+          { id: delivery.customer.id },
+          manager,
+        );
+        delivery.address = newOwnedAddress;
       }
-    }
 
-    delivery.isPaid = dto.isPaid ?? delivery.isPaid;
-    delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
-    delivery.description = dto.description ?? delivery.description;
-    delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
+      if (dto.customer && dto.customer !== delivery.customer.id) {
+        const newCustomer = await this.customerService.findOneByOrFail(
+          { id: dto.customer },
+          manager,
+        );
+        const newDefaultAddress = await this.addressService.findOneOwnedOrFail(
+          { isDefault: true },
+          { id: dto.customer },
+          manager,
+        );
 
-    return this.save(delivery);
+        delivery.customer = newCustomer;
+        delivery.address = newDefaultAddress;
+      }
+
+      if (
+        dto.paymentMethod &&
+        dto.paymentMethod !== delivery.paymentMethod.name
+      ) {
+        const newPaymentMethod =
+          await this.paymentMethodService.findOneOrCreate(
+            dto.paymentMethod,
+            manager,
+          );
+
+        delivery.paymentMethod = newPaymentMethod;
+      }
+
+      if (dto.tip || dto.tip === 0) {
+        if (delivery.tip === null) {
+          delivery.tip = await this.tipService.create(
+            dto.tip,
+            delivery.motoboy,
+            manager,
+          );
+        }
+
+        if (dto.tip !== delivery.tip.amount) {
+          delivery.tip = await this.tipService.update(
+            {
+              id: delivery.tip.id,
+              amount: dto.tip,
+            },
+            manager,
+          );
+        }
+      }
+
+      delivery.isPaid = dto.isPaid ?? delivery.isPaid;
+      delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
+      delivery.description = dto.description ?? delivery.description;
+      delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
+
+      return this.save(delivery, manager);
+    });
   }
 
-  async findOneOwnedByOrFail(user: User, deliveryData: Partial<Delivery>) {
-    const delivery = await this.findOneOwnedBy(user, deliveryData);
+  async findOneOwnedByOrFail(
+    user: User,
+    deliveryData: Partial<Delivery>,
+    manager?: EntityManager,
+  ) {
+    const delivery = await this.findOneOwnedBy(user, deliveryData, manager);
 
     if (!delivery) {
       throw new NotFoundException('Entrega não encontrada');
@@ -165,7 +192,14 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findOneOwnedBy(user: User, deliveryData: Partial<Delivery>) {
+  async findOneOwnedBy(
+    user: User,
+    deliveryData: Partial<Delivery>,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(Delivery)
+      : this.deliveryRepository;
     const { isLoggedUserMotoboy } = await this.userService.getUserAndEntityAuth(
       user,
       user.id,
@@ -174,7 +208,7 @@ export class DeliveryService {
       ? { motoboy: { id: user.id } }
       : { operator: { id: user.id } };
 
-    const delivery = await this.deliveryRepository.findOne({
+    const delivery = await repo.findOne({
       where: {
         ...deliveryData,
         ...queryObject,
@@ -269,14 +303,15 @@ export class DeliveryService {
     return setDecimalPlaces(total, 2);
   }
 
-  async remove(user: User, id: string) {
-    const delivery = await this.findOneOwnedByOrFail(user, { id });
-
+  async remove(user: User, id: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Delivery)
+      : this.deliveryRepository;
+    const delivery = await this.findOneOwnedByOrFail(user, { id }, manager);
     if (delivery.tip !== null) {
-      await this.tipService.remove(delivery.tip.id);
+      await this.tipService.remove(delivery.tip.id, manager);
     }
-
-    await this.deliveryRepository.delete({ id });
+    await repo.delete({ id });
     return delivery;
   }
 

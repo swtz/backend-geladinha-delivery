@@ -41,7 +41,11 @@ export class Delivery {
   @Column()
   motorcycleLicensePlate!: string;
 
-  @OneToOne(() => Tip, { nullable: true, onDelete: 'SET NULL' })
+  @OneToOne(() => Tip, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
   @JoinColumn()
   tip!: Tip;
 

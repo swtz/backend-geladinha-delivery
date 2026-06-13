@@ -40,6 +40,10 @@ export class DeliveryMan {
   @JoinColumn()
   user!: User;
 
-  @OneToMany(() => Tip, tip => tip.motoboy, { nullable: true })
+  @OneToMany(() => Tip, tip => tip.motoboy, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
   tips!: Tip[];
 }

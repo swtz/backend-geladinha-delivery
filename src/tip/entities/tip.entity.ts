@@ -24,6 +24,7 @@ export class Tip {
 
   @ManyToOne(() => DeliveryMan, deliveryMan => deliveryMan.tips, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   motoboy!: DeliveryMan;
 }
