@@ -72,6 +72,7 @@ export class DeliveryManMotorcycleService {
       const motorcycle = await this.motorcycleService.update(
         motoboy.motorcycle.id,
         motorcycleDto,
+        manager,
       );
       await this.deliveryManService.save({ ...motoboy, motorcycle }, manager);
       return this.deliveryManService.findOneByOrFail(

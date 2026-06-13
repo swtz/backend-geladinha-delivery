@@ -77,7 +77,7 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  async update(user: User, dto: UpdateUserDto) {
+  async update(user: User, dto: UpdateUserDto, manager?: EntityManager) {
     const { nickname, phone, email, secondPhone } = dto;
 
     user.name = dto.name ?? user.name;
@@ -91,12 +91,16 @@ export class UserService {
       user.forceLogout = true;
     }
 
-    const updated = await this.save(user);
-    return this.findOneByOrFail({ id: updated.id });
+    const updated = await this.save(user, manager);
+    return this.findOneByOrFail({ id: updated.id }, undefined, manager);
   }
 
-  async updatePassword(id: string, dto: UpdatePasswordDto) {
-    const user = await this.findOneByOrFail({ id });
+  async updatePassword(
+    id: string,
+    dto: UpdatePasswordDto,
+    manager?: EntityManager,
+  ) {
+    const user = await this.findOneByOrFail({ id }, undefined, manager);
 
     const validPassword = await this.hashingService.compare(
       dto.currentPassword,
@@ -112,7 +116,7 @@ export class UserService {
     user.password = hashedPassword;
     user.forceLogout = true;
 
-    return this.save(user);
+    return this.save(user, manager);
   }
 
   async findAll({ role }: { role?: RoleEnum }) {
@@ -171,7 +175,8 @@ export class UserService {
     });
   }
 
-  findByPhone(phone: string, isSecondPhone = false) {
+  findByPhone(phone: string, isSecondPhone = false, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(User) : this.userRepository;
     const qo: { phone: undefined | string; secondPhone: undefined | string } = {
       phone,
       secondPhone: undefined,
@@ -182,12 +187,13 @@ export class UserService {
       qo.secondPhone = phone;
     }
 
-    return this.userRepository.findOneBy(qo);
+    return repo.findOneBy(qo);
   }
 
-  async remove(id: string) {
-    const user = await this.findOneByOrFail({ id });
-    await this.userRepository.delete({ id });
+  async remove(id: string, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(User) : this.userRepository;
+    const user = await this.findOneByOrFail({ id }, undefined, manager);
+    await repo.delete({ id });
     return user;
   }
 
