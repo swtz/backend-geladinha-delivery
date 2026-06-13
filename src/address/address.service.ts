@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -91,8 +91,12 @@ export class AddressService {
   async findOneOwnedOrFail(
     addressData: Partial<Address>,
     customerData: Partial<Customer>,
+    manager?: EntityManager,
   ) {
-    const address = await this.addressRepository.findOne({
+    const repo = manager
+      ? manager.getRepository(Address)
+      : this.addressRepository;
+    const address = await repo.findOne({
       where: {
         ...addressData,
         customer: customerData,

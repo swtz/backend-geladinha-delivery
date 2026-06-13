@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -31,49 +31,53 @@ export class DeliveryService {
     private readonly customerService: CustomerService,
     private readonly addressService: AddressService,
     private readonly tipService: TipService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(dto: CreateDeliveryDto, user: User) {
-    const operator = await this.userService.findOneByOrFail({
-      id: user.id,
+    return this.dataSource.transaction(async manager => {
+      const operator = await this.userService.findOneByOrFail(
+        { id: user.id },
+        undefined,
+        manager,
+      );
+      const motoboy = await this.deliveryManService.findOneByOrFail(
+        { user: { id: dto.motoboy } },
+        true,
+        manager,
+      );
+      const customer = await this.customerService.findOneByOrFail(
+        { id: dto.customer },
+        manager,
+      );
+      const defaultAddress = await this.addressService.findOneOwnedOrFail(
+        { isDefault: true },
+        { id: dto.customer },
+        manager,
+      );
+      const paymentMethod = await this.paymentMethodService.findOneOrCreate(
+        dto.paymentMethod,
+        manager,
+      );
+      const tip = dto.tip
+        ? await this.tipService.create(dto.tip, motoboy, manager)
+        : undefined;
+
+      const delivery = {
+        description: dto.description,
+        totalPurchase: dto.totalPurchase,
+        deliveryTax: dto.deliveryTax,
+        motorcycleLicensePlate: motoboy.motorcycle.licensePlate,
+        tip,
+        paymentMethod,
+        operator,
+        motoboy,
+        customer,
+        address: defaultAddress,
+      };
+      const created = await this.save(delivery, manager);
+      return this.findOneByOrFail({ id: created.id }, manager);
     });
-    const motoboy = await this.deliveryManService.findOneByOrFail(
-      {
-        user: { id: dto.motoboy },
-      },
-      true,
-    );
-    const customer = await this.customerService.findOneByOrFail({
-      id: dto.customer,
-    });
-    const defaultAddress = await this.addressService.findOneOwnedOrFail(
-      { isDefault: true },
-      { id: dto.customer },
-    );
-    const paymentMethod = await this.paymentMethodService.findOneOrCreate(
-      dto.paymentMethod,
-    );
-
-    const tip = dto.tip
-      ? await this.tipService.create(dto.tip, motoboy)
-      : undefined;
-
-    const delivery = {
-      description: dto.description,
-      totalPurchase: dto.totalPurchase,
-      deliveryTax: dto.deliveryTax,
-      motorcycleLicensePlate: motoboy.motorcycle.licensePlate,
-      tip,
-      paymentMethod,
-      operator,
-      motoboy,
-      customer,
-      address: defaultAddress,
-    };
-
-    const created = await this.save(delivery);
-
-    return this.findOneByOrFail({ id: created.id });
   }
 
   async update(dto: UpdateDeliveryDto, operator: User, id: string) {
@@ -201,8 +205,11 @@ export class DeliveryService {
     return deliveries;
   }
 
-  async findOneByOrFail(deliveryData: Partial<Delivery>) {
-    const delivery = await this.findOneBy(deliveryData);
+  async findOneByOrFail(
+    deliveryData: Partial<Delivery>,
+    manager?: EntityManager,
+  ) {
+    const delivery = await this.findOneBy(deliveryData, manager);
 
     if (!delivery) {
       throw new NotFoundException('Entrega não encontrada');
@@ -211,8 +218,11 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findOneBy(deliveryData: Partial<Delivery>) {
-    const delivery = await this.deliveryRepository.findOne({
+  async findOneBy(deliveryData: Partial<Delivery>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Delivery)
+      : this.deliveryRepository;
+    const delivery = await repo.findOne({
       where: deliveryData,
       relations,
     });
@@ -270,7 +280,10 @@ export class DeliveryService {
     return delivery;
   }
 
-  async save(delivery: Partial<Delivery>) {
-    return await this.deliveryRepository.save(delivery);
+  async save(delivery: Partial<Delivery>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Delivery)
+      : this.deliveryRepository;
+    return repo.save(delivery);
   }
 }

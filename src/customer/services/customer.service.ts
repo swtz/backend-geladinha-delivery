@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
@@ -109,8 +109,11 @@ export class CustomerService implements Service {
     });
   }
 
-  async findOneByOrFail(customerData: Partial<Customer>) {
-    const customer = await this.findOneBy(customerData);
+  async findOneByOrFail(
+    customerData: Partial<Customer>,
+    manager?: EntityManager,
+  ) {
+    const customer = await this.findOneBy(customerData, manager);
 
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado');
@@ -119,8 +122,11 @@ export class CustomerService implements Service {
     return customer;
   }
 
-  async findOneBy(customerData: Partial<Customer>) {
-    return this.customerRepository.findOne({
+  async findOneBy(customerData: Partial<Customer>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Customer)
+      : this.customerRepository;
+    return repo.findOne({
       where: customerData,
       relations: { addresses: true },
     });
