@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityManager, Repository } from 'typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,12 +16,7 @@ export class TipService {
   }
 
   async update(tipData: Partial<Tip>, manager?: EntityManager) {
-    if (!tipData.id) {
-      throw new BadRequestException('O ID da gorjeta é obrigatório');
-    }
-
     const tip = await this.findOneByOrFail({ id: tipData.id }, manager);
-
     tip.amount = tipData.amount ?? tip.amount;
     tip.motoboy = tipData.motoboy ?? tip.motoboy;
 
