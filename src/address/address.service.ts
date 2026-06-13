@@ -30,8 +30,8 @@ export class AddressService {
     return this.save(newAddress, manager);
   }
 
-  async update(dto: UpdateAddressDto, id: string) {
-    const address = await this.findOneByOrFail({ id });
+  async update(dto: UpdateAddressDto, id: string, manager?: EntityManager) {
+    const address = await this.findOneByOrFail({ id }, false, manager);
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
 
     address.city = dto.city ?? address.city;
@@ -56,8 +56,8 @@ export class AddressService {
         }
       }
     });
-    const updated = await this.save(address);
-    return this.findOneByOrFail({ id: updated.id });
+    const updated = await this.save(address, manager);
+    return this.findOneByOrFail({ id: updated.id }, false, manager);
   }
 
   generateAddress(dto: CreateAddressDto | UpdateAddressDto, isDefault = true) {

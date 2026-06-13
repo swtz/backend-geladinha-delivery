@@ -26,13 +26,13 @@ export class WorkTime {
   @Column({ enum: shifts })
   shift!: Shift;
 
-  @Column({ nullable: true })
+  @Column()
   initHour!: string;
 
-  @Column({ nullable: true })
+  @Column()
   endHour!: string;
 
-  @Column({ nullable: true })
+  @Column()
   duration!: string;
 
   @Column({ default: false })
