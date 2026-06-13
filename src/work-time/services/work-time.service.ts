@@ -9,12 +9,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
-import { WorkTime } from './entities/work-time.entity';
-import { CreateWorkTimeDto } from './dto/work-time/create-work-time.dto';
-import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
+import { WorkTime } from '../entities/work-time.entity';
+import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
+import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
-import { FindAllParams } from './types/findAllParams';
-import { full, essencial, tiny } from './data/relations/work-time';
+import { FindAllParams } from '../types/findAllParams';
+import { full, essencial, tiny } from '../data/relations/work-time';
 import { getUnixTime, intervalToDuration, isSameDay } from 'date-fns';
 import { padLeftWithChar } from 'work-time-service-create-manual-testing';
 

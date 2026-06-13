@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { WorkTimeService } from 'src/work-time/work-time.service';
+import { WorkTimeService } from 'src/work-time/services/work-time.service';
 import { UserService } from 'src/user/services/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { fromZonedTime } from 'date-fns-tz';

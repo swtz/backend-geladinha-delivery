@@ -12,13 +12,13 @@ import {
   Req,
 } from '@nestjs/common';
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { WorkTimeService } from './work-time.service';
+import { WorkTimeService } from '../services/work-time.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
-import { UpdateWorkTimeDto } from './dto/work-time/update-work-time.dto';
+import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
-import { ResponseWorkTimeDto } from './dto/work-time/response-work-time.dto';
+import { ResponseWorkTimeDto } from '../dto/work-time/response-work-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time')

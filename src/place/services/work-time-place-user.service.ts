@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { UserService } from 'src/user/services/user.service';
-import { WorkTimeService } from 'src/work-time/work-time.service';
+import { WorkTimeService } from 'src/work-time/services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
