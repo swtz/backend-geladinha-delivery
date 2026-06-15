@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/services/user.service';
@@ -26,19 +26,28 @@ export class VoucherService {
     private readonly userService: UserService,
   ) {}
 
-  async create(dto: CreateVoucherDto, user: User) {
-    const entity = await this.userService.findOneByOrFail({ id: user.id });
+  async create(dto: CreateVoucherDto, user: User, manager?: EntityManager) {
+    const entity = await this.userService.findOneByOrFail(
+      { id: user.id },
+      undefined,
+      manager,
+    );
     const voucher = {
       amount: dto.amount,
       description: dto.description,
       user: entity,
     };
-    const created = await this.save(voucher);
+    const created = await this.save(voucher, manager);
 
-    return this.findOneOwnedByOrFail({ id: created.id }, entity);
+    return this.findOneOwnedByOrFail({ id: created.id }, entity, manager);
   }
 
-  async createForEntity(dto: CreateVoucherDto, user: User, id: string) {
+  async createForEntity(
+    dto: CreateVoucherDto,
+    user: User,
+    id: string,
+    manager?: EntityManager,
+  ) {
     if (!id) {
       throw new BadRequestException('O ID do usuário é obrigatório');
     }
@@ -46,6 +55,7 @@ export class VoucherService {
     const entity = await this.userService.findOneByOrFail(
       { id },
       'motoboy-essencial',
+      manager,
     );
     const { isLoggedUserAdmin } = await this.userService.getUserAndEntityAuth(
       user,
@@ -59,11 +69,11 @@ export class VoucherService {
     };
 
     if (voucher.user.deliveryMan) {
-      return this.save(voucher);
+      return this.save(voucher, manager);
     }
 
     if (isLoggedUserAdmin) {
-      return this.save(voucher);
+      return this.save(voucher, manager);
     }
 
     throw new UnauthorizedException(
@@ -71,7 +81,12 @@ export class VoucherService {
     );
   }
 
-  async updateForEntity(dto: UpdateVoucherDto, user: User, entityId: string) {
+  async updateForEntity(
+    dto: UpdateVoucherDto,
+    user: User,
+    entityId: string,
+    manager?: EntityManager,
+  ) {
     if (!dto.id) {
       throw new BadRequestException('Campo ID não pode estar vazio');
     }
@@ -83,6 +98,7 @@ export class VoucherService {
     const voucher = await this.findOneOwnedByOrFail(
       { id: dto.id },
       authFlags.entity,
+      manager,
     );
 
     if (voucher.createdBy !== null && user.id !== voucher.createdBy.id) {
@@ -92,7 +108,7 @@ export class VoucherService {
     }
 
     if (authFlags.isLoggedUserAdmin) {
-      return this.update(dto, authFlags.entity, voucher.id);
+      return this.update(dto, authFlags.entity, voucher.id, manager);
     }
 
     if (!authFlags.isEntityMotoboy) {
@@ -101,20 +117,32 @@ export class VoucherService {
       );
     }
 
-    return this.update(dto, authFlags.entity, voucher.id);
+    return this.update(dto, authFlags.entity, voucher.id, manager);
   }
 
-  async update(dto: UpdateVoucherDto, user: User, voucherId: string) {
-    const voucher = await this.findOneOwnedByOrFail({ id: voucherId }, user);
+  async update(
+    dto: UpdateVoucherDto,
+    user: User,
+    voucherId: string,
+    manager?: EntityManager,
+  ) {
+    const voucher = await this.findOneOwnedByOrFail(
+      { id: voucherId },
+      user,
+      manager,
+    );
 
     voucher.amount = dto.amount ?? voucher.amount;
     voucher.description = dto.description ?? voucher.description;
 
-    return this.save(voucher);
+    return this.save(voucher, manager);
   }
 
-  async findOneByOrFail(voucherData: Partial<Voucher>) {
-    const voucher = await this.findOneBy(voucherData);
+  async findOneByOrFail(
+    voucherData: Partial<Voucher>,
+    manager?: EntityManager,
+  ) {
+    const voucher = await this.findOneBy(voucherData, manager);
 
     if (!voucher) {
       throw new NotFoundException('Compra ou vale não encontrado');
@@ -123,15 +151,22 @@ export class VoucherService {
     return voucher;
   }
 
-  findOneBy(voucherData: Partial<Voucher>) {
-    return this.voucherRepository.findOne({
+  findOneBy(voucherData: Partial<Voucher>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Voucher)
+      : this.voucherRepository;
+    return repo.findOne({
       where: voucherData,
       relations,
     });
   }
 
-  async findOneOwnedByOrFail(voucherData: Partial<Voucher>, user: User) {
-    const voucher = await this.findOneOwnedBy(voucherData, user);
+  async findOneOwnedByOrFail(
+    voucherData: Partial<Voucher>,
+    user: User,
+    manager?: EntityManager,
+  ) {
+    const voucher = await this.findOneOwnedBy(voucherData, user, manager);
 
     if (!voucher) {
       throw new NotFoundException('Compra ou vale não encontrado');
@@ -140,26 +175,21 @@ export class VoucherService {
     return voucher;
   }
 
-  findOneOwnedBy(voucherData: Partial<Voucher>, user: User) {
-    return this.voucherRepository.findOne({
+  async findOneOwnedBy(
+    voucherData: Partial<Voucher>,
+    user: User,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(Voucher)
+      : this.voucherRepository;
+    return repo.findOne({
       where: {
         ...voucherData,
         user: { id: user.id },
       },
       relations,
     });
-  }
-
-  async findByUser(id: string) {
-    const vouchers = await this.voucherRepository.find({
-      where: {
-        user: { id },
-      },
-      order: { createdAt: 'DESC' },
-      relations,
-    });
-
-    return vouchers;
   }
 
   async findAll(queryParams: FindAllParams) {
@@ -175,11 +205,14 @@ export class VoucherService {
     return vouchers;
   }
 
-  async sum(queryParams: FindAllParams) {
+  async sum(queryParams: FindAllParams, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Voucher)
+      : this.voucherRepository;
     const factory = new VoucherFindAllFactory();
     const queryObject = factory.factoryMethod(queryParams);
 
-    const total = await this.voucherRepository.sum('amount', queryObject);
+    const total = await repo.sum('amount', queryObject);
 
     if (!total) {
       return 0;
@@ -188,8 +221,11 @@ export class VoucherService {
     return setDecimalPlaces(total, 2);
   }
 
-  async remove(id: string, user: User) {
-    const voucher = await this.findOneByOrFail({ id });
+  async remove(id: string, user: User, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Voucher)
+      : this.voucherRepository;
+    const voucher = await this.findOneByOrFail({ id }, manager);
     const haveCreatedBy = voucher.createdBy !== null;
     const entityId = haveCreatedBy ? voucher.createdBy.id : voucher.user.id;
     const authFlags = await this.userService.getUserAndEntityAuth(
@@ -204,7 +240,7 @@ export class VoucherService {
         );
       }
 
-      await this.voucherRepository.delete({ id });
+      await repo.delete({ id });
       return voucher;
     }
 
@@ -213,7 +249,7 @@ export class VoucherService {
         authFlags.isLoggedUserAdmin ||
         (authFlags.isEntityMotoboy && authFlags.isLoggedUserOperator)
       ) {
-        await this.voucherRepository.delete({ id });
+        await repo.delete({ id });
         return voucher;
       }
 
@@ -222,11 +258,14 @@ export class VoucherService {
       );
     }
 
-    await this.voucherRepository.delete({ id });
+    await repo.delete({ id });
     return voucher;
   }
 
-  async save(voucher: Partial<Voucher>) {
-    return this.voucherRepository.save(voucher);
+  async save(voucher: Partial<Voucher>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Voucher)
+      : this.voucherRepository;
+    return repo.save(voucher);
   }
 }
