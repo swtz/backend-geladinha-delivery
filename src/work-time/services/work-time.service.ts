@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from '../entities/work-time.entity';
@@ -25,7 +25,7 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
-  async create(dto: CreateWorkTimeDto) {
+  async create(dto: CreateWorkTimeDto, manager?: EntityManager) {
     const initHour = dto.initHour.slice(11, 19);
     const endHour = dto.endHour.slice(11, 19);
     const isAnotherDay = getUnixTime(dto.initHour) > getUnixTime(dto.endHour);
@@ -56,12 +56,12 @@ export class WorkTimeService {
       duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
     };
-    const created = await this.save(workTime);
-    return this.findOneByOrFail({ id: created.id });
+    const created = await this.save(workTime, manager);
+    return this.findOneByOrFail({ id: created.id }, true, manager);
   }
 
-  async update(id: string, dto: UpdateWorkTimeDto) {
-    const workTime = await this.findOneByOrFail({ id });
+  async update(id: string, dto: UpdateWorkTimeDto, manager?: EntityManager) {
+    const workTime = await this.findOneByOrFail({ id }, false, manager);
     if (workTime.isShared) {
       throw new UnauthorizedException(
         'Um estabelecimento possui esse horário.\n Não foi possível atualizar',
@@ -73,13 +73,20 @@ export class WorkTimeService {
     workTime.endHour = dto.endHour ?? workTime.endHour;
     workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
-    const created = await this.save(workTime);
-    return this.findOneByOrFail({ id: created.id });
+    const created = await this.save(workTime, manager);
+    return this.findOneByOrFail({ id: created.id }, true, manager);
   }
 
-  async findOneBy(workTimeData: Partial<WorkTime>, relations = true) {
+  async findOneBy(
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+    manager?: EntityManager,
+  ) {
+    const repo = manager
+      ? manager.getRepository(WorkTime)
+      : this.workTimeRepository;
     const fields = relations ? full : essencial;
-    return this.workTimeRepository.findOne({
+    return repo.findOne({
       where: workTimeData,
       relations: fields,
     });
@@ -89,16 +96,24 @@ export class WorkTimeService {
     user: User,
     workTimeData: Partial<WorkTime>,
     relations = true,
+    manager?: EntityManager,
   ) {
+    const repo = manager
+      ? manager.getRepository(WorkTime)
+      : this.workTimeRepository;
     const fields = relations ? full : essencial;
-    return this.workTimeRepository.findOne({
+    return repo.findOne({
       where: { ...workTimeData, user: { id: user.id } },
       relations: fields,
     });
   }
 
-  async findOneByOrFail(workTimeData: Partial<WorkTime>, relations = true) {
-    const workTime = await this.findOneBy(workTimeData, relations);
+  async findOneByOrFail(
+    workTimeData: Partial<WorkTime>,
+    relations = true,
+    manager?: EntityManager,
+  ) {
+    const workTime = await this.findOneBy(workTimeData, relations, manager);
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');
@@ -111,8 +126,14 @@ export class WorkTimeService {
     user: User,
     workTimeData: Partial<WorkTime>,
     relations = true,
+    manager?: EntityManager,
   ) {
-    const workTime = await this.findOneOwnedBy(user, workTimeData, relations);
+    const workTime = await this.findOneOwnedBy(
+      user,
+      workTimeData,
+      relations,
+      manager,
+    );
 
     if (!workTime) {
       throw new NotFoundException('Esse horário de serviço não existe');
@@ -167,8 +188,11 @@ export class WorkTimeService {
     });
   }
 
-  async remove(id: string) {
-    const workTime = await this.findOneByOrFail({ id });
+  async remove(id: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(WorkTime)
+      : this.workTimeRepository;
+    const workTime = await this.findOneByOrFail({ id }, true, manager);
 
     if (workTime.isDefault || workTime.isShared) {
       throw new UnauthorizedException(
@@ -176,11 +200,14 @@ export class WorkTimeService {
       );
     }
 
-    await this.workTimeRepository.delete({ id });
+    await repo.delete({ id });
     return workTime;
   }
 
-  async save(workTimeData: Partial<WorkTime>) {
-    return await this.workTimeRepository.save(workTimeData);
+  async save(workTimeData: Partial<WorkTime>, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(WorkTime)
+      : this.workTimeRepository;
+    return repo.save(workTimeData);
   }
 }
