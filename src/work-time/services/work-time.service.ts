@@ -69,8 +69,12 @@ export class WorkTimeService {
     }
 
     workTime.shift = dto.shift ?? workTime.shift;
-    workTime.initHour = dto.initHour ?? workTime.initHour;
-    workTime.endHour = dto.endHour ?? workTime.endHour;
+    workTime.initHour = dto.initHour
+      ? dto.initHour.slice(11, 19)
+      : workTime.initHour;
+    workTime.endHour = dto.endHour
+      ? dto.endHour.slice(11, 19)
+      : workTime.endHour;
     workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
     const created = await this.save(workTime, manager);

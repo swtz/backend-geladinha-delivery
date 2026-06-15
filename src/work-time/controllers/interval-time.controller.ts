@@ -27,7 +27,6 @@ export class IntervalTimeController {
     const intervalTime = await this.intervalTimeService.create(dto, req.user);
     return new ResponseIntervalTimeDto(intervalTime);
   }
-
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const intervalTime = await this.intervalTimeService.findOneByOrFail({ id });

@@ -1,19 +1,24 @@
-import { Body, Controller, Param, ParseUUIDPipe, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { WorkTimePlaceUserService } from '../services/work-time-place-user.service';
-import { WorkTimeDateService } from '../services/work-time-date.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
-import { UserService } from 'src/user/services/user.service';
 import { ResponseUserDto } from 'src/user/dtos/user/response-user.dto';
+import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
+import { ResponseIntervalTimeDto } from 'src/work-time/dto/interval-time/response-interval-time.dto';
 
 @Roles(Role.Admin)
 @Controller('work-time-user')
 export class WorkTimeUserController {
   constructor(
     private readonly workTimePlaceUserService: WorkTimePlaceUserService,
-    private readonly userService: UserService,
-    private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
   @Put(':id')
@@ -35,5 +40,17 @@ export class WorkTimeUserController {
       workTimeId,
     );
     return new ResponseUserDto(user);
+  }
+
+  @Post('interval-time/:id')
+  async createIntervalTime(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateIntervalTimeDto,
+  ) {
+    const intervalTime = await this.workTimePlaceUserService.createIntervalTime(
+      id,
+      dto,
+    );
+    return new ResponseIntervalTimeDto(intervalTime);
   }
 }

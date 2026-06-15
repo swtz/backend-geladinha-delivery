@@ -10,6 +10,11 @@ import { WorkTimeService } from 'src/work-time/services/work-time.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
+import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
+import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
+import { EntityManager } from 'typeorm';
+import { intervalToDuration } from 'date-fns';
+import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -17,6 +22,7 @@ export class WorkTimePlaceUserService {
     private readonly placeService: PlaceService,
     private readonly userService: UserService,
     private readonly workTimeService: WorkTimeService,
+    private readonly intervalTimeService: IntervalTimeService,
   ) {}
 
   async addToPlace(id: string, dto: CreateWorkTimeDto, user: User) {
@@ -180,5 +186,36 @@ export class WorkTimePlaceUserService {
 
     const updated = await this.userService.save(user);
     return this.userService.findOneByOrFail({ id: updated.id });
+  }
+
+  async createIntervalTime(
+    id: string,
+    { initHour, endHour }: CreateIntervalTimeDto,
+    manager?: EntityManager,
+  ) {
+    const { workTime } = await this.userService.findOneByOrFail(
+      { id },
+      undefined,
+      manager,
+    );
+    const { hours, minutes, seconds } = intervalToDuration({
+      start: initHour,
+      end: endHour,
+    });
+    const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
+    const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
+    const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
+    const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
+    const interval = {
+      initHour: initHour.slice(11, 19),
+      endHour: endHour.slice(11, 19),
+      duration,
+      workTime,
+    };
+    const created = await this.intervalTimeService.save(interval, manager);
+    return this.intervalTimeService.findOneByOrFail(
+      { id: created.id },
+      manager,
+    );
   }
 }
