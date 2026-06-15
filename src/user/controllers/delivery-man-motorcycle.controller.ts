@@ -46,6 +46,15 @@ export class DeliveryManMotorcycleController {
     return new ResponseUserDto(deliveryMan);
   }
 
+  @Get()
+  async findAll() {
+    const deliveryMen = await this.deliveryManService.findAllMotoboy();
+    const parsedDeliveryMen = deliveryMen.map(
+      item => new ResponseDeliveryManDto(item),
+    );
+    return parsedDeliveryMen;
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const deliveryMan = await this.deliveryManService.findOneByOrFail(
@@ -53,12 +62,6 @@ export class DeliveryManMotorcycleController {
       true,
     );
     return new ResponseDeliveryManDto(deliveryMan);
-  }
-
-  @Get()
-  async findAll() {
-    const deliveryMen = await this.deliveryManService.findAllMotoboy();
-    return deliveryMen;
   }
 
   @Roles(Role.Motoboy)
