@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Req,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { IntervalTimeService } from '../services/interval-time.service';
 import { CreateIntervalTimeDto } from '../dto/interval-time/create-interval-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { ResponseIntervalTimeDto } from '../dto/interval-time/response-interval-time.dto';
+import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 
 @Controller('me/interval-time')
 @Roles(Role.Admin, Role.Operator)
@@ -27,6 +29,16 @@ export class IntervalTimeController {
     const intervalTime = await this.intervalTimeService.create(dto, req.user);
     return new ResponseIntervalTimeDto(intervalTime);
   }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateIntervalTimeDto,
+  ) {
+    const intervalTime = await this.intervalTimeService.update(id, dto);
+    return new ResponseIntervalTimeDto(intervalTime);
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const intervalTime = await this.intervalTimeService.findOneByOrFail({ id });

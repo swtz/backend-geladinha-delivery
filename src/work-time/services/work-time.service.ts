@@ -67,17 +67,26 @@ export class WorkTimeService {
         'Um estabelecimento possui esse horário.\n Não foi possível atualizar',
       );
     }
-
+    if (dto.initHour && dto.initHour !== dto.initHour) {
+      workTime.initHour = dto.initHour.slice(11, 19);
+    }
+    if (dto.endHour && dto.endHour !== dto.endHour) {
+      workTime.endHour = dto.endHour.slice(11, 19);
+    }
     workTime.shift = dto.shift ?? workTime.shift;
-    workTime.initHour = dto.initHour
-      ? dto.initHour.slice(11, 19)
-      : workTime.initHour;
-    workTime.endHour = dto.endHour
-      ? dto.endHour.slice(11, 19)
-      : workTime.endHour;
     workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
-    const created = await this.save(workTime, manager);
+    const addOneDay = workTime.initHour > workTime.endHour ? '02' : '01';
+    const { hours, minutes, seconds } = intervalToDuration({
+      start: `1970-01-01T${workTime.initHour}`,
+      end: `1970-01-${addOneDay}T${workTime.endHour}`,
+    });
+    const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
+    const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
+    const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
+    const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
+
+    const created = await this.save({ ...workTime, duration }, manager);
     return this.findOneByOrFail({ id: created.id }, true, manager);
   }
 
