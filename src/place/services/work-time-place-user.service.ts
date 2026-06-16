@@ -13,8 +13,7 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
 import { EntityManager } from 'typeorm';
-import { intervalToDuration } from 'date-fns';
-import { padLeftWithChar } from 'src/common/utils/pad-left-with-char';
+import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -108,25 +107,16 @@ export class WorkTimePlaceUserService {
       });
       workTime.isDefault = dto.isDefault;
     }
-    if (dto.initHour && dto.initHour !== dto.initHour) {
-      workTime.initHour = dto.initHour.slice(11, 19);
-    }
-    if (dto.endHour && dto.endHour !== dto.endHour) {
-      workTime.endHour = dto.endHour.slice(11, 19);
+    if (dto.initHour && dto.endHour) {
+      generateDurationTime(dto.initHour, dto.endHour, workTime);
+    } else if (dto.initHour) {
+      generateDurationTime(dto.initHour, workTime.endHour, workTime);
+    } else if (dto.endHour) {
+      generateDurationTime(workTime.initHour, dto.endHour, workTime);
     }
     workTime.shift = dto.shift ?? workTime.shift;
 
-    const addOneDay = workTime.initHour > workTime.endHour ? '02' : '01';
-    const { hours, minutes, seconds } = intervalToDuration({
-      start: `1970-01-01T${workTime.initHour}`,
-      end: `1970-01-${addOneDay}T${workTime.endHour}`,
-    });
-    const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
-    const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
-    const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
-    const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
-
-    const updated = await this.workTimeService.save({ ...workTime, duration });
+    const updated = await this.workTimeService.save(workTime);
     return this.workTimeService.findOneByOrFail({ id: updated.id });
   }
 
@@ -211,14 +201,7 @@ export class WorkTimePlaceUserService {
       undefined,
       manager,
     );
-    const { hours, minutes, seconds } = intervalToDuration({
-      start: initHour,
-      end: endHour,
-    });
-    const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
-    const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
-    const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
-    const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
+    const duration = generateDurationTime(initHour, endHour);
     const interval = {
       initHour: initHour.slice(11, 19),
       endHour: endHour.slice(11, 19),
