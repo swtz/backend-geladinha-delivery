@@ -5,29 +5,34 @@ import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-t
 
 export class ResponseUserDto {
   readonly id: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
   readonly name: string;
   readonly lastName: string;
   readonly nickname: string;
   readonly phone: string;
-  readonly secondPhone?: string;
-  readonly email?: string;
-  readonly daily?: number;
+  readonly secondPhone: string | null;
+  readonly email: string | null;
   readonly roles: Role[];
-  readonly vouchers?: ResponseVoucherDto[];
-  readonly workTime?: SmallResponseWorkTime;
+  readonly vouchers: ResponseVoucherDto[] | null;
+  readonly workTime: SmallResponseWorkTime | null;
 
   constructor(user: User) {
     this.id = user.id;
+    this.createdAt = user.createdAt;
+    this.updatedAt = user.updatedAt;
     this.name = user.name;
     this.lastName = user.lastName;
     this.nickname = user.nickname;
     this.phone = user.phone;
     this.secondPhone = user.secondPhone;
     this.email = user.email;
-    this.vouchers = user.vouchers?.map(voucher => {
-      return new ResponseVoucherDto(voucher);
-    });
     this.roles = user.roles.map(role => role.name);
+    this.vouchers = user.vouchers
+      ? user.vouchers.map(voucher => {
+          return new ResponseVoucherDto(voucher);
+        })
+      : null;
     this.workTime = user.workTime
       ? {
           id: user.workTime.id,
@@ -35,6 +40,6 @@ export class ResponseUserDto {
           initHour: user.workTime.initHour,
           endHour: user.workTime.endHour,
         }
-      : undefined;
+      : null;
   }
 }
