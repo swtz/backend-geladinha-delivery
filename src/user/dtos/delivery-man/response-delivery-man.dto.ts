@@ -8,7 +8,7 @@ export class ResponseDeliveryManDto {
   readonly daily: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly tips?: Omit<Tip, 'motoboy'>[];
+  readonly tips: Omit<Tip, 'motoboy'>[] | null;
   readonly user: UserResponseDtoType;
   readonly motorcycle: Pick<
     ResponseMotorcycleDto,
@@ -32,13 +32,15 @@ export class ResponseDeliveryManDto {
       displacement: deliveryMan.motorcycle.displacement,
       licensePlate: deliveryMan.motorcycle.licensePlate,
     };
-    this.tips = deliveryMan.tips?.map(tip => {
-      return {
-        id: tip.id,
-        amount: tip.amount,
-        createdAt: tip.createdAt,
-        updatedAt: tip.updatedAt,
-      };
-    });
+    this.tips = deliveryMan.tips
+      ? deliveryMan.tips.map(tip => {
+          return {
+            id: tip.id,
+            amount: tip.amount,
+            createdAt: tip.createdAt,
+            updatedAt: tip.updatedAt,
+          };
+        })
+      : null;
   }
 }
