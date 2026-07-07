@@ -8,22 +8,24 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseDeliveryDto {
   readonly id: string;
-  readonly description?: string;
+  readonly description: string | null;
   readonly totalPurchase: number;
   readonly deliveryTax: number;
-  readonly paymentMethod?: string;
+  readonly paymentMethod: string | null;
   readonly isPaid: boolean;
   readonly motorcycleLicensePlate: string;
-  readonly tip?: Pick<Tip, 'id' | 'amount'>;
+  readonly tip: Pick<Tip, 'id' | 'amount'> | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly operator?: UserResponseDtoType;
-  readonly motoboy?: UserResponseDtoType & {
-    workTime?: MediumResponseWorkTime;
-    motorcycle: SmallResponseMotorcycle;
-  };
-  readonly customer?: Omit<ResponseCustomerDto, 'addresses'>;
-  readonly address?: ResponseAddressDto;
+  readonly operator: UserResponseDtoType | null;
+  readonly motoboy:
+    | (UserResponseDtoType & {
+        workTime: MediumResponseWorkTime | null;
+        motorcycle: SmallResponseMotorcycle;
+      })
+    | null;
+  readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
+  readonly address: ResponseAddressDto | null;
 
   constructor(delivery: Delivery) {
     this.id = delivery.id;
@@ -40,19 +42,29 @@ export class ResponseDeliveryDto {
           id: delivery.tip.id,
           amount: delivery.tip.amount,
         }
-      : undefined;
+      : null;
     this.operator = delivery.operator
       ? {
           id: delivery.operator.id,
           name: delivery.operator.name,
           phone: delivery.operator.phone,
         }
-      : undefined;
+      : null;
     this.motoboy = delivery.motoboy
       ? {
           id: delivery.motoboy.user.id,
           name: delivery.motoboy.user.name,
           phone: delivery.motoboy.user.phone,
+          workTime: delivery.motoboy.user.workTime
+            ? {
+                id: delivery.motoboy.user.workTime.id,
+                createdAt: delivery.motoboy.user.workTime.createdAt,
+                updatedAt: delivery.motoboy.user.workTime.updatedAt,
+                shift: delivery.motoboy.user.workTime.shift,
+                initHour: delivery.motoboy.user.workTime.initHour,
+                endHour: delivery.motoboy.user.workTime.endHour,
+              }
+            : null,
           motorcycle: {
             id: delivery.motoboy.motorcycle.id,
             brand: delivery.motoboy.motorcycle.brand,
@@ -60,16 +72,16 @@ export class ResponseDeliveryDto {
             licensePlate: delivery.motoboy.motorcycle.licensePlate,
           },
         }
-      : undefined;
+      : null;
     this.customer = delivery.customer
       ? {
           id: delivery.customer.id,
           name: delivery.customer.name,
           phone: delivery.customer.phone,
         }
-      : undefined;
+      : null;
     this.address = delivery.address
       ? new ResponseAddressDto(delivery.address)
-      : undefined;
+      : null;
   }
 }

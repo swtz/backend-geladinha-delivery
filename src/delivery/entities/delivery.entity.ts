@@ -51,6 +51,7 @@ export class Delivery {
 
   @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {
     onDelete: 'SET NULL',
+    nullable: true,
   })
   paymentMethod!: PaymentMethod;
 
