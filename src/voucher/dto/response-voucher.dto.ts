@@ -4,11 +4,11 @@ import { Voucher } from '../entities/voucher.entity';
 export class ResponseVoucherDto {
   readonly id: string;
   readonly amount: number;
-  readonly description?: string;
+  readonly description: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly user: UserResponseDtoType;
-  readonly createdBy?: UserResponseDtoType;
+  readonly createdBy: UserResponseDtoType | null;
 
   constructor(voucher: Voucher) {
     this.id = voucher.id;
@@ -27,6 +27,6 @@ export class ResponseVoucherDto {
           name: voucher.createdBy.name,
           phone: voucher.createdBy.phone,
         }
-      : undefined;
+      : null;
   }
 }
