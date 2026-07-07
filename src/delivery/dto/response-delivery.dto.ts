@@ -47,6 +47,8 @@ export class ResponseDeliveryDto {
       ? {
           id: delivery.operator.id,
           name: delivery.operator.name,
+          lastName: delivery.operator.lastName,
+          nickname: delivery.operator.nickname,
           phone: delivery.operator.phone,
         }
       : null;
@@ -54,6 +56,8 @@ export class ResponseDeliveryDto {
       ? {
           id: delivery.motoboy.user.id,
           name: delivery.motoboy.user.name,
+          lastName: delivery.motoboy.user.lastName,
+          nickname: delivery.motoboy.user.nickname,
           phone: delivery.motoboy.user.phone,
           workTime: delivery.motoboy.user.workTime
             ? {

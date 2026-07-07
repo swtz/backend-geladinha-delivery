@@ -39,6 +39,7 @@ export class ResponseUserDto {
           shift: user.workTime.shift,
           initHour: user.workTime.initHour,
           endHour: user.workTime.endHour,
+          duration: user.workTime.duration,
         }
       : null;
   }

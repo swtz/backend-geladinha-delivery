@@ -19,13 +19,17 @@ export class ResponseVoucherDto {
     this.user = {
       id: voucher.user.id,
       name: voucher.user.name,
+      lastName: voucher.user.lastName,
+      nickname: voucher.user.nickname,
       phone: voucher.user.phone,
     };
     this.createdBy = voucher.createdBy
       ? {
-          id: voucher.createdBy.id,
-          name: voucher.createdBy.name,
-          phone: voucher.createdBy.phone,
+          id: voucher.user.id,
+          name: voucher.user.name,
+          lastName: voucher.user.lastName,
+          nickname: voucher.user.nickname,
+          phone: voucher.user.phone,
         }
       : null;
   }

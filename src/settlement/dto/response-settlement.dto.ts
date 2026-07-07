@@ -21,9 +21,11 @@ export class ResponseSettlementDto {
   readonly description?: string;
   readonly currentTotal: number;
   readonly expectedTotal: number;
-  readonly operator: UserResponseDtoType & {
-    workTime?: MediumResponseWorkTime;
-  };
+  readonly operator:
+    | (UserResponseDtoType & {
+        workTime: MediumResponseWorkTime | null;
+      })
+    | null;
   readonly vouchers?: ResponseVoucherDto[];
 
   constructor(
@@ -63,8 +65,19 @@ export class ResponseSettlementDto {
     this.operator = {
       id: settlement.operator.id,
       name: settlement.operator.name,
+      lastName: settlement.operator.lastName,
+      nickname: settlement.operator.nickname,
       phone: settlement.operator.phone,
-      workTime: settlement.operator?.workTime,
+      workTime: settlement.operator.workTime
+        ? {
+            id: settlement.operator.workTime.id,
+            createdAt: settlement.operator.workTime.createdAt,
+            updatedAt: settlement.operator.workTime.updatedAt,
+            shift: settlement.operator.workTime.shift,
+            initHour: settlement.operator.workTime.initHour,
+            endHour: settlement.operator.workTime.endHour,
+          }
+        : null,
     };
     this.vouchers = settlement.vouchers
       ? settlement.vouchers.map(item => new ResponseVoucherDto(item))

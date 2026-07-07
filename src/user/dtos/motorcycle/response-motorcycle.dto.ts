@@ -9,11 +9,11 @@ export class ResponseMotorcycleDto {
   readonly brand: string;
   readonly year: string;
   readonly model: string;
-  readonly displacement?: string;
+  readonly displacement: string | null;
   readonly color: string;
   readonly isActive: boolean;
-  readonly owner?: UserResponseDtoType;
-  readonly driver?: UserResponseDtoType;
+  readonly owner: UserResponseDtoType | null;
+  readonly driver: UserResponseDtoType | null;
 
   constructor(motorcycle: Motorcycle) {
     this.id = motorcycle.id;
@@ -30,15 +30,19 @@ export class ResponseMotorcycleDto {
       ? {
           id: motorcycle.owner.id,
           name: motorcycle.owner.name,
+          lastName: motorcycle.owner.lastName,
+          nickname: motorcycle.owner.nickname,
           phone: motorcycle.owner.phone,
         }
-      : undefined;
+      : null;
     this.driver = motorcycle.driver.user
       ? {
-          id: motorcycle.driver.user.id,
-          name: motorcycle.driver.user.name,
-          phone: motorcycle.driver.user.phone,
+          id: motorcycle.owner.id,
+          name: motorcycle.owner.name,
+          lastName: motorcycle.owner.lastName,
+          nickname: motorcycle.owner.nickname,
+          phone: motorcycle.owner.phone,
         }
-      : undefined;
+      : null;
   }
 }

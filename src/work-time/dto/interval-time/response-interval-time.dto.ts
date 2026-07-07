@@ -22,6 +22,7 @@ export class ResponseIntervalTimeDto {
       shift: intervalTime.workTime.shift,
       initHour: intervalTime.workTime.initHour,
       endHour: intervalTime.workTime.endHour,
+      duration: intervalTime.workTime.duration,
     };
   }
 }

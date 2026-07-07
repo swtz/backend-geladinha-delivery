@@ -23,6 +23,8 @@ export class ResponseDeliveryManDto {
     this.user = {
       id: deliveryMan.user.id,
       name: deliveryMan.user.name,
+      lastName: deliveryMan.user.lastName,
+      nickname: deliveryMan.user.nickname,
       phone: deliveryMan.user.phone,
     };
     this.motorcycle = {

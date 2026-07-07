@@ -5,21 +5,27 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 export class ResponseWorkTimeDto {
   readonly id: string;
   readonly shift: Shift;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
   readonly initHour: string;
   readonly endHour: string;
   readonly duration: string;
   readonly isDefault: boolean;
   readonly isShared: boolean;
-  readonly places?: {
-    id: string;
-    name: string;
-    businessName: string;
-    phone: string;
-  }[];
-  readonly user?: UserResponseDtoType[];
+  readonly places:
+    | {
+        id: string;
+        name: string;
+        businessName: string;
+        phone: string;
+      }[]
+    | null;
+  readonly user: UserResponseDtoType[] | null;
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
+    this.createdAt = workTime.createdAt;
+    this.updatedAt = workTime.updatedAt;
     this.shift = workTime.shift;
     this.initHour = workTime.initHour;
     this.endHour = workTime.endHour;
@@ -35,15 +41,17 @@ export class ResponseWorkTimeDto {
             phone: place.phone,
           };
         })
-      : undefined;
+      : null;
     this.user = workTime.user
       ? workTime.user.map(user => {
           return {
             id: user.id,
             name: user.name,
+            lastName: user.lastName,
+            nickname: user.nickname,
             phone: user.phone,
           };
         })
-      : undefined;
+      : null;
   }
 }

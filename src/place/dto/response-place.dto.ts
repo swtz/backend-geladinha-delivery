@@ -13,7 +13,7 @@ export class ResponsePlaceDto {
   readonly phone: string;
   readonly secondPhone?: string;
   readonly email: string;
-  readonly owners?: UserResponseDtoType[];
+  readonly owners: UserResponseDtoType[] | null;
   readonly address?: ResponseAddressDto;
   readonly postalBox?: ResponseAddressDto;
   readonly workTimes?: ResponseWorkTimeDto[];
@@ -34,10 +34,12 @@ export class ResponsePlaceDto {
           return {
             id: item.id,
             name: item.name,
+            lastName: item.lastName,
+            nickname: item.nickname,
             phone: item.phone,
           };
         })
-      : undefined;
+      : null;
     this.address = place.address
       ? new ResponseAddressDto(place.address)
       : undefined;
