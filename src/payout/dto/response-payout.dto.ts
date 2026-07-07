@@ -66,6 +66,7 @@ export class ResponsePayoutDto {
             shift: payout.motoboy.user.workTime.shift,
             initHour: payout.motoboy.user.workTime.initHour,
             endHour: payout.motoboy.user.workTime.endHour,
+            duration: payout.motoboy.user.workTime.duration,
           }
         : null,
     };

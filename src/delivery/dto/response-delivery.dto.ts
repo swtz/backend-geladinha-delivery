@@ -8,6 +8,8 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseDeliveryDto {
   readonly id: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
   readonly description: string | null;
   readonly totalPurchase: number;
   readonly deliveryTax: number;
@@ -15,8 +17,6 @@ export class ResponseDeliveryDto {
   readonly isPaid: boolean;
   readonly motorcycleLicensePlate: string;
   readonly tip: Pick<Tip, 'id' | 'amount'> | null;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
   readonly operator: UserResponseDtoType | null;
   readonly motoboy:
     | (UserResponseDtoType & {
@@ -67,6 +67,7 @@ export class ResponseDeliveryDto {
                 shift: delivery.motoboy.user.workTime.shift,
                 initHour: delivery.motoboy.user.workTime.initHour,
                 endHour: delivery.motoboy.user.workTime.endHour,
+                duration: delivery.motoboy.user.workTime.duration,
               }
             : null,
           motorcycle: {

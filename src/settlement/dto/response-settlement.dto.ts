@@ -76,6 +76,7 @@ export class ResponseSettlementDto {
             shift: settlement.operator.workTime.shift,
             initHour: settlement.operator.workTime.initHour,
             endHour: settlement.operator.workTime.endHour,
+            duration: settlement.operator.workTime.duration,
           }
         : null,
     };
