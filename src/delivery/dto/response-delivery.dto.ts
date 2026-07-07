@@ -1,10 +1,10 @@
-import { ResponseCustomerDto } from 'src/customer/dto/response-customer.dto';
 import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
 import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { SmallResponseCustomer } from 'src/customer/types/customer.type';
 
 export class ResponseDeliveryDto {
   readonly id: string;
@@ -24,7 +24,7 @@ export class ResponseDeliveryDto {
         motorcycle: SmallResponseMotorcycle;
       })
     | null;
-  readonly customer: Omit<ResponseCustomerDto, 'addresses'> | null;
+  readonly customer: SmallResponseCustomer | null;
   readonly address: ResponseAddressDto | null;
 
   constructor(delivery: Delivery) {
@@ -82,6 +82,8 @@ export class ResponseDeliveryDto {
       ? {
           id: delivery.customer.id,
           name: delivery.customer.name,
+          lastName: delivery.customer.lastName,
+          nickname: delivery.customer.nickname,
           phone: delivery.customer.phone,
         }
       : null;

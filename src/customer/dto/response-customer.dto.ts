@@ -4,11 +4,11 @@ import { Customer } from '../entities/customer.entity';
 export class ResponseCustomerDto {
   readonly id: string;
   readonly name: string;
-  readonly lastName?: string;
-  readonly nickname?: string;
+  readonly lastName: string;
+  readonly nickname: string;
   readonly phone: string;
-  readonly secondPhone?: string;
-  readonly email?: string;
+  readonly secondPhone: string | null;
+  readonly email: string | null;
   readonly addresses: ResponseAddressDto[];
 
   constructor(customer: Customer) {
