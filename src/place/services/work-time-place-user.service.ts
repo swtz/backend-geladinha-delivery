@@ -12,7 +12,7 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
-import { EntityManager } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 
 @Injectable()
@@ -22,6 +22,7 @@ export class WorkTimePlaceUserService {
     private readonly userService: UserService,
     private readonly workTimeService: WorkTimeService,
     private readonly intervalTimeService: IntervalTimeService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async addToPlace(id: string, dto: CreateWorkTimeDto, user: User) {
@@ -163,15 +164,25 @@ export class WorkTimePlaceUserService {
   }
 
   async setToUser(id: string, dto: CreateWorkTimeDto) {
-    const user = await this.userService.findOneByOrFail({ id });
-    const { workTime: oldWorkTime } = user;
-    const workTime = await this.workTimeService.create(dto);
-    if (oldWorkTime) {
-      await this.workTimeService.remove(oldWorkTime.id);
-    }
-    user.workTime = workTime;
-    const updated = await this.userService.save(user);
-    return this.userService.findOneByOrFail({ id: updated.id });
+    return this.dataSource.transaction(async manager => {
+      const user = await this.userService.findOneByOrFail(
+        { id },
+        undefined,
+        manager,
+      );
+      const { workTime: oldWorkTime } = user;
+      const workTime = await this.workTimeService.create(dto, manager);
+      if (oldWorkTime) {
+        await this.workTimeService.remove(oldWorkTime.id, manager);
+      }
+      user.workTime = workTime;
+      const updated = await this.userService.save(user, manager);
+      return this.userService.findOneByOrFail(
+        { id: updated.id },
+        undefined,
+        manager,
+      );
+    });
   }
 
   async setSharedToUser(userId: string, workTimeId: string) {
