@@ -12,7 +12,7 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 
 @Injectable()
@@ -78,94 +78,118 @@ export class WorkTimePlaceUserService {
   }
 
   async updateShared(id: string, dto: UpdateWorkTimeDto, user: User) {
-    const workTime = await this.workTimeService.findOneByOrFail({
-      id,
-      isShared: true,
-    });
-    const { places } = workTime;
+    return this.dataSource.transaction(async manager => {
+      const workTime = await this.workTimeService.findOneByOrFail(
+        {
+          id,
+          isShared: true,
+        },
+        true,
+        manager,
+      );
+      const { places } = workTime;
 
-    let isOwner = false;
-    let info: { owner?: string; place?: string } = {};
-    places.forEach(place => {
-      isOwner = place.owners.some(owner => {
-        if (owner.id === user.id) {
-          info = {
-            owner: owner.id,
-            place: place.id,
-          };
-        }
-        return owner.id === user.id;
+      let isOwner = false;
+      let info: { owner?: string; place?: string } = {};
+      places.forEach(place => {
+        isOwner = place.owners.some(owner => {
+          if (owner.id === user.id) {
+            info = {
+              owner: owner.id,
+              place: place.id,
+            };
+          }
+          return owner.id === user.id;
+        });
       });
-    });
-    if (!isOwner) {
-      throw new UnauthorizedException('Acesso negado');
-    }
-    const place = await this.placeService.findOneByOrFail({
-      id: info.place,
-    });
-    if (dto.isDefault) {
-      const defaultWorkTime =
-        this.workTimeService.findDefaultFromPlaceOrFail(place);
+      if (!isOwner) {
+        throw new UnauthorizedException('Acesso negado');
+      }
+      const place = await this.placeService.findOneByOrFail(
+        { id: info.place },
+        manager,
+      );
+      if (dto.isDefault) {
+        const defaultWorkTime =
+          this.workTimeService.findDefaultFromPlaceOrFail(place);
 
-      await this.workTimeService.save({
-        ...defaultWorkTime,
-        isDefault: false,
-      });
-      workTime.isDefault = dto.isDefault;
-    }
-    if (dto.initHour && dto.endHour) {
-      generateDurationTime(dto.initHour, dto.endHour, workTime);
-    } else if (dto.initHour) {
-      generateDurationTime(dto.initHour, workTime.endHour, workTime);
-    } else if (dto.endHour) {
-      generateDurationTime(workTime.initHour, dto.endHour, workTime);
-    }
-    workTime.shift = dto.shift ?? workTime.shift;
+        await this.workTimeService.save(
+          {
+            ...defaultWorkTime,
+            isDefault: false,
+          },
+          manager,
+        );
+        workTime.isDefault = dto.isDefault;
+      }
+      if (dto.initHour && dto.endHour) {
+        generateDurationTime(dto.initHour, dto.endHour, workTime);
+      } else if (dto.initHour) {
+        generateDurationTime(dto.initHour, workTime.endHour, workTime);
+      } else if (dto.endHour) {
+        generateDurationTime(workTime.initHour, dto.endHour, workTime);
+      }
+      workTime.shift = dto.shift ?? workTime.shift;
 
-    const updated = await this.workTimeService.save(workTime);
-    return this.workTimeService.findOneByOrFail({ id: updated.id });
+      const updated = await this.workTimeService.save(workTime, manager);
+      return this.workTimeService.findOneByOrFail(
+        { id: updated.id },
+        true,
+        manager,
+      );
+    });
   }
 
   async removeShared(id: string, user: User) {
-    const workTime = await this.workTimeService.findOneByOrFail({
-      id,
-      isShared: true,
-    });
-    const { places } = workTime;
-
-    let isOwner = false;
-    let info: { owner?: string; place?: string } = {};
-    places.forEach(place => {
-      isOwner = place.owners.some(owner => {
-        if (owner.id === user.id) {
-          info = {
-            owner: owner.id,
-            place: place.id,
-          };
-        }
-        return owner.id === user.id;
-      });
-    });
-    if (!isOwner) {
-      throw new UnauthorizedException('Acesso negado');
-    }
-
-    const place = await this.placeService.findOneByOrFail({
-      id: info.place,
-    });
-    if (place.workTimes.length <= 1) {
-      throw new UnauthorizedException(
-        `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+    return this.dataSource.transaction(async manager => {
+      const workTime = await this.workTimeService.findOneByOrFail(
+        {
+          id,
+          isShared: true,
+        },
+        true,
+        manager,
       );
-    }
+      const { places } = workTime;
 
-    const removed = await this.workTimeService.save({
-      ...workTime,
-      isDefault: false,
-      isShared: false,
+      let isOwner = false;
+      let info: { owner?: string; place?: string } = {};
+      places.forEach(place => {
+        isOwner = place.owners.some(owner => {
+          if (owner.id === user.id) {
+            info = {
+              owner: owner.id,
+              place: place.id,
+            };
+          }
+          return owner.id === user.id;
+        });
+      });
+      if (!isOwner) {
+        throw new UnauthorizedException('Acesso negado');
+      }
+
+      const place = await this.placeService.findOneByOrFail(
+        { id: info.place },
+        manager,
+      );
+      if (place.workTimes.length <= 1) {
+        throw new UnauthorizedException(
+          `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+        );
+      }
+
+      const removed = await this.workTimeService.save(
+        {
+          ...workTime,
+          isDefault: false,
+          isShared: false,
+        },
+        manager,
+      );
+
+      return this.workTimeService.remove(removed.id, manager);
     });
-
-    return this.workTimeService.remove(removed.id);
   }
 
   async setToUser(id: string, dto: CreateWorkTimeDto) {
