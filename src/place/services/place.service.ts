@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Place } from '../entities/place.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
@@ -118,8 +118,8 @@ export class PlaceService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneByOrFail(placeData: Partial<Place>) {
-    const place = await this.findOneBy(placeData);
+  async findOneByOrFail(placeData: Partial<Place>, manager?: EntityManager) {
+    const place = await this.findOneBy(placeData, manager);
 
     if (!place) {
       throw new NotFoundException('Esse estabelecimento não existe.');
@@ -128,8 +128,9 @@ export class PlaceService {
     return place;
   }
 
-  async findOneBy(placeData: Partial<Place>) {
-    return this.placeRepository.findOne({
+  async findOneBy(placeData: Partial<Place>, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(Place) : this.placeRepository;
+    return repo.findOne({
       where: placeData,
       relations: {
         owners: true,
@@ -170,8 +171,9 @@ export class PlaceService {
     });
   }
 
-  async remove(id: string, user: User) {
-    const place = await this.findOneByOrFail({ id });
+  async remove(id: string, user: User, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(Place) : this.placeRepository;
+    const place = await this.findOneByOrFail({ id }, manager);
 
     if (place.code === process.env.DEFAULT_PLACE_CODE) {
       throw new UnauthorizedException(
@@ -185,11 +187,12 @@ export class PlaceService {
       throw new UnauthorizedException('Acesso negado');
     }
 
-    await this.placeRepository.delete({ id });
+    await repo.delete({ id });
     return place;
   }
 
-  async save(place: Partial<Place>) {
-    return this.placeRepository.save(place);
+  async save(place: Partial<Place>, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(Place) : this.placeRepository;
+    return repo.save(place);
   }
 }

@@ -26,38 +26,43 @@ export class WorkTimePlaceUserService {
   ) {}
 
   async addToPlace(id: string, dto: CreateWorkTimeDto, user: User) {
-    const place = await this.placeService.findOneByOrFail({ id });
+    return this.dataSource.transaction(async manager => {
+      const place = await this.placeService.findOneByOrFail({ id }, manager);
 
-    const isOwner = place.owners.some(owner => owner.id === user.id);
-    if (!isOwner) {
-      throw new ForbiddenException('Acesso negado');
-    }
+      const isOwner = place.owners.some(owner => owner.id === user.id);
+      if (!isOwner) {
+        throw new ForbiddenException('Acesso negado');
+      }
 
-    if (place.workTimes.length >= 5) {
-      throw new InternalServerErrorException(
-        'Só é possível cadastrar 5 horários por estabelecimento',
-      );
-    }
-    this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
+      if (place.workTimes.length >= 5) {
+        throw new InternalServerErrorException(
+          'Só é possível cadastrar 5 horários por estabelecimento',
+        );
+      }
+      this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
-    const workTime = await this.workTimeService.create(dto);
-    workTime.isShared = true;
-    workTime.isDefault = !!dto.isDefault;
+      const workTime = await this.workTimeService.create(dto, manager);
+      workTime.isShared = true;
+      workTime.isDefault = !!dto.isDefault;
 
-    const defaultWorkTime = dto.isDefault
-      ? this.workTimeService.findDefaultFromPlace(place)
-      : undefined;
+      const defaultWorkTime = dto.isDefault
+        ? this.workTimeService.findDefaultFromPlace(place)
+        : undefined;
 
-    if (defaultWorkTime) {
-      await this.workTimeService.save({
-        ...defaultWorkTime,
-        isDefault: false,
-      });
-    }
-    place.workTimes.push(workTime);
+      if (defaultWorkTime) {
+        await this.workTimeService.save(
+          {
+            ...defaultWorkTime,
+            isDefault: false,
+          },
+          manager,
+        );
+      }
+      place.workTimes.push(workTime);
 
-    const created = await this.placeService.save(place);
-    return this.placeService.findOneByOrFail({ id: created.id });
+      const created = await this.placeService.save(place, manager);
+      return this.placeService.findOneByOrFail({ id: created.id }, manager);
+    });
   }
 
   async useIsSharedWorkTime(id: string, user: User) {
@@ -186,43 +191,58 @@ export class WorkTimePlaceUserService {
   }
 
   async setSharedToUser(userId: string, workTimeId: string) {
-    const user = await this.userService.findOneByOrFail({ id: userId });
-    const workTime = await this.workTimeService.findOneByOrFail({
-      id: workTimeId,
-      isShared: true,
+    return this.dataSource.transaction(async manager => {
+      const user = await this.userService.findOneByOrFail(
+        { id: userId },
+        undefined,
+        manager,
+      );
+      const workTime = await this.workTimeService.findOneByOrFail(
+        {
+          id: workTimeId,
+          isShared: true,
+        },
+        true,
+        manager,
+      );
+      const { workTime: oldWorkTime } = user;
+
+      if (oldWorkTime && !oldWorkTime.isShared) {
+        await this.workTimeService.remove(oldWorkTime.id, manager);
+      }
+      user.workTime = workTime;
+
+      const updated = await this.userService.save(user, manager);
+      return this.userService.findOneByOrFail(
+        { id: updated.id },
+        undefined,
+        manager,
+      );
     });
-    const { workTime: oldWorkTime } = user;
-
-    if (oldWorkTime && !oldWorkTime.isShared) {
-      await this.workTimeService.remove(oldWorkTime.id);
-    }
-    user.workTime = workTime;
-
-    const updated = await this.userService.save(user);
-    return this.userService.findOneByOrFail({ id: updated.id });
   }
 
   async createIntervalTime(
     id: string,
     { initHour, endHour }: CreateIntervalTimeDto,
-    manager?: EntityManager,
   ) {
-    const { workTime } = await this.userService.findOneByOrFail(
-      { id },
-      undefined,
-      manager,
-    );
-    const duration = generateDurationTime(initHour, endHour);
-    const interval = {
-      initHour: initHour.slice(11, 19),
-      endHour: endHour.slice(11, 19),
-      duration,
-      workTime,
-    };
-    const created = await this.intervalTimeService.save(interval, manager);
-    return this.intervalTimeService.findOneByOrFail(
-      { id: created.id },
-      manager,
-    );
+    return this.dataSource.transaction(async manager => {
+      const { workTime } = await this.userService.findOneByOrFail(
+        { id },
+        undefined,
+        manager,
+      );
+      const duration = generateDurationTime(initHour, endHour);
+      const interval = {
+        initHour: initHour.slice(11, 19),
+        endHour: endHour.slice(11, 19),
+        duration,
+        workTime,
+      };
+      const created = await this.intervalTimeService.save(interval, manager);
+      return this.intervalTimeService.findOneByOrFail(
+        { id: created.id },
+        manager,
+      );
+    });
   }
 }
