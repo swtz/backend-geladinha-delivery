@@ -20,6 +20,8 @@ import { CustomerFieldsValidationService } from '../services/customer-fields-val
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
+import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
+import { Customer } from '../entities/customer.entity';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -73,7 +75,18 @@ export class CustomerAddressController {
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
+    validateFindOneParamsOrFail<Partial<Customer>>({
+      id,
+      nickname,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    });
+
     const customer = await this.customerService.findOneByOrFail({
+      id,
       nickname,
       name,
       lastName,
