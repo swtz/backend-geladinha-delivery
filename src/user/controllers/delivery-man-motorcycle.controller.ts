@@ -46,6 +46,7 @@ export class DeliveryManMotorcycleController {
     return new ResponseUserDto(deliveryMan);
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @Get()
   async findAll() {
     const deliveryMen = await this.deliveryManService.findAllMotoboy();
