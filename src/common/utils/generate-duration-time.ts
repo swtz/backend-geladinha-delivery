@@ -44,5 +44,10 @@ export function generateDurationTime(
   const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
   const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
   const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
+  if (entityTime) {
+    if (entityTime.duration !== duration) {
+      entityTime.duration = duration;
+    }
+  }
   return duration;
 }
