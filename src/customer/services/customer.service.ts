@@ -41,6 +41,7 @@ export class CustomerService implements Service {
     isSecondPhone = false,
     manager?: EntityManager,
   ) {
+    if (!phone) return;
     const exists = await this.findByPhone(phone, isSecondPhone, manager);
 
     if (exists) {
@@ -49,6 +50,7 @@ export class CustomerService implements Service {
   }
 
   async failIfNicknameExists(nickname: string, manager?: EntityManager) {
+    if (!nickname) return;
     const repo = manager
       ? manager.getRepository(Customer)
       : this.customerRepository;
@@ -61,6 +63,7 @@ export class CustomerService implements Service {
   }
 
   async failIfEmailExists(email: string, manager?: EntityManager) {
+    if (!email) return;
     const repo = manager
       ? manager.getRepository(Customer)
       : this.customerRepository;

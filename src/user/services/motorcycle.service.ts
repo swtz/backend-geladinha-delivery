@@ -24,6 +24,7 @@ export class MotorcycleService {
     licensePlate: string,
     manager?: EntityManager,
   ) {
+    if (!licensePlate) return;
     const repo = manager
       ? manager.getRepository(Motorcycle)
       : this.motorcycleRepository;

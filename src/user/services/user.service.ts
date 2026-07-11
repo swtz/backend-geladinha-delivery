@@ -29,6 +29,7 @@ export class UserService {
   ) {}
 
   async failIfEmailExists(email: string) {
+    if (!email) return;
     const exists = await this.findOneBy({ email });
 
     if (exists) {
@@ -37,6 +38,7 @@ export class UserService {
   }
 
   async failIfPhoneExists(phone: string, isSecondPhone = false) {
+    if (!phone) return;
     const exists = await this.findByPhone(phone, isSecondPhone);
 
     if (exists) {
@@ -45,6 +47,7 @@ export class UserService {
   }
 
   async failIfNicknameExists(nickname: string) {
+    if (!nickname) return;
     const exists = await this.userRepository.findOneBy({ nickname });
 
     if (exists) {
