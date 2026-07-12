@@ -53,10 +53,16 @@ export class CustomerAddressController {
 
   @Patch(':id')
   async update(
-    @Body() dto: UpdateCustomerDto,
     @Param('id', ParseUUIDPipe) id: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Body() dto: UpdateCustomerDto,
   ) {
-    await this.customerFieldsValidationService.validateUniqueFields(dto);
+    await this.customerFieldsValidationService.validateUniqueFields({
+      ...dto,
+      phone,
+      secondPhone,
+    });
     const customer = await this.customerService.update(dto, id);
     return new ResponseCustomerDto(customer);
   }
