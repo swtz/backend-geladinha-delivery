@@ -57,7 +57,7 @@ export class CustomerService implements Service {
     const exists = await repo.existsBy({ nickname });
     if (exists) {
       throw new ConflictException(
-        `O número ${nickname} já pertence a um cliente`,
+        `O apelido ${nickname} já pertence a um cliente`,
       );
     }
   }
@@ -76,16 +76,10 @@ export class CustomerService implements Service {
   }
 
   async create(dto: CreateCustomerDto, manager?: EntityManager) {
-    await this.failIfNicknameExists(dto.nickname, manager);
-    await this.failIfPhoneExists(dto.phone, false, manager);
-
-    if (dto.secondPhone) {
-      await this.failIfPhoneExists(dto.secondPhone, true, manager);
-    }
-
     const customer = {
       name: dto.name,
       lastName: dto.lastName,
+      email: dto.email,
       nickname: dto.nickname,
       phone: formatPhone(dto.phone),
       secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : undefined,
@@ -143,21 +137,23 @@ export class CustomerService implements Service {
     });
   }
 
-  findByPhone(phone: string, isSecondPhone = false, manager?: EntityManager) {
+  async findByPhone(
+    phone: string,
+    isSecondPhone = false,
+    manager?: EntityManager,
+  ) {
     const repo = manager
       ? manager.getRepository(Customer)
       : this.customerRepository;
-    const qo: { phone: undefined | string; secondPhone: undefined | string } = {
-      phone,
-      secondPhone: undefined,
-    };
-
     if (isSecondPhone) {
-      qo.phone = undefined;
-      qo.secondPhone = phone;
-    }
+      const exists = await repo.findOneBy({ phone });
 
-    return repo.findOneBy(qo);
+      if (exists) {
+        return exists;
+      }
+      return repo.findOneBy({ secondPhone: phone });
+    }
+    return repo.findOneBy({ phone });
   }
 
   async remove(id: string) {

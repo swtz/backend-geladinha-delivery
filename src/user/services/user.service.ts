@@ -178,19 +178,21 @@ export class UserService {
     });
   }
 
-  findByPhone(phone: string, isSecondPhone = false, manager?: EntityManager) {
+  async findByPhone(
+    phone: string,
+    isSecondPhone = false,
+    manager?: EntityManager,
+  ) {
     const repo = manager ? manager.getRepository(User) : this.userRepository;
-    const qo: { phone: undefined | string; secondPhone: undefined | string } = {
-      phone,
-      secondPhone: undefined,
-    };
-
     if (isSecondPhone) {
-      qo.phone = undefined;
-      qo.secondPhone = phone;
-    }
+      const exists = await repo.findOneBy({ phone });
 
-    return repo.findOneBy(qo);
+      if (exists) {
+        return exists;
+      }
+      return repo.findOneBy({ secondPhone: phone });
+    }
+    return repo.findOneBy({ phone });
   }
 
   async remove(id: string, manager?: EntityManager) {

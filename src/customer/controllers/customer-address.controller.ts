@@ -22,6 +22,7 @@ import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 import { Customer } from '../entities/customer.entity';
+import { formatPhone } from 'src/common/utils/format-phone';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -37,6 +38,12 @@ export class CustomerAddressController {
     @Body('customer') customerDto: CreateCustomerDto,
     @Body('address') addressDto: CreateAddressDto,
   ) {
+    const { phone, secondPhone } = customerDto;
+    await this.customerFieldsValidationService.validateUniqueFields({
+      ...customerDto,
+      phone: formatPhone(phone),
+      secondPhone: secondPhone ? formatPhone(secondPhone) : undefined,
+    });
     const customerWithAddress = await this.customerAddressService.create(
       customerDto,
       addressDto,

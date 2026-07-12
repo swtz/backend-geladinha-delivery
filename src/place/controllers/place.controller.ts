@@ -33,7 +33,7 @@ export class PlaceController {
   @Post('me')
   async create(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreatePlaceDto,
+    @Body() dto: CreatePlaceDto, // Atente-se aos 'unique' fields!
     @Body('address') address: CreateAddressDto,
     @Body('postalBox') postalBox: CreateAddressDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
