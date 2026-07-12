@@ -21,6 +21,7 @@ import { DeliveryManService } from '../services/delivery-man.service';
 import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-man.dto';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
+import { formatPhone } from 'src/common/utils/format-phone';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -37,9 +38,16 @@ export class DeliveryManMotorcycleController {
     @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
     @Body('deliveryMan') deliveryManDto: CreateDeliveryManDto,
   ) {
-    await this.userFieldsValidationService.validateUniqueFields(userDto);
+    const parsedUserDto: CreateUserDto = {
+      ...userDto,
+      phone: formatPhone(userDto.phone),
+      secondPhone: userDto.secondPhone
+        ? formatPhone(userDto.secondPhone)
+        : undefined,
+    };
+    await this.userFieldsValidationService.validateUniqueFields(parsedUserDto);
     const deliveryMan = await this.deliveryManMotorcycleService.create(
-      userDto,
+      parsedUserDto,
       deliveryManDto,
       motorcycleDto,
     );
