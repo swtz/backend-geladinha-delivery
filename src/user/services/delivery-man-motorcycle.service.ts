@@ -54,7 +54,7 @@ export class DeliveryManMotorcycleService {
 
       return this.userService.findOneByOrFail(
         { id: user.id },
-        'motoboy-full',
+        undefined,
         manager,
       );
     });

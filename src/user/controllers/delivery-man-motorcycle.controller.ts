@@ -64,6 +64,7 @@ export class DeliveryManMotorcycleController {
     return parsedDeliveryMen;
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const deliveryMan = await this.deliveryManService.findOneByOrFail(
