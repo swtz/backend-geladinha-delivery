@@ -25,11 +25,11 @@ export class ResponseVoucherDto {
     };
     this.createdBy = voucher.createdBy
       ? {
-          id: voucher.user.id,
-          name: voucher.user.name,
-          lastName: voucher.user.lastName,
-          nickname: voucher.user.nickname,
-          phone: voucher.user.phone,
+          id: voucher.createdBy.id,
+          name: voucher.createdBy.name,
+          lastName: voucher.createdBy.lastName,
+          nickname: voucher.createdBy.nickname,
+          phone: voucher.createdBy.phone,
         }
       : null;
   }
