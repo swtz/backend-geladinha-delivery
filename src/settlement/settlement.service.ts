@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -19,6 +20,7 @@ import voucherRelations from '../voucher/data/relations/voucher';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { getUnixTime } from 'date-fns';
 
 @Injectable()
 export class SettlementService {
@@ -207,6 +209,12 @@ export class SettlementService {
       new Date(0).toISOString(),
       toDate,
     );
+
+    if (getUnixTime(initDate) > getUnixTime(to)) {
+      throw new BadRequestException(
+        'A data final não pode ser maior do que a data inicial',
+      );
+    }
 
     const newSettlement = await this.preview({ id: operator.id }, initDate, to);
     const mergedSettlement = {

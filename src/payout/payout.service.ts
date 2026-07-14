@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -20,6 +21,7 @@ import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
 import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 import { full as mtbFull } from 'src/user/data/relations/delivery-man';
+import { getUnixTime } from 'date-fns';
 
 @Injectable()
 export class PayoutService {
@@ -163,6 +165,12 @@ export class PayoutService {
       new Date(0).toISOString(),
       toDate,
     );
+
+    if (getUnixTime(initDate) > getUnixTime(to)) {
+      throw new BadRequestException(
+        'A data final não pode ser maior do que a data inicial',
+      );
+    }
 
     const newPayout = await this.preview({ id: user.id }, initDate, to);
     const mergedPayout = {
