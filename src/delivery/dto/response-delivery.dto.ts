@@ -36,7 +36,7 @@ export class ResponseDeliveryDto {
     this.isPaid = delivery.isPaid;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;
-    this.motorcycleLicensePlate = delivery.motoboy.motorcycle.licensePlate;
+    this.motorcycleLicensePlate = delivery.motorcycleLicensePlate;
     this.tip = delivery.tip
       ? {
           id: delivery.tip.id,
