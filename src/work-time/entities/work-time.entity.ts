@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IntervalTime } from './interval-time.entity';
 
 @Entity()
 export class WorkTime {
@@ -43,13 +44,22 @@ export class WorkTime {
 
   @ManyToMany(() => Place, place => place.workTimes, {
     nullable: true,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
   places!: Place[];
+
+  @OneToMany(() => IntervalTime, intervalTime => intervalTime.workTime, {
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+    nullable: true,
+  })
+  intervalTimes!: IntervalTime[];
 
   @OneToMany(() => User, user => user.workTime, {
     nullable: true,
     onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
   @JoinColumn()
   user!: User[];

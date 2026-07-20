@@ -15,6 +15,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { DeliveryMan } from './delivery-man.entity';
+import { IntervalTime } from 'src/work-time/entities/interval-time.entity';
 
 @Entity()
 export class User {
@@ -68,7 +69,15 @@ export class User {
   @ManyToOne(() => WorkTime, workTime => workTime.user, {
     nullable: true,
     onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
   @JoinColumn()
   workTime!: WorkTime;
+
+  @OneToOne(() => IntervalTime, intervalTime => intervalTime.user, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  intervalTime!: IntervalTime;
 }

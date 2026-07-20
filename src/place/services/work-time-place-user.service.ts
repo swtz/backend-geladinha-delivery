@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { UserService } from 'src/user/services/user.service';
@@ -199,11 +200,19 @@ export class WorkTimePlaceUserService {
         undefined,
         manager,
       );
-      const { workTime: oldWorkTime } = user;
-      const workTime = await this.workTimeService.create(dto, manager);
+      const { workTime: oldWorkTime } = user; // workTime | null é o certo
+      const workTime = await this.workTimeService.create(dto, manager); // puxar relação WorkTime.intervalTimes
+
       if (oldWorkTime && !oldWorkTime.isShared) {
-        await this.workTimeService.remove(oldWorkTime.id, manager);
+        const copy = user.intervalTime !== null ? user.intervalTime : undefined;
+
+        if (copy) {
+          await this.workTimeService.remove(oldWorkTime.id, manager);
+          user.intervalTime = copy;
+          user.workTime.intervalTimes.push(user.intervalTime);
+        }
       }
+
       user.workTime = workTime;
 
       const updated = await this.userService.save(user, manager);
@@ -247,21 +256,35 @@ export class WorkTimePlaceUserService {
   }
 
   async createIntervalTime(
-    id: string,
+    userId: string,
+    placeId: string,
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     return this.dataSource.transaction(async manager => {
-      const { workTime } = await this.userService.findOneByOrFail(
-        { id },
+      const user = await this.userService.findOneByOrFail(
+        { id: userId },
         undefined,
         manager,
       );
+      if (user.workTime !== null) {
+        throw new UnprocessableEntityException(
+          'Use o módulo "Tempo de Intervalo" para criar seu Intervalo',
+        );
+      }
+
+      const place = await this.placeService.findOneByOrFail(
+        { id: placeId },
+        manager,
+      );
+      const defaultWorkTime =
+        this.workTimeService.findDefaultFromPlaceOrFail(place);
       const duration = generateDurationTime(initHour, endHour);
       const interval = {
         initHour: initHour.slice(11, 19),
         endHour: endHour.slice(11, 19),
         duration,
-        workTime,
+        workTime: defaultWorkTime,
+        user,
       };
       const created = await this.intervalTimeService.save(interval, manager);
       return this.intervalTimeService.findOneByOrFail(

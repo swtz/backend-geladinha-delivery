@@ -42,13 +42,15 @@ export class WorkTimeUserController {
     return new ResponseUserDto(user);
   }
 
-  @Post('interval-time/:id')
+  @Post('interval-time/:userId/:placeId')
   async createIntervalTime(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @Param('placeId', ParseUUIDPipe) placeId: string,
     @Body() dto: CreateIntervalTimeDto,
   ) {
     const intervalTime = await this.workTimePlaceUserService.createIntervalTime(
-      id,
+      userId,
+      placeId,
       dto,
     );
     return new ResponseIntervalTimeDto(intervalTime);

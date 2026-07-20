@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateIntervalTimeDto } from '../dto/interval-time/create-interval-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -18,13 +22,19 @@ export class IntervalTimeService {
     user: User,
     manager?: EntityManager,
   ) {
-    const { workTime } = user;
+    if (user.workTime === null) {
+      throw new UnprocessableEntityException(
+        'Use o módulo "Estabelecimento" para criar seu Intervalo',
+      );
+    }
+
     const duration = generateDurationTime(initHour, endHour);
     const interval = {
       initHour: initHour.slice(11, 19),
       endHour: endHour.slice(11, 19),
       duration,
-      workTime,
+      workTime: user.workTime,
+      user,
     };
     const created = await this.save(interval, manager);
     return this.findOneByOrFail({ id: created.id }, manager);
