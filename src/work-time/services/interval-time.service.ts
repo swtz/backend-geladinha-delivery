@@ -77,4 +77,14 @@ export class IntervalTimeService {
       : this.intervalTimeRepository;
     return repo.save(intervalTime);
   }
+
+  async remove(id: string, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(IntervalTime)
+      : this.intervalTimeRepository;
+    const intervalTime = await this.findOneByOrFail({ id }, manager);
+
+    await repo.delete({ id });
+    return intervalTime;
+  }
 }

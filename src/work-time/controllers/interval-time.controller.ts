@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -30,6 +31,8 @@ export class IntervalTimeController {
     return new ResponseIntervalTimeDto(intervalTime);
   }
 
+  // createForEntity() {}
+
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -42,6 +45,12 @@ export class IntervalTimeController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const intervalTime = await this.intervalTimeService.findOneByOrFail({ id });
+    return new ResponseIntervalTimeDto(intervalTime);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const intervalTime = await this.intervalTimeService.remove(id);
     return new ResponseIntervalTimeDto(intervalTime);
   }
 }
