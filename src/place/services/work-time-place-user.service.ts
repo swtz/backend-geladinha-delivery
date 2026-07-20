@@ -201,10 +201,11 @@ export class WorkTimePlaceUserService {
       );
       const { workTime: oldWorkTime } = user;
       const workTime = await this.workTimeService.create(dto, manager);
-      if (oldWorkTime) {
+      if (oldWorkTime && !oldWorkTime.isShared) {
         await this.workTimeService.remove(oldWorkTime.id, manager);
       }
       user.workTime = workTime;
+
       const updated = await this.userService.save(user, manager);
       return this.userService.findOneByOrFail(
         { id: updated.id },
