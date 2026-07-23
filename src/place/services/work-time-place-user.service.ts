@@ -3,7 +3,6 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { UserService } from 'src/user/services/user.service';
@@ -15,6 +14,7 @@ import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-in
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
 import { DataSource } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
+import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -200,20 +200,15 @@ export class WorkTimePlaceUserService {
         undefined,
         manager,
       );
-      const { workTime: oldWorkTime } = user; // workTime | null é o certo
-      const workTime = await this.workTimeService.create(dto, manager); // puxar relação WorkTime.intervalTimes
+      const { workTime: oldWorkTime }: { workTime: WorkTime | null } = user;
+      const newWorkTime = await this.workTimeService.create(dto, manager);
 
       if (oldWorkTime && !oldWorkTime.isShared) {
-        const copy = user.intervalTime !== null ? user.intervalTime : undefined;
-
-        if (copy) {
-          await this.workTimeService.remove(oldWorkTime.id, manager);
-          user.intervalTime = copy;
-          user.workTime.intervalTimes.push(user.intervalTime);
-        }
+        await this.workTimeService.remove(oldWorkTime.id, manager);
+      } else if (user.intervalTime) {
+        await this.intervalTimeService.remove(user.intervalTime.id, manager);
       }
-
-      user.workTime = workTime;
+      user.workTime = newWorkTime;
 
       const updated = await this.userService.save(user, manager);
       return this.userService.findOneByOrFail(
@@ -239,10 +234,12 @@ export class WorkTimePlaceUserService {
         true,
         manager,
       );
-      const { workTime: oldWorkTime } = user;
 
+      const { workTime: oldWorkTime } = user;
       if (oldWorkTime && !oldWorkTime.isShared) {
         await this.workTimeService.remove(oldWorkTime.id, manager);
+      } else if (user.intervalTime) {
+        await this.intervalTimeService.remove(user.intervalTime.id, manager);
       }
       user.workTime = workTime;
 
@@ -256,36 +253,24 @@ export class WorkTimePlaceUserService {
   }
 
   async createIntervalTime(
-    userId: string,
-    placeId: string,
+    user: User,
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     return this.dataSource.transaction(async manager => {
-      const user = await this.userService.findOneByOrFail(
-        { id: userId },
-        undefined,
-        manager,
-      );
-      if (user.workTime !== null) {
-        throw new UnprocessableEntityException(
-          'Use o módulo "Tempo de Intervalo" para criar seu Intervalo',
-        );
-      }
-
-      const place = await this.placeService.findOneByOrFail(
-        { id: placeId },
-        manager,
-      );
-      const defaultWorkTime =
-        this.workTimeService.findDefaultFromPlaceOrFail(place);
+      const code = process.env.DEFAULT_PLACE_CODE || 'first';
+      const place = await this.placeService.findOneByOrFail({ code });
+      const workTime = user.workTime
+        ? user.workTime
+        : this.workTimeService.findDefaultFromPlaceOrFail(place);
       const duration = generateDurationTime(initHour, endHour);
       const interval = {
         initHour: initHour.slice(11, 19),
         endHour: endHour.slice(11, 19),
         duration,
-        workTime: defaultWorkTime,
+        workTime,
         user,
       };
+
       const created = await this.intervalTimeService.save(interval, manager);
       return this.intervalTimeService.findOneByOrFail(
         { id: created.id },

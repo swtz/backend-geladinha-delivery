@@ -5,6 +5,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Req,
 } from '@nestjs/common';
 import { WorkTimePlaceUserService } from '../services/work-time-place-user.service';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -13,6 +14,7 @@ import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.
 import { ResponseUserDto } from 'src/user/dtos/user/response-user.dto';
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { ResponseIntervalTimeDto } from 'src/work-time/dto/interval-time/response-interval-time.dto';
+import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 
 @Roles(Role.Admin)
 @Controller('work-time-user')
@@ -42,15 +44,13 @@ export class WorkTimeUserController {
     return new ResponseUserDto(user);
   }
 
-  @Post('interval-time/:userId/:placeId')
+  @Post('me/interval-time')
   async createIntervalTime(
-    @Param('userId', ParseUUIDPipe) userId: string,
-    @Param('placeId', ParseUUIDPipe) placeId: string,
+    @Req() req: AuthenticatedRequest,
     @Body() dto: CreateIntervalTimeDto,
   ) {
     const intervalTime = await this.workTimePlaceUserService.createIntervalTime(
-      userId,
-      placeId,
+      req.user,
       dto,
     );
     return new ResponseIntervalTimeDto(intervalTime);
