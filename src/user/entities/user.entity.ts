@@ -5,7 +5,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -71,7 +70,6 @@ export class User {
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  @JoinColumn()
   workTime!: WorkTime;
 
   @OneToOne(() => IntervalTime, intervalTime => intervalTime.user, {
