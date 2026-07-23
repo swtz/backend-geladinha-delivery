@@ -83,7 +83,7 @@ export class WorkTimeService {
     const fields = relations ? full : essencial;
     return repo.findOne({
       where: workTimeData,
-      relations: fields,
+      relations: { ...fields },
     });
   }
 

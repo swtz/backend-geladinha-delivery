@@ -66,7 +66,7 @@ export class IntervalTimeService {
       : this.intervalTimeRepository;
     return repo.findOne({
       where: intervalTimeData,
-      relations: { workTime: true },
+      relations: { workTime: { user: { roles: true }, places: true } },
     });
   }
 

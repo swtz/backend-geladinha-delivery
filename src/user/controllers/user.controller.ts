@@ -43,7 +43,7 @@ export class UserController {
   @Roles(Role.Operator, Role.Admin)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.userService.findOneByOrFail({ id });
+    const user = await this.userService.findOneByOrFail({ id }, 'user-full'); // Frontend requires to display the user Vouchers
     return new ResponseUserDto(user);
   }
 

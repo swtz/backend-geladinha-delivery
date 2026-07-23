@@ -1,4 +1,4 @@
-export const essencial = { roles: true, workTime: true };
+export const essencial = { roles: true, workTime: true, intervalTime: true };
 
 export const full = {
   ...essencial,

@@ -1,5 +1,6 @@
 export const tiny = {
   user: true,
+  intervalTimes: true,
 };
 
 export const essencial = {

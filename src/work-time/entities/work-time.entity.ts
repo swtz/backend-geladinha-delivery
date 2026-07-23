@@ -5,7 +5,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -43,9 +42,8 @@ export class WorkTime {
   isShared!: boolean;
 
   @ManyToMany(() => Place, place => place.workTimes, {
-    nullable: true,
-    onDelete: 'SET NULL',
-    onUpdate: 'SET NULL',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   places!: Place[];
 
@@ -61,6 +59,5 @@ export class WorkTime {
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  @JoinColumn()
   user!: User[];
 }
