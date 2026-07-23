@@ -2,6 +2,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { User } from '../../entities/user.entity';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { SmallResponseWorkTime } from 'src/work-time/types/small-response-work-time.type';
+import { ResponseIntervalTimeDto } from 'src/work-time/dto/interval-time/response-interval-time.dto';
 
 export class ResponseUserDto {
   readonly id: string;
@@ -16,6 +17,7 @@ export class ResponseUserDto {
   readonly roles: Role[];
   readonly vouchers: ResponseVoucherDto[] | null;
   readonly workTime: SmallResponseWorkTime | null;
+  readonly intervalTime: Omit<ResponseIntervalTimeDto, 'workTime'> | null;
 
   constructor(user: User) {
     this.id = user.id;
@@ -40,6 +42,16 @@ export class ResponseUserDto {
           initHour: user.workTime.initHour,
           endHour: user.workTime.endHour,
           duration: user.workTime.duration,
+        }
+      : null;
+    this.intervalTime = user.intervalTime
+      ? {
+          id: user.intervalTime.id,
+          initHour: user.intervalTime.initHour,
+          endHour: user.intervalTime.endHour,
+          duration: user.intervalTime.duration,
+          createdAt: user.intervalTime.createdAt,
+          updatedAt: user.intervalTime.updatedAt,
         }
       : null;
   }
