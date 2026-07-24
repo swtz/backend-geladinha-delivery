@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -31,6 +32,31 @@ export class IntervalTimeController {
   ) {
     const intervalTime = await this.intervalTimeService.update(id, dto);
     return new ResponseIntervalTimeDto(intervalTime);
+  }
+
+  @Get()
+  async findAll(
+    @Query('workTimeId', new ParseUUIDPipe({ optional: true }))
+    workTimeId: string,
+    @Query('userId', new ParseUUIDPipe({ optional: true })) userId: string,
+    @Query('duration') duration: string,
+    @Query('field')
+    field: 'createdAt' | 'updatedAt' | 'initHour' | 'endHour' | 'duration',
+    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
+  ) {
+    const intervalTimes = await this.intervalTimeService.findAll(
+      {
+        duration,
+        workTime: { id: workTimeId },
+        user: { id: userId },
+      },
+      { [field]: order },
+    );
+    const parsedIntervalTimes = intervalTimes.map(
+      item => new ResponseIntervalTimeDto(item),
+    );
+
+    return parsedIntervalTimes;
   }
 
   @Get('me')

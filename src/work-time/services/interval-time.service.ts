@@ -5,11 +5,17 @@ import {
 } from '@nestjs/common';
 import { CreateIntervalTimeDto } from '../dto/interval-time/create-interval-time.dto';
 import { User } from 'src/user/entities/user.entity';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  Repository,
+} from 'typeorm';
 import { IntervalTime } from '../entities/interval-time.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
+import { FindAllParams } from '../types/interval-time/findAllParams';
 
 @Injectable()
 export class IntervalTimeService {
@@ -55,6 +61,19 @@ export class IntervalTimeService {
     }
     const updated = await this.save(intervalTime, manager);
     return this.findOneByOrFail({ id: updated.id }, manager);
+  }
+
+  async findAll(
+    queryParams: FindAllParams,
+    orderParams: {
+      [K in keyof FindOptionsOrder<IntervalTime>]: FindOptionsOrderValue;
+    },
+  ) {
+    return this.intervalTimeRepository.find({
+      where: queryParams,
+      order: orderParams,
+      relations: { workTime: { user: { roles: true }, places: true } },
+    });
   }
 
   async findOneBy(
