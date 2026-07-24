@@ -55,4 +55,17 @@ export class WorkTimeUserController {
     );
     return new ResponseIntervalTimeDto(intervalTime);
   }
+
+  @Post('interval-time/:id')
+  async createIntervalTimeForEntity(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateIntervalTimeDto,
+  ) {
+    const intervalTime =
+      await this.workTimePlaceUserService.createIntervalTimeForEntity(
+        { id },
+        dto,
+      );
+    return new ResponseIntervalTimeDto(intervalTime);
+  }
 }

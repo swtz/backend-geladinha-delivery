@@ -257,6 +257,8 @@ export class WorkTimePlaceUserService {
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     return this.dataSource.transaction(async manager => {
+      // failIfIntervalTimeExists || putIntervalTimeToUser instead "create"?
+
       const code = process.env.DEFAULT_PLACE_CODE || 'first';
       const place = await this.placeService.findOneByOrFail({ code });
       const workTime = user.workTime
@@ -277,5 +279,13 @@ export class WorkTimePlaceUserService {
         manager,
       );
     });
+  }
+
+  async createIntervalTimeForEntity(
+    userData: Partial<User>,
+    { initHour, endHour }: CreateIntervalTimeDto,
+  ) {
+    const user = await this.userService.findOneByOrFail(userData);
+    return this.createIntervalTime(user, { initHour, endHour });
   }
 }
