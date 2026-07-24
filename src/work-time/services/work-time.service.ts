@@ -13,7 +13,7 @@ import { WorkTime } from '../entities/work-time.entity';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
-import { FindAllParams } from '../types/findAllParams';
+import { FindAllParams } from '../types/findAllParams.type';
 import { full, essencial, tiny } from '../data/relations/work-time';
 import { getUnixTime, isSameDay } from 'date-fns';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
