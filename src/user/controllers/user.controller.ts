@@ -70,7 +70,11 @@ export class UserController {
       return new ForbiddenException('Acesso negado');
     }
 
-    await this.userFieldsValidationService.validateUniqueFields(dto);
+    await this.userFieldsValidationService.validateUniqueFields({
+      ...dto,
+      phone,
+      secondPhone,
+    });
 
     const user = await this.userService.create({
       ...dto,
