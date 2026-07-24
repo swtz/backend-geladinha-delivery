@@ -81,6 +81,9 @@ GET / POST / PATCH / PUT / DELETE / HEAD / OPTIONS / CONNECT / TRACE
 /settlement/:uuid                         PATCH       Atualizar caixa do televendas                 JWT             ADMIN/OPERATOR
 /settlement/:uuid/:bool                   PATCH       Atualizar status do caixa                     JWT             ADMIN
 /settlement/:uuid                         DELETE      Apagar caixa do televendas                    JWT             ADMIN/OPERATOR
+
+/interval-time/:uuid                         DELETE      Apagar caixa do televendas                    JWT             ADMIN/OPERATOR
 ```
 
-Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto da requisição.
+Obs.: Rotas que contém 'me' usam os dados do usuário que vem por meio do objeto
+da requisição.

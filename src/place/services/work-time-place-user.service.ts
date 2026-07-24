@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -257,7 +258,11 @@ export class WorkTimePlaceUserService {
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     return this.dataSource.transaction(async manager => {
-      // failIfIntervalTimeExists || putIntervalTimeToUser instead "create"?
+      if (user.intervalTime) {
+        throw new ConflictException(
+          'Usuário já possui um Tempo de Intervalo registrado',
+        );
+      }
 
       const code = process.env.DEFAULT_PLACE_CODE || 'first';
       const place = await this.placeService.findOneByOrFail({ code });

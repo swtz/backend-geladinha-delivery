@@ -57,12 +57,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
           status = HttpStatus.CONFLICT;
           messages = ['Resource already exists'];
           errorName = 'Conflict';
+          this.logger.error('Database error', dbError?.stack || 'sem stack');
           break;
 
         case '23503':
           status = HttpStatus.INTERNAL_SERVER_ERROR;
           messages = ['ENTITY FIELD ERROR'];
           errorName = 'Internal Server Error';
+          this.logger.error('Database error', dbError?.stack || 'sem stack');
           break;
 
         default:
