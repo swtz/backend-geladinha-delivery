@@ -5,19 +5,18 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponsePlaceDto {
   readonly id: string;
-  readonly code?: string;
+  readonly code: string | null;
   readonly name: string;
   readonly businessName: string;
   readonly cnpj: string;
   readonly cpf: string;
   readonly phone: string;
-  readonly secondPhone?: string;
+  readonly secondPhone: string | null;
   readonly email: string;
   readonly owners: UserResponseDtoType[] | null;
-  readonly address?: ResponseAddressDto;
-  readonly postalBox?: ResponseAddressDto;
-  readonly workTimes?: ResponseWorkTimeDto[];
-  // readonly socialMedias?: ResponseSocialMediasDto;
+  readonly address: ResponseAddressDto | null;
+  readonly postalBox: ResponseAddressDto | null;
+  readonly workTimes: ResponseWorkTimeDto[] | null;
 
   constructor(place: Place) {
     this.id = place.id;
@@ -29,25 +28,25 @@ export class ResponsePlaceDto {
     this.phone = place.phone;
     this.secondPhone = place.secondPhone;
     this.email = place.email;
-    this.owners = place.owners
-      ? place.owners.map(item => {
-          return {
-            id: item.id,
-            name: item.name,
-            lastName: item.lastName,
-            nickname: item.nickname,
-            phone: item.phone,
-          };
-        })
-      : null;
-    this.address = place.address
-      ? new ResponseAddressDto(place.address)
-      : undefined;
+    this.owners =
+      place.owners?.length > 0
+        ? place.owners.map(item => {
+            return {
+              id: item.id,
+              name: item.name,
+              lastName: item.lastName,
+              nickname: item.nickname,
+              phone: item.phone,
+            };
+          })
+        : null;
+    this.address = place.address ? new ResponseAddressDto(place.address) : null;
     this.postalBox = place.postalBox
       ? new ResponseAddressDto(place.postalBox)
-      : undefined;
-    this.workTimes = place.workTimes
-      ? place.workTimes.map(item => new ResponseWorkTimeDto(item))
-      : undefined;
+      : null;
+    this.workTimes =
+      place.workTimes?.length > 0
+        ? place.workTimes.map(item => new ResponseWorkTimeDto(item))
+        : null;
   }
 }

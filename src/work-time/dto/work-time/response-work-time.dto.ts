@@ -1,6 +1,7 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTime } from '../../entities/work-time.entity';
 import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { ResponseIntervalTimeDto } from '../interval-time/response-interval-time.dto';
 
 export class ResponseWorkTimeDto {
   readonly id: string;
@@ -21,6 +22,7 @@ export class ResponseWorkTimeDto {
       }[]
     | null;
   readonly user: UserResponseDtoType[] | null;
+  readonly intervalTimes: Omit<ResponseIntervalTimeDto, 'workTime'>[] | null;
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
@@ -32,26 +34,41 @@ export class ResponseWorkTimeDto {
     this.duration = workTime.duration;
     this.isDefault = workTime.isDefault;
     this.isShared = workTime.isShared;
-    this.places = workTime.places
-      ? workTime.places.map(place => {
-          return {
-            id: place.id,
-            name: place.name,
-            businessName: place.businessName,
-            phone: place.phone,
-          };
-        })
-      : null;
-    this.user = workTime.user
-      ? workTime.user.map(user => {
-          return {
-            id: user.id,
-            name: user.name,
-            lastName: user.lastName,
-            nickname: user.nickname,
-            phone: user.phone,
-          };
-        })
-      : null;
+    this.places =
+      workTime.places?.length > 0
+        ? workTime.places.map(place => {
+            return {
+              id: place.id,
+              name: place.name,
+              businessName: place.businessName,
+              phone: place.phone,
+            };
+          })
+        : null;
+    this.user =
+      workTime.user?.length > 0
+        ? workTime.user.map(user => {
+            return {
+              id: user.id,
+              name: user.name,
+              lastName: user.lastName,
+              nickname: user.nickname,
+              phone: user.phone,
+            };
+          })
+        : null;
+    this.intervalTimes =
+      workTime.intervalTimes?.length > 0
+        ? workTime.intervalTimes.map(item => {
+            return {
+              id: item.id,
+              createdAt: item.createdAt,
+              updatedAt: item.updatedAt,
+              initHour: item.initHour,
+              endHour: item.endHour,
+              duration: item.duration,
+            };
+          })
+        : null;
   }
 }

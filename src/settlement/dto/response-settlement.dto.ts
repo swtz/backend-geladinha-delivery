@@ -26,7 +26,7 @@ export class ResponseSettlementDto {
         workTime: MediumResponseWorkTime | null;
       })
     | null;
-  readonly vouchers?: ResponseVoucherDto[];
+  readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(
     settlement: Omit<
@@ -80,8 +80,9 @@ export class ResponseSettlementDto {
           }
         : null,
     };
-    this.vouchers = settlement.vouchers
-      ? settlement.vouchers.map(item => new ResponseVoucherDto(item))
-      : undefined;
+    this.vouchers =
+      settlement.vouchers?.length > 0
+        ? settlement.vouchers.map(item => new ResponseVoucherDto(item))
+        : null;
   }
 }

@@ -4,13 +4,13 @@ export class ResponseAddressDto {
   readonly id: string;
   readonly street: string;
   readonly number: string;
-  readonly complement?: string;
-  readonly referencePoint?: string;
+  readonly complement: string | null;
+  readonly referencePoint: string | null;
   readonly neighborhood: string;
   readonly postalCode: string;
   readonly city: string;
   readonly stateCode: string;
-  readonly location?: string;
+  readonly location: string | null;
   readonly isDefault: boolean;
 
   constructor(address: Address) {

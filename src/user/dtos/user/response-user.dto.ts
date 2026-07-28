@@ -14,7 +14,7 @@ export class ResponseUserDto {
   readonly phone: string;
   readonly secondPhone: string | null;
   readonly email: string | null;
-  readonly roles: Role[];
+  readonly roles: Role[] | null;
   readonly vouchers: ResponseVoucherDto[] | null;
   readonly workTime: SmallResponseWorkTime | null;
   readonly intervalTime: Omit<ResponseIntervalTimeDto, 'workTime'> | null;
@@ -29,7 +29,8 @@ export class ResponseUserDto {
     this.phone = user.phone;
     this.secondPhone = user.secondPhone;
     this.email = user.email;
-    this.roles = user.roles.map(role => role.name);
+    this.roles =
+      user.roles?.length > 0 ? user.roles.map(role => role.name) : null;
     this.vouchers = user.vouchers
       ? user.vouchers.map(voucher => {
           return new ResponseVoucherDto(voucher);

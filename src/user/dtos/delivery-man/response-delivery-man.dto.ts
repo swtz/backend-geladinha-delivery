@@ -34,15 +34,16 @@ export class ResponseDeliveryManDto {
       displacement: deliveryMan.motorcycle.displacement,
       licensePlate: deliveryMan.motorcycle.licensePlate,
     };
-    this.tips = deliveryMan.tips
-      ? deliveryMan.tips.map(tip => {
-          return {
-            id: tip.id,
-            amount: tip.amount,
-            createdAt: tip.createdAt,
-            updatedAt: tip.updatedAt,
-          };
-        })
-      : null;
+    this.tips =
+      deliveryMan.tips?.length > 0
+        ? deliveryMan.tips.map(tip => {
+            return {
+              id: tip.id,
+              amount: tip.amount,
+              createdAt: tip.createdAt,
+              updatedAt: tip.updatedAt,
+            };
+          })
+        : null;
   }
 }

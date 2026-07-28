@@ -22,7 +22,7 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
-import { FindUserDto } from 'src/user/dtos/user/find-user.dto';
+import { CreateUserPayoutDto } from 'src/user/dtos/user/create-user-payout.dto';
 import { User } from 'src/user/entities/user.entity';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
@@ -71,7 +71,7 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('user') userData: FindUserDto,
+    @Body('user') userData: CreateUserPayoutDto,
     @Body('from') fromDate: string,
     @Body('to') toDate: string,
   ) {

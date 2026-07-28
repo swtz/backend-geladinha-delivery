@@ -9,7 +9,7 @@ export class ResponseCustomerDto {
   readonly phone: string;
   readonly secondPhone: string | null;
   readonly email: string | null;
-  readonly addresses: ResponseAddressDto[];
+  readonly addresses: ResponseAddressDto[] | null | [];
 
   constructor(customer: Customer) {
     this.id = customer.id;
@@ -19,8 +19,11 @@ export class ResponseCustomerDto {
     this.phone = customer.phone;
     this.secondPhone = customer.secondPhone;
     this.email = customer.email;
-    this.addresses = customer.addresses.map(address => {
-      return new ResponseAddressDto(address);
-    });
+    this.addresses =
+      customer.addresses?.length > 0
+        ? customer.addresses.map(address => {
+            return new ResponseAddressDto(address);
+          })
+        : null;
   }
 }

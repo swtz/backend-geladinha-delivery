@@ -2,7 +2,7 @@ import { PartialType, PickType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import { IsOptional, IsUUID } from 'class-validator';
 
-export class FindUserDto extends PartialType(
+export class CreateUserPayoutDto extends PartialType(
   PickType(CreateUserDto, [
     'nickname',
     'name',
