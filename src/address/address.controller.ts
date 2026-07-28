@@ -20,15 +20,17 @@ import { Role } from 'src/common/role/roles.enum';
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
-  @Get('find/:id')
+  @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const address = await this.addressService.findOneByOrFail({ id });
     return new ResponseAddressDto(address);
   }
 
-  @Get(':id')
+  @Get('customer/:id')
   async findAllOwned(@Param('id', ParseUUIDPipe) id: string) {
-    const addresses = await this.addressService.findAllOwned({ id });
+    const addresses = await this.addressService.findAllOwned({
+      id,
+    });
     const parsedAddresses = addresses.map(
       address => new ResponseAddressDto(address),
     );

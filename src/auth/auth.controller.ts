@@ -10,7 +10,10 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  login(@Body() dto: LoginDto, @Body('phone', ParseBrPhonePipe) phone: string) {
+  login(
+    @Body() dto: LoginDto,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+  ): Promise<{ accessToken: string }> {
     if (!(dto.email || dto.nickname || phone)) {
       throw new BadRequestException('Preencha ao menos um campo');
     }

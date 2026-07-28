@@ -135,7 +135,7 @@ export class DeliveryController {
   }
 
   @Get(':id')
-  async findOneBy(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const delivery = await this.deliveryService.findOneByOrFail({ id });
     return new ResponseDeliveryDto(delivery);
   }

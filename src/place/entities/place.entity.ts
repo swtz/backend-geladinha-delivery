@@ -3,15 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { SocialMedias } from './social-medias.entity';
 import { User } from 'src/user/entities/user.entity';
 import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
@@ -44,7 +41,7 @@ export class Place {
   @Column({ unique: true })
   phone!: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true }) // unique: true
   secondPhone!: string;
 
   @Column({ unique: true })
@@ -66,8 +63,4 @@ export class Place {
   })
   @JoinTable()
   workTimes!: WorkTime[];
-
-  @OneToOne(() => SocialMedias, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn()
-  socialMedias!: SocialMedias;
 }

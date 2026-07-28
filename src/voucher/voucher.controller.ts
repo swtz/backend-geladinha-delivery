@@ -24,13 +24,12 @@ import { Voucher as VoucherEntity } from './entities/voucher.entity';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 
-@Roles(Role.Operator, Role.Motoboy, Role.Admin)
+@Roles(Role.Admin)
 @Controller('voucher')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
   @Get()
-  @Roles(Role.Admin, Role.Operator)
   async findAll(
     @Query('type', new ParseEnumPipe(Voucher, { optional: true }))
     type: Voucher,
@@ -66,13 +65,11 @@ export class VoucherController {
   }
 
   @Get(':id')
-  @Roles(Role.Admin, Role.Operator)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const voucher = await this.voucherService.findOneByOrFail({ id });
     return new ResponseVoucherDto(voucher);
   }
 
-  @Roles(Role.Admin)
   @Post('me')
   async create(
     @Body() dto: CreateVoucherDto,
@@ -83,7 +80,6 @@ export class VoucherController {
   }
 
   @Post('me/user/:id')
-  @Roles(Role.Admin)
   async createForEntity(
     @Body() dto: CreateVoucherDto,
     @Req() req: AuthenticatedRequest,
@@ -97,7 +93,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @Roles(Role.Admin)
   @Patch('me/:id')
   async update(
     @Body() dto: UpdateVoucherDto,
@@ -111,7 +106,6 @@ export class VoucherController {
   }
 
   @Patch('me/user/:id')
-  @Roles(Role.Admin)
   async updateForEntity(
     @Body() dto: UpdateVoucherDto,
     @Req() req: AuthenticatedRequest,
@@ -129,7 +123,6 @@ export class VoucherController {
     return new ResponseVoucherDto(voucher);
   }
 
-  @Roles(Role.Admin)
   @Delete('me/:id')
   async remove(
     @Req() req: AuthenticatedRequest,

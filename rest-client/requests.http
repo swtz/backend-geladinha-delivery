@@ -553,7 +553,7 @@ Authorization: Bearer {{JwtToken}}
 
 ### Get dateObject
 # @name getDateObject
-GET {{baseUrl}}/work-time-place/date?from=2026-06-13&to=2026-06-14
+GET {{baseUrl}}/work-time-place/date?from=2026-07-30&to=2026-07-31
 Authorization: Bearer {{JwtToken}}
 
 ### Create motorcycle

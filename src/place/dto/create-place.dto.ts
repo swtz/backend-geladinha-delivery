@@ -26,11 +26,11 @@ export class CreatePlaceDto {
   @IsNotEmpty({ message: 'Campo CPF não pode estar vazio' })
   cpf!: string;
 
-  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  @IsPhoneNumber('BR', { message: 'Telefone inválido' })
   phone!: string;
 
   @IsOptional()
-  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  @IsPhoneNumber('BR', { message: 'Telefone inválido' })
   secondPhone?: string;
 
   @IsEmail({}, { message: 'Email inválido' })
@@ -51,5 +51,4 @@ export class CreatePlaceDto {
 
   @IsNotEmptyObject({}, { message: 'Formato inválido' })
   workTime!: CreateWorkTimeDto;
-  // socialMedias: CreateSocialMediasDto;
 }

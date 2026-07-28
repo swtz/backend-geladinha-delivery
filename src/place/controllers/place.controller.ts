@@ -16,7 +16,6 @@ import { PlaceService } from '../services/place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { CreatePlaceDto } from '../dto/create-place.dto';
 import { CreateAddressDto } from 'src/address/dto/create-address.dto';
-import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
@@ -48,15 +47,9 @@ export class PlaceController {
   @Patch('me/:id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdatePlaceDto,
-    @Body('address') address: UpdateAddressDto,
-    @Body('postalBox') postalBox: UpdateAddressDto,
+    @Body() dto: UpdatePlaceDto, // Atente-se aos 'unique' fields!
   ) {
-    const place = await this.placeService.update(id, {
-      ...dto,
-      address,
-      postalBox,
-    });
+    const place = await this.placeService.update(id, dto);
     return new ResponsePlaceDto(place);
   }
 

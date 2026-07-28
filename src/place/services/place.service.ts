@@ -137,7 +137,6 @@ export class PlaceService {
         address: true,
         postalBox: true,
         workTimes: true,
-        socialMedias: true,
       },
     });
   }

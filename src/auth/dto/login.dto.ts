@@ -8,7 +8,7 @@ import {
 
 export class LoginDto {
   @IsOptional()
-  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  @IsPhoneNumber('BR', { message: 'Telefone inválido' })
   phone!: string;
 
   @IsOptional()

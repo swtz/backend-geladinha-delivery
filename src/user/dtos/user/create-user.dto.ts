@@ -22,11 +22,11 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Campo apelido não pode estar vazio' })
   nickname!: string;
 
-  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  @IsPhoneNumber('BR', { message: 'Telefone inválido' })
   phone!: string;
 
   @IsOptional()
-  @IsPhoneNumber('BR', { message: 'Número de telefone inválido' })
+  @IsPhoneNumber('BR', { message: 'Telefone inválido' })
   secondPhone: string | undefined;
 
   @IsOptional()
