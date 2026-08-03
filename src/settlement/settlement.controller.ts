@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -25,6 +26,7 @@ import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pi
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 import { CreateUserPayoutDto } from 'src/user/dtos/user/create-user-payout.dto';
 import { User } from 'src/user/entities/user.entity';
+import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -40,9 +42,7 @@ export class SettlementController {
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('name') name: string,
     @Query('lastName') lastName: string,
-
-    // precisa-se validar email
-    @Query('email') email: string,
+    @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('from') fromDate: string,
@@ -82,6 +82,12 @@ export class SettlementController {
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
+    if (description && description.length > 130) {
+      throw new BadRequestException(
+        'Campo descrição só pode ter no máximo 130 caracteres',
+      );
+    }
+
     const preview = await this.settlementService.preview(qo, from, to);
     const settlement = await this.settlementService.create(
       preview,
@@ -117,9 +123,7 @@ export class SettlementController {
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('name') name: string,
     @Query('lastName') lastName: string,
-
-    // precisa-se validar email
-    @Query('email') email: string,
+    @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {

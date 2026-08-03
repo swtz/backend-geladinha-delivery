@@ -40,6 +40,7 @@ export function generateDurationTime(
     start: `${from.slice(0, 7)}-01T${auxTime.initHour}`,
     end: `${from.slice(0, 7)}-${auxTime.addOneDay}T${auxTime.endHour}`,
   });
+
   const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
   const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
   const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;

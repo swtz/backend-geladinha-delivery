@@ -22,6 +22,7 @@ import { ResponseDeliveryDto } from './dto/response-delivery.dto';
 import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
+import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -67,9 +68,7 @@ export class DeliveryController {
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('name') name: string,
     @Query('lastName') lastName: string,
-
-    // precisa-se validar email
-    @Query('email') email: string,
+    @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('from') fromDate: string,

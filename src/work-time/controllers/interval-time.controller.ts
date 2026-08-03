@@ -7,7 +7,6 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
-  Post,
   Query,
   Req,
 } from '@nestjs/common';
@@ -24,7 +23,6 @@ import { IntervalTime } from '../entities/interval-time.entity';
 export class IntervalTimeController {
   constructor(private readonly intervalTimeService: IntervalTimeService) {}
 
-  @Post()
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,

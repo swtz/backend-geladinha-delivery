@@ -23,6 +23,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 import { Customer } from '../entities/customer.entity';
 import { formatPhone } from 'src/common/utils/format-phone';
+import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -82,9 +83,7 @@ export class CustomerAddressController {
     @Query('nickname') nickname: string,
     @Query('name') name: string,
     @Query('lastName') lastName: string,
-
-    // precisa-se validar email
-    @Query('email') email: string,
+    @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
