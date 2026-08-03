@@ -59,7 +59,7 @@ export class CreateAddressDto {
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo cidade não pode estar vazio' })
   @MaxLength(32, { message: 'Campo cidade pode ter no máximo 32 caracteres' })
-  @MinLength(4, { message: 'Campo cidade precisa ter no mínimo 4 caracteres' })
+  @MinLength(3, { message: 'Campo cidade precisa ter no mínimo 3 caracteres' })
   city?: string;
 
   @IsOptional()

@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
 } from 'class-validator';
 import { PaymentMethod } from '../enums/payment-methods.enum';
 
@@ -12,6 +13,9 @@ export class CreateDeliveryDto {
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo descrição não pode estar vazio' })
+  @MaxLength(255, {
+    message: 'A descrição só pode ter no máximo 250 caracteres.',
+  })
   description?: string;
 
   @IsNumber(
