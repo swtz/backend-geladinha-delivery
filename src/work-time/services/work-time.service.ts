@@ -175,10 +175,9 @@ export class WorkTimeService {
     });
   }
 
-  async findAllOwned(user: User) {
-    return this.workTimeRepository.find({
+  async findMy(user: User) {
+    return this.workTimeRepository.findOne({
       where: { user: { id: user.id } },
-      order: { createdAt: 'DESC' },
       relations: tiny,
     });
   }
