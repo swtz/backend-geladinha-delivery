@@ -3,7 +3,6 @@ import { PlaceService } from './services/place.service';
 import { PlaceController } from './controllers/place.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Place } from './entities/place.entity';
-import { SocialMedias } from './entities/social-medias.entity';
 import { AddressModule } from 'src/address/address.module';
 import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { UserModule } from 'src/user/user.module';
@@ -14,7 +13,7 @@ import { WorkTimeUserController } from './controllers/work-time-user.controller'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Place, SocialMedias]),
+    TypeOrmModule.forFeature([Place]),
     AddressModule,
     WorkTimeModule,
     UserModule,

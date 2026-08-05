@@ -23,7 +23,7 @@ export class DeliveryManMotorcycleService {
     motorcycleDto: CreateMotorcycleDto,
   ) {
     return this.dataSource.transaction(async manager => {
-      const user = await this.userService.create(userDto, manager); // TRANSACTIONS
+      const user = await this.userService.create(userDto, manager);
 
       const owner = motorcycleDto.owner
         ? await this.userService.findOneByOrFail(

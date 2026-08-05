@@ -48,7 +48,7 @@ export class PlaceService {
     // criar um social medias (ainda não)
     // depois cria-se o objeto
     const place = {
-      code: dto.code, // failIfExists
+      code: dto.code, // failIfExists // método específico para definir essa propriedade
       name: dto.name, // failIfExists
       businessName: dto.businessName,
       cnpj,
