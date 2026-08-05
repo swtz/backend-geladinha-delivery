@@ -4,7 +4,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  Repository,
+} from 'typeorm';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
@@ -18,7 +24,6 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from '../data/relations/delivery-man';
-
 @Injectable()
 export class UserService {
   constructor(
@@ -26,6 +31,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly roleService: RoleService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async failIfEmailExists(email: string) {
@@ -55,24 +61,27 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto, manager?: EntityManager) {
-    const role = await this.roleService.findOneOrCreate(dto.role, manager);
-    const hashedPassword = await this.hashingService.hash(dto.password);
+  async create(dto: CreateUserDto, extManager?: EntityManager) {
+    return this.dataSource.transaction(async srcManager => {
+      const manager = extManager ? extManager : srcManager;
+      const role = await this.roleService.findOneOrCreate(dto.role, manager);
+      const hashedPassword = await this.hashingService.hash(dto.password);
 
-    const user = {
-      name: dto.name,
-      lastName: dto.lastName,
-      nickname: dto.nickname,
-      phone: dto.phone,
-      secondPhone: dto.secondPhone,
-      email: dto.email,
-      password: hashedPassword,
-      forceLogout: false,
-      roles: [role],
-    };
+      const user = {
+        name: dto.name,
+        lastName: dto.lastName,
+        nickname: dto.nickname,
+        phone: dto.phone,
+        secondPhone: dto.secondPhone,
+        email: dto.email,
+        password: hashedPassword,
+        forceLogout: false,
+        roles: [role],
+      };
 
-    const created = await this.save(user, manager);
-    return this.findOneByOrFail({ id: created.id }, undefined, manager);
+      const created = await this.save(user, manager);
+      return this.findOneByOrFail({ id: created.id }, undefined, manager);
+    });
   }
 
   async getAllRoleNames(userData: Partial<User>) {
@@ -80,22 +89,25 @@ export class UserService {
     return user.roles.map(role => role.name);
   }
 
-  async update(user: User, dto: UpdateUserDto, manager?: EntityManager) {
-    const { nickname, phone, email, secondPhone } = dto;
+  async update(user: User, dto: UpdateUserDto, extManager?: EntityManager) {
+    return this.dataSource.transaction(async srcManager => {
+      const manager = extManager ? extManager : srcManager;
+      const { nickname, phone, email, secondPhone } = dto;
 
-    user.name = dto.name ?? user.name;
-    user.lastName = dto.lastName ?? user.lastName;
+      user.name = dto.name ?? user.name;
+      user.lastName = dto.lastName ?? user.lastName;
 
-    if (nickname || phone || email || secondPhone) {
-      user.nickname = dto.nickname ?? user.nickname;
-      user.phone = dto.phone ?? user.phone;
-      user.secondPhone = dto.secondPhone ?? user.secondPhone;
-      user.email = dto.email ?? user.email;
-      user.forceLogout = true;
-    }
+      if (nickname || phone || email || secondPhone) {
+        user.nickname = dto.nickname ?? user.nickname;
+        user.phone = dto.phone ?? user.phone;
+        user.secondPhone = dto.secondPhone ?? user.secondPhone;
+        user.email = dto.email ?? user.email;
+        user.forceLogout = true;
+      }
 
-    const updated = await this.save(user, manager);
-    return this.findOneByOrFail({ id: updated.id }, undefined, manager);
+      const updated = await this.save(user, manager);
+      return this.findOneByOrFail({ id: updated.id }, undefined, manager);
+    });
   }
 
   async updatePassword(
@@ -122,12 +134,20 @@ export class UserService {
     return this.save(user, manager);
   }
 
-  async findAll({ role }: { role?: RoleEnum }) {
+  async findAll({
+    role,
+    orderParams,
+  }: {
+    role?: RoleEnum;
+    orderParams: {
+      [K in keyof FindOptionsOrder<User>]: FindOptionsOrderValue;
+    };
+  }) {
     return this.userRepository.find({
       where: {
         roles: { name: role },
       },
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations: essencial,
     });
   }

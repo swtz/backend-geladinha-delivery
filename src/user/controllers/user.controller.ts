@@ -23,6 +23,7 @@ import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { UserFieldsValidationService } from '../services/user-fields-validation.service';
+import { User } from '../entities/user.entity';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -51,8 +52,17 @@ export class UserController {
   @Get()
   async findAll(
     @Query('role', new ParseEnumPipe(Role, { optional: true })) role: Role,
+    @Query('field')
+    field: keyof Pick<
+      User,
+      'createdAt' | 'updatedAt' | 'name' | 'lastName' | 'email'
+    >,
+    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
   ) {
-    const users = await this.userService.findAll({ role });
+    const users = await this.userService.findAll({
+      role,
+      orderParams: { [field]: order },
+    });
     const parsedUsers = users.map(user => new ResponseUserDto(user));
     return parsedUsers;
   }
