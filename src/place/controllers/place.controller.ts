@@ -23,6 +23,8 @@ import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ResponsePlaceDto } from '../dto/response-place.dto';
+import { ParseCpfPipe } from '../pipes/parse-cpf.pipe';
+import { ParseCnpjPipe } from '../pipes/parse-cnpj.pipe';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -33,12 +35,14 @@ export class PlaceController {
   async create(
     @Req() req: AuthenticatedRequest,
     @Body() dto: CreatePlaceDto, // Atente-se aos 'unique' fields!
-    @Body('address') address: CreateAddressDto,
+    @Body('cpf', ParseCpfPipe) cpf: string,
+    @Body('cnpj', ParseCnpjPipe) cnpj: string,
+    @Body('address') address: CreateAddressDto, // @ValidatedNest & @Type(() => CreateAddressDto)
     @Body('postalBox') postalBox: CreateAddressDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
   ) {
     const place = await this.placeService.create(
-      { ...dto, address, postalBox, workTime },
+      { ...dto, cpf, cnpj, address, postalBox, workTime },
       req.user,
     );
     return new ResponsePlaceDto(place);

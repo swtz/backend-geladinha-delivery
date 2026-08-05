@@ -23,7 +23,7 @@ export class Place {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ unique: true })
   code!: string;
 
   @Column({ unique: true })
@@ -35,13 +35,13 @@ export class Place {
   @Column({ unique: true })
   cnpj!: string;
 
-  @Column({ unique: true })
+  @Column({ nullable: true, unique: true })
   cpf!: string;
 
   @Column({ unique: true })
   phone!: string;
 
-  @Column({ nullable: true }) // unique: true
+  @Column({ nullable: true, unique: true })
   secondPhone!: string;
 
   @Column({ unique: true })
@@ -51,10 +51,18 @@ export class Place {
   @JoinTable()
   owners!: User[];
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => Address, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+    nullable: false,
+  })
   address!: Address;
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => Address, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+    nullable: false,
+  })
   postalBox!: Address;
 
   @ManyToMany(() => WorkTime, workTime => workTime.places, {
