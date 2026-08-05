@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  MaxLength,
 } from 'class-validator';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 
@@ -20,10 +21,13 @@ export class CreatePlaceDto {
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo CNPJ não pode estar vazio' })
+  @MaxLength(18, { message: 'O CNPJ só pode ter no máximo 18 caracteres' })
   cnpj!: string;
 
+  @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo CPF não pode estar vazio' })
+  @MaxLength(14, { message: 'O CPF só pode ter no máximo 14 caracteres' })
   cpf!: string;
 
   @IsPhoneNumber('BR', { message: 'Telefone inválido' })
