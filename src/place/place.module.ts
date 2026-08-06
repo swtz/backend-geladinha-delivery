@@ -10,6 +10,7 @@ import { WorkTimeDateService } from './services/work-time-date.service';
 import { WorkTimePlaceUserService } from './services/work-time-place-user.service';
 import { WorkTimePlaceController } from './controllers/work-time-place.controller';
 import { WorkTimeUserController } from './controllers/work-time-user.controller';
+import { PlaceFieldsValidationService } from './services/place-fields-validation.service';
 
 @Module({
   imports: [
@@ -23,7 +24,12 @@ import { WorkTimeUserController } from './controllers/work-time-user.controller'
     WorkTimePlaceController,
     WorkTimeUserController,
   ],
-  providers: [PlaceService, WorkTimeDateService, WorkTimePlaceUserService],
+  providers: [
+    PlaceService,
+    WorkTimeDateService,
+    WorkTimePlaceUserService,
+    PlaceFieldsValidationService,
+  ],
   exports: [PlaceService, WorkTimeDateService],
 })
 export class PlaceModule {}

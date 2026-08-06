@@ -25,26 +25,40 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ResponsePlaceDto } from '../dto/response-place.dto';
 import { ParseCpfPipe } from '../pipes/parse-cpf.pipe';
 import { ParseCnpjPipe } from '../pipes/parse-cnpj.pipe';
+import { PlaceFieldsValidationService } from '../services/place-fields-validation.service';
 
 @Roles(Role.Admin)
 @Controller('place')
 export class PlaceController {
-  constructor(private readonly placeService: PlaceService) {}
+  constructor(
+    private readonly placeService: PlaceService,
+    private readonly placeFieldsValidationService: PlaceFieldsValidationService,
+  ) {}
 
   @Post('me')
   async create(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreatePlaceDto, // Atente-se aos 'unique' fields!
+    @Body() dto: CreatePlaceDto,
     @Body('cpf', ParseCpfPipe) cpf: string,
     @Body('cnpj', ParseCnpjPipe) cnpj: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Body('address') address: CreateAddressDto, // @ValidatedNest & @Type(() => CreateAddressDto)
     @Body('postalBox') postalBox: CreateAddressDto,
     @Body('workTime') workTime: CreateWorkTimeDto,
   ) {
-    const place = await this.placeService.create(
-      { ...dto, cpf, cnpj, address, postalBox, workTime },
-      req.user,
-    );
+    const safeDto = {
+      ...dto,
+      cpf,
+      cnpj,
+      phone,
+      secondPhone,
+      address,
+      postalBox,
+      workTime,
+    };
+    await this.placeFieldsValidationService.validateUniqueFields(safeDto);
+    const place = await this.placeService.create(safeDto, req.user);
     return new ResponsePlaceDto(place);
   }
 

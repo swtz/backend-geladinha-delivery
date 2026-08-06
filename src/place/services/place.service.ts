@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -23,14 +24,18 @@ export class PlaceService {
     private readonly userService: UserService,
   ) {}
 
-  async create(dto: CreatePlaceDto, user: User) {
-    // obter usuário
-    const owner = user;
+  async failIfExists(field: string, value: string) {
+    if (!field || !value) return undefined;
 
-    // validar documentos
-    const cpf = dto.cpf; // failIfExists
-    const cnpj = dto.cnpj; // failIfExists
+    const exists = await this.placeRepository.existsBy({ [field]: value });
+    if (exists) {
+      throw new ConflictException(
+        `Esse ${field.toUpperCase()} já existe na base de dados do sistema`,
+      );
+    }
+  }
 
+  async create(dto: CreatePlaceDto, owner: User) {
     // criar endereço
     const address = await this.addressService.create(dto.address);
     // criar caixa postal
@@ -51,8 +56,8 @@ export class PlaceService {
       code: dto.code, // failIfExists // método específico para definir essa propriedade
       name: dto.name, // failIfExists
       businessName: dto.businessName,
-      cnpj,
-      cpf,
+      cnpj: dto.cnpj,
+      cpf: dto.cpf,
       phone: formatPhone(dto.phone), // failIfExists
       secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : dto.phone,
       email: dto.email, // failIfExists
