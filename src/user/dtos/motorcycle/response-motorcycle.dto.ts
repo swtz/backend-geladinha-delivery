@@ -12,6 +12,7 @@ export class ResponseMotorcycleDto {
   readonly displacement: string | null;
   readonly color: string;
   readonly isActive: boolean;
+  readonly placeCode: string;
   readonly owner: UserResponseDtoType | null;
   readonly driver: UserResponseDtoType | null;
 
@@ -26,6 +27,7 @@ export class ResponseMotorcycleDto {
     this.displacement = motorcycle.displacement;
     this.color = motorcycle.color;
     this.isActive = motorcycle.isActive;
+    this.placeCode = motorcycle.placeCode;
     this.owner = motorcycle.owner
       ? {
           id: motorcycle.owner.id,

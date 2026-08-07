@@ -42,7 +42,7 @@ export class Motorcycle {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column()
+  @Column({ nullable: true })
   placeCode!: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })

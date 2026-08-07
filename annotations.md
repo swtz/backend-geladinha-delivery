@@ -18,3 +18,6 @@ CreateUserDto.placeCode
 Obs.: no Frontend, esse campo será usado em todas as requisições que envolvem a
 presença de Place, isto é, que as informações precisem ser filtradas e ordenadas
 com base nesse campo.
+
+Nota: Essa informação ficará OMISSA no Frontend, ou seja, o sistema usará ela de
+modo interno não a deixando vazar na tela de modo que qualquer um possa olhar.

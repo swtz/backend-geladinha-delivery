@@ -54,4 +54,8 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Campo senha não pode estar vazio' })
   @MinLength(6, { message: 'A senha precisa ter no mínimo 6 caracteres' })
   password!: string;
+
+  @IsNotEmpty({ message: 'Campo estabelecimento não pode estar vazio' })
+  @IsString({ message: 'Formato inválido' })
+  placeCode!: string;
 }

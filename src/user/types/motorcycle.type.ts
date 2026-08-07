@@ -5,13 +5,20 @@ import { ResponseMotorcycleDto } from '../dtos/motorcycle/response-motorcycle.dt
 
 type MotorcycleOptionalFieldsType = {
   displacement?: string;
+  placeCode?: string;
   owner?: User;
   driver?: DeliveryMan;
 };
 
 export type MotorcycleType = Omit<
   Motorcycle,
-  'id' | 'createdAt' | 'updatedAt' | 'displacement' | 'owner' | 'driver'
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'displacement'
+  | 'placeCode'
+  | 'owner'
+  | 'driver'
 > &
   MotorcycleOptionalFieldsType;
 

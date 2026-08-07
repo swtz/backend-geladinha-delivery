@@ -48,4 +48,9 @@ export class CreateMotorcycleDto {
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
   driver?: string;
+
+  @IsOptional()
+  @IsNotEmpty({ message: 'Campo estabelecimento não pode estar vazio' })
+  @IsString({ message: 'Formato inválido' })
+  placeCode: string | undefined;
 }

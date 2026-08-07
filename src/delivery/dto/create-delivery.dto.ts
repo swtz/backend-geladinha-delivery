@@ -49,4 +49,8 @@ export class CreateDeliveryDto {
   @IsUUID('4', { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo cliente não pode estar vazio' })
   customer!: string;
+
+  @IsNotEmpty({ message: 'Campo estabelecimento não pode estar vazio' })
+  @IsString({ message: 'Formato inválido' })
+  placeCode!: string;
 }
