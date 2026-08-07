@@ -41,6 +41,9 @@ export class Delivery {
   @Column()
   motorcycleLicensePlate!: string;
 
+  @Column()
+  placeCode!: string;
+
   @OneToOne(() => Tip, {
     nullable: true,
     onDelete: 'SET NULL',

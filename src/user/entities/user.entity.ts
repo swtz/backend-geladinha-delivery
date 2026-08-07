@@ -51,6 +51,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Column()
+  placeCode!: string;
+
   @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.user, {
     nullable: true,
   })

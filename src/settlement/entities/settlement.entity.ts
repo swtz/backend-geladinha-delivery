@@ -61,6 +61,9 @@ export class Settlement {
   @Column({ default: false })
   isClosed!: boolean;
 
+  @Column()
+  placeCode!: string;
+
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   operator!: User;
 

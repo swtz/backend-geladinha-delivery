@@ -26,6 +26,9 @@ export class DeliveryMan {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Column()
+  placeCode!: string;
+
   @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
     nullable: false,
     onDelete: 'RESTRICT',
