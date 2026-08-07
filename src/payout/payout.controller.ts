@@ -25,6 +25,7 @@ import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-
 import { CreateUserPayoutDto } from 'src/user/dtos/user/create-user-payout.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import { CreatePayoutDto } from './dto/create-payout-dto';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -64,23 +65,21 @@ export class PayoutController {
 
     const payout = await this.payoutService.preview(qo, from, to);
 
-    return new ResponsePayoutDto(payout);
+    return new ResponsePayoutDto({ ...payout, placeCode: '' });
   }
 
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body('user') userData: CreateUserPayoutDto,
-    @Body('from') fromDate: string,
-    @Body('to') toDate: string,
+    @Body()
+    { user: userData, from: fromDate, to: toDate, placeCode }: CreatePayoutDto,
   ) {
     const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
-
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
     const preview = await this.payoutService.preview(qo, from, to);
-    const payout = await this.payoutService.create(preview);
+    const payout = await this.payoutService.create({ ...preview, placeCode });
 
     return new ResponsePayoutDto(payout);
   }

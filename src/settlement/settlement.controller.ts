@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,7 +6,6 @@ import {
   Param,
   ParseBoolPipe,
   ParseEnumPipe,
-  ParseFloatPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -24,9 +22,9 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseTimezoneDatePipe } from 'src/delivery/pipes/parse-timezone-date.pipe';
 import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
-import { CreateUserPayoutDto } from 'src/user/dtos/user/create-user-payout.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import { CreateSettlementDto } from './dto/create-settlement.dto';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -66,31 +64,28 @@ export class SettlementController {
 
     const settlement = await this.settlementService.preview(qo, from, to);
 
-    return new ResponseSettlementDto(settlement);
+    return new ResponseSettlementDto({ ...settlement, placeCode: '' });
   }
 
   @Post()
   async create(
-    @Body('user') userData: CreateUserPayoutDto,
-    @Body('initValue', ParseFloatPipe) initValue: number,
-    @Body('description') description: string,
-    @Body('from') fromDate: string,
-    @Body('to') toDate: string,
+    @Body()
+    {
+      from: fromDate,
+      to: toDate,
+      initValue,
+      description,
+      placeCode,
+      user: userData,
+    }: CreateSettlementDto,
   ) {
     const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
-
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(qo, fromDate, toDate);
 
-    if (description && description.length > 130) {
-      throw new BadRequestException(
-        'Campo descrição só pode ter no máximo 130 caracteres',
-      );
-    }
-
     const preview = await this.settlementService.preview(qo, from, to);
     const settlement = await this.settlementService.create(
-      preview,
+      { ...preview, placeCode },
       initValue,
       description,
     );
