@@ -96,23 +96,30 @@ export class DeliveryManMotorcycleService {
       motorcycle.year = dto.year ?? motorcycle.year;
       motorcycle.displacement = dto.displacement ?? motorcycle.displacement;
       motorcycle.isActive = dto.isActive ?? motorcycle.isActive;
-      motorcycle.driver = await this.deliveryManService.findOneByOrFail(
-        { user: { id: dto.driver } },
-        true,
-        manager,
-      );
-      motorcycle.owner = await this.userService.findOneByOrFail(
-        { id: dto.owner },
-        undefined,
-        manager,
-      );
+      motorcycle.driver = dto.driver
+        ? await this.deliveryManService.findOneByOrFail(
+            { user: { id: dto.driver } },
+            true,
+            manager,
+          )
+        : motorcycle.driver;
+
+      motorcycle.owner = dto.owner
+        ? await this.userService.findOneByOrFail(
+            { id: dto.owner },
+            undefined,
+            manager,
+          )
+        : motorcycle.owner;
+
       if (dto.licensePlate) {
         await this.motorcycleService.failIfLicensePlateExists(
           dto.licensePlate,
           manager,
         );
-        motorcycle.licensePlate = dto.licensePlate;
+        motorcycle.licensePlate = dto.licensePlate ?? motorcycle.licensePlate;
       }
+      motorcycle.placeCode = dto.placeCode ?? motorcycle.placeCode;
 
       const updated = await this.motorcycleService.save(motorcycle, manager);
       return this.motorcycleService.findOneByOrFail(

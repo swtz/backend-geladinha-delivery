@@ -12,21 +12,21 @@ import { formatCpf, validateCpf } from 'src/common/utils/format-cpf';
 export class ParsePlaceCodePipe implements PipeTransform {
   private readonly paramTypes = ['body', 'query'];
 
-  transform(value: string, { type }: ArgumentMetadata) {
-    if (
-      !(typeof value === 'string') ||
-      !value ||
-      !this.paramTypes.includes(type)
-    ) {
+  transform(value: string | object, { type }: ArgumentMetadata) {
+    if (!value || !this.paramTypes.includes(type)) {
       return undefined;
     }
+    const isObject = typeof value === 'object';
+    const placeCode = isObject ? (value['placeCode'] as string) : value;
+    const formattedCpf = formatCpf(placeCode);
+    const formattedCnpj = formatCnpj(placeCode);
 
-    if (validateCpf(formatCpf(value))) {
-      return formatCpf(value);
-    } else if (validateCnpj(formatCnpj(value))) {
-      return formatCnpj(value);
-    } else if (isUUID(value, '4')) {
-      return value;
+    if (validateCpf(formattedCpf)) {
+      return isObject ? { ...value, placeCode: formattedCpf } : formattedCpf;
+    } else if (validateCnpj(formattedCnpj)) {
+      return isObject ? { ...value, placeCode: formattedCnpj } : formattedCnpj;
+    } else if (isUUID(placeCode, '4')) {
+      return isObject ? { ...value, placeCode } : placeCode;
     }
 
     throw new BadRequestException('Estabelecimento inválido');

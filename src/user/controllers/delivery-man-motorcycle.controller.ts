@@ -22,6 +22,8 @@ import { ResponseDeliveryManDto } from '../dtos/delivery-man/response-delivery-m
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { formatPhone } from 'src/common/utils/format-phone';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import { ResponseMotorcycleDto } from '../dtos/motorcycle/response-motorcycle.dto';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -34,8 +36,10 @@ export class DeliveryManMotorcycleController {
 
   @Post()
   async create(
-    @Body('user') userDto: CreateUserDto,
-    @Body('motorcycle') motorcycleDto: CreateMotorcycleDto,
+    @Body('user', ParsePlaceCodePipe)
+    userDto: CreateUserDto,
+    @Body('motorcycle', ParsePlaceCodePipe)
+    motorcycleDto: CreateMotorcycleDto,
     @Body('deliveryMan') deliveryManDto: CreateDeliveryManDto,
   ) {
     const parsedUserDto: CreateUserDto = {
@@ -104,12 +108,14 @@ export class DeliveryManMotorcycleController {
   @Patch('restrict/:id')
   async updateRestrictMotorcycle(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
+    @Body('motorcycle', ParsePlaceCodePipe)
+    motorcycleDto: UpdateMotorcycleDto,
   ) {
-    const deliveryMan = await this.deliveryManMotorcycleService.update(
-      id,
-      motorcycleDto,
-    );
-    return new ResponseDeliveryManDto(deliveryMan);
+    const motorcycle =
+      await this.deliveryManMotorcycleService.updateRestrictMotorcycle(
+        id,
+        motorcycleDto,
+      );
+    return new ResponseMotorcycleDto(motorcycle);
   }
 }
