@@ -24,6 +24,7 @@ import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { UserFieldsValidationService } from '../services/user-fields-validation.service';
 import { User } from '../entities/user.entity';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -52,6 +53,7 @@ export class UserController {
   @Get()
   async findAll(
     @Query('role', new ParseEnumPipe(Role, { optional: true })) role: Role,
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
     @Query('field')
     field: keyof Pick<
       User,
@@ -61,6 +63,7 @@ export class UserController {
   ) {
     const users = await this.userService.findAll({
       role,
+      placeCode,
       orderParams: { [field]: order },
     });
     const parsedUsers = users.map(user => new ResponseUserDto(user));
@@ -74,6 +77,7 @@ export class UserController {
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Body('role', new ParseEnumPipe(Role)) role: Role,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
     @Body() dto: CreateUserDto,
   ) {
     if (role === Role.Motoboy || dto.role === Role.Motoboy) {
@@ -91,6 +95,7 @@ export class UserController {
       role,
       phone,
       secondPhone,
+      placeCode,
     });
 
     return new ResponseUserDto(user);
@@ -102,6 +107,7 @@ export class UserController {
     @Body() dto: UpdateUserDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
   ) {
     await this.userFieldsValidationService.validateUniqueFields({
       ...dto,
@@ -113,6 +119,7 @@ export class UserController {
       ...dto,
       phone,
       secondPhone,
+      placeCode,
     });
 
     return new ResponseUserDto(user);
@@ -125,6 +132,7 @@ export class UserController {
     @Body() dto: UpdateUserDto,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
   ) {
     const user = await this.userService.findOneByOrFail({ id });
 
@@ -138,6 +146,7 @@ export class UserController {
       ...dto,
       phone,
       secondPhone,
+      placeCode,
     });
 
     return new ResponseUserDto(updated);

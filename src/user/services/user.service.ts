@@ -77,6 +77,7 @@ export class UserService {
         password: hashedPassword,
         forceLogout: false,
         roles: [role],
+        placeCode: dto.placeCode,
       };
 
       const created = await this.save(user, manager);
@@ -92,16 +93,17 @@ export class UserService {
   async update(user: User, dto: UpdateUserDto, extManager?: EntityManager) {
     return this.dataSource.transaction(async srcManager => {
       const manager = extManager ? extManager : srcManager;
-      const { nickname, phone, email, secondPhone } = dto;
+      const { nickname, phone, email, secondPhone, placeCode } = dto;
 
       user.name = dto.name ?? user.name;
       user.lastName = dto.lastName ?? user.lastName;
 
-      if (nickname || phone || email || secondPhone) {
+      if (nickname || phone || email || secondPhone || placeCode) {
         user.nickname = dto.nickname ?? user.nickname;
         user.phone = dto.phone ?? user.phone;
         user.secondPhone = dto.secondPhone ?? user.secondPhone;
         user.email = dto.email ?? user.email;
+        user.placeCode = dto.placeCode ?? user.placeCode;
         user.forceLogout = true;
       }
 
@@ -136,9 +138,11 @@ export class UserService {
 
   async findAll({
     role,
+    placeCode,
     orderParams,
   }: {
     role?: RoleEnum;
+    placeCode: string;
     orderParams: {
       [K in keyof FindOptionsOrder<User>]: FindOptionsOrderValue;
     };
@@ -146,6 +150,7 @@ export class UserService {
     return this.userRepository.find({
       where: {
         roles: { name: role },
+        placeCode,
       },
       order: orderParams,
       relations: essencial,

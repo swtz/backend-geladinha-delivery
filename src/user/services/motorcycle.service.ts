@@ -55,6 +55,7 @@ export class MotorcycleService {
       year: dto.year,
       color: dto.color,
       isActive: dto.isActive ? dto.isActive : false,
+      placeCode: dto.placeCode,
       owner,
       driver,
     };

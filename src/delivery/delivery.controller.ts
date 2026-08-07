@@ -23,6 +23,7 @@ import { PaymentMethod } from './enums/payment-methods.enum';
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -36,8 +37,12 @@ export class DeliveryController {
   async create(
     @Req() req: AuthenticatedRequest,
     @Body() dto: CreateDeliveryDto,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
   ) {
-    const delivery = await this.deliveryService.create(dto, req.user);
+    const delivery = await this.deliveryService.create(
+      { ...dto, placeCode },
+      req.user,
+    );
     return new ResponseDeliveryDto(delivery);
   }
 
@@ -45,9 +50,14 @@ export class DeliveryController {
   async update(
     @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateDeliveryDto,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const delivery = await this.deliveryService.update(dto, req.user, id);
+    const delivery = await this.deliveryService.update(
+      { ...dto, placeCode },
+      req.user,
+      id,
+    );
     return new ResponseDeliveryDto(delivery);
   }
 
@@ -71,6 +81,7 @@ export class DeliveryController {
     @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
     @Query(
@@ -88,6 +99,7 @@ export class DeliveryController {
       email,
       phone,
       secondPhone,
+      placeCode,
     };
 
     const dateObject: {

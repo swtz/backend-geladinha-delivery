@@ -74,6 +74,7 @@ export class DeliveryService {
         motoboy,
         customer,
         address: defaultAddress,
+        placeCode: dto.placeCode,
       };
       const created = await this.save(delivery, manager);
       return this.findOneByOrFail({ id: created.id }, manager);
@@ -173,6 +174,7 @@ export class DeliveryService {
       delivery.deliveryTax = dto.deliveryTax ?? delivery.deliveryTax;
       delivery.description = dto.description ?? delivery.description;
       delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
+      delivery.placeCode = dto.placeCode ?? delivery.placeCode;
 
       return this.save(delivery, manager);
     });
