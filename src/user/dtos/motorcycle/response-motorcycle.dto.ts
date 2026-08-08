@@ -39,11 +39,11 @@ export class ResponseMotorcycleDto {
       : null;
     this.driver = motorcycle.driver.user
       ? {
-          id: motorcycle.owner.id,
-          name: motorcycle.owner.name,
-          lastName: motorcycle.owner.lastName,
-          nickname: motorcycle.owner.nickname,
-          phone: motorcycle.owner.phone,
+          id: motorcycle.driver.user.id,
+          name: motorcycle.driver.user.name,
+          lastName: motorcycle.driver.user.lastName,
+          nickname: motorcycle.driver.user.nickname,
+          phone: motorcycle.driver.user.phone,
         }
       : null;
   }

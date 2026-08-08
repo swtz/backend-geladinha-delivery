@@ -13,14 +13,14 @@ export class ParsePlaceCodePipe implements PipeTransform {
   private readonly paramTypes = ['body', 'query'];
 
   transform(value: string | object, { type }: ArgumentMetadata) {
-    if (!value || !this.paramTypes.includes(type)) {
-      return undefined;
-    }
     const isObject = typeof value === 'object';
     const placeCode = isObject ? (value['placeCode'] as string) : value;
+    if (!value || !placeCode || !this.paramTypes.includes(type)) {
+      return isObject ? { ...value, placeCode } : placeCode;
+    }
+
     const formattedCpf = formatCpf(placeCode);
     const formattedCnpj = formatCnpj(placeCode);
-
     if (validateCpf(formattedCpf)) {
       return isObject ? { ...value, placeCode: formattedCpf } : formattedCpf;
     } else if (validateCnpj(formattedCnpj)) {
@@ -28,7 +28,6 @@ export class ParsePlaceCodePipe implements PipeTransform {
     } else if (isUUID(placeCode, '4')) {
       return isObject ? { ...value, placeCode } : placeCode;
     }
-
     throw new BadRequestException('Estabelecimento inválido');
   }
 }
