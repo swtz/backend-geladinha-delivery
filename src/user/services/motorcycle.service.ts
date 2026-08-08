@@ -1,4 +1,9 @@
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  Repository,
+} from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -12,6 +17,7 @@ import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { essencial, full } from '../data/relations/delivery-man';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
+import { FindDeliveryManByUserDataType } from '../types/delivery-man.type';
 
 @Injectable()
 export class MotorcycleService {
@@ -85,7 +91,16 @@ export class MotorcycleService {
     model,
     year,
     owner,
-  }: Omit<Partial<Motorcycle>, 'owner'> & { owner: Partial<User> }) {
+    driver,
+    orderParams,
+    placeCode,
+  }: Omit<Partial<Motorcycle>, 'owner' | 'driver'> & {
+    owner?: Partial<User>;
+    driver?: FindDeliveryManByUserDataType;
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Motorcycle>]: FindOptionsOrderValue;
+    };
+  }) {
     return this.motorcycleRepository.find({
       where: {
         brand,
@@ -94,9 +109,12 @@ export class MotorcycleService {
         isActive,
         model,
         year,
+        placeCode,
         owner,
+        driver,
       },
       relations: { owner: true, driver: { motorcycle: true, user: true } },
+      order: orderParams,
     });
   }
 

@@ -13,6 +13,9 @@ import { MotorcycleService } from '../services/motorcycle.service';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { ResponseMotorcycleDto } from '../dtos/motorcycle/response-motorcycle.dto';
 import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
+import { FindOptionsOrder } from 'typeorm';
+import { Motorcycle } from '../entities/motorcycle.entity';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 
 @Controller('motorcycle')
 export class MotorcycleController {
@@ -38,7 +41,20 @@ export class MotorcycleController {
     @Query('nickname') nickname: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Query('field')
+    field: keyof FindOptionsOrder<Motorcycle>,
+    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
+    @Query('type') type: 'owner' | 'driver',
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
   ) {
+    const userData = {
+      id,
+      name,
+      lastName,
+      nickname,
+      phone,
+      secondPhone,
+    };
     const motorcycles = await this.motorcycleService.findAll({
       year,
       model,
@@ -46,14 +62,9 @@ export class MotorcycleController {
       color,
       brand,
       isActive,
-      owner: {
-        id,
-        name,
-        lastName,
-        nickname,
-        phone,
-        secondPhone,
-      },
+      placeCode,
+      [type]: type !== 'owner' ? { user: userData } : userData,
+      orderParams: { [field]: order },
     });
     const parsedMotorcycles = motorcycles.map(
       item => new ResponseMotorcycleDto(item),
