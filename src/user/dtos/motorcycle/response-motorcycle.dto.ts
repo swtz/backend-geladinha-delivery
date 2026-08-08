@@ -37,7 +37,7 @@ export class ResponseMotorcycleDto {
           phone: motorcycle.owner.phone,
         }
       : null;
-    this.driver = motorcycle.driver.user
+    this.driver = motorcycle.driver?.user
       ? {
           id: motorcycle.driver.user.id,
           name: motorcycle.driver.user.name,
