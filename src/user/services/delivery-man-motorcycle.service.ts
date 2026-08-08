@@ -40,15 +40,10 @@ export class DeliveryManMotorcycleService {
         manager,
       );
 
-      const motoboy = await this.deliveryManService.create(
+      await this.deliveryManService.create(
         deliveryManDto,
         user,
         motorcycle,
-        manager,
-      );
-
-      await this.motorcycleService.save(
-        { ...motorcycle, driver: motoboy },
         manager,
       );
 
