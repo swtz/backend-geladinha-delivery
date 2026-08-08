@@ -77,8 +77,16 @@ export class CustomerAddressController {
     return parsedCustomers;
   }
 
-  @Get('find')
+  @Get(':id')
   async findOne(
+    @Param('id', new ParseUUIDPipe({ optional: true })) id: string,
+  ) {
+    const customer = await this.customerService.findOneByOrFail({ id });
+    return new ResponseCustomerDto(customer);
+  }
+
+  @Get('find')
+  async findOneBy(
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
     @Query('nickname') nickname: string,
     @Query('name') name: string,
