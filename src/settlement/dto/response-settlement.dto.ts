@@ -6,6 +6,7 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponseSettlementDto {
   readonly id?: string;
+  readonly placeCode: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly weekDay: WeekDay;
@@ -47,6 +48,7 @@ export class ResponseSettlementDto {
     },
   ) {
     this.id = settlement.id;
+    this.placeCode = settlement.placeCode;
     this.createdAt = settlement.createdAt;
     this.updatedAt = settlement.updatedAt;
     this.isClosed = settlement.isClosed;

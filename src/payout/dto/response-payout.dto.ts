@@ -7,6 +7,7 @@ import { UserResponseDtoType } from 'src/user/types/user/user.type';
 
 export class ResponsePayoutDto {
   readonly id?: string;
+  readonly placeCode: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly weekDay: WeekDay;
@@ -34,6 +35,7 @@ export class ResponsePayoutDto {
     },
   ) {
     this.id = payout.id;
+    this.placeCode = payout.placeCode;
     this.createdAt = payout.createdAt;
     this.updatedAt = payout.updatedAt;
     this.isClosed = payout.isClosed;

@@ -25,6 +25,7 @@ import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-
 import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreateSettlementDto } from './dto/create-settlement.dto';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -69,7 +70,7 @@ export class SettlementController {
 
   @Post()
   async create(
-    @Body()
+    @Body(ParsePlaceCodePipe)
     {
       from: fromDate,
       to: toDate,

@@ -25,6 +25,7 @@ import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-
 import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreatePayoutDto } from './dto/create-payout-dto';
+import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -70,7 +71,7 @@ export class PayoutController {
   @Roles(Role.Admin, Role.Operator)
   @Post()
   async create(
-    @Body()
+    @Body(ParsePlaceCodePipe)
     { user: userData, from: fromDate, to: toDate, placeCode }: CreatePayoutDto,
   ) {
     const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
