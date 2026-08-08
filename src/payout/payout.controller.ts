@@ -26,6 +26,8 @@ import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreatePayoutDto } from './dto/create-payout-dto';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import { FindOptionsOrder } from 'typeorm';
+import { Payout } from './entities/payout.entity';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -111,23 +113,30 @@ export class PayoutController {
     @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Query('field') field: keyof FindOptionsOrder<Payout>,
+    @Query('order') order: 'asc' | 'ASC' | 'desc' | 'DESC',
   ) {
-    const payouts = await this.payoutService.findAll({
-      weekDay,
-      workDay,
-      motoboy: {
-        user: {
-          nickname,
-          id,
-          name,
-          lastName,
-          email,
-          phone,
-          secondPhone,
+    const payouts = await this.payoutService.findAll(
+      {
+        weekDay,
+        workDay,
+        motoboy: {
+          user: {
+            nickname,
+            id,
+            name,
+            lastName,
+            email,
+            phone,
+            secondPhone,
+          },
         },
+        isClosed,
+        placeCode,
       },
-      isClosed,
-    });
+      { [field]: order },
+    );
     const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
     return parsedPayouts;
   }
@@ -139,6 +148,16 @@ export class PayoutController {
     @Query('to') toDate: string,
   ) {
     const payout = await this.payoutService.update(id, toDate);
+    return new ResponsePayoutDto(payout);
+  }
+
+  @Roles(Role.Admin)
+  @Patch(':id/code')
+  async updatePlaceCode(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
+  ) {
+    const payout = await this.payoutService.updatePlaceCode(id, placeCode);
     return new ResponsePayoutDto(payout);
   }
 

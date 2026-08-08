@@ -65,7 +65,7 @@ export class IntervalTimeService {
 
   async findAll(
     queryParams: FindAllParams,
-    orderParams: {
+    orderParams?: {
       [K in keyof FindOptionsOrder<IntervalTime>]: FindOptionsOrderValue;
     },
   ) {

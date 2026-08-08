@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository, FindOptionsOrderValue } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
@@ -237,6 +237,13 @@ export class SettlementService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
+  async updatePlaceCode(id: string, placeCode: string) {
+    const settlement = await this.findOneByOrFail({ id });
+    settlement.placeCode = placeCode ?? settlement.placeCode;
+    const updated = await this.save(settlement);
+    return this.findOneByOrFail({ id: updated.id });
+  }
+
   async findOneByOrFail(settlementData: Partial<Settlement>) {
     const settlement = await this.findOneBy(settlementData);
 
@@ -279,15 +286,21 @@ export class SettlementService {
     });
   }
 
-  findAll(queryParams: {
-    weekDay?: WeekDay;
-    workDay?: Date;
-    operator?: Partial<User>;
-    isClosed?: boolean;
-  }) {
+  findAll(
+    queryParams: {
+      weekDay?: WeekDay;
+      workDay?: Date;
+      operator?: Partial<User>;
+      isClosed?: boolean;
+      placeCode?: string;
+    },
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Settlement>]: FindOptionsOrderValue;
+    },
+  ) {
     return this.settlementRepository.find({
       where: queryParams,
-      order: { workDay: 'DESC' },
+      order: orderParams,
       relations: { operator: true },
     });
   }

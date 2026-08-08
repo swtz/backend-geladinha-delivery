@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsOrderValue, Repository } from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
@@ -199,6 +199,13 @@ export class PayoutService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
+  async updatePlaceCode(id: string, placeCode: string) {
+    const payout = await this.findOneByOrFail({ id });
+    payout.placeCode = placeCode ?? payout.placeCode;
+    const updated = await this.save(payout);
+    return this.findOneByOrFail({ id: updated.id });
+  }
+
   async findOneByOrFail(payoutData: Partial<Payout>) {
     const payout = await this.findOneBy(payoutData);
 
@@ -242,15 +249,21 @@ export class PayoutService {
     });
   }
 
-  findAll(queryParams: {
-    weekDay?: WeekDay;
-    workDay?: Date;
-    motoboy?: FindDeliveryManByUserDataType;
-    isClosed?: boolean;
-  }) {
+  findAll(
+    queryParams: {
+      weekDay?: WeekDay;
+      workDay?: Date;
+      motoboy?: FindDeliveryManByUserDataType;
+      isClosed?: boolean;
+      placeCode?: string;
+    },
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Payout>]: FindOptionsOrderValue;
+    },
+  ) {
     return this.payoutRepository.find({
       where: queryParams,
-      order: { workDay: 'DESC' },
+      order: orderParams,
       relations: { motoboy: mtbFull },
     });
   }

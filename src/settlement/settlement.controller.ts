@@ -26,6 +26,8 @@ import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreateSettlementDto } from './dto/create-settlement.dto';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import { FindOptionsOrder } from 'typeorm';
+import { Settlement } from './entities/settlement.entity';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -122,21 +124,28 @@ export class SettlementController {
     @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Query('field') field: keyof FindOptionsOrder<Settlement>,
+    @Query('order') order: 'asc' | 'ASC' | 'desc' | 'DESC',
   ) {
-    const settlements = await this.settlementService.findAll({
-      weekDay,
-      workDay,
-      operator: {
-        nickname,
-        id,
-        name,
-        lastName,
-        email,
-        phone,
-        secondPhone,
+    const settlements = await this.settlementService.findAll(
+      {
+        weekDay,
+        workDay,
+        operator: {
+          nickname,
+          id,
+          name,
+          lastName,
+          email,
+          phone,
+          secondPhone,
+        },
+        isClosed,
+        placeCode,
       },
-      isClosed,
-    });
+      { [field]: order },
+    );
     const parsedSettlements = settlements.map(
       item => new ResponseSettlementDto(item),
     );
@@ -155,6 +164,19 @@ export class SettlementController {
       description,
     );
 
+    return new ResponseSettlementDto(settlement);
+  }
+
+  @Roles(Role.Admin)
+  @Patch(':id/code')
+  async updatePlaceCode(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
+  ) {
+    const settlement = await this.settlementService.updatePlaceCode(
+      id,
+      placeCode,
+    );
     return new ResponseSettlementDto(settlement);
   }
 
