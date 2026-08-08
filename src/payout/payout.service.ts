@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
@@ -159,6 +160,12 @@ export class PayoutService {
       motoboy: { user },
       workDay: initDate,
     } = payout;
+
+    if (!user) {
+      throw new UnprocessableEntityException(
+        'A entidade Motoboy não possui um usuário válido',
+      );
+    }
 
     const { endDate: to } = await this.workTimeDateService.create(
       { id: user.id },
