@@ -201,6 +201,11 @@ export class PayoutService {
 
   async updatePlaceCode(id: string, placeCode: string) {
     const payout = await this.findOneByOrFail({ id });
+    if (payout.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível atualizar um caixa fechado',
+      );
+    }
     payout.placeCode = placeCode ?? payout.placeCode;
     const updated = await this.save(payout);
     return this.findOneByOrFail({ id: updated.id });

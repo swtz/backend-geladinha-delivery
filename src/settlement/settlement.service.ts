@@ -239,6 +239,11 @@ export class SettlementService {
 
   async updatePlaceCode(id: string, placeCode: string) {
     const settlement = await this.findOneByOrFail({ id });
+    if (settlement.isClosed) {
+      throw new UnauthorizedException(
+        'Não é possível atualizar um caixa fechado',
+      );
+    }
     settlement.placeCode = placeCode ?? settlement.placeCode;
     const updated = await this.save(settlement);
     return this.findOneByOrFail({ id: updated.id });
