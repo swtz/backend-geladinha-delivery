@@ -24,7 +24,6 @@ export class DeliveryManMotorcycleService {
   ) {
     return this.dataSource.transaction(async manager => {
       const user = await this.userService.create(userDto, manager);
-
       const owner = motorcycleDto.owner
         ? await this.userService.findOneByOrFail(
             { id: motorcycleDto.owner },
@@ -32,7 +31,6 @@ export class DeliveryManMotorcycleService {
             manager,
           )
         : undefined;
-
       const motorcycle = await this.motorcycleService.create(
         motorcycleDto,
         owner,
@@ -47,6 +45,12 @@ export class DeliveryManMotorcycleService {
         manager,
       );
 
+      if (!owner) {
+        await this.motorcycleService.save(
+          { ...motorcycle, owner: user },
+          manager,
+        );
+      }
       return this.userService.findOneByOrFail(
         { id: user.id },
         undefined,
