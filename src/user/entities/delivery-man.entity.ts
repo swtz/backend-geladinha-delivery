@@ -27,8 +27,9 @@ export class DeliveryMan {
   updatedAt!: Date;
 
   @OneToOne(() => Motorcycle, motorcycle => motorcycle.driver, {
-    nullable: false,
+    nullable: true,
     onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
   })
   @JoinColumn()
   motorcycle!: Motorcycle;
