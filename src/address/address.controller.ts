@@ -24,6 +24,8 @@ import {
   CommonType,
   ParseOrderParamsPipe,
 } from 'src/delivery/pipes/parse-order-params.pipe';
+import { isPostalCode } from 'class-validator';
+import { formatBrPostalCode } from 'src/common/utils/format-br-postal-code';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('address')
@@ -41,7 +43,7 @@ export class AddressController {
     @Query('isDefault', new ParseBoolPipe({ optional: true }))
     isDefault: boolean,
     @Query('city') city: string,
-    @Query('postalCode') postalCode: string, // formatar
+    @Query('postalCode') postalCode: string,
     @Query('neighborhood') neighborhood: string,
     @Query('number') number: string,
     @Query('stateCode') stateCode: string,
@@ -70,7 +72,9 @@ export class AddressController {
     const addresses = await this.addressService.findAll({
       customerData,
       city,
-      postalCode,
+      postalCode: isPostalCode(postalCode, 'BR')
+        ? formatBrPostalCode(postalCode)
+        : undefined,
       neighborhood,
       street,
       number,
