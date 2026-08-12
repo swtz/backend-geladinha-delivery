@@ -12,8 +12,8 @@ export class ResponseDeliveryManDto {
   readonly user: UserResponseDtoType;
   readonly motorcycle: Pick<
     ResponseMotorcycleDto,
-    'id' | 'licensePlate' | 'brand' | 'color' | 'displacement'
-  >;
+    'id' | 'licensePlate' | 'brand' | 'color' | 'displacement' | 'placeCode'
+  > | null;
 
   constructor(deliveryMan: DeliveryMan) {
     this.id = deliveryMan.id;
@@ -21,19 +21,22 @@ export class ResponseDeliveryManDto {
     this.createdAt = deliveryMan.createdAt;
     this.updatedAt = deliveryMan.updatedAt;
     this.user = {
-      id: deliveryMan.user.id,
-      name: deliveryMan.user.name,
-      lastName: deliveryMan.user.lastName,
-      nickname: deliveryMan.user.nickname,
-      phone: deliveryMan.user.phone,
+      id: deliveryMan.user?.id,
+      name: deliveryMan.user?.name,
+      lastName: deliveryMan.user?.lastName,
+      nickname: deliveryMan.user?.nickname,
+      phone: deliveryMan.user?.phone,
     };
-    this.motorcycle = {
-      id: deliveryMan.motorcycle.id,
-      brand: deliveryMan.motorcycle.brand,
-      color: deliveryMan.motorcycle.color,
-      displacement: deliveryMan.motorcycle.displacement,
-      licensePlate: deliveryMan.motorcycle.licensePlate,
-    };
+    this.motorcycle = deliveryMan.motorcycle
+      ? {
+          id: deliveryMan.motorcycle.id,
+          brand: deliveryMan.motorcycle.brand,
+          color: deliveryMan.motorcycle.color,
+          displacement: deliveryMan.motorcycle.displacement,
+          licensePlate: deliveryMan.motorcycle.licensePlate,
+          placeCode: deliveryMan.motorcycle.placeCode,
+        }
+      : null;
     this.tips =
       deliveryMan.tips?.length > 0
         ? deliveryMan.tips.map(tip => {
