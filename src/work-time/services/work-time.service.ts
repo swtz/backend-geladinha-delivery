@@ -25,7 +25,11 @@ export class WorkTimeService {
     private readonly workTimeRepository: Repository<WorkTime>,
   ) {}
 
-  async create(dto: CreateWorkTimeDto, manager?: EntityManager) {
+  async create(
+    dto: CreateWorkTimeDto,
+    isShared = false,
+    manager?: EntityManager,
+  ) {
     const initHour = dto.initHour.slice(11, 19);
     const endHour = dto.endHour.slice(11, 19);
     const isAnotherDay = getUnixTime(dto.initHour) > getUnixTime(dto.endHour);
@@ -46,6 +50,7 @@ export class WorkTimeService {
       endHour,
       duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
+      isShared,
     };
     const created = await this.save(workTime, manager);
     return this.findOneByOrFail({ id: created.id }, true, manager);

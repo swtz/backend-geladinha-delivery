@@ -30,12 +30,10 @@ export class WorkTimePlaceUserService {
   async addToPlace(id: string, dto: CreateWorkTimeDto, user: User) {
     return this.dataSource.transaction(async manager => {
       const place = await this.placeService.findOneByOrFail({ id }, manager);
-
       const isOwner = place.owners.some(owner => owner.id === user.id);
       if (!isOwner) {
         throw new ForbiddenException('Acesso negado');
       }
-
       if (place.workTimes.length >= 5) {
         throw new InternalServerErrorException(
           'Só é possível cadastrar 5 horários por estabelecimento',
@@ -43,8 +41,7 @@ export class WorkTimePlaceUserService {
       }
       this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
-      const workTime = await this.workTimeService.create(dto, manager);
-      workTime.isShared = true;
+      const workTime = await this.workTimeService.create(dto, true, manager);
       workTime.isDefault = !!dto.isDefault;
 
       const defaultWorkTime = dto.isDefault
@@ -202,7 +199,11 @@ export class WorkTimePlaceUserService {
         manager,
       );
       const { workTime: oldWorkTime }: { workTime: WorkTime | null } = user;
-      const newWorkTime = await this.workTimeService.create(dto, manager);
+      const newWorkTime = await this.workTimeService.create(
+        dto,
+        false,
+        manager,
+      );
 
       if (oldWorkTime && !oldWorkTime.isShared) {
         await this.workTimeService.remove(oldWorkTime.id, manager);
