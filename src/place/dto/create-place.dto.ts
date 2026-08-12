@@ -2,13 +2,14 @@ import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import {
   IsEmail,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsOptional,
   IsPhoneNumber,
   IsString,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
+import { Type } from 'class-transformer';
 
 export class CreatePlaceDto {
   @IsString({ message: 'Formato inválido' })
@@ -50,12 +51,16 @@ export class CreatePlaceDto {
   })
   code!: string;
 
-  @IsNotEmptyObject({}, { message: 'Formato inválido' })
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
   address!: CreateAddressDto;
 
-  @IsNotEmptyObject({}, { message: 'Formato inválido' })
-  postalBox!: CreateAddressDto;
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
+  postalBox?: CreateAddressDto | undefined;
 
-  @IsNotEmptyObject({}, { message: 'Formato inválido' })
+  @ValidateNested()
+  @Type(() => CreateWorkTimeDto)
   workTime!: CreateWorkTimeDto;
 }
