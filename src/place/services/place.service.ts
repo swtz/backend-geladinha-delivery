@@ -5,15 +5,20 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Place } from '../entities/place.entity';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  Repository,
+} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
-import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTimeService } from 'src/work-time/services/work-time.service';
 import { DataSource } from 'typeorm';
+import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Injectable()
 export class PlaceService {
@@ -107,30 +112,28 @@ export class PlaceService {
   }
 
   async findAll(
-    queryParams: Partial<Place> & {
-      ownName: string;
-      ownPhone: string;
-      ownId: string;
-      shift: Shift;
-      isDefault: boolean;
+    {
+      userData,
+      workTimeData,
+    }: Partial<Place> & {
+      workTimeData?: Omit<Partial<WorkTime>, 'user'> & {
+        user?: Partial<User>[];
+      };
+      userData?: Partial<User>;
+    },
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Place>]: FindOptionsOrderValue;
     },
   ) {
-    const {
-      ownName: name,
-      ownPhone: phone,
-      ownId: id,
-      shift,
-      isDefault,
-    } = queryParams;
     return this.placeRepository.find({
       where: {
-        businessName: queryParams.businessName,
-        workTimes: [{ shift, isDefault }],
-        owners: [{ name, phone, id }],
+        owners: userData ? [userData] : undefined,
+        workTimes: workTimeData ? [workTimeData] : undefined,
       },
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations: {
         owners: true,
+        workTimes: true,
       },
     });
   }

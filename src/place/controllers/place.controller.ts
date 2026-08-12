@@ -24,6 +24,14 @@ import { ResponsePlaceDto } from '../dto/response-place.dto';
 import { ParseCpfPipe } from '../pipes/parse-cpf.pipe';
 import { ParseCnpjPipe } from '../pipes/parse-cnpj.pipe';
 import { PlaceFieldsValidationService } from '../services/place-fields-validation.service';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { Place } from '../entities/place.entity';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
+import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import { placeOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin)
 @Controller('place')
@@ -84,20 +92,44 @@ export class PlaceController {
 
   @Get()
   async findAll(
-    @Query('name') ownName: string,
-    @Query('phone', ParseBrPhonePipe) ownPhone: string,
-    @Query('id', new ParseUUIDPipe({ optional: true })) ownId: string,
+    @Query('type') type: 'workTime' | 'owner',
+    @Query('nickname') nickname: string,
+    @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+    @Query('name') name: string,
+    @Query('lastName') lastName: string,
+    @Query('email', ParseEmailPipe) email: string,
+    @Query('phone', ParseBrPhonePipe) phone: string,
+    @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('shift', new ParseEnumPipe(Shift, { optional: true })) shift: Shift,
     @Query('isDefault', new ParseBoolPipe({ optional: true }))
     isDefault: boolean,
+    @Query('isShared', new ParseBoolPipe({ optional: true }))
+    isShared: boolean,
+    @Query(new ParseOrderParamsPipe<CommonType<Place>>(placeOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Place>]: FindOptionsOrderValue;
+    },
   ) {
-    const places = await this.placeService.findAll({
-      ownName,
-      ownId,
-      ownPhone,
-      shift,
-      isDefault,
-    });
+    const userData = {
+      id,
+      nickname,
+      name,
+      lastName,
+      phone,
+      secondPhone,
+      email,
+    };
+    const workTimeData = { shift, isDefault, isShared };
+    const places = await this.placeService.findAll(
+      {
+        userData: type === 'owner' ? userData : undefined,
+        workTimeData:
+          type === 'workTime'
+            ? { ...workTimeData, user: [userData] }
+            : workTimeData,
+      },
+      orderParams,
+    );
     const parsedPlaces = places.map(item => new ResponsePlaceDto(item));
     return parsedPlaces;
   }

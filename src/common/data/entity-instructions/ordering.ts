@@ -1,4 +1,5 @@
 import { Address } from 'src/address/entities/address.entity';
+import { Place } from 'src/place/entities/place.entity';
 import { Settlement } from 'src/settlement/entities/settlement.entity';
 import { User } from 'src/user/entities/user.entity';
 import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
@@ -42,6 +43,21 @@ export const settlementOrderMap = generateOrderingMap<Settlement>({
   isClosed: undefined,
   placeCode: undefined,
   operator: undefined,
+});
+
+export const placeOrderMap = generateOrderingMap<Place>({
+  name: undefined,
+  businessName: undefined,
+  address: undefined,
+  code: undefined,
+  cnpj: undefined,
+  cpf: undefined,
+  email: undefined,
+  phone: undefined,
+  secondPhone: undefined,
+  postalBox: undefined,
+  owners: undefined,
+  workTimes: undefined,
 });
 
 // talvez dê pra fazer um método como esse para conseguir gerar um objeto de relações
