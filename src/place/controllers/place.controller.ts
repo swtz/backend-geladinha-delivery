@@ -15,9 +15,7 @@ import {
 import { PlaceService } from '../services/place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { CreatePlaceDto } from '../dto/create-place.dto';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
-import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
 import { Shift } from 'src/common/enums/work-shifts.enum';
@@ -43,9 +41,6 @@ export class PlaceController {
     @Body('cnpj', ParseCnpjPipe) cnpj: string,
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
-    @Body('address') address: CreateAddressDto, // @ValidatedNest & @Type(() => CreateAddressDto)
-    @Body('postalBox') postalBox: CreateAddressDto,
-    @Body('workTime') workTime: CreateWorkTimeDto,
   ) {
     const safeDto = {
       ...dto,
@@ -53,9 +48,6 @@ export class PlaceController {
       cnpj,
       phone,
       secondPhone,
-      address,
-      postalBox,
-      workTime,
     };
     await this.placeFieldsValidationService.validateUniqueFields(safeDto);
     const place = await this.placeService.create(safeDto, req.user);
@@ -64,10 +56,23 @@ export class PlaceController {
 
   @Patch('me/:id')
   async update(
+    @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdatePlaceDto, // Atente-se aos 'unique' fields!
+    @Body() dto: UpdatePlaceDto,
+    @Body('cpf', ParseCpfPipe) cpf: string,
+    @Body('cnpj', ParseCnpjPipe) cnpj: string,
+    @Body('phone', ParseBrPhonePipe) phone: string,
+    @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
-    const place = await this.placeService.update(id, dto);
+    const safeDto = {
+      ...dto,
+      cpf,
+      cnpj,
+      phone,
+      secondPhone,
+    };
+    await this.placeFieldsValidationService.validateUniqueFields(safeDto);
+    const place = await this.placeService.update(id, safeDto, req.user);
     return new ResponsePlaceDto(place);
   }
 

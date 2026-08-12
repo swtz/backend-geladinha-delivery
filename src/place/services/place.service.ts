@@ -11,9 +11,9 @@ import { CreatePlaceDto } from '../dto/create-place.dto';
 import { AddressService } from 'src/address/address.service';
 import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
-import { UserService } from 'src/user/services/user.service';
 import { Shift } from 'src/common/enums/work-shifts.enum';
-import { formatPhone } from 'src/common/utils/format-phone';
+import { WorkTimeService } from 'src/work-time/services/work-time.service';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class PlaceService {
@@ -21,7 +21,8 @@ export class PlaceService {
     @InjectRepository(Place)
     private readonly placeRepository: Repository<Place>,
     private readonly addressService: AddressService,
-    private readonly userService: UserService,
+    private readonly workTimeService: WorkTimeService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async failIfExists(field: string, value: string) {
@@ -36,91 +37,50 @@ export class PlaceService {
   }
 
   async create(dto: CreatePlaceDto, owner: User) {
-    // criar endereço
-    const address = await this.addressService.create(dto.address);
-    // criar caixa postal
-    const postalBox = dto.postalBox
-      ? await this.addressService.create(dto.postalBox)
-      : address;
-
-    // criar um work time
-    // const workTime = await this.workTimeService.findOneOrCreate(
-    //   dto.workTime,
-    //   dto.workTime.isDefault,
-    //   true,
-    // );
-
-    // criar um social medias (ainda não)
-    // depois cria-se o objeto
-    const place = {
-      code: dto.code, // failIfExists // método específico para definir essa propriedade
-      name: dto.name, // failIfExists
-      businessName: dto.businessName,
-      cnpj: dto.cnpj,
-      cpf: dto.cpf,
-      phone: formatPhone(dto.phone), // failIfExists
-      secondPhone: dto.secondPhone ? formatPhone(dto.secondPhone) : dto.phone,
-      email: dto.email, // failIfExists
-      address,
-      postalBox,
-      // workTimes: [workTime],
-      owners: [owner],
-    };
-
-    const created = await this.save(place);
-    return this.findOneByOrFail({ id: created.id });
+    return this.dataSource.transaction(async manager => {
+      const address = await this.addressService.create(
+        dto.address,
+        true,
+        manager,
+      );
+      const postalBox = dto.postalBox
+        ? await this.addressService.create(dto.postalBox, true, manager)
+        : address;
+      const workTime = await this.workTimeService.create(
+        dto.workTime,
+        true,
+        manager,
+      );
+      const place = {
+        ...dto,
+        code: dto.code, // método específico para definir essa propriedade
+        owners: [owner],
+        address,
+        postalBox,
+        workTimes: [workTime],
+      };
+      const created = await this.save(place, manager);
+      return this.findOneByOrFail({ id: created.id }, manager);
+    });
   }
 
-  async update(id: string, dto: UpdatePlaceDto) {
-    const place = await this.findOneByOrFail({ id });
+  async update(id: string, dto: UpdatePlaceDto, user: User) {
+    return this.dataSource.transaction(async manager => {
+      const place = await this.findOneByOrFail({ id }, manager);
+      if (!place.owners.some(owner => owner.id === user.id)) {
+        throw new UnauthorizedException('Acesso negado');
+      }
+      place.name = dto.name ?? place.name;
+      place.businessName = dto.businessName ?? place.businessName;
+      place.phone = dto.phone ?? place.phone;
+      place.secondPhone = dto.secondPhone ?? place.secondPhone;
+      place.email = dto.email ?? place.email;
+      place.cpf = dto.cpf ?? place.cpf;
+      place.cnpj = dto.cnpj ?? place.cnpj;
 
-    // unique
-    place.code = dto.code ?? place.code;
-    place.name = dto.name ?? place.name;
-    place.phone = dto.phone ? formatPhone(dto.phone) : place.phone;
-    place.secondPhone = dto.secondPhone
-      ? formatPhone(dto.secondPhone)
-      : place.secondPhone;
-    place.email = dto.email ?? place.email;
-    place.cpf = dto.cpf ?? place.cpf;
-    place.cnpj = dto.cnpj ?? place.cnpj;
-
-    // custom
-    place.businessName = dto.businessName ?? place.businessName;
-
-    // place.owners
-    if (dto.ownerId) {
-      const owner = await this.userService.findOneByOrFail({ id: dto.ownerId });
-      place.owners.push(owner);
-    }
-
-    // entities
-    // place.address
-    // if dto.address → dto.address.id ? findOne : create
-    // if (dto.address) {
-    //   if (dto.address.id) {
-    //     place.address = await this.addressService.findOneByOrFail({ id });
-    //   } else {
-    //     place.address = await this.addressService.create(dto.address);
-    //   }
-    // }
-
-    // place.postalBox
-    // if (dto.postalBox) {
-    //   if (dto.postalBox.id) {
-    //     place.postalBox = await this.addressService.findOneByOrFail({ id });
-    //   } else {
-    //     place.postalBox = await this.addressService.create(dto.postalBox);
-    //   }
-    // }
-
-    // place.workTimes
-    // Os horários serão atualizados por meio de uma rota
-    // específica do WorkTimeController, por conta da
-    // flag isShared
-
-    const updated = await this.save(place);
-    return this.findOneByOrFail({ id: updated.id });
+      const updated = await this.save(place, manager);
+      return this.findOneByOrFail({ id: updated.id }, manager);
+    });
   }
 
   async findOneByOrFail(placeData: Partial<Place>, manager?: EntityManager) {
