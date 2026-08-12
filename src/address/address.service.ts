@@ -4,7 +4,12 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  Repository,
+} from 'typeorm';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -120,12 +125,35 @@ export class AddressService {
     return address;
   }
 
-  async findAllOwned(customerData: Partial<Customer>) {
+  async findAll({
+    customerData,
+    city,
+    isDefault,
+    neighborhood,
+    street,
+    postalCode,
+    stateCode,
+    number,
+    orderParams,
+  }: {
+    customerData?: Partial<Customer>;
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Address>]: FindOptionsOrderValue;
+    };
+  } & Partial<Address>) {
     const addresses = await this.addressRepository.find({
       where: {
         customer: customerData,
+        city,
+        isDefault,
+        neighborhood,
+        postalCode,
+        stateCode,
+        number,
+        street,
       },
       relations: { customer: true },
+      order: orderParams,
     });
 
     return addresses;
