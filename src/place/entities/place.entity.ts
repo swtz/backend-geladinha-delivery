@@ -12,7 +12,7 @@ import {
 import { User } from 'src/user/entities/user.entity';
 import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class Place {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -29,7 +29,7 @@ export class Place {
   @Column({ unique: true })
   name!: string;
 
-  @Column()
+  @Column({ unique: true })
   businessName!: string;
 
   @Column({ unique: true })
@@ -47,7 +47,11 @@ export class Place {
   @Column({ unique: true })
   email!: string;
 
-  @ManyToMany(() => User, { cascade: true, onDelete: 'CASCADE' })
+  @ManyToMany(() => User, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinTable()
   owners!: User[];
 
@@ -68,6 +72,7 @@ export class Place {
   @ManyToMany(() => WorkTime, workTime => workTime.places, {
     cascade: true,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinTable()
   workTimes!: WorkTime[];
