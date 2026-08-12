@@ -58,6 +58,29 @@ export class DeliveryManMotorcycleController {
     return new ResponseUserDto(deliveryMan);
   }
 
+  @Post(':id')
+  async createUsingMotorcycleId(
+    @Param('id', ParseUUIDPipe) motorcycleId: string,
+    @Body('user', ParsePlaceCodePipe)
+    userDto: CreateUserDto,
+    @Body('deliveryMan') deliveryManDto: CreateDeliveryManDto,
+  ) {
+    const parsedUserDto: CreateUserDto = {
+      ...userDto,
+      phone: formatPhone(userDto.phone),
+      secondPhone: userDto.secondPhone
+        ? formatPhone(userDto.secondPhone)
+        : undefined,
+    };
+    await this.userFieldsValidationService.validateUniqueFields(parsedUserDto);
+    const deliveryMan = await this.deliveryManMotorcycleService.create(
+      parsedUserDto,
+      deliveryManDto,
+      motorcycleId,
+    );
+    return new ResponseUserDto(deliveryMan);
+  }
+
   @Roles(Role.Admin, Role.Operator)
   @Get()
   async findAll() {
