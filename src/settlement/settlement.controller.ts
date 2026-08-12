@@ -26,8 +26,13 @@ import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreateSettlementDto } from './dto/create-settlement.dto';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
-import { FindOptionsOrder } from 'typeorm';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { settlementOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('settlement')
@@ -125,8 +130,10 @@ export class SettlementController {
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
-    @Query('field') field: keyof FindOptionsOrder<Settlement>,
-    @Query('order') order: 'asc' | 'ASC' | 'desc' | 'DESC',
+    @Query(new ParseOrderParamsPipe<CommonType<Settlement>>(settlementOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Settlement>]: FindOptionsOrderValue;
+    },
   ) {
     const settlements = await this.settlementService.findAll(
       {
@@ -144,7 +151,7 @@ export class SettlementController {
         isClosed,
         placeCode,
       },
-      { [field]: order },
+      orderParams,
     );
     const parsedSettlements = settlements.map(
       item => new ResponseSettlementDto(item),
