@@ -22,7 +22,7 @@ export class MotorcycleController {
   constructor(private readonly motorcycleService: MotorcycleService) {}
 
   @Post()
-  async create(@Body() dto: CreateMotorcycleDto) {
+  async create(@Body(ParsePlaceCodePipe) dto: CreateMotorcycleDto) {
     const motorcycle = await this.motorcycleService.create(dto);
     return new ResponseMotorcycleDto(motorcycle);
   }

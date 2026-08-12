@@ -31,7 +31,7 @@ export class CreateMotorcycleDto {
 
   @IsOptional()
   @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
-  displacement?: string;
+  displacement: string | undefined;
 
   @IsNotEmpty({ message: 'Campo cor não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })
@@ -39,15 +39,15 @@ export class CreateMotorcycleDto {
 
   @IsOptional()
   @IsBoolean({ message: 'O campo só permite o formato verdadeiro/falso' })
-  isActive?: boolean;
+  isActive: boolean | undefined;
 
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  owner?: string;
+  owner: string | undefined;
 
   @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  driver?: string;
+  driver: string | undefined;
 
   @IsOptional()
   @IsNotEmpty({ message: 'Campo estabelecimento não pode estar vazio' })

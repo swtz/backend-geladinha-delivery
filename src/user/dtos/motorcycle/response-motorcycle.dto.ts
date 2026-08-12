@@ -12,7 +12,7 @@ export class ResponseMotorcycleDto {
   readonly displacement: string | null;
   readonly color: string;
   readonly isActive: boolean;
-  readonly placeCode: string;
+  readonly placeCode: string | null;
   readonly owner: UserResponseDtoType | null;
   readonly driver: UserResponseDtoType | null;
 
