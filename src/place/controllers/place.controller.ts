@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PlaceService } from '../services/place.service';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
@@ -32,12 +33,14 @@ import { Place } from '../entities/place.entity';
 import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { placeOrderMap } from 'src/common/data/entity-instructions/ordering';
+import { UserService } from 'src/user/services/user.service';
 
 @Roles(Role.Admin)
 @Controller('place')
 export class PlaceController {
   constructor(
     private readonly placeService: PlaceService,
+    private readonly userService: UserService,
     private readonly placeFieldsValidationService: PlaceFieldsValidationService,
   ) {}
 
@@ -72,6 +75,11 @@ export class PlaceController {
     @Body('phone', ParseBrPhonePipe) phone: string,
     @Body('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
+    const place = await this.placeService.findOneByOrFail({ id });
+    const isOwner = place.owners.some(owner => owner.id === req.user.id);
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
     const safeDto = {
       ...dto,
       cpf,
@@ -80,8 +88,24 @@ export class PlaceController {
       secondPhone,
     };
     await this.placeFieldsValidationService.validateUniqueFields(safeDto);
-    const place = await this.placeService.update(id, safeDto, req.user);
-    return new ResponsePlaceDto(place);
+    const updated = await this.placeService.update(place, safeDto);
+    return new ResponsePlaceDto(updated);
+  }
+
+  @Patch('me/:id/:code')
+  async updateCode(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('code') code: string,
+  ) {
+    const place = await this.placeService.findOneByOrFail({ id });
+    const isOwner = place.owners.some(owner => owner.id === req.user.id);
+    if (!isOwner) {
+      throw new UnauthorizedException('Acesso negado');
+    }
+
+    const updated = await this.placeService.updateCode(place, code);
+    return new ResponsePlaceDto(updated);
   }
 
   @Get(':id')

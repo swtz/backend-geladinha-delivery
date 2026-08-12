@@ -69,12 +69,8 @@ export class PlaceService {
     });
   }
 
-  async update(id: string, dto: UpdatePlaceDto, user: User) {
+  async update(place: Place, dto: UpdatePlaceDto) {
     return this.dataSource.transaction(async manager => {
-      const place = await this.findOneByOrFail({ id }, manager);
-      if (!place.owners.some(owner => owner.id === user.id)) {
-        throw new UnauthorizedException('Acesso negado');
-      }
       place.name = dto.name ?? place.name;
       place.businessName = dto.businessName ?? place.businessName;
       place.phone = dto.phone ?? place.phone;
@@ -86,6 +82,12 @@ export class PlaceService {
       const updated = await this.save(place, manager);
       return this.findOneByOrFail({ id: updated.id }, manager);
     });
+  }
+
+  async updateCode(place: Place, code: string) {
+    await this.failIfExists('code', code);
+    const updated = await this.placeRepository.save({ ...place, code });
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneByOrFail(placeData: Partial<Place>, manager?: EntityManager) {
