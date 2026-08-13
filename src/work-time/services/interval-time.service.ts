@@ -1,7 +1,7 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateIntervalTimeDto } from '../dto/interval-time/create-interval-time.dto';
 import { User } from 'src/user/entities/user.entity';
@@ -16,6 +16,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 import { FindAllParams } from '../types/interval-time/findAllParams';
+import { WorkTime } from '../entities/work-time.entity';
 
 @Injectable()
 export class IntervalTimeService {
@@ -26,20 +27,21 @@ export class IntervalTimeService {
   async create(
     { initHour, endHour }: CreateIntervalTimeDto,
     user: User,
+    placeDefaultWorkTime: WorkTime,
     manager?: EntityManager,
   ) {
-    if (user.workTime === null) {
-      throw new UnprocessableEntityException(
-        'Use o módulo "Estabelecimento" para criar seu Intervalo',
+    if (user.intervalTime) {
+      throw new ConflictException(
+        'Usuário já possui um Tempo de Intervalo registrado',
       );
     }
-
+    const workTime = user.workTime ? user.workTime : placeDefaultWorkTime;
     const duration = generateDurationTime(initHour, endHour);
     const interval = {
       initHour: initHour.slice(11, 19),
       endHour: endHour.slice(11, 19),
       duration,
-      workTime: user.workTime,
+      workTime,
       user,
     };
     const created = await this.save(interval, manager);

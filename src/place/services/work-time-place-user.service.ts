@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -259,29 +258,19 @@ export class WorkTimePlaceUserService {
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     return this.dataSource.transaction(async manager => {
-      if (user.intervalTime) {
-        throw new ConflictException(
-          'Usuário já possui um Tempo de Intervalo registrado',
-        );
-      }
-
       const code = process.env.DEFAULT_PLACE_CODE || 'first';
-      const place = await this.placeService.findOneByOrFail({ code });
+      const place = await this.placeService.findOneByOrFail({ code }, manager);
       const workTime = user.workTime
         ? user.workTime
         : this.workTimeService.findDefaultFromPlaceOrFail(place);
-      const duration = generateDurationTime(initHour, endHour);
-      const interval = {
-        initHour: initHour.slice(11, 19),
-        endHour: endHour.slice(11, 19),
-        duration,
-        workTime,
+      const intervalTime = await this.intervalTimeService.create(
+        { initHour, endHour },
         user,
-      };
-
-      const created = await this.intervalTimeService.save(interval, manager);
+        workTime,
+        manager,
+      );
       return this.intervalTimeService.findOneByOrFail(
-        { id: created.id },
+        { id: intervalTime.id },
         manager,
       );
     });
