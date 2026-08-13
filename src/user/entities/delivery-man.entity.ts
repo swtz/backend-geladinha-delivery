@@ -37,6 +37,7 @@ export class DeliveryMan {
   @OneToOne(() => User, user => user.deliveryMan, {
     nullable: false,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn()
   user!: User;

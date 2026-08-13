@@ -102,7 +102,7 @@ export class DeliveryManMotorcycleController {
   }
 
   @Roles(Role.Motoboy)
-  @Patch('me')
+  @Patch('me/motorcycle')
   async updateMe(
     @Body('motorcycle') motorcycleDto: UpdateMotorcycleDto,
     @Req() req: AuthenticatedRequest,
@@ -112,6 +112,20 @@ export class DeliveryManMotorcycleController {
       motorcycleDto,
     );
     return new ResponseDeliveryManDto(deliveryMan);
+  }
+
+  @Patch('motorcycle/restrict/:id')
+  async updateRestrictMotorcycle(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('motorcycle', ParsePlaceCodePipe)
+    motorcycleDto: UpdateMotorcycleDto,
+  ) {
+    const motorcycle =
+      await this.deliveryManMotorcycleService.updateRestrictMotorcycle(
+        id,
+        motorcycleDto,
+      );
+    return new ResponseMotorcycleDto(motorcycle);
   }
 
   @Patch(':id')
@@ -126,19 +140,5 @@ export class DeliveryManMotorcycleController {
       daily,
     );
     return new ResponseDeliveryManDto(deliveryMan);
-  }
-
-  @Patch('restrict/:id')
-  async updateRestrictMotorcycle(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('motorcycle', ParsePlaceCodePipe)
-    motorcycleDto: UpdateMotorcycleDto,
-  ) {
-    const motorcycle =
-      await this.deliveryManMotorcycleService.updateRestrictMotorcycle(
-        id,
-        motorcycleDto,
-      );
-    return new ResponseMotorcycleDto(motorcycle);
   }
 }
