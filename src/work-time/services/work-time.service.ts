@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -15,7 +14,6 @@ import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { FindAllParams } from '../types/findAllParams.type';
 import { full, essencial, tiny } from '../data/relations/work-time';
-import { getUnixTime, isSameDay } from 'date-fns';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 
 @Injectable()
@@ -30,24 +28,11 @@ export class WorkTimeService {
     isShared = false,
     manager?: EntityManager,
   ) {
-    const initHour = dto.initHour.slice(11, 19);
-    const endHour = dto.endHour.slice(11, 19);
-    const isAnotherDay = getUnixTime(dto.initHour) > getUnixTime(dto.endHour);
-    if (getUnixTime(dto.initHour) > getUnixTime(dto.endHour)) {
-      throw new BadRequestException(
-        'A data inicial não pode ser maior do que a data final',
-      );
-    }
-    if (isSameDay(dto.initHour, dto.endHour) && isAnotherDay) {
-      throw new BadRequestException(
-        `A data final termina no dia seguinte à data inicial`,
-      );
-    }
     const duration = generateDurationTime(dto.initHour, dto.endHour);
     const workTime = {
       shift: dto.shift,
-      initHour,
-      endHour,
+      initHour: dto.initHour.slice(11, 19),
+      endHour: dto.endHour.slice(11, 19),
       duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
       isShared,
