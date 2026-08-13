@@ -8,6 +8,7 @@ import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.d
 import { DataSource } from 'typeorm';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 import { Motorcycle } from '../entities/motorcycle.entity';
+import { setEntityRelationFieldAsNull } from 'src/common/utils/set-entity-relation-field-as-null';
 
 @Injectable()
 export class DeliveryManMotorcycleService {
@@ -115,12 +116,14 @@ export class DeliveryManMotorcycleService {
         true,
         manager,
       );
+      const hasDriver = motorcycle.driver;
       motorcycle.brand = dto.brand ?? motorcycle.brand;
       motorcycle.color = dto.color ?? motorcycle.color;
       motorcycle.model = dto.model ?? motorcycle.model;
       motorcycle.year = dto.year ?? motorcycle.year;
       motorcycle.displacement = dto.displacement ?? motorcycle.displacement;
       motorcycle.isActive = dto.isActive ?? motorcycle.isActive;
+      motorcycle.placeCode = dto.placeCode ?? motorcycle.placeCode;
       motorcycle.driver = dto.driver
         ? await this.deliveryManService.findOneByOrFail(
             { user: { id: dto.driver } },
@@ -144,7 +147,14 @@ export class DeliveryManMotorcycleService {
         );
         motorcycle.licensePlate = dto.licensePlate ?? motorcycle.licensePlate;
       }
-      motorcycle.placeCode = dto.placeCode ?? motorcycle.placeCode;
+      if (hasDriver) {
+        await setEntityRelationFieldAsNull<Motorcycle>(
+          Motorcycle,
+          'driver',
+          motorcycle.id,
+          manager,
+        );
+      }
 
       const updated = await this.motorcycleService.save(motorcycle, manager);
       return this.motorcycleService.findOneByOrFail(

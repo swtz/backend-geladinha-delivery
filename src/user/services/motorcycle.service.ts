@@ -18,6 +18,7 @@ import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { essencial, full } from '../data/relations/delivery-man';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
 import { FindDeliveryManByUserDataType } from '../types/delivery-man.type';
+import { setEntityRelationFieldAsNull } from 'src/common/utils/set-entity-relation-field-as-null';
 
 @Injectable()
 export class MotorcycleService {
@@ -152,6 +153,12 @@ export class MotorcycleService {
       ? manager.getRepository(Motorcycle)
       : this.motorcycleRepository;
     const motorcycle = await this.findOneByOrFail({ id }, true, manager);
+    await setEntityRelationFieldAsNull<Motorcycle>(
+      Motorcycle,
+      'driver',
+      motorcycle.id,
+      repo,
+    );
     await repo.delete({ id });
     return motorcycle;
   }
