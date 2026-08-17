@@ -1,19 +1,14 @@
 import { User } from 'src/user/entities/user.entity';
-import { Between, FindOperator } from 'typeorm';
+import { Between, FindOperator, FindOptionsWhere } from 'typeorm';
 import { Voucher } from '../enums/voucher.enum';
-import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 
 export interface Query {
   createdAt?: FindOperator<Date>;
 }
 
 export class VoucherFindAllQuery implements Query {
-  user?: Partial<
-    Omit<User, 'deliveryMan'> & {
-      deliveryMan: FindDeliveryManByUserDataType;
-    }
-  >;
-  createdBy?: Partial<User>;
+  user?: FindOptionsWhere<User>;
+  createdBy?: FindOptionsWhere<User>;
   createdAt?: FindOperator<Date>;
 }
 
@@ -27,7 +22,7 @@ export type FindAllParams = {
   name?: string;
   phone?: string;
   id?: string;
-  userData?: Partial<User>;
+  userData?: FindOptionsWhere<User>;
 } & DateParams;
 
 abstract class AbstractMethod {
@@ -37,7 +32,7 @@ abstract class AbstractMethod {
     }
   }
 
-  abstract factoryMethod(params: FindAllParams): Query;
+  abstract factoryMethod(params: FindAllParams): VoucherFindAllQuery;
 }
 
 export class VoucherFindAllFactory extends AbstractMethod {
@@ -49,7 +44,7 @@ export class VoucherFindAllFactory extends AbstractMethod {
     phone,
     id,
     type,
-  }: FindAllParams): Query {
+  }: FindAllParams): VoucherFindAllQuery {
     const queryObject = new VoucherFindAllQuery();
     const data = userData === undefined ? { name, phone, id } : userData;
 

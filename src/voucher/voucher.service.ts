@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/services/user.service';
@@ -139,7 +139,7 @@ export class VoucherService {
   }
 
   async findOneByOrFail(
-    voucherData: Partial<Voucher>,
+    voucherData: FindOptionsWhere<Voucher>,
     manager?: EntityManager,
   ) {
     const voucher = await this.findOneBy(voucherData, manager);
@@ -151,7 +151,7 @@ export class VoucherService {
     return voucher;
   }
 
-  findOneBy(voucherData: Partial<Voucher>, manager?: EntityManager) {
+  findOneBy(voucherData: FindOptionsWhere<Voucher>, manager?: EntityManager) {
     const repo = manager
       ? manager.getRepository(Voucher)
       : this.voucherRepository;
@@ -162,7 +162,7 @@ export class VoucherService {
   }
 
   async findOneOwnedByOrFail(
-    voucherData: Partial<Voucher>,
+    voucherData: FindOptionsWhere<Voucher>,
     user: User,
     manager?: EntityManager,
   ) {
@@ -176,7 +176,7 @@ export class VoucherService {
   }
 
   async findOneOwnedBy(
-    voucherData: Partial<Voucher>,
+    voucherData: FindOptionsWhere<Voucher>,
     user: User,
     manager?: EntityManager,
   ) {
@@ -226,14 +226,14 @@ export class VoucherService {
       ? manager.getRepository(Voucher)
       : this.voucherRepository;
     const voucher = await this.findOneByOrFail({ id }, manager);
-    const haveCreatedBy = voucher.createdBy !== null;
-    const entityId = haveCreatedBy ? voucher.createdBy.id : voucher.user.id;
+    const entityId =
+      voucher.createdBy !== null ? voucher.createdBy.id : voucher.user.id;
     const authFlags = await this.userService.getUserAndEntityAuth(
       user,
       entityId,
     );
 
-    if (haveCreatedBy) {
+    if (voucher.createdBy !== null) {
       if (voucher.createdBy.id !== user.id) {
         throw new UnauthorizedException(
           `Somente o usuário ${authFlags.entity.name} pode excluir essa compra ou vale`,
