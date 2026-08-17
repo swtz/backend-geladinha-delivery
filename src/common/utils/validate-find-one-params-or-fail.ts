@@ -1,9 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
+import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 
-export function validateFindOneParamsOrFail<T extends Record<string, unknown>>(
-  dto: Partial<T>,
+export function validateFindOneParamsOrFail<T extends ObjectLiteral>(
+  dto: FindOptionsWhere<T>,
   idFromDto?: boolean,
-): Partial<T> {
+): FindOptionsWhere<T> {
   const error = new BadRequestException('Informe os dados para consulta');
   const hasDefinedParam = Object.values(dto).some(value => {
     return value != null;

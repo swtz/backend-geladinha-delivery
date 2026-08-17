@@ -99,8 +99,8 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const safeDto = validateFindOneParamsOrFail<Partial<VoucherEntity>>(dto);
-    const voucher = await this.voucherService.update(safeDto, req.user, id);
+    validateFindOneParamsOrFail<VoucherEntity>(dto);
+    const voucher = await this.voucherService.update(dto, req.user, id);
 
     return new ResponseVoucherDto(voucher);
   }
@@ -111,12 +111,9 @@ export class VoucherController {
     @Req() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const safeDto = validateFindOneParamsOrFail<Partial<VoucherEntity>>(
-      dto,
-      true,
-    );
+    validateFindOneParamsOrFail<VoucherEntity>(dto, true);
     const voucher = await this.voucherService.updateForEntity(
-      safeDto,
+      dto,
       req.user,
       id,
     );
