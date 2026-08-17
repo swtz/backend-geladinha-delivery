@@ -28,13 +28,18 @@ export class Voucher {
   updatedAt!: Date;
 
   @ManyToOne(() => User, user => user.vouchers, {
-    onDelete: 'CASCADE',
     nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   user!: User;
 
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
-  createdBy!: User;
+  @ManyToOne(() => User, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  createdBy!: User | null;
 
   @ManyToOne(() => Payout, payout => payout.vouchers, {
     nullable: true,
