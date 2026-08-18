@@ -1,7 +1,10 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTime } from '../../entities/work-time.entity';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
 import { ResponseIntervalTimeDto } from '../interval-time/response-interval-time.dto';
+import { SmallResponsePlaceDto } from 'src/place/dto/small-response-place.dto';
+import { ResponseUserDto } from 'src/user/dtos/user/response-user.dto';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
+import { SmallResponseIntervalTimeDto } from '../interval-time/small-response-interval-time.dto';
 
 export class ResponseWorkTimeDto {
   readonly id: string;
@@ -13,16 +16,9 @@ export class ResponseWorkTimeDto {
   readonly duration: string;
   readonly isDefault: boolean;
   readonly isShared: boolean;
-  readonly places:
-    | {
-        id: string;
-        name: string;
-        businessName: string;
-        phone: string;
-      }[]
-    | null;
-  readonly user: UserResponseDtoType[] | null;
-  readonly intervalTimes: Omit<ResponseIntervalTimeDto, 'workTime'>[] | null;
+  readonly places: SmallResponsePlaceDto[] | null;
+  readonly users: SmallResponseUserDto[] | null;
+  readonly intervalTimes: SmallResponseIntervalTimeDto[] | null;
 
   constructor(workTime: WorkTime) {
     this.id = workTime.id;
@@ -35,39 +31,21 @@ export class ResponseWorkTimeDto {
     this.isDefault = workTime.isDefault;
     this.isShared = workTime.isShared;
     this.places =
-      workTime.places?.length > 0
+      workTime.places && workTime.places.length > 0
         ? workTime.places.map(place => {
-            return {
-              id: place.id,
-              name: place.name,
-              businessName: place.businessName,
-              phone: place.phone,
-            };
+            return new SmallResponsePlaceDto(place);
           })
         : null;
-    this.user =
-      workTime.user?.length > 0
-        ? workTime.user.map(user => {
-            return {
-              id: user.id,
-              name: user.name,
-              lastName: user.lastName,
-              nickname: user.nickname,
-              phone: user.phone,
-            };
+    this.users =
+      workTime.users && workTime.users.length > 0
+        ? workTime.users.map(user => {
+            return new ResponseUserDto(user);
           })
         : null;
     this.intervalTimes =
-      workTime.intervalTimes?.length > 0
-        ? workTime.intervalTimes.map(item => {
-            return {
-              id: item.id,
-              createdAt: item.createdAt,
-              updatedAt: item.updatedAt,
-              initHour: item.initHour,
-              endHour: item.endHour,
-              duration: item.duration,
-            };
+      workTime.intervalTimes && workTime.intervalTimes.length > 0
+        ? workTime.intervalTimes.map(intervalTime => {
+            return new ResponseIntervalTimeDto(intervalTime);
           })
         : null;
   }

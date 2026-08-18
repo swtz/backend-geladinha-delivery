@@ -1,7 +1,7 @@
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Place } from '../entities/place.entity';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/work-time/response-work-time.dto';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { SmallResponseUserType } from 'src/user/types/user/user.type';
 
 export class ResponsePlaceDto {
   readonly id: string;
@@ -13,7 +13,7 @@ export class ResponsePlaceDto {
   readonly phone: string;
   readonly secondPhone: string | null;
   readonly email: string;
-  readonly owners: UserResponseDtoType[] | null;
+  readonly owners: SmallResponseUserType[] | null;
   readonly address: ResponseAddressDto | null;
   readonly postalBox: ResponseAddressDto | null;
   readonly workTimes: ResponseWorkTimeDto[] | null;
