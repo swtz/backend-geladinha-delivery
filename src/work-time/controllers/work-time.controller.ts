@@ -46,7 +46,7 @@ export class WorkTimeController {
       shift,
       isDefault,
       isShared,
-      user: {
+      users: {
         nickname,
         id,
         name,

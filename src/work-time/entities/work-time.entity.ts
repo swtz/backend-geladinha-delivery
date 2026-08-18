@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { IntervalTime } from './interval-time.entity';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class WorkTime {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -48,16 +48,16 @@ export class WorkTime {
   places!: Place[];
 
   @OneToMany(() => IntervalTime, intervalTime => intervalTime.workTime, {
+    nullable: true,
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
-    nullable: true,
   })
-  intervalTimes!: IntervalTime[];
+  intervalTimes!: IntervalTime[] | null;
 
   @OneToMany(() => User, user => user.workTime, {
     nullable: true,
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  user!: User[];
+  users!: User[] | null;
 }

@@ -1,5 +1,5 @@
 export const tiny = {
-  user: true,
+  users: true,
   intervalTimes: true,
 };
 

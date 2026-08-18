@@ -5,14 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from '../entities/work-time.entity';
 import { CreateWorkTimeDto } from '../dto/work-time/create-work-time.dto';
 import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
-import { FindAllParams } from '../types/findAllParams.type';
 import { full, essencial, tiny } from '../data/relations/work-time';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 
@@ -63,7 +62,7 @@ export class WorkTimeService {
   }
 
   async findOneBy(
-    workTimeData: Partial<WorkTime>,
+    workTimeData: FindOptionsWhere<WorkTime>,
     relations = true,
     manager?: EntityManager,
   ) {
@@ -73,13 +72,13 @@ export class WorkTimeService {
     const fields = relations ? full : essencial;
     return repo.findOne({
       where: workTimeData,
-      relations: { ...fields },
+      relations: fields,
     });
   }
 
   async findOneOwnedBy(
     user: User,
-    workTimeData: Partial<WorkTime>,
+    workTimeData: FindOptionsWhere<WorkTime>,
     relations = true,
     manager?: EntityManager,
   ) {
@@ -88,13 +87,13 @@ export class WorkTimeService {
       : this.workTimeRepository;
     const fields = relations ? full : essencial;
     return repo.findOne({
-      where: { ...workTimeData, user: { id: user.id } },
+      where: { ...workTimeData, users: { id: user.id } },
       relations: fields,
     });
   }
 
   async findOneByOrFail(
-    workTimeData: Partial<WorkTime>,
+    workTimeData: FindOptionsWhere<WorkTime>,
     relations = true,
     manager?: EntityManager,
   ) {
@@ -109,7 +108,7 @@ export class WorkTimeService {
 
   async findOneOwnedByOrFail(
     user: User,
-    workTimeData: Partial<WorkTime>,
+    workTimeData: FindOptionsWhere<WorkTime>,
     relations = true,
     manager?: EntityManager,
   ) {
@@ -157,7 +156,7 @@ export class WorkTimeService {
     }
   }
 
-  async findAll(queryParams: FindAllParams) {
+  async findAll(queryParams: FindOptionsWhere<WorkTime>) {
     return this.workTimeRepository.find({
       where: queryParams,
       order: { createdAt: 'DESC' },
@@ -167,7 +166,7 @@ export class WorkTimeService {
 
   async findMy(user: User) {
     return this.workTimeRepository.findOne({
-      where: { user: { id: user.id } },
+      where: { users: { id: user.id } },
       relations: tiny,
     });
   }

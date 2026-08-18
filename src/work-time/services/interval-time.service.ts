@@ -9,13 +9,13 @@ import {
   EntityManager,
   FindOptionsOrder,
   FindOptionsOrderValue,
+  FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { IntervalTime } from '../entities/interval-time.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
-import { FindAllParams } from '../types/interval-time/findAllParams';
 import { WorkTime } from '../entities/work-time.entity';
 
 @Injectable()
@@ -66,7 +66,7 @@ export class IntervalTimeService {
   }
 
   async findAll(
-    queryParams: FindAllParams,
+    queryParams: FindOptionsWhere<IntervalTime>,
     orderParams?: {
       [K in keyof FindOptionsOrder<IntervalTime>]: FindOptionsOrderValue;
     },
@@ -74,7 +74,7 @@ export class IntervalTimeService {
     return this.intervalTimeRepository.find({
       where: queryParams,
       order: orderParams,
-      relations: { workTime: { user: { roles: true }, places: true } },
+      relations: { workTime: { users: { roles: true }, places: true } },
     });
   }
 
@@ -87,7 +87,7 @@ export class IntervalTimeService {
       : this.intervalTimeRepository;
     return repo.findOne({
       where: intervalTimeData,
-      relations: { workTime: { user: { roles: true }, places: true } },
+      relations: { workTime: { users: { roles: true }, places: true } },
     });
   }
 
