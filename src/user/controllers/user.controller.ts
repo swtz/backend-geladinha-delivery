@@ -81,7 +81,7 @@ export class UserController {
     @Body() dto: CreateUserDto,
   ) {
     if (role === Role.Motoboy || dto.role === Role.Motoboy) {
-      return new ForbiddenException('Acesso negado');
+      throw new ForbiddenException('Acesso negado');
     }
 
     await this.userFieldsValidationService.validateUniqueFields({
