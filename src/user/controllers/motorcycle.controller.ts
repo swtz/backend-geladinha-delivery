@@ -13,9 +13,14 @@ import { MotorcycleService } from '../services/motorcycle.service';
 import { CreateMotorcycleDto } from '../dtos/motorcycle/create-motorcycle.dto';
 import { ResponseMotorcycleDto } from '../dtos/motorcycle/response-motorcycle.dto';
 import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
-import { FindOptionsOrder } from 'typeorm';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { motorcycleOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Controller('motorcycle')
 export class MotorcycleController {
@@ -41,11 +46,12 @@ export class MotorcycleController {
     @Query('nickname') nickname: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
-    @Query('field')
-    field: keyof FindOptionsOrder<Motorcycle>,
-    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
-    @Query('type') type: 'owner' | 'driver',
+    @Query('type') type: 'owner' | 'driver' = 'owner',
     @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Query(new ParseOrderParamsPipe<CommonType<Motorcycle>>(motorcycleOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Motorcycle>]: FindOptionsOrderValue;
+    },
   ) {
     const userData = {
       id,
@@ -55,17 +61,21 @@ export class MotorcycleController {
       phone,
       secondPhone,
     };
-    const motorcycles = await this.motorcycleService.findAll({
-      year,
-      model,
-      displacement,
-      color,
-      brand,
-      isActive,
-      placeCode,
-      [type]: type !== 'owner' ? { user: userData } : userData,
-      orderParams: { [field]: order },
-    });
+
+    const motorcycles = await this.motorcycleService.findAll(
+      {
+        year,
+        model,
+        displacement,
+        color,
+        brand,
+        isActive,
+        placeCode,
+        owner: type === 'owner' || !type ? userData : undefined,
+        driver: type === 'driver' ? { user: userData } : undefined,
+      },
+      orderParams,
+    );
     const parsedMotorcycles = motorcycles.map(
       item => new ResponseMotorcycleDto(item),
     );

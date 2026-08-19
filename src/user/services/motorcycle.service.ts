@@ -2,6 +2,7 @@ import {
   EntityManager,
   FindOptionsOrder,
   FindOptionsOrderValue,
+  FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { Motorcycle } from '../entities/motorcycle.entity';
@@ -17,7 +18,6 @@ import { User } from 'src/user/entities/user.entity';
 import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { essencial, full } from '../data/relations/delivery-man';
 import { UpdateMotorcycleDto } from '../dtos/motorcycle/update-motorcycle.dto';
-import { FindDeliveryManByUserDataType } from '../types/delivery-man.type';
 import { setEntityRelationFieldAsNull } from 'src/common/utils/set-entity-relation-field-as-null';
 
 @Injectable()
@@ -84,36 +84,14 @@ export class MotorcycleService {
     return this.findOneByOrFail({ id: updated.id }, true, manager);
   }
 
-  async findAll({
-    brand,
-    color,
-    displacement,
-    isActive,
-    model,
-    year,
-    owner,
-    driver,
-    orderParams,
-    placeCode,
-  }: Omit<Partial<Motorcycle>, 'owner' | 'driver'> & {
-    owner?: Partial<User>;
-    driver?: FindDeliveryManByUserDataType;
+  async findAll(
+    queryParams: FindOptionsWhere<Motorcycle>,
     orderParams?: {
       [K in keyof FindOptionsOrder<Motorcycle>]: FindOptionsOrderValue;
-    };
-  }) {
+    },
+  ) {
     return this.motorcycleRepository.find({
-      where: {
-        brand,
-        color,
-        displacement,
-        isActive,
-        model,
-        year,
-        placeCode,
-        owner,
-        driver,
-      },
+      where: queryParams,
       relations: { owner: true, driver: { motorcycle: true, user: true } },
       order: orderParams,
     });

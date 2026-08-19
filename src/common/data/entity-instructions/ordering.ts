@@ -1,6 +1,7 @@
 import { Address } from 'src/address/entities/address.entity';
 import { Place } from 'src/place/entities/place.entity';
 import { Settlement } from 'src/settlement/entities/settlement.entity';
+import { Motorcycle } from 'src/user/entities/motorcycle.entity';
 import { User } from 'src/user/entities/user.entity';
 import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 
@@ -58,6 +59,18 @@ export const placeOrderMap = generateOrderingMap<Place>({
   postalBox: undefined,
   owners: undefined,
   workTimes: undefined,
+});
+
+export const motorcycleOrderMap = generateOrderingMap<Motorcycle>({
+  brand: undefined,
+  color: undefined,
+  displacement: undefined,
+  model: undefined,
+  placeCode: undefined,
+  year: undefined,
+  licensePlate: undefined,
+  driver: undefined,
+  owner: undefined,
 });
 
 // talvez dê pra fazer um método como esse para conseguir gerar um objeto de relações
