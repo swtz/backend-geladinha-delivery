@@ -1,5 +1,5 @@
 import { Motorcycle } from 'src/user/entities/motorcycle.entity';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { SmallResponseUserDto } from '../user/small-response-user.dto';
 
 export class ResponseMotorcycleDto {
   readonly id: string;
@@ -13,8 +13,8 @@ export class ResponseMotorcycleDto {
   readonly color: string;
   readonly isActive: boolean;
   readonly placeCode: string | null;
-  readonly owner: UserResponseDtoType | null;
-  readonly driver: UserResponseDtoType | null;
+  readonly owner: SmallResponseUserDto | null;
+  readonly driver: SmallResponseUserDto | null;
 
   constructor(motorcycle: Motorcycle) {
     this.id = motorcycle.id;
@@ -29,22 +29,10 @@ export class ResponseMotorcycleDto {
     this.isActive = motorcycle.isActive;
     this.placeCode = motorcycle.placeCode;
     this.owner = motorcycle.owner
-      ? {
-          id: motorcycle.owner.id,
-          name: motorcycle.owner.name,
-          lastName: motorcycle.owner.lastName,
-          nickname: motorcycle.owner.nickname,
-          phone: motorcycle.owner.phone,
-        }
+      ? new SmallResponseUserDto(motorcycle.owner)
       : null;
     this.driver = motorcycle.driver?.user
-      ? {
-          id: motorcycle.driver.user.id,
-          name: motorcycle.driver.user.name,
-          lastName: motorcycle.driver.user.lastName,
-          nickname: motorcycle.driver.user.nickname,
-          phone: motorcycle.driver.user.phone,
-        }
+      ? new SmallResponseUserDto(motorcycle.driver?.user)
       : null;
   }
 }

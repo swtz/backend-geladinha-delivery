@@ -1,10 +1,10 @@
 import { Delivery } from '../entities/delivery.entity';
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Tip } from 'src/tip/entities/tip.entity';
-import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
-import { SmallResponseCustomer } from 'src/customer/types/customer.type';
+import { SmallResponseCustomerType } from 'src/customer/types/customer.type';
+import { SmallResponseMotorcycleDto } from 'src/user/dtos/motorcycle/small-response-motorcycle.dto';
+import { MediumResponseWorkTimeDto } from 'src/work-time/dto/work-time/medium-response-work-time.dto';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
 
 export class ResponseDeliveryDto {
   readonly id: string;
@@ -18,14 +18,14 @@ export class ResponseDeliveryDto {
   readonly motorcycleLicensePlate: string;
   readonly placeCode: string;
   readonly tip: Pick<Tip, 'id' | 'amount'> | null;
-  readonly operator: UserResponseDtoType | null;
+  readonly operator: SmallResponseUserDto | null;
   readonly motoboy:
-    | (UserResponseDtoType & {
-        workTime: MediumResponseWorkTime | null;
-        motorcycle: SmallResponseMotorcycle;
+    | (SmallResponseUserDto & {
+        workTime: MediumResponseWorkTimeDto | null;
+        motorcycle: SmallResponseMotorcycleDto | null;
       })
     | null;
-  readonly customer: SmallResponseCustomer | null;
+  readonly customer: SmallResponseCustomerType | null;
   readonly address: ResponseAddressDto | null;
 
   constructor(delivery: Delivery) {
@@ -46,38 +46,17 @@ export class ResponseDeliveryDto {
         }
       : null;
     this.operator = delivery.operator
-      ? {
-          id: delivery.operator.id,
-          name: delivery.operator.name,
-          lastName: delivery.operator.lastName,
-          nickname: delivery.operator.nickname,
-          phone: delivery.operator.phone,
-        }
+      ? new SmallResponseUserDto(delivery.operator)
       : null;
     this.motoboy = delivery.motoboy
       ? {
-          id: delivery.motoboy.user.id,
-          name: delivery.motoboy.user.name,
-          lastName: delivery.motoboy.user.lastName,
-          nickname: delivery.motoboy.user.nickname,
-          phone: delivery.motoboy.user.phone,
+          ...new SmallResponseUserDto(delivery.motoboy.user),
           workTime: delivery.motoboy.user.workTime
-            ? {
-                id: delivery.motoboy.user.workTime.id,
-                createdAt: delivery.motoboy.user.workTime.createdAt,
-                updatedAt: delivery.motoboy.user.workTime.updatedAt,
-                shift: delivery.motoboy.user.workTime.shift,
-                initHour: delivery.motoboy.user.workTime.initHour,
-                endHour: delivery.motoboy.user.workTime.endHour,
-                duration: delivery.motoboy.user.workTime.duration,
-              }
+            ? new MediumResponseWorkTimeDto(delivery.motoboy.user.workTime)
             : null,
-          motorcycle: {
-            id: delivery.motoboy.motorcycle.id,
-            brand: delivery.motoboy.motorcycle.brand,
-            color: delivery.motoboy.motorcycle.color,
-            licensePlate: delivery.motoboy.motorcycle.licensePlate,
-          },
+          motorcycle: delivery.motoboy.motorcycle
+            ? new SmallResponseMotorcycleDto(delivery.motoboy.motorcycle)
+            : null,
         }
       : null;
     this.customer = delivery.customer

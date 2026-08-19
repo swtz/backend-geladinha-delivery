@@ -12,7 +12,7 @@ import { Motorcycle } from './motorcycle.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { User } from './user.entity';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class DeliveryMan {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -32,7 +32,7 @@ export class DeliveryMan {
     onUpdate: 'RESTRICT',
   })
   @JoinColumn()
-  motorcycle!: Motorcycle;
+  motorcycle!: Motorcycle | null;
 
   @OneToOne(() => User, user => user.deliveryMan, {
     nullable: false,
@@ -47,5 +47,5 @@ export class DeliveryMan {
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  tips!: Tip[];
+  tips!: Tip[] | null;
 }
