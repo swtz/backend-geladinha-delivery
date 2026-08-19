@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MotorcycleService } from './motorcycle.service';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
@@ -93,6 +93,11 @@ export class DeliveryManMotorcycleService {
         false,
         manager,
       );
+      if (!motoboy.motorcycle) {
+        throw new UnprocessableEntityException(
+          `O motoboy ${motoboy.user.name} não possui uma moto cadastrada`,
+        );
+      }
       motoboy.daily = daily ?? motoboy.daily;
 
       const motorcycle = await this.motorcycleService.update(
