@@ -1,5 +1,5 @@
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
 import { Voucher } from '../entities/voucher.entity';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
 
 export class ResponseVoucherDto {
   readonly id: string;
@@ -7,8 +7,8 @@ export class ResponseVoucherDto {
   readonly description: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly user: UserResponseDtoType;
-  readonly createdBy: UserResponseDtoType | null;
+  readonly user: SmallResponseUserDto;
+  readonly createdBy: SmallResponseUserDto | null;
 
   constructor(voucher: Voucher) {
     this.id = voucher.id;
@@ -16,21 +16,9 @@ export class ResponseVoucherDto {
     this.description = voucher.description;
     this.createdAt = voucher.createdAt;
     this.updatedAt = voucher.updatedAt;
-    this.user = {
-      id: voucher.user.id,
-      name: voucher.user.name,
-      lastName: voucher.user.lastName,
-      nickname: voucher.user.nickname,
-      phone: voucher.user.phone,
-    };
+    this.user = new SmallResponseUserDto(voucher.user);
     this.createdBy = voucher.createdBy
-      ? {
-          id: voucher.createdBy.id,
-          name: voucher.createdBy.name,
-          lastName: voucher.createdBy.lastName,
-          nickname: voucher.createdBy.nickname,
-          phone: voucher.createdBy.phone,
-        }
+      ? new SmallResponseUserDto(voucher.createdBy)
       : null;
   }
 }
