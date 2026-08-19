@@ -9,6 +9,8 @@ import {
   EntityManager,
   FindOptionsOrder,
   FindOptionsOrderValue,
+  FindOptionsRelations,
+  FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -85,7 +87,7 @@ export class UserService {
     });
   }
 
-  async getAllRoleNames(userData: Partial<User>) {
+  async getAllRoleNames(userData: FindOptionsWhere<User>) {
     const user = await this.findOneByOrFail(userData);
     return user.roles.map(role => role.name);
   }
@@ -158,7 +160,7 @@ export class UserService {
   }
 
   async findOneByOrFail(
-    userData: Partial<User>,
+    userData: FindOptionsWhere<User>,
     relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
     manager?: EntityManager,
   ) {
@@ -172,15 +174,15 @@ export class UserService {
   }
 
   async findOneBy(
-    userData: Partial<User>,
+    userData: FindOptionsWhere<User>,
     relations?: 'user-full' | 'motoboy-essencial' | 'motoboy-full',
     manager?: EntityManager,
   ) {
     const repo = manager ? manager.getRepository(User) : this.userRepository;
     const aux: {
-      userFields: Record<string, any>;
-      deliveryManFields: Record<string, any>;
-    } = { userFields: {}, deliveryManFields: {} };
+      userFields: FindOptionsRelations<User>;
+      deliveryManFields: FindOptionsRelations<User> | true;
+    } = { userFields: essencial, deliveryManFields: true };
 
     if (relations) {
       switch (relations) {
@@ -193,13 +195,14 @@ export class UserService {
         case 'user-full':
           aux.userFields = full;
       }
-    } else {
-      aux.userFields = essencial;
     }
 
     return repo.findOne({
       where: userData,
-      relations: { ...aux.userFields, deliveryMan: aux.deliveryManFields },
+      relations: {
+        ...aux.userFields,
+        deliveryMan: aux.deliveryManFields,
+      },
     });
   }
 

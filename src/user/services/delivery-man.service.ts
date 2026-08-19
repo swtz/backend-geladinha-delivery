@@ -1,14 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Motorcycle } from '../entities/motorcycle.entity';
 import { CreateDeliveryManDto } from '../dtos/delivery-man/create-delivery-man.dto';
-import {
-  DeliveryManType,
-  FindDeliveryManByUserDataType,
-} from '../types/delivery-man.type';
+import { DeliveryManType } from '../types/delivery-man.type';
 import { essencial, full } from '../data/relations/delivery-man';
 
 @Injectable()
@@ -34,7 +31,7 @@ export class DeliveryManService {
   }
 
   async findOneByOrFail(
-    userData: FindDeliveryManByUserDataType,
+    userData: FindOptionsWhere<DeliveryMan>,
     relations = false,
     manager?: EntityManager,
   ) {
@@ -48,7 +45,7 @@ export class DeliveryManService {
   }
 
   async findOneBy(
-    userData: FindDeliveryManByUserDataType,
+    userData: FindOptionsWhere<DeliveryMan>,
     relations = false,
     manager?: EntityManager,
   ) {
