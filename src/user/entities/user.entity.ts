@@ -16,7 +16,7 @@ import {
 import { DeliveryMan } from './delivery-man.entity';
 import { IntervalTime } from 'src/work-time/entities/interval-time.entity';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -33,11 +33,11 @@ export class User {
   @Column({ unique: true })
   phone!: string;
 
-  @Column({ nullable: true, unique: true })
-  secondPhone!: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  secondPhone!: string | null;
 
-  @Column({ unique: true, nullable: true })
-  email!: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  email!: string | null;
 
   @Column()
   password!: string;
@@ -56,29 +56,33 @@ export class User {
 
   @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.user, {
     nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
-  deliveryMan!: DeliveryMan;
+  deliveryMan!: DeliveryMan | null;
 
   @OneToMany(() => Voucher, voucher => voucher.user, {
     nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
-  vouchers!: Voucher[];
+  vouchers!: Voucher[] | null;
 
   @ManyToMany(() => Role, role => role.users)
   @JoinTable()
   roles!: Role[];
 
-  @ManyToOne(() => WorkTime, workTime => workTime.user, {
+  @ManyToOne(() => WorkTime, workTime => workTime.users, {
     nullable: true,
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  workTime!: WorkTime;
+  workTime!: WorkTime | null;
 
   @OneToOne(() => IntervalTime, intervalTime => intervalTime.user, {
     nullable: true,
     onDelete: 'SET NULL',
     onUpdate: 'SET NULL',
   })
-  intervalTime!: IntervalTime;
+  intervalTime!: IntervalTime | null;
 }
