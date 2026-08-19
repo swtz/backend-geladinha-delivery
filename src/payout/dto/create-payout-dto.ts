@@ -5,12 +5,12 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { CreateUserPayoutDto } from 'src/user/dtos/user/create-user-payout.dto';
+import { UserUniqueFieldsDto } from 'src/user/dtos/user/user-unique-fields.dto';
 
 export class CreatePayoutDto {
   @ValidateNested()
-  @Type(() => CreateUserPayoutDto)
-  user!: CreateUserPayoutDto;
+  @Type(() => UserUniqueFieldsDto)
+  user!: UserUniqueFieldsDto;
 
   @IsNotEmpty({ message: 'Campo data inicial não pode estar vazio' })
   @IsISO8601({ strict: true }, { message: 'Data inválido' })
