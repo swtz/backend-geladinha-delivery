@@ -79,7 +79,7 @@ export class IntervalTimeService {
   }
 
   async findOneBy(
-    intervalTimeData: Partial<IntervalTime>,
+    intervalTimeData: FindOptionsWhere<IntervalTime>,
     manager?: EntityManager,
   ) {
     const repo = manager
@@ -92,7 +92,7 @@ export class IntervalTimeService {
   }
 
   async findOneByOrFail(
-    intervalTimeData: Partial<IntervalTime>,
+    intervalTimeData: FindOptionsWhere<IntervalTime>,
     manager?: EntityManager,
   ) {
     const intervalTime = await this.findOneBy(intervalTimeData, manager);
