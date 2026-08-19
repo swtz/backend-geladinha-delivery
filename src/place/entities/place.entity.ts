@@ -35,14 +35,14 @@ export class Place {
   @Column({ unique: true })
   cnpj!: string;
 
-  @Column({ nullable: true, unique: true })
-  cpf!: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  cpf!: string | null;
 
   @Column({ unique: true })
   phone!: string;
 
-  @Column({ nullable: true, unique: true })
-  secondPhone!: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  secondPhone!: string | null;
 
   @Column({ unique: true })
   email!: string;

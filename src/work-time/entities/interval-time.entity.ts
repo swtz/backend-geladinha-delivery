@@ -11,7 +11,7 @@ import {
 import { WorkTime } from './work-time.entity';
 import { User } from 'src/user/entities/user.entity';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class IntervalTime {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -28,20 +28,20 @@ export class IntervalTime {
   @Column()
   endHour!: string;
 
-  @Column({ default: '' })
+  @Column()
   duration!: string;
 
   @ManyToOne(() => WorkTime, {
+    nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    nullable: false,
   })
   workTime!: WorkTime;
 
   @OneToOne(() => User, user => user.intervalTime, {
+    nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    nullable: false,
   })
   @JoinColumn()
   user!: User;

@@ -1,7 +1,7 @@
 import { ResponseAddressDto } from 'src/address/dto/response-address.dto';
 import { Place } from '../entities/place.entity';
 import { ResponseWorkTimeDto } from 'src/work-time/dto/work-time/response-work-time.dto';
-import { SmallResponseUserType } from 'src/user/types/user/user.type';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
 
 export class ResponsePlaceDto {
   readonly id: string;
@@ -9,11 +9,11 @@ export class ResponsePlaceDto {
   readonly name: string;
   readonly businessName: string;
   readonly cnpj: string;
-  readonly cpf: string;
+  readonly cpf: string | null;
   readonly phone: string;
   readonly secondPhone: string | null;
   readonly email: string;
-  readonly owners: SmallResponseUserType[] | null;
+  readonly owners: SmallResponseUserDto[] | null;
   readonly address: ResponseAddressDto | null;
   readonly postalBox: ResponseAddressDto | null;
   readonly workTimes: ResponseWorkTimeDto[] | null;
@@ -29,15 +29,9 @@ export class ResponsePlaceDto {
     this.secondPhone = place.secondPhone;
     this.email = place.email;
     this.owners =
-      place.owners?.length > 0
-        ? place.owners.map(item => {
-            return {
-              id: item.id,
-              name: item.name,
-              lastName: item.lastName,
-              nickname: item.nickname,
-              phone: item.phone,
-            };
+      place.owners.length > 0
+        ? place.owners.map(user => {
+            return new SmallResponseUserDto(user);
           })
         : null;
     this.address = place.address ? new ResponseAddressDto(place.address) : null;
@@ -45,8 +39,8 @@ export class ResponsePlaceDto {
       ? new ResponseAddressDto(place.postalBox)
       : null;
     this.workTimes =
-      place.workTimes?.length > 0
-        ? place.workTimes.map(item => new ResponseWorkTimeDto(item))
+      place.workTimes.length > 0
+        ? place.workTimes.map(workTime => new ResponseWorkTimeDto(workTime))
         : null;
   }
 }

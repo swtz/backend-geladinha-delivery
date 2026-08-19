@@ -9,6 +9,7 @@ import {
   EntityManager,
   FindOptionsOrder,
   FindOptionsOrderValue,
+  FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +19,6 @@ import { User } from 'src/user/entities/user.entity';
 import { UpdatePlaceDto } from '../dto/update-place.dto';
 import { WorkTimeService } from 'src/work-time/services/work-time.service';
 import { DataSource } from 'typeorm';
-import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Injectable()
 export class PlaceService {
@@ -90,7 +90,10 @@ export class PlaceService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneByOrFail(placeData: Partial<Place>, manager?: EntityManager) {
+  async findOneByOrFail(
+    placeData: FindOptionsWhere<Place>,
+    manager?: EntityManager,
+  ) {
     const place = await this.findOneBy(placeData, manager);
 
     if (!place) {
@@ -100,7 +103,7 @@ export class PlaceService {
     return place;
   }
 
-  async findOneBy(placeData: Partial<Place>, manager?: EntityManager) {
+  async findOneBy(placeData: FindOptionsWhere<Place>, manager?: EntityManager) {
     const repo = manager ? manager.getRepository(Place) : this.placeRepository;
     return repo.findOne({
       where: placeData,
@@ -114,24 +117,13 @@ export class PlaceService {
   }
 
   async findAll(
-    {
-      userData,
-      workTimeData,
-    }: Partial<Place> & {
-      workTimeData?: Omit<Partial<WorkTime>, 'user'> & {
-        user?: Partial<User>[];
-      };
-      userData?: Partial<User>;
-    },
+    queryParams: FindOptionsWhere<Place>,
     orderParams?: {
       [K in keyof FindOptionsOrder<Place>]: FindOptionsOrderValue;
     },
   ) {
     return this.placeRepository.find({
-      where: {
-        owners: userData ? [userData] : undefined,
-        workTimes: workTimeData ? [workTimeData] : undefined,
-      },
+      where: queryParams,
       order: orderParams,
       relations: {
         owners: true,
