@@ -163,7 +163,7 @@ export class AddressService {
     const repo = manager
       ? manager.getRepository(Address)
       : this.addressRepository;
-    const address = await this.findOneByOrFail({ id }, false, manager);
+    const address = await this.findOneByOrFail({ id }, true, manager);
     if (address.customer?.addresses.length === 1) {
       throw new UnprocessableEntityException(
         'Cliente precisa ter ao menos 1 endereço',
