@@ -1,8 +1,8 @@
 import {
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { UserService } from 'src/user/services/user.service';
@@ -12,7 +12,7 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
-import { DataSource } from 'typeorm';
+import { DataSource, FindOptionsWhere } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
@@ -34,7 +34,7 @@ export class WorkTimePlaceUserService {
         throw new ForbiddenException('Acesso negado');
       }
       if (place.workTimes.length >= 5) {
-        throw new InternalServerErrorException(
+        throw new UnprocessableEntityException(
           'Só é possível cadastrar 5 horários por estabelecimento',
         );
       }
@@ -63,18 +63,6 @@ export class WorkTimePlaceUserService {
     });
   }
 
-  async useIsSharedWorkTime(id: string, user: User) {
-    const sharedWorkTime = await this.workTimeService.findOneByOrFail({
-      id,
-      isShared: true,
-    });
-
-    sharedWorkTime.user.push(user);
-
-    const updatedWorkTime = await this.workTimeService.save(sharedWorkTime);
-    return this.workTimeService.findOneByOrFail({ id: updatedWorkTime.id });
-  }
-
   async updateShared(id: string, dto: UpdateWorkTimeDto, user: User) {
     return this.dataSource.transaction(async manager => {
       const workTime = await this.workTimeService.findOneByOrFail(
@@ -89,17 +77,19 @@ export class WorkTimePlaceUserService {
 
       let isOwner = false;
       let info: { owner?: string; place?: string } = {};
-      places.forEach(place => {
-        isOwner = place.owners.some(owner => {
-          if (owner.id === user.id) {
-            info = {
-              owner: owner.id,
-              place: place.id,
-            };
-          }
-          return owner.id === user.id;
+      if (places.length > 0) {
+        places.forEach(place => {
+          isOwner = place.owners.some(owner => {
+            if (owner.id === user.id) {
+              info = {
+                owner: owner.id,
+                place: place.id,
+              };
+            }
+            return owner.id === user.id;
+          });
         });
-      });
+      }
       if (!isOwner) {
         throw new UnauthorizedException('Acesso negado');
       }
@@ -152,17 +142,19 @@ export class WorkTimePlaceUserService {
 
       let isOwner = false;
       let info: { owner?: string; place?: string } = {};
-      places.forEach(place => {
-        isOwner = place.owners.some(owner => {
-          if (owner.id === user.id) {
-            info = {
-              owner: owner.id,
-              place: place.id,
-            };
-          }
-          return owner.id === user.id;
+      if (places.length > 0) {
+        places.forEach(place => {
+          isOwner = place.owners.some(owner => {
+            if (owner.id === user.id) {
+              info = {
+                owner: owner.id,
+                place: place.id,
+              };
+            }
+            return owner.id === user.id;
+          });
         });
-      });
+      }
       if (!isOwner) {
         throw new UnauthorizedException('Acesso negado');
       }
@@ -172,8 +164,14 @@ export class WorkTimePlaceUserService {
         manager,
       );
       if (place.workTimes.length <= 1) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `O estabelecimento ${place.businessName} possui apenas esse\nHorário de serviço`,
+        );
+      }
+
+      if (workTime.isDefault) {
+        throw new ForbiddenException(
+          'Defina outra horário de serviço como padrão antes de remover esse',
         );
       }
 
@@ -277,7 +275,7 @@ export class WorkTimePlaceUserService {
   }
 
   async createIntervalTimeForEntity(
-    userData: Partial<User>,
+    userData: FindOptionsWhere<User>,
     { initHour, endHour }: CreateIntervalTimeDto,
   ) {
     const user = await this.userService.findOneByOrFail(userData);

@@ -6,6 +6,7 @@ import { User } from 'src/user/entities/user.entity';
 import { fromZonedTime } from 'date-fns-tz';
 import { getUnixTime, isSameDay } from 'date-fns';
 import { isISO8601 } from 'class-validator';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class WorkTimeDateService {
@@ -16,7 +17,7 @@ export class WorkTimeDateService {
   ) {}
 
   async create(
-    user: Partial<User>,
+    user: FindOptionsWhere<User>,
     from: string,
     to: string,
     tz = 'America/Sao_Paulo',
