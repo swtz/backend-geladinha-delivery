@@ -148,6 +148,22 @@ export class PlaceService {
       throw new UnauthorizedException('Acesso negado');
     }
 
+    const { workTimes } = place;
+    const workTimesId = workTimes.map(workTime => workTime.id);
+
+    // Conversa com Claude sobre N+1 queries
+    for (const id of workTimesId) {
+      await this.workTimeService.save(
+        {
+          id,
+          isDefault: false,
+          isShared: false,
+        },
+        manager,
+      );
+      await this.workTimeService.remove(id, manager);
+    }
+
     await repo.delete({ id });
     return place;
   }
