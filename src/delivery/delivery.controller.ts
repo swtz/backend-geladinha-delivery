@@ -82,6 +82,7 @@ export class DeliveryController {
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Query('motorcycleLicensePlate') motorcycleLicensePlate: string,
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
     @Query(
@@ -99,7 +100,7 @@ export class DeliveryController {
       email,
       phone,
       secondPhone,
-      placeCode,
+      placeCode: type === undefined ? undefined : placeCode,
     };
 
     const dateObject: {
@@ -126,6 +127,8 @@ export class DeliveryController {
       userData,
       isPaid,
       paymentMethod,
+      placeCode,
+      motorcycleLicensePlate: motorcycleLicensePlate,
       from: dateObject.initDate,
       to: dateObject.endDate,
     });

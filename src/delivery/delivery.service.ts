@@ -1,5 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { Delivery } from './entities/delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -46,6 +55,12 @@ export class DeliveryService {
         true,
         manager,
       );
+      if (!motoboy.motorcycle) {
+        throw new UnprocessableEntityException(
+          `O motoboy ${motoboy.user.name} não possui uma moto cadastrada`,
+        );
+      }
+
       const customer = await this.customerService.findOneByOrFail(
         { id: dto.customer },
         manager,
@@ -182,7 +197,7 @@ export class DeliveryService {
 
   async findOneOwnedByOrFail(
     user: User,
-    deliveryData: Partial<Delivery>,
+    deliveryData: FindOptionsWhere<Delivery>,
     manager?: EntityManager,
   ) {
     const delivery = await this.findOneOwnedBy(user, deliveryData, manager);
@@ -196,7 +211,7 @@ export class DeliveryService {
 
   async findOneOwnedBy(
     user: User,
-    deliveryData: Partial<Delivery>,
+    deliveryData: FindOptionsWhere<Delivery>,
     manager?: EntityManager,
   ) {
     const repo = manager
@@ -206,7 +221,7 @@ export class DeliveryService {
       user,
       user.id,
     );
-    const queryObject = isLoggedUserMotoboy
+    const queryObject: FindOptionsWhere<Delivery> = isLoggedUserMotoboy
       ? { motoboy: { id: user.id } }
       : { operator: { id: user.id } };
 
@@ -242,7 +257,7 @@ export class DeliveryService {
   }
 
   async findOneByOrFail(
-    deliveryData: Partial<Delivery>,
+    deliveryData: FindOptionsWhere<Delivery>,
     manager?: EntityManager,
   ) {
     const delivery = await this.findOneBy(deliveryData, manager);
@@ -254,7 +269,10 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findOneBy(deliveryData: Partial<Delivery>, manager?: EntityManager) {
+  async findOneBy(
+    deliveryData: FindOptionsWhere<Delivery>,
+    manager?: EntityManager,
+  ) {
     const repo = manager
       ? manager.getRepository(Delivery)
       : this.deliveryRepository;
