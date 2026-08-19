@@ -93,8 +93,8 @@ export class AddressController {
     @Body() dto: UpdateAddressDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const parsedDto = validateFindOneParamsOrFail<Partial<Address>>(dto);
-    const address = await this.addressService.update(parsedDto, id);
+    validateFindOneParamsOrFail<Address>(dto);
+    const address = await this.addressService.update(dto, id);
     return new ResponseAddressDto(address);
   }
 

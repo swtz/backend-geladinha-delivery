@@ -95,7 +95,7 @@ export class CustomerAddressController {
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
   ) {
-    validateFindOneParamsOrFail<Partial<Customer>>({
+    const customerData = {
       id,
       nickname,
       name,
@@ -103,17 +103,11 @@ export class CustomerAddressController {
       email,
       phone,
       secondPhone,
-    });
+    };
 
-    const customer = await this.customerService.findOneByOrFail({
-      id,
-      nickname,
-      name,
-      lastName,
-      email,
-      phone,
-      secondPhone,
-    });
+    validateFindOneParamsOrFail<Customer>(customerData);
+
+    const customer = await this.customerService.findOneByOrFail(customerData);
 
     return new ResponseCustomerDto(customer);
   }
