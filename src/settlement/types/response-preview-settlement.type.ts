@@ -14,7 +14,7 @@ export type ResponsePreviewSettlement = {
   pixSubtotal: number;
   currentTotal: number;
   expectedTotal: number;
-  description: string | undefined;
+  description: string | undefined | null;
   operator: User;
   vouchers: Voucher[];
 };

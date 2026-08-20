@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class Settlement {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -37,8 +37,8 @@ export class Settlement {
   @Column('float')
   subtotal!: number;
 
-  @Column({ nullable: true })
-  description!: string;
+  @Column({ type: 'varchar', nullable: true })
+  description!: string | null;
 
   @Column('float')
   currentTotal!: number;
@@ -64,9 +64,17 @@ export class Settlement {
   @Column()
   placeCode!: string;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   operator!: User;
 
-  @OneToMany(() => Voucher, voucher => voucher.settlement, { nullable: true })
-  vouchers!: Voucher[];
+  @OneToMany(() => Voucher, voucher => voucher.settlement, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  vouchers!: Voucher[] | null;
 }
