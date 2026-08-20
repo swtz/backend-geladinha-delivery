@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
@@ -115,7 +115,7 @@ export class CustomerService implements Service {
   }
 
   async findOneByOrFail(
-    customerData: Partial<Customer>,
+    customerData: FindOptionsWhere<Customer>,
     manager?: EntityManager,
   ) {
     const customer = await this.findOneBy(customerData, manager);
@@ -127,7 +127,10 @@ export class CustomerService implements Service {
     return customer;
   }
 
-  async findOneBy(customerData: Partial<Customer>, manager?: EntityManager) {
+  async findOneBy(
+    customerData: FindOptionsWhere<Customer>,
+    manager?: EntityManager,
+  ) {
     const repo = manager
       ? manager.getRepository(Customer)
       : this.customerRepository;

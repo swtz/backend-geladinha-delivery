@@ -69,19 +69,21 @@ export class AddressController {
       phone,
       secondPhone,
     };
-    const addresses = await this.addressService.findAll({
-      customerData,
-      city,
-      postalCode: isPostalCode(postalCode, 'BR')
-        ? formatBrPostalCode(postalCode)
-        : undefined,
-      neighborhood,
-      street,
-      number,
-      stateCode,
-      isDefault,
+    const addresses = await this.addressService.findAll(
+      {
+        postalCode: isPostalCode(postalCode, 'BR')
+          ? formatBrPostalCode(postalCode)
+          : undefined,
+        customer: customerData,
+        city,
+        neighborhood,
+        street,
+        number,
+        stateCode,
+        isDefault,
+      },
       orderParams,
-    });
+    );
     const parsedAddresses = addresses.map(
       address => new ResponseAddressDto(address),
     );

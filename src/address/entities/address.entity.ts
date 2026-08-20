@@ -19,11 +19,11 @@ export class Address {
   @Column({ length: 16, default: 'S/N' })
   number!: string;
 
-  @Column({ length: 32, nullable: true })
-  complement!: string;
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  complement!: string | null;
 
-  @Column({ length: 32, nullable: true })
-  referencePoint!: string;
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  referencePoint!: string | null;
 
   @Column({ length: 32 })
   neighborhood!: string;
@@ -31,14 +31,14 @@ export class Address {
   @Column({ length: 32, default: '88955-000' })
   postalCode!: string;
 
-  @Column({ length: 32, default: 'Balneário Gaivota' })
+  @Column({ length: 32, default: 'BALNEARIO_GAIVOTA' })
   city!: string;
 
   @Column({ length: 2, default: 'SC' })
   stateCode!: string;
 
-  @Column({ length: 32, nullable: true })
-  location!: string;
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  location!: string | null;
 
   @Column({ default: false })
   isDefault!: boolean;
@@ -50,9 +50,9 @@ export class Address {
   updatedAt!: Date;
 
   @ManyToOne(() => Customer, {
+    nullable: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    nullable: true,
   })
-  customer!: Customer;
+  customer!: Customer | null;
 }

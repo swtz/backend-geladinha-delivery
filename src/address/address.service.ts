@@ -8,6 +8,7 @@ import {
   EntityManager,
   FindOptionsOrder,
   FindOptionsOrderValue,
+  FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { Address } from './entities/address.entity';
@@ -85,7 +86,7 @@ export class AddressService {
   }
 
   async findOneByOrFail(
-    addressData: Partial<Address>,
+    addressData: FindOptionsWhere<Address>,
     relations = false,
     manager?: EntityManager,
   ) {
@@ -103,8 +104,8 @@ export class AddressService {
   }
 
   async findOneOwnedOrFail(
-    addressData: Partial<Address>,
-    customerData: Partial<Customer>,
+    addressData: FindOptionsWhere<Address>,
+    customerData: FindOptionsWhere<Customer>,
     manager?: EntityManager,
   ) {
     const repo = manager
@@ -125,33 +126,14 @@ export class AddressService {
     return address;
   }
 
-  async findAll({
-    customerData,
-    city,
-    isDefault,
-    neighborhood,
-    street,
-    postalCode,
-    stateCode,
-    number,
-    orderParams,
-  }: {
-    customerData?: Partial<Customer>;
+  async findAll(
+    queryParams: FindOptionsWhere<Address>,
     orderParams?: {
       [K in keyof FindOptionsOrder<Address>]: FindOptionsOrderValue;
-    };
-  } & Partial<Address>) {
+    },
+  ) {
     const addresses = await this.addressRepository.find({
-      where: {
-        customer: customerData,
-        city,
-        isDefault,
-        neighborhood,
-        postalCode,
-        stateCode,
-        number,
-        street,
-      },
+      where: queryParams,
       relations: { customer: true },
       order: orderParams,
     });
