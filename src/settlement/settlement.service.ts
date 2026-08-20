@@ -6,7 +6,12 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { FindOptionsOrder, Repository, FindOptionsOrderValue } from 'typeorm';
+import {
+  FindOptionsOrder,
+  Repository,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+} from 'typeorm';
 import { Settlement } from './entities/settlement.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
@@ -21,6 +26,7 @@ import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { getUnixTime } from 'date-fns';
+import { ResponsePreviewSettlement } from './types/response-preview-settlement.type';
 
 @Injectable()
 export class SettlementService {
@@ -33,7 +39,11 @@ export class SettlementService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(userData: Partial<User>, from: Date, to: Date) {
+  async preview(
+    userData: FindOptionsWhere<User>,
+    from: Date,
+    to: Date,
+  ): Promise<ResponsePreviewSettlement> {
     const operator = await this.userService.findOneByOrFail(
       userData,
       'motoboy-essencial',
@@ -45,8 +55,9 @@ export class SettlementService {
       );
     }
 
-    const exists = await this.findOneByWorkDayAndOperator(from, {
-      id: operator.id,
+    const exists = await this.findOneByWorkDayAndOperator({
+      workDay: from,
+      operator: { id: operator.id },
     });
 
     const vouchers = await this.voucherService.findAll({
@@ -153,24 +164,15 @@ export class SettlementService {
   }
 
   async create(
-    settlementData: Partial<
-      Omit<
-        Settlement,
-        'workDay' | 'operator' | 'currentTotal' | 'expectedTotal'
-      >
-    > & {
-      workDay: Date;
-      operator: User;
-      expectedTotal: number;
-      currentTotal: number;
-    },
+    settlementData: ResponsePreviewSettlement,
     initValue: number,
+    placeCode: string,
     description?: string,
   ) {
-    const exists = await this.findOneByWorkDayAndOperator(
-      settlementData.workDay,
-      { id: settlementData.operator.id },
-    );
+    const exists = await this.findOneByWorkDayAndOperator({
+      workDay: settlementData.workDay,
+      operator: { id: settlementData.operator.id },
+    });
 
     if (exists) {
       throw new ConflictException(
@@ -191,7 +193,7 @@ export class SettlementService {
       settlementData.description = description;
     }
 
-    const created = await this.save(settlementData);
+    const created = await this.save({ ...settlementData, placeCode });
 
     return this.findOneByOrFail({ id: created.id });
   }
@@ -249,7 +251,7 @@ export class SettlementService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneByOrFail(settlementData: Partial<Settlement>) {
+  async findOneByOrFail(settlementData: FindOptionsWhere<Settlement>) {
     const settlement = await this.findOneBy(settlementData);
 
     if (!settlement) {
@@ -259,23 +261,24 @@ export class SettlementService {
     return settlement;
   }
 
-  findOneBy(settlementData: Partial<Settlement>) {
+  findOneBy(settlementData: FindOptionsWhere<Settlement>) {
     return this.settlementRepository.findOne({
       where: settlementData,
       relations: {
-        // TO CHECK
-        // É necessário retornar as relações da entidade WorkTime?
         operator: { workTime: true },
         vouchers: voucherRelations,
       },
     });
   }
 
-  findOneByWorkDayAndOperator(workDay: Date, operatorData: Partial<User>) {
+  findOneByWorkDayAndOperator({
+    workDay,
+    operator,
+  }: FindOptionsWhere<Settlement>) {
     return this.settlementRepository.findOne({
       where: {
         workDay,
-        operator: operatorData,
+        operator,
       },
       relations: { operator: true },
     });
@@ -295,7 +298,7 @@ export class SettlementService {
     queryParams: {
       weekDay?: WeekDay;
       workDay?: Date;
-      operator?: Partial<User>;
+      operator?: FindOptionsWhere<User>;
       isClosed?: boolean;
       placeCode?: string;
     },

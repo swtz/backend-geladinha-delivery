@@ -54,7 +54,7 @@ export class SettlementController {
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = validateFindOneParamsOrFail<Partial<User>>({
+    const userData = {
       nickname,
       id,
       name,
@@ -62,17 +62,19 @@ export class SettlementController {
       email,
       phone,
       secondPhone,
-    });
+    };
+
+    validateFindOneParamsOrFail<User>(userData);
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromDate, toDate);
+      await this.workTimeDateService.create(userData, fromDate, toDate);
 
     console.log(from);
     console.log(to);
 
-    const settlement = await this.settlementService.preview(qo, from, to);
+    const settlement = await this.settlementService.preview(userData, from, to);
 
-    return new ResponseSettlementDto({ ...settlement, placeCode: '' });
+    return new ResponseSettlementDto(settlement);
   }
 
   @Post()
@@ -87,14 +89,15 @@ export class SettlementController {
       user: userData,
     }: CreateSettlementDto,
   ) {
-    const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
+    validateFindOneParamsOrFail<User>(userData);
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromDate, toDate);
+      await this.workTimeDateService.create(userData, fromDate, toDate);
 
-    const preview = await this.settlementService.preview(qo, from, to);
+    const preview = await this.settlementService.preview(userData, from, to);
     const settlement = await this.settlementService.create(
-      { ...preview, placeCode },
+      preview,
       initValue,
+      placeCode,
       description,
     );
 
@@ -178,7 +181,8 @@ export class SettlementController {
   @Patch(':id/code')
   async updatePlaceCode(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Body('placeCode', ParsePlaceCodePipe)
+    placeCode: string,
   ) {
     const settlement = await this.settlementService.updatePlaceCode(
       id,

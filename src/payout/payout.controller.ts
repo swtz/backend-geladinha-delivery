@@ -49,7 +49,7 @@ export class PayoutController {
     @Query('from') fromDate: string,
     @Query('to') toDate: string,
   ) {
-    const qo = validateFindOneParamsOrFail<Partial<User>>({
+    const userData = {
       nickname,
       id,
       name,
@@ -57,17 +57,19 @@ export class PayoutController {
       email,
       phone,
       secondPhone,
-    });
+    };
+
+    validateFindOneParamsOrFail<User>(userData);
 
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromDate, toDate);
+      await this.workTimeDateService.create(userData, fromDate, toDate);
 
     console.log(from);
     console.log(to);
 
-    const payout = await this.payoutService.preview(qo, from, to);
+    const payout = await this.payoutService.preview(userData, from, to);
 
-    return new ResponsePayoutDto({ ...payout, placeCode: '' });
+    return new ResponsePayoutDto(payout);
   }
 
   @Roles(Role.Admin, Role.Operator)
@@ -76,12 +78,12 @@ export class PayoutController {
     @Body(ParsePlaceCodePipe)
     { user: userData, from: fromDate, to: toDate, placeCode }: CreatePayoutDto,
   ) {
-    const qo = validateFindOneParamsOrFail<Partial<User>>(userData);
+    validateFindOneParamsOrFail<Partial<User>>(userData);
     const { initDate: from, endDate: to } =
-      await this.workTimeDateService.create(qo, fromDate, toDate);
+      await this.workTimeDateService.create(userData, fromDate, toDate);
 
-    const preview = await this.payoutService.preview(qo, from, to);
-    const payout = await this.payoutService.create({ ...preview, placeCode });
+    const preview = await this.payoutService.preview(userData, from, to);
+    const payout = await this.payoutService.create(preview, placeCode);
 
     return new ResponsePayoutDto(payout);
   }

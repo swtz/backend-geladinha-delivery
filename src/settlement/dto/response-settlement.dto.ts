@@ -1,12 +1,13 @@
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { ResponseVoucherDto } from 'src/voucher/dto/response-voucher.dto';
 import { Settlement } from '../entities/settlement.entity';
-import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { ResponsePreviewSettlement } from '../types/response-preview-settlement.type';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
+import { MediumResponseWorkTimeDto } from 'src/work-time/dto/work-time/medium-response-work-time.dto';
 
 export class ResponseSettlementDto {
   readonly id?: string;
-  readonly placeCode: string;
+  readonly placeCode?: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly weekDay: WeekDay;
@@ -23,35 +24,20 @@ export class ResponseSettlementDto {
   readonly currentTotal: number;
   readonly expectedTotal: number;
   readonly operator:
-    | (UserResponseDtoType & {
-        workTime: MediumResponseWorkTime | null;
+    | (SmallResponseUserDto & {
+        workTime: MediumResponseWorkTimeDto | null;
       })
     | null;
   readonly vouchers: ResponseVoucherDto[] | null;
 
-  constructor(
-    settlement: Omit<
-      Settlement,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'isClosed'
-      | 'description'
-      | 'initValue'
-    > & {
-      id?: string;
-      createdAt?: Date;
-      updatedAt?: Date;
-      isClosed?: boolean;
-      description?: string;
-      initValue?: number;
-    },
-  ) {
-    this.id = settlement.id;
-    this.placeCode = settlement.placeCode;
-    this.createdAt = settlement.createdAt;
-    this.updatedAt = settlement.updatedAt;
-    this.isClosed = settlement.isClosed;
+  constructor(settlement: ResponsePreviewSettlement | Settlement) {
+    if (settlement instanceof Settlement) {
+      this.id = settlement.id;
+      this.placeCode = settlement.placeCode;
+      this.createdAt = settlement.createdAt;
+      this.updatedAt = settlement.updatedAt;
+      this.isClosed = settlement.isClosed;
+    }
     this.initValue = settlement.initValue;
     this.quantityDeliveries = settlement.quantityDeliveries;
     this.totalRemainingMotoboy = settlement.totalRemainingMotoboy;
@@ -65,21 +51,9 @@ export class ResponseSettlementDto {
     this.weekDay = settlement.weekDay;
     this.workDay = settlement.workDay;
     this.operator = {
-      id: settlement.operator.id,
-      name: settlement.operator.name,
-      lastName: settlement.operator.lastName,
-      nickname: settlement.operator.nickname,
-      phone: settlement.operator.phone,
+      ...new SmallResponseUserDto(settlement.operator),
       workTime: settlement.operator.workTime
-        ? {
-            id: settlement.operator.workTime.id,
-            createdAt: settlement.operator.workTime.createdAt,
-            updatedAt: settlement.operator.workTime.updatedAt,
-            shift: settlement.operator.workTime.shift,
-            initHour: settlement.operator.workTime.initHour,
-            endHour: settlement.operator.workTime.endHour,
-            duration: settlement.operator.workTime.duration,
-          }
+        ? new MediumResponseWorkTimeDto(settlement.operator.workTime)
         : null,
     };
     this.vouchers =

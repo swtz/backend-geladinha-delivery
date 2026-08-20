@@ -8,21 +8,25 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payout } from './entities/payout.entity';
-import { FindOptionsOrder, FindOptionsOrderValue, Repository } from 'typeorm';
+import {
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
-import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
-import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
+import { weekDays } from 'src/common/enums/weekDays.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
 import { Role } from 'src/common/role/roles.enum';
 import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { DeliveryManService } from 'src/user/services/delivery-man.service';
-import { FindDeliveryManByUserDataType } from 'src/user/types/delivery-man.type';
 import { full as mtbFull } from 'src/user/data/relations/delivery-man';
 import { getUnixTime } from 'date-fns';
+import { ResponsePreviewPayout } from './types/response-preview-payout.type';
 
 @Injectable()
 export class PayoutService {
@@ -35,7 +39,28 @@ export class PayoutService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  async preview(userData: Partial<User>, from: Date, to: Date) {
+  async preview(
+    {
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    }: FindOptionsWhere<User>,
+    from: Date,
+    to: Date,
+  ): Promise<ResponsePreviewPayout> {
+    const userData = {
+      nickname,
+      id,
+      name,
+      lastName,
+      email,
+      phone,
+      secondPhone,
+    };
     const motoboy = await this.deliveryManService.findOneByOrFail(
       { user: userData },
       true,
@@ -56,6 +81,7 @@ export class PayoutService {
 
     const motoboyTips = deliveries.reduce((prev, item) => {
       if (item.tip !== null) {
+        // eslint-disable-next-line no-useless-assignment
         return (prev += item.tip.amount);
       }
       return prev;
@@ -124,14 +150,10 @@ export class PayoutService {
     return payout;
   }
 
-  async create(
-    payoutData: Partial<Omit<Payout, 'workDay' | 'motoboy'>> & {
-      workDay: Date;
-      motoboy: DeliveryMan;
-    },
-  ) {
-    const exists = await this.findOneByWorkDayAndMotoboy(payoutData.workDay, {
-      user: { id: payoutData.motoboy.user.id },
+  async create(payoutData: ResponsePreviewPayout, placeCode: string) {
+    const exists = await this.findOneByWorkDayAndMotoboy({
+      workDay: payoutData.workDay,
+      motoboy: { user: { id: payoutData.motoboy.user.id } },
     });
 
     if (exists) {
@@ -142,7 +164,7 @@ export class PayoutService {
       );
     }
 
-    const created = await this.save(payoutData);
+    const created = await this.save({ ...payoutData, placeCode });
 
     return this.findOneByOrFail({ id: created.id });
   }
@@ -211,7 +233,7 @@ export class PayoutService {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  async findOneByOrFail(payoutData: Partial<Payout>) {
+  async findOneByOrFail(payoutData: FindOptionsWhere<Payout>) {
     const payout = await this.findOneBy(payoutData);
 
     if (!payout) {
@@ -221,24 +243,21 @@ export class PayoutService {
     return payout;
   }
 
-  findOneBy(payoutData: Partial<Payout>) {
+  findOneBy(payoutData: FindOptionsWhere<Payout>) {
     return this.payoutRepository.findOne({
       where: payoutData,
       relations: {
-        motoboy: { ...mtbFull, user: true },
+        motoboy: mtbFull,
         vouchers: voucherRelations,
       },
     });
   }
 
-  findOneByWorkDayAndMotoboy(
-    workDay: Date,
-    userData: FindDeliveryManByUserDataType,
-  ) {
+  findOneByWorkDayAndMotoboy({ workDay, motoboy }: FindOptionsWhere<Payout>) {
     return this.payoutRepository.findOne({
       where: {
         workDay,
-        motoboy: userData,
+        motoboy,
       },
       relations: { motoboy: mtbFull },
     });
@@ -255,13 +274,7 @@ export class PayoutService {
   }
 
   findAll(
-    queryParams: {
-      weekDay?: WeekDay;
-      workDay?: Date;
-      motoboy?: FindDeliveryManByUserDataType;
-      isClosed?: boolean;
-      placeCode?: string;
-    },
+    queryParams: FindOptionsWhere<Payout>,
     orderParams?: {
       [K in keyof FindOptionsOrder<Payout>]: FindOptionsOrderValue;
     },

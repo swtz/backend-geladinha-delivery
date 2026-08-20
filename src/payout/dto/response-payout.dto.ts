@@ -3,11 +3,14 @@ import { Payout } from '../entities/payout.entity';
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { MediumResponseWorkTime } from 'src/work-time/types/medium-response-work-time.type';
 import { SmallResponseMotorcycle } from 'src/user/types/motorcycle.type';
-import { UserResponseDtoType } from 'src/user/types/user/user.type';
+import { ResponsePreviewPayout } from '../types/response-preview-payout.type';
+import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
+import { SmallResponseMotorcycleDto } from 'src/user/dtos/motorcycle/small-response-motorcycle.dto';
+import { MediumResponseWorkTimeDto } from 'src/work-time/dto/work-time/medium-response-work-time.dto';
 
 export class ResponsePayoutDto {
   readonly id?: string;
-  readonly placeCode: string;
+  readonly placeCode?: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly weekDay: WeekDay;
@@ -20,25 +23,20 @@ export class ResponsePayoutDto {
   readonly subtotal: number;
   readonly totalSpending: number;
   readonly total: number;
-  readonly motoboy: UserResponseDtoType & {
+  readonly motoboy: SmallResponseUserDto & {
     workTime: MediumResponseWorkTime | null;
-    motorcycle: SmallResponseMotorcycle;
+    motorcycle: SmallResponseMotorcycle | null;
   };
   readonly vouchers?: ResponseVoucherDto[];
 
-  constructor(
-    payout: Omit<Payout, 'id' | 'createdAt' | 'updatedAt' | 'isClosed'> & {
-      id?: string;
-      createdAt?: Date;
-      updatedAt?: Date;
-      isClosed?: boolean;
-    },
-  ) {
-    this.id = payout.id;
-    this.placeCode = payout.placeCode;
-    this.createdAt = payout.createdAt;
-    this.updatedAt = payout.updatedAt;
-    this.isClosed = payout.isClosed;
+  constructor(payout: ResponsePreviewPayout | Payout) {
+    if (payout instanceof Payout) {
+      this.id = payout.id;
+      this.placeCode = payout.placeCode;
+      this.createdAt = payout.createdAt;
+      this.updatedAt = payout.updatedAt;
+      this.isClosed = payout.isClosed;
+    }
     this.weekDay = payout.weekDay;
     this.workDay = payout.workDay;
     this.totalDeliveries = payout.totalDeliveries;
@@ -49,27 +47,12 @@ export class ResponsePayoutDto {
     this.totalSpending = payout.totalSpending;
     this.total = payout.total;
     this.motoboy = {
-      id: payout.motoboy.user.id,
-      name: payout.motoboy.user.name,
-      lastName: payout.motoboy.user.lastName,
-      nickname: payout.motoboy.user.nickname,
-      phone: payout.motoboy.user.phone,
-      motorcycle: {
-        id: payout.motoboy.motorcycle.id,
-        brand: payout.motoboy.motorcycle.brand,
-        color: payout.motoboy.motorcycle.color,
-        licensePlate: payout.motoboy.motorcycle.licensePlate,
-      },
+      ...new SmallResponseUserDto(payout.motoboy.user),
+      motorcycle: payout.motoboy.motorcycle
+        ? new SmallResponseMotorcycleDto(payout.motoboy.motorcycle)
+        : null,
       workTime: payout.motoboy.user.workTime
-        ? {
-            id: payout.motoboy.user.workTime.id,
-            createdAt: payout.motoboy.user.workTime.createdAt,
-            updatedAt: payout.motoboy.user.workTime.updatedAt,
-            shift: payout.motoboy.user.workTime.shift,
-            initHour: payout.motoboy.user.workTime.initHour,
-            endHour: payout.motoboy.user.workTime.endHour,
-            duration: payout.motoboy.user.workTime.duration,
-          }
+        ? new MediumResponseWorkTimeDto(payout.motoboy.user.workTime)
         : null,
     };
     this.vouchers = payout.vouchers
