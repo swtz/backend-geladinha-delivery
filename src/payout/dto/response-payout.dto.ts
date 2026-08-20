@@ -27,7 +27,7 @@ export class ResponsePayoutDto {
     workTime: MediumResponseWorkTime | null;
     motorcycle: SmallResponseMotorcycle | null;
   };
-  readonly vouchers?: ResponseVoucherDto[];
+  readonly vouchers: ResponseVoucherDto[] | null;
 
   constructor(payout: ResponsePreviewPayout | Payout) {
     if (payout instanceof Payout) {
@@ -55,8 +55,9 @@ export class ResponsePayoutDto {
         ? new MediumResponseWorkTimeDto(payout.motoboy.user.workTime)
         : null,
     };
-    this.vouchers = payout.vouchers
-      ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))
-      : undefined;
+    this.vouchers =
+      payout.vouchers && payout.vouchers.length > 0
+        ? payout.vouchers.map(voucher => new ResponseVoucherDto(voucher))
+        : null;
   }
 }

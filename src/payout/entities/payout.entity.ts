@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class Payout {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -55,14 +55,17 @@ export class Payout {
   @Column()
   placeCode!: string;
 
-  // Será necessário computar o dia/horário do término do serviço do motoboy,
-  // ou User.workTime já é suficiente?
-  // @Column()
-  // workEndDay!: Date;
-
-  @ManyToOne(() => DeliveryMan, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => DeliveryMan, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   motoboy!: DeliveryMan;
 
-  @OneToMany(() => Voucher, voucher => voucher.payout, { nullable: true })
-  vouchers!: Voucher[];
+  @OneToMany(() => Voucher, voucher => voucher.payout, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  vouchers!: Voucher[] | null;
 }
