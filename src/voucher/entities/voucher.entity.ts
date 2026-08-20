@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ orderBy: { createdAt: 'DESC' } })
 export class Voucher {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -44,12 +44,14 @@ export class Voucher {
   @ManyToOne(() => Payout, payout => payout.vouchers, {
     nullable: true,
     onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
-  payout!: Payout;
+  payout!: Payout | null;
 
   @ManyToOne(() => Settlement, settlement => settlement.vouchers, {
     nullable: true,
     onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
-  settlement!: Settlement;
+  settlement!: Settlement | null;
 }
