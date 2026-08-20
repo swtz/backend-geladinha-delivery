@@ -263,12 +263,17 @@ export class PayoutService {
     });
   }
 
-  findAllOwned(user: User) {
+  findAllOwned(
+    user: User,
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Payout>]: FindOptionsOrderValue;
+    },
+  ) {
     return this.payoutRepository.find({
       where: {
         motoboy: { user: { id: user.id } },
       },
-      order: { workDay: 'DESC' },
+      order: orderParams,
       relations: { motoboy: mtbFull },
     });
   }

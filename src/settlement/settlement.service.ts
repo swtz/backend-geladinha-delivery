@@ -18,7 +18,7 @@ import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/services/user.service';
 import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
-import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
+import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
 import voucherRelations from '../voucher/data/relations/voucher';
@@ -284,24 +284,23 @@ export class SettlementService {
     });
   }
 
-  findAllOwned(user: User) {
+  findAllOwned(
+    user: User,
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Settlement>]: FindOptionsOrderValue;
+    },
+  ) {
     return this.settlementRepository.find({
       where: {
         operator: { id: user.id },
       },
-      order: { workDay: 'DESC' },
+      order: orderParams,
       relations: { operator: true },
     });
   }
 
   findAll(
-    queryParams: {
-      weekDay?: WeekDay;
-      workDay?: Date;
-      operator?: FindOptionsWhere<User>;
-      isClosed?: boolean;
-      placeCode?: string;
-    },
+    queryParams: FindOptionsWhere<Settlement>,
     orderParams?: {
       [K in keyof FindOptionsOrder<Settlement>]: FindOptionsOrderValue;
     },

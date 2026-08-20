@@ -26,8 +26,13 @@ import { User } from 'src/user/entities/user.entity';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { CreatePayoutDto } from './dto/create-payout-dto';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
-import { FindOptionsOrder } from 'typeorm';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 import { Payout } from './entities/payout.entity';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { payoutOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('payout')
@@ -90,8 +95,17 @@ export class PayoutController {
 
   @Roles(Role.Motoboy)
   @Get('me')
-  async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const payouts = await this.payoutService.findAllOwned(req.user);
+  async findAllOwned(
+    @Req() req: AuthenticatedRequest,
+    @Query(new ParseOrderParamsPipe<CommonType<Payout>>(payoutOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Payout>]: FindOptionsOrderValue;
+    },
+  ) {
+    const payouts = await this.payoutService.findAllOwned(
+      req.user,
+      orderParams,
+    );
     const parsedPayouts = payouts.map(item => new ResponsePayoutDto(item));
     return parsedPayouts;
   }
@@ -116,8 +130,10 @@ export class PayoutController {
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
     @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
-    @Query('field') field: keyof FindOptionsOrder<Payout>,
-    @Query('order') order: 'asc' | 'ASC' | 'desc' | 'DESC',
+    @Query(new ParseOrderParamsPipe<CommonType<Payout>>(payoutOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Payout>]: FindOptionsOrderValue;
+    },
   ) {
     const payouts = await this.payoutService.findAll(
       {
@@ -137,7 +153,7 @@ export class PayoutController {
         isClosed,
         placeCode,
       },
-      { [field]: order },
+      orderParams,
     );
     const parsedPayouts = payouts.map(payout => new ResponsePayoutDto(payout));
     return parsedPayouts;

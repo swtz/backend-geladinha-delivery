@@ -146,10 +146,10 @@ export class PlaceController {
     const workTimeData = { shift, isDefault, isShared };
     const places = await this.placeService.findAll(
       {
-        userData: type === 'owner' ? userData : undefined,
-        workTimeData:
+        owners: type === 'owner' ? userData : undefined,
+        workTimes:
           type === 'workTime'
-            ? { ...workTimeData, user: [userData] }
+            ? { ...workTimeData, users: [userData] }
             : workTimeData,
       },
       orderParams,

@@ -105,8 +105,17 @@ export class SettlementController {
   }
 
   @Get('me')
-  async findAllOwned(@Req() req: AuthenticatedRequest) {
-    const settlements = await this.settlementService.findAllOwned(req.user);
+  async findAllOwned(
+    @Req() req: AuthenticatedRequest,
+    @Query(new ParseOrderParamsPipe<CommonType<Settlement>>(settlementOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Settlement>]: FindOptionsOrderValue;
+    },
+  ) {
+    const settlements = await this.settlementService.findAllOwned(
+      req.user,
+      orderParams,
+    );
     const parsedSettlements = settlements.map(
       item => new ResponseSettlementDto(item),
     );

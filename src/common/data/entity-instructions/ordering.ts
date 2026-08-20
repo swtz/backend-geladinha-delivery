@@ -1,4 +1,5 @@
 import { Address } from 'src/address/entities/address.entity';
+import { Payout } from 'src/payout/entities/payout.entity';
 import { Place } from 'src/place/entities/place.entity';
 import { Settlement } from 'src/settlement/entities/settlement.entity';
 import { Motorcycle } from 'src/user/entities/motorcycle.entity';
@@ -44,6 +45,21 @@ export const settlementOrderMap = generateOrderingMap<Settlement>({
   isClosed: undefined,
   placeCode: undefined,
   operator: undefined,
+});
+
+export const payoutOrderMap = generateOrderingMap<Payout>({
+  motoboy: undefined,
+  motoboyDaily: undefined,
+  motoboyTips: undefined,
+  quantityDeliveries: undefined,
+  totalDeliveries: undefined,
+  total: undefined,
+  subtotal: undefined,
+  totalSpending: undefined,
+  weekDay: undefined,
+  workDay: undefined,
+  vouchers: undefined,
+  placeCode: undefined,
 });
 
 export const placeOrderMap = generateOrderingMap<Place>({
