@@ -21,7 +21,7 @@ export class CreateAddressDto {
   @IsNumberString({ no_symbols: true }, { message: 'Número inválido' })
   @IsNotEmpty({ message: 'Campo número não pode estar vazio' })
   @MaxLength(16, { message: 'Campo número pode ter no máximo 16 caracteres' })
-  number?: string;
+  number!: string | null;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
@@ -32,7 +32,7 @@ export class CreateAddressDto {
   @MinLength(8, {
     message: 'Campo complemento precisa ter no mínimo 8 caracteres',
   })
-  complement?: string;
+  complement!: string | null;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
@@ -43,7 +43,7 @@ export class CreateAddressDto {
   @MinLength(8, {
     message: 'Campo ponto de referência precisa ter no mínimo 8 caracteres',
   })
-  referencePoint?: string;
+  referencePoint!: string | null;
 
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo bairro não pode estar vazio' })
@@ -51,22 +51,19 @@ export class CreateAddressDto {
   @MinLength(4, { message: 'Campo bairro precisa ter no mínimo 4 caracteres' })
   neighborhood!: string;
 
-  @IsOptional()
   @IsPostalCode('BR', { message: 'CEP inválido' })
-  postalCode?: string;
+  postalCode!: string;
 
-  @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo cidade não pode estar vazio' })
   @MaxLength(32, { message: 'Campo cidade pode ter no máximo 32 caracteres' })
   @MinLength(3, { message: 'Campo cidade precisa ter no mínimo 3 caracteres' })
-  city?: string;
+  city!: string;
 
-  @IsOptional()
   @IsString({ message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo UF não pode estar vazio' })
   @Length(2, 2, { message: 'Campo UF precisa ter 2 caracteres' })
-  stateCode?: string;
+  stateCode!: string;
 
   @IsOptional()
   @IsString({ message: 'Formato inválido' })
@@ -74,9 +71,9 @@ export class CreateAddressDto {
   @MaxLength(32, {
     message: 'Campo localização pode ter no máximo 32 caracteres',
   })
-  location?: string;
+  location!: string | null;
 
   @IsOptional()
   @IsBoolean({ message: 'Campo endereço padrão só pode ser verdadeiro/falso' })
-  isDefault?: boolean;
+  isDefault!: boolean | null;
 }

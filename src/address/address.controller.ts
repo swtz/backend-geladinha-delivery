@@ -12,7 +12,6 @@ import {
 import { AddressService } from './address.service';
 import { ResponseAddressDto } from './dto/response-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-params-or-fail';
 import { Address } from './entities/address.entity';
 import { Roles } from 'src/common/role/decorators/roles.decorator';
 import { Role } from 'src/common/role/roles.enum';
@@ -95,7 +94,6 @@ export class AddressController {
     @Body() dto: UpdateAddressDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    validateFindOneParamsOrFail<Address>(dto);
     const address = await this.addressService.update(dto, id);
     return new ResponseAddressDto(address);
   }
