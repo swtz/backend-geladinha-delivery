@@ -63,17 +63,10 @@ export class SettlementController {
       phone,
       secondPhone,
     };
-
     validateFindOneParamsOrFail<User>(userData);
-
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(userData, fromDate, toDate);
-
-    console.log(from);
-    console.log(to);
-
     const settlement = await this.settlementService.preview(userData, from, to);
-
     return new ResponseSettlementDto(settlement);
   }
 

@@ -40,27 +40,10 @@ export class PayoutService {
   ) {}
 
   async preview(
-    {
-      nickname,
-      id,
-      name,
-      lastName,
-      email,
-      phone,
-      secondPhone,
-    }: FindOptionsWhere<User>,
+    userData: FindOptionsWhere<User>,
     from: Date,
     to: Date,
   ): Promise<ResponsePreviewPayout> {
-    const userData = {
-      nickname,
-      id,
-      name,
-      lastName,
-      email,
-      phone,
-      secondPhone,
-    };
     const motoboy = await this.deliveryManService.findOneByOrFail(
       { user: userData },
       true,

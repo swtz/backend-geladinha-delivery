@@ -63,17 +63,10 @@ export class PayoutController {
       phone,
       secondPhone,
     };
-
     validateFindOneParamsOrFail<User>(userData);
-
     const { initDate: from, endDate: to } =
       await this.workTimeDateService.create(userData, fromDate, toDate);
-
-    console.log(from);
-    console.log(to);
-
     const payout = await this.payoutService.preview(userData, from, to);
-
     return new ResponsePayoutDto(payout);
   }
 
