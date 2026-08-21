@@ -1,54 +1,25 @@
-import { isISO8601 } from 'class-validator';
 import { getUnixTime, intervalToDuration } from 'date-fns';
 import { padLeftWithChar } from './pad-left-with-char';
-import { BadRequestException } from '@nestjs/common';
-import { WorkTime } from 'src/work-time/entities/work-time.entity';
-import { IntervalTime } from 'src/work-time/entities/interval-time.entity';
+import { getTimeFromDateIsoString } from './get-time-from-date-iso-string';
 
-export function generateDurationTime(
-  from: string,
-  to: string,
-  entityTime?: WorkTime | IntervalTime,
-): string {
-  if (
-    (!isISO8601(from, { strict: true }) && from.length >= 19) ||
-    (!isISO8601(to, { strict: true }) && to.length >= 19)
-  ) {
-    throw new BadRequestException('Data inválida');
-  }
-  const initTime = from.slice(11, 19);
-  const endTime = to.slice(11, 19);
-  const auxTime: { initHour: string; endHour: string; addOneDay: '01' | '02' } =
-    {
-      initHour: initTime,
-      endHour: endTime,
-      addOneDay: getUnixTime(from) > getUnixTime(to) ? '02' : '01',
-    };
-  if (entityTime) {
-    if (initTime !== entityTime.initHour) {
-      entityTime.initHour = initTime;
-    }
-    if (endTime !== entityTime.endHour) {
-      entityTime.endHour = endTime;
-    }
-    auxTime.initHour = entityTime.initHour;
-    auxTime.endHour = entityTime.endHour;
-    auxTime.addOneDay = entityTime.initHour > entityTime.endHour ? '02' : '01';
-  }
-
-  const { hours, minutes, seconds } = intervalToDuration({
-    start: `${from.slice(0, 7)}-01T${auxTime.initHour}`,
-    end: `${from.slice(0, 7)}-${auxTime.addOneDay}T${auxTime.endHour}`,
+export function generateDurationTime(fromTime: string, toTime: string): string {
+  const initTime =
+    fromTime.length > 8 ? getTimeFromDateIsoString(fromTime) : fromTime;
+  const endTime = toTime.length > 8 ? getTimeFromDateIsoString(toTime) : toTime;
+  const initDate = new Date(`1970-01-01T${initTime}`);
+  const endDate = new Date(`1970-01-01T${endTime}`);
+  const relativeEndDate =
+    getUnixTime(initDate) > getUnixTime(endDate) || initTime === endTime
+      ? new Date(`1970-01-02T${endTime}`)
+      : endDate;
+  const { days, hours, minutes, seconds } = intervalToDuration({
+    start: initDate,
+    end: relativeEndDate,
   });
-
-  const d2Hours = hours ? padLeftWithChar(hours, '0') : undefined;
-  const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : undefined;
-  const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : undefined;
-  const duration = `${d2Hours || '00'}:${d2Minutes || '00'}:${d2Seconds || '00'}`;
-  if (entityTime) {
-    if (entityTime.duration !== duration) {
-      entityTime.duration = duration;
-    }
-  }
+  const d2Hours = hours ? padLeftWithChar(hours, '0') : '00';
+  const d2Minutes = minutes ? padLeftWithChar(minutes, '0') : '00';
+  const d2Seconds = seconds ? padLeftWithChar(seconds, '0') : '00';
+  const duration =
+    days === 1 ? '24:00:00' : `${d2Hours}:${d2Minutes}:${d2Seconds}`;
   return duration;
 }

@@ -111,11 +111,17 @@ export class WorkTimePlaceUserService {
         workTime.isDefault = dto.isDefault;
       }
       if (dto.initHour && dto.endHour) {
-        generateDurationTime(dto.initHour, dto.endHour, workTime);
+        workTime.duration = generateDurationTime(dto.initHour, dto.endHour);
       } else if (dto.initHour) {
-        generateDurationTime(dto.initHour, workTime.endHour, workTime);
+        workTime.duration = generateDurationTime(
+          dto.initHour,
+          workTime.endHour,
+        );
       } else if (dto.endHour) {
-        generateDurationTime(workTime.initHour, dto.endHour, workTime);
+        workTime.duration = generateDurationTime(
+          workTime.initHour,
+          dto.endHour,
+        );
       }
       workTime.shift = dto.shift ?? workTime.shift;
 

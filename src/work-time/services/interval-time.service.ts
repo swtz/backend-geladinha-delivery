@@ -17,6 +17,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 import { WorkTime } from '../entities/work-time.entity';
+import { getTimeFromDateIsoString } from 'src/common/utils/get-time-from-date-iso-string';
 
 @Injectable()
 export class IntervalTimeService {
@@ -38,8 +39,8 @@ export class IntervalTimeService {
     const workTime = user.workTime ? user.workTime : placeDefaultWorkTime;
     const duration = generateDurationTime(initHour, endHour);
     const interval = {
-      initHour: initHour.slice(11, 19),
-      endHour: endHour.slice(11, 19),
+      initHour: getTimeFromDateIsoString(initHour),
+      endHour: getTimeFromDateIsoString(endHour),
       duration,
       workTime,
       user,
@@ -54,13 +55,28 @@ export class IntervalTimeService {
     manager?: EntityManager,
   ) {
     const intervalTime = await this.findOneByOrFail({ id }, manager);
+
     if (initHour && endHour) {
-      generateDurationTime(initHour, endHour, intervalTime);
+      intervalTime.duration = generateDurationTime(initHour, endHour);
     } else if (initHour) {
-      generateDurationTime(initHour, intervalTime.endHour, intervalTime);
+      intervalTime.duration = generateDurationTime(
+        initHour,
+        intervalTime.endHour,
+      );
     } else if (endHour) {
-      generateDurationTime(intervalTime.initHour, endHour, intervalTime);
+      intervalTime.duration = generateDurationTime(
+        intervalTime.initHour,
+        endHour,
+      );
     }
+    intervalTime.initHour = initHour
+      ? getTimeFromDateIsoString(initHour)
+      : intervalTime.initHour;
+
+    intervalTime.endHour = endHour
+      ? getTimeFromDateIsoString(endHour)
+      : intervalTime.endHour;
+
     const updated = await this.save(intervalTime, manager);
     return this.findOneByOrFail({ id: updated.id }, manager);
   }

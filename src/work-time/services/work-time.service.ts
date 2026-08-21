@@ -14,6 +14,7 @@ import { UpdateWorkTimeDto } from '../dto/work-time/update-work-time.dto';
 import { User } from 'src/user/entities/user.entity';
 import { full, essencial, tiny } from '../data/relations/work-time';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
+import { getTimeFromDateIsoString } from 'src/common/utils/get-time-from-date-iso-string';
 
 @Injectable()
 export class WorkTimeService {
@@ -30,8 +31,8 @@ export class WorkTimeService {
     const duration = generateDurationTime(dto.initHour, dto.endHour);
     const workTime = {
       shift: dto.shift,
-      initHour: dto.initHour.slice(11, 19),
-      endHour: dto.endHour.slice(11, 19),
+      initHour: getTimeFromDateIsoString(dto.initHour),
+      endHour: getTimeFromDateIsoString(dto.endHour),
       duration,
       isDefault: dto.isDefault ? dto.isDefault : false,
       isShared,
@@ -48,15 +49,22 @@ export class WorkTimeService {
       );
     }
     if (dto.initHour && dto.endHour) {
-      generateDurationTime(dto.initHour, dto.endHour, workTime);
+      workTime.duration = generateDurationTime(dto.initHour, dto.endHour);
     } else if (dto.initHour) {
-      generateDurationTime(dto.initHour, workTime.endHour, workTime);
+      workTime.duration = generateDurationTime(dto.initHour, workTime.endHour);
     } else if (dto.endHour) {
-      generateDurationTime(workTime.initHour, dto.endHour, workTime);
+      workTime.duration = generateDurationTime(workTime.initHour, dto.endHour);
     }
-    workTime.shift = dto.shift ?? workTime.shift;
-    workTime.isDefault = dto.isDefault ?? workTime.isDefault;
 
+    workTime.initHour = dto.initHour
+      ? getTimeFromDateIsoString(dto.initHour)
+      : workTime.initHour;
+
+    workTime.endHour = dto.endHour
+      ? getTimeFromDateIsoString(dto.endHour)
+      : workTime.endHour;
+
+    workTime.shift = dto.shift ?? workTime.shift;
     const created = await this.save(workTime, manager);
     return this.findOneByOrFail({ id: created.id }, true, manager);
   }
