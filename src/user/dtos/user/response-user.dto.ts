@@ -33,11 +33,12 @@ export class ResponseUserDto {
     this.placeCode = user.placeCode;
     this.roles =
       user.roles.length > 0 ? user.roles.map(role => role.name) : null;
-    this.vouchers = user.vouchers
-      ? user.vouchers.map(voucher => {
-          return new ResponseVoucherDto(voucher);
-        })
-      : null;
+    this.vouchers =
+      user.vouchers && user.vouchers.length > 0
+        ? user.vouchers.map(voucher => {
+            return new ResponseVoucherDto(voucher);
+          })
+        : null;
     this.workTime = user.workTime
       ? new MediumResponseWorkTimeDto(user.workTime)
       : null;
