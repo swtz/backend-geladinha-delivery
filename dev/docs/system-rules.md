@@ -31,28 +31,54 @@ Soluções:
 ```ts
 @Get()
 async findAll(
-  @Query('workTimeId', new ParseUUIDPipe({ optional: true }))
-  workTimeId: string,
-  @Query('userId', new ParseUUIDPipe({ optional: true })) userId: string,
-  @Query('duration') duration: string,
-  @Query('field')
-  field: 'createdAt' | 'updatedAt' | 'initHour' | 'endHour' | 'duration',
-  @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
+  @Query('isDefault', new ParseBoolPipe({ optional: true }))
+  isDefault: boolean,
+  @Query('city') city: string,
+  @Query('postalCode') postalCode: string,
+  @Query('neighborhood') neighborhood: string,
+  @Query('number') number: string,
+  @Query('stateCode') stateCode: string,
+  @Query('street') street: string,
+  @Query('nickname') nickname: string,
+  @Query('id', new ParseUUIDPipe({ optional: true })) id: string,
+  @Query('name') name: string,
+  @Query('lastName') lastName: string,
+  @Query('email', ParseEmailPipe) email: string,
+  @Query('phone', ParseBrPhonePipe) phone: string,
+  @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+  @Query(new ParseOrderParamsPipe<CommonType<Address>>(addressOrderMap))
+  orderParams: {
+    [K in keyof FindOptionsOrder<Address>]: FindOptionsOrderValue;
+  },
 ) {
-  const intervalTimes = await this.intervalTimeService.findAll(
+  const customerData = {
+    id,
+    nickname,
+    name,
+    lastName,
+    email,
+    phone,
+    secondPhone,
+  };
+  const addresses = await this.addressService.findAll(
     {
-      duration,
-      workTime: { id: workTimeId },
-      user: { id: userId },
+      postalCode: isPostalCode(postalCode, 'BR')
+        ? formatBrPostalCode(postalCode)
+        : undefined,
+      customer: customerData,
+      city,
+      neighborhood,
+      street,
+      number,
+      stateCode,
+      isDefault,
     },
-    { [field]: order },
+    orderParams,
   );
-  const parsedIntervalTimes = intervalTimes.map(
-    item => new ResponseIntervalTimeDto(item),
+  const parsedAddresses = addresses.map(
+    address => new ResponseAddressDto(address),
   );
-
-  return parsedIntervalTimes;
-
+  return parsedAddresses;
 }
 ```
 
