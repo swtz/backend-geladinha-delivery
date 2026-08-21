@@ -1,8 +1,6 @@
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { WorkTime } from '../../entities/work-time.entity';
-import { ResponseIntervalTimeDto } from '../interval-time/response-interval-time.dto';
 import { SmallResponsePlaceDto } from 'src/place/dto/small-response-place.dto';
-import { ResponseUserDto } from 'src/user/dtos/user/response-user.dto';
 import { SmallResponseUserDto } from 'src/user/dtos/user/small-response-user.dto';
 import { SmallResponseIntervalTimeDto } from '../interval-time/small-response-interval-time.dto';
 
@@ -39,13 +37,13 @@ export class ResponseWorkTimeDto {
     this.users =
       workTime.users && workTime.users.length > 0
         ? workTime.users.map(user => {
-            return new ResponseUserDto(user);
+            return new SmallResponseUserDto(user);
           })
         : null;
     this.intervalTimes =
       workTime.intervalTimes && workTime.intervalTimes.length > 0
         ? workTime.intervalTimes.map(intervalTime => {
-            return new ResponseIntervalTimeDto(intervalTime);
+            return new SmallResponseIntervalTimeDto(intervalTime);
           })
         : null;
   }
