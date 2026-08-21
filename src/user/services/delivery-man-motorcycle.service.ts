@@ -25,7 +25,8 @@ export class DeliveryManMotorcycleService {
     motorcycleData: CreateMotorcycleDto | string,
   ) {
     return this.dataSource.transaction(async manager => {
-      const isObject = typeof motorcycleData === 'object';
+      const isObject =
+        typeof motorcycleData === 'object' && motorcycleData !== null;
       const user = await this.userService.create(userDto, manager);
       const ownerId: string | undefined = isObject
         ? motorcycleData['owner']
@@ -36,7 +37,7 @@ export class DeliveryManMotorcycleService {
         : undefined;
 
       const motorcycle =
-        typeof motorcycleData === 'object'
+        typeof motorcycleData === 'object' && motorcycleData !== null
           ? await this.motorcycleService.create(
               motorcycleData,
               owner,

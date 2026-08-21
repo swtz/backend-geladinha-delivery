@@ -13,8 +13,10 @@ export class ParsePlaceCodePipe implements PipeTransform {
   private readonly paramTypes = ['body', 'query'];
 
   transform(value: string | object, { type }: ArgumentMetadata) {
-    const isObject = typeof value === 'object';
-    const placeCode = isObject ? (value['placeCode'] as string) : value;
+    const isObject = typeof value === 'object' && value !== null;
+    const placeCode = isObject
+      ? (value['placeCode'] as string | undefined)
+      : value;
     if (!value || !placeCode || !this.paramTypes.includes(type)) {
       return isObject ? { ...value, placeCode } : placeCode;
     }
