@@ -105,7 +105,7 @@ export class PayoutService {
     payout.totalSpending = await this.voucherService.sum({
       from,
       to,
-      type: Voucher.User,
+      type: Voucher.DeliveryMan,
       userData,
     });
 

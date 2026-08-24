@@ -42,9 +42,7 @@ export class VoucherController {
     const vouchers = await this.voucherService.findAll({
       from,
       to,
-      id,
-      name,
-      phone,
+      userData: { id, name, phone },
       type,
     });
     const parsedVouchers = vouchers.map(
