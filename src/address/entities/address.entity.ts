@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class Address {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

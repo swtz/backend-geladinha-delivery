@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { IntervalTime } from './interval-time.entity';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class WorkTime {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

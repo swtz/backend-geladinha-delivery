@@ -12,7 +12,7 @@ import {
 import { User } from 'src/user/entities/user.entity';
 import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class Place {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

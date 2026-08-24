@@ -16,7 +16,7 @@ import {
 import { DeliveryMan } from './delivery-man.entity';
 import { IntervalTime } from 'src/work-time/entities/interval-time.entity';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -45,7 +45,7 @@ export class User {
   @Column({ default: false })
   forceLogout!: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn() // really nigga? { utc: false } '-'
   createdAt!: Date;
 
   @UpdateDateColumn()

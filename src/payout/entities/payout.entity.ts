@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class Payout {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

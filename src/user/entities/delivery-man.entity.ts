@@ -12,7 +12,7 @@ import { Motorcycle } from './motorcycle.entity';
 import { Tip } from 'src/tip/entities/tip.entity';
 import { User } from './user.entity';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class DeliveryMan {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

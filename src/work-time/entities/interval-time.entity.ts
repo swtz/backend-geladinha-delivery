@@ -11,7 +11,7 @@ import {
 import { WorkTime } from './work-time.entity';
 import { User } from 'src/user/entities/user.entity';
 
-@Entity({ orderBy: { createdAt: 'DESC' } })
+@Entity()
 export class IntervalTime {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
