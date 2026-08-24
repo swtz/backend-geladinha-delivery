@@ -1,6 +1,6 @@
 import { User } from '../../entities/user.entity';
 
-export type UserResponseDtoType = Pick<
+export type SmallResponseUserType = Pick<
   User,
   'id' | 'name' | 'lastName' | 'nickname' | 'phone'
 >;
