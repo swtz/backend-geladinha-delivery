@@ -21,11 +21,15 @@ import {
   ParseOrderParamsPipe,
 } from 'src/delivery/pipes/parse-order-params.pipe';
 import { motorcycleOrderMap } from 'src/common/data/entity-instructions/ordering';
+import { Roles } from 'src/common/role/decorators/roles.decorator';
+import { Role } from 'src/common/role/roles.enum';
 
+@Roles(Role.Admin, Role.Operator, Role.Motoboy)
 @Controller('motorcycle')
 export class MotorcycleController {
   constructor(private readonly motorcycleService: MotorcycleService) {}
 
+  @Roles(Role.Admin)
   @Post()
   async create(@Body(ParsePlaceCodePipe) dto: CreateMotorcycleDto) {
     const motorcycle = await this.motorcycleService.create(dto);
@@ -88,6 +92,7 @@ export class MotorcycleController {
     return new ResponseMotorcycleDto(motorcycle);
   }
 
+  @Roles(Role.Admin)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const motorcycle = await this.motorcycleService.remove(id);
