@@ -98,7 +98,7 @@ export class MotorcycleService {
   }
 
   async findOneByOrFail(
-    motorcycleData: Partial<Motorcycle>,
+    motorcycleData: FindOptionsWhere<Motorcycle>,
     relations = true,
     manager?: EntityManager,
   ) {
@@ -112,7 +112,7 @@ export class MotorcycleService {
   }
 
   findOneBy(
-    motorcycleData: Partial<Motorcycle>,
+    motorcycleData: FindOptionsWhere<Motorcycle>,
     relations = true,
     manager?: EntityManager,
   ) {

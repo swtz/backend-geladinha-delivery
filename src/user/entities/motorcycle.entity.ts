@@ -27,8 +27,8 @@ export class Motorcycle {
   @Column()
   model!: string;
 
-  @Column({ nullable: true })
-  displacement!: string;
+  @Column({ type: 'varchar', nullable: true })
+  displacement!: string | null;
 
   @Column()
   color!: string;
@@ -42,12 +42,20 @@ export class Motorcycle {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column({ nullable: true })
-  placeCode!: string;
+  @Column({ type: 'varchar', nullable: true })
+  placeCode!: string | null;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => User, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
   owner!: User;
 
-  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle)
+  @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   driver!: DeliveryMan;
 }

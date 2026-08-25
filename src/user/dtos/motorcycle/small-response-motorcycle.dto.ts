@@ -6,7 +6,7 @@ export class SmallResponseMotorcycleDto {
   readonly brand: string;
   readonly color: string;
   readonly displacement: string | null;
-  readonly placeCode: string;
+  readonly placeCode: string | null;
 
   constructor(motorcycle: Motorcycle) {
     this.id = motorcycle.id;
