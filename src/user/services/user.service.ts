@@ -26,6 +26,8 @@ import {
   essencial as mtbEssencial,
   full as mtbFull,
 } from '../data/relations/delivery-man';
+import { setEntityRelationFieldAsNull } from 'src/common/utils/set-entity-relation-field-as-null';
+import { Motorcycle } from '../entities/motorcycle.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -223,11 +225,29 @@ export class UserService {
     return repo.findOneBy({ phone });
   }
 
-  async remove(id: string, manager?: EntityManager) {
-    const repo = manager ? manager.getRepository(User) : this.userRepository;
-    const user = await this.findOneByOrFail({ id }, undefined, manager);
-    await repo.delete({ id });
-    return user;
+  async remove(id: string, extManager?: EntityManager) {
+    return this.dataSource.transaction(async intManager => {
+      const manager = extManager ? extManager : intManager;
+      const repo = manager ? manager.getRepository(User) : this.userRepository;
+      const repo2 = manager && manager.getRepository(Motorcycle);
+      const user = await this.findOneByOrFail(
+        { id },
+        'motoboy-essencial',
+        manager,
+      );
+
+      if (user.deliveryMan?.motorcycle?.licensePlate) {
+        await setEntityRelationFieldAsNull<Motorcycle>(
+          Motorcycle,
+          'driver',
+          user.deliveryMan.motorcycle.id,
+          repo2,
+        );
+      }
+
+      await repo.delete({ id });
+      return user;
+    });
   }
 
   async save(user: Partial<User>, manager?: EntityManager) {
