@@ -28,6 +28,8 @@ import {
 } from '../data/relations/delivery-man';
 import { setEntityRelationFieldAsNull } from 'src/common/utils/set-entity-relation-field-as-null';
 import { Motorcycle } from '../entities/motorcycle.entity';
+import { WorkTime } from 'src/work-time/entities/work-time.entity';
+import { IntervalTime } from 'src/work-time/entities/interval-time.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -228,21 +230,30 @@ export class UserService {
   async remove(id: string, extManager?: EntityManager) {
     return this.dataSource.transaction(async intManager => {
       const manager = extManager ? extManager : intManager;
-      const repo = manager ? manager.getRepository(User) : this.userRepository;
-      const repo2 = manager && manager.getRepository(Motorcycle);
+      const repo = manager.getRepository(User);
+      const repoMc = manager.getRepository(Motorcycle);
+      const repoWk = manager.getRepository(WorkTime);
+      const repoIt = manager.getRepository(IntervalTime);
       const user = await this.findOneByOrFail(
         { id },
         'motoboy-essencial',
         manager,
       );
+      const { workTime: oldWorkTime, intervalTime: oldIntervalTime } = user;
 
       if (user.deliveryMan?.motorcycle?.licensePlate) {
         await setEntityRelationFieldAsNull<Motorcycle>(
           Motorcycle,
           'driver',
           user.deliveryMan.motorcycle.id,
-          repo2,
+          repoMc,
         );
+      }
+
+      if (oldWorkTime && !oldWorkTime.isShared) {
+        await repoWk.delete({ id: oldWorkTime.id });
+      } else if (oldIntervalTime) {
+        await repoIt.delete({ id: oldIntervalTime.id });
       }
 
       await repo.delete({ id });

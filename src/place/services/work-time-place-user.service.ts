@@ -14,7 +14,6 @@ import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-in
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
-import { WorkTime } from 'src/work-time/entities/work-time.entity';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -66,10 +65,7 @@ export class WorkTimePlaceUserService {
   async updateShared(id: string, dto: UpdateWorkTimeDto, user: User) {
     return this.dataSource.transaction(async manager => {
       const workTime = await this.workTimeService.findOneByOrFail(
-        {
-          id,
-          isShared: true,
-        },
+        { id, isShared: true },
         true,
         manager,
       );
@@ -201,7 +197,7 @@ export class WorkTimePlaceUserService {
         undefined,
         manager,
       );
-      const { workTime: oldWorkTime }: { workTime: WorkTime | null } = user;
+      const { workTime: oldWorkTime, intervalTime: oldIntervalTime } = user;
       const newWorkTime = await this.workTimeService.create(
         dto,
         false,
@@ -210,8 +206,8 @@ export class WorkTimePlaceUserService {
 
       if (oldWorkTime && !oldWorkTime.isShared) {
         await this.workTimeService.remove(oldWorkTime.id, manager);
-      } else if (user.intervalTime) {
-        await this.intervalTimeService.remove(user.intervalTime.id, manager);
+      } else if (oldIntervalTime) {
+        await this.intervalTimeService.remove(oldIntervalTime.id, manager);
       }
       user.workTime = newWorkTime;
 
@@ -240,11 +236,11 @@ export class WorkTimePlaceUserService {
         manager,
       );
 
-      const { workTime: oldWorkTime } = user;
+      const { workTime: oldWorkTime, intervalTime: oldIntervalTime } = user;
       if (oldWorkTime && !oldWorkTime.isShared) {
         await this.workTimeService.remove(oldWorkTime.id, manager);
-      } else if (user.intervalTime) {
-        await this.intervalTimeService.remove(user.intervalTime.id, manager);
+      } else if (oldIntervalTime) {
+        await this.intervalTimeService.remove(oldIntervalTime.id, manager);
       }
       user.workTime = workTime;
 
