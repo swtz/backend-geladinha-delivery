@@ -53,9 +53,10 @@ export class Motorcycle {
   owner!: User;
 
   @OneToOne(() => DeliveryMan, deliveryMan => deliveryMan.motorcycle, {
+    nullable: true,
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  driver!: DeliveryMan;
+  driver!: DeliveryMan | null;
 }

@@ -32,7 +32,7 @@ export class ResponseMotorcycleDto {
       ? new SmallResponseUserDto(motorcycle.owner)
       : null;
     this.driver = motorcycle.driver?.user
-      ? new SmallResponseUserDto(motorcycle.driver?.user)
+      ? new SmallResponseUserDto(motorcycle.driver.user)
       : null;
   }
 }
