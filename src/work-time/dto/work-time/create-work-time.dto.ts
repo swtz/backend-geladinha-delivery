@@ -4,7 +4,7 @@ import {
   IsISO8601,
   IsNotEmpty,
   IsOptional,
-  MinLength,
+  Length,
 } from 'class-validator';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 
@@ -15,12 +15,12 @@ export class CreateWorkTimeDto {
 
   @IsNotEmpty({ message: 'Campo horário inicial não pode estar vazio' })
   @IsISO8601({ strict: true }, { message: 'Horário inválido' })
-  @MinLength(19, { message: 'Tamanho inválido' })
+  @Length(19, 19, { message: 'Tamanho inválido' })
   initHour!: string;
 
   @IsNotEmpty({ message: 'Campo horário final não pode estar vazio' })
   @IsISO8601({ strict: true }, { message: 'Horário inválido' })
-  @MinLength(19, { message: 'Tamanho inválido' })
+  @Length(19, 19, { message: 'Tamanho inválido' })
   endHour!: string;
 
   @IsOptional()
