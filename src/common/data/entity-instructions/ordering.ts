@@ -1,9 +1,12 @@
 import { Address } from 'src/address/entities/address.entity';
+import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { Payout } from 'src/payout/entities/payout.entity';
 import { Place } from 'src/place/entities/place.entity';
 import { Settlement } from 'src/settlement/entities/settlement.entity';
+import { DeliveryMan } from 'src/user/entities/delivery-man.entity';
 import { Motorcycle } from 'src/user/entities/motorcycle.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Voucher } from 'src/voucher/entities/voucher.entity';
 import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 
 export function generateOrderingMap<T>(orderParams: {
@@ -87,6 +90,50 @@ export const motorcycleOrderMap = generateOrderingMap<Motorcycle>({
   licensePlate: undefined,
   driver: undefined,
   owner: undefined,
+});
+
+export const deliveryOrderMap = generateOrderingMap<Delivery>({
+  deliveryTax: undefined,
+  description: undefined,
+  paymentMethod: undefined,
+  placeCode: undefined,
+  totalPurchase: undefined,
+  tip: undefined,
+  isPaid: undefined,
+  address: undefined,
+  customer: undefined,
+  motoboy: undefined,
+  motorcycleLicensePlate: undefined,
+  operator: undefined,
+});
+
+export const userOrderMap = generateOrderingMap<User>({
+  name: undefined,
+  lastName: undefined,
+  email: undefined,
+  nickname: undefined,
+  placeCode: undefined,
+  roles: undefined,
+  phone: undefined,
+  secondPhone: undefined,
+  vouchers: undefined,
+  deliveryMan: undefined,
+});
+
+export const deliveryManOrderMap = generateOrderingMap<DeliveryMan>({
+  user: undefined,
+  daily: undefined,
+  motorcycle: undefined,
+  tips: undefined,
+});
+
+export const voucherOrderMap = generateOrderingMap<Voucher>({
+  amount: undefined,
+  description: undefined,
+  user: undefined,
+  payout: undefined,
+  settlement: undefined,
+  createdBy: undefined,
 });
 
 // talvez dê pra fazer um método como esse para conseguir gerar um objeto de relações

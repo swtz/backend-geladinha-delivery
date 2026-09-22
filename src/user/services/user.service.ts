@@ -148,7 +148,7 @@ export class UserService {
     orderParams,
   }: {
     role?: RoleEnum;
-    placeCode: string;
+    placeCode?: string;
     orderParams?: {
       [K in keyof FindOptionsOrder<User>]: FindOptionsOrderValue;
     };

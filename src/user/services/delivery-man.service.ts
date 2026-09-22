@@ -1,5 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { DeliveryMan } from '../entities/delivery-man.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
@@ -59,9 +65,15 @@ export class DeliveryManService {
     });
   }
 
-  async findAllMotoboy() {
+  async findAllMotoboy(
+    queryParams?: FindOptionsWhere<DeliveryMan>,
+    orderParams?: {
+      [K in keyof FindOptionsOrder<DeliveryMan>]: FindOptionsOrderValue;
+    },
+  ) {
     const motoboys = await this.deliveryManRepository.find({
-      order: { createdAt: 'DESC' },
+      where: queryParams,
+      order: orderParams,
       relations: full,
     });
 

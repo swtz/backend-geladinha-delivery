@@ -4,7 +4,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { Voucher } from './entities/voucher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/services/user.service';
@@ -192,16 +198,19 @@ export class VoucherService {
     });
   }
 
-  async findAll(queryParams: FindAllParams) {
+  async findAll(
+    queryParams: FindAllParams,
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Voucher>]: FindOptionsOrderValue;
+    },
+  ) {
     const factory = new VoucherFindAllFactory();
     const queryObject = factory.factoryMethod(queryParams);
-
     const vouchers = await this.voucherRepository.find({
       where: queryObject,
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations,
     });
-
     return vouchers;
   }
 

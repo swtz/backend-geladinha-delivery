@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { DeliveryManMotorcycleService } from '../services/delivery-man-motorcycle.service';
@@ -24,6 +25,13 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { formatPhone } from 'src/common/utils/format-phone';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
 import { ResponseMotorcycleDto } from '../dtos/motorcycle/response-motorcycle.dto';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { DeliveryMan } from '../entities/delivery-man.entity';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
+import { deliveryManOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin)
 @Controller('motoboy')
@@ -83,8 +91,21 @@ export class DeliveryManMotorcycleController {
 
   @Roles(Role.Admin, Role.Operator)
   @Get()
-  async findAll() {
-    const deliveryMen = await this.deliveryManService.findAllMotoboy();
+  async findAll(
+    @Query('daily') daily: string,
+    @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
+    @Query(
+      new ParseOrderParamsPipe<CommonType<DeliveryMan>>(deliveryManOrderMap),
+    )
+    orderParams: {
+      [K in keyof FindOptionsOrder<DeliveryMan>]: FindOptionsOrderValue;
+    },
+  ) {
+    const safeDaily = isNaN(+daily) ? undefined : +daily;
+    const deliveryMen = await this.deliveryManService.findAllMotoboy(
+      { daily: safeDaily, user: { placeCode } },
+      orderParams,
+    );
     const parsedDeliveryMen = deliveryMen.map(
       item => new ResponseDeliveryManDto(item),
     );

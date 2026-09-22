@@ -24,6 +24,13 @@ import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from './pipes/parse-order-params.pipe';
+import { deliveryOrderMap } from 'src/common/data/entity-instructions/ordering';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
+import { Delivery } from './entities/delivery.entity';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('delivery')
@@ -91,6 +98,10 @@ export class DeliveryController {
     )
     paymentMethod: PaymentMethod,
     @Query('isPaid', new ParseBoolPipe({ optional: true })) isPaid: boolean,
+    @Query(new ParseOrderParamsPipe<CommonType<Delivery>>(deliveryOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Delivery>]: FindOptionsOrderValue;
+    },
   ) {
     const userData = {
       nickname,
@@ -102,7 +113,6 @@ export class DeliveryController {
       secondPhone,
       placeCode: type === undefined ? undefined : placeCode,
     };
-
     const dateObject: {
       initDate?: Date;
       endDate?: Date;
@@ -119,19 +129,19 @@ export class DeliveryController {
       dateObject.endDate = endDate;
     }
 
-    console.log('from', dateObject.initDate);
-    console.log('to', dateObject.endDate);
-
-    const deliveries = await this.deliveryService.findAll({
-      type,
-      userData,
-      isPaid,
-      paymentMethod,
-      placeCode,
-      motorcycleLicensePlate: motorcycleLicensePlate,
-      from: dateObject.initDate,
-      to: dateObject.endDate,
-    });
+    const deliveries = await this.deliveryService.findAll(
+      {
+        type,
+        userData,
+        isPaid,
+        paymentMethod,
+        placeCode,
+        motorcycleLicensePlate: motorcycleLicensePlate,
+        from: dateObject.initDate,
+        to: dateObject.endDate,
+      },
+      orderParams,
+    );
     const parsedDeliveries = deliveries.map(
       delivery => new ResponseDeliveryDto(delivery),
     );

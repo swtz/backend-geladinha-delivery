@@ -23,8 +23,14 @@ import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { ParseBrPhonePipe } from '../pipes/format-br-phone.pipe';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { UserFieldsValidationService } from '../services/user-fields-validation.service';
-import { User } from '../entities/user.entity';
 import { ParsePlaceCodePipe } from 'src/place/pipes/parse-place-code.pipe';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { Delivery } from 'src/delivery/entities/delivery.entity';
+import { userOrderMap } from 'src/common/data/entity-instructions/ordering';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 
 @Controller('user')
 @Roles(Role.Operator, Role.Motoboy, Role.Admin)
@@ -54,17 +60,15 @@ export class UserController {
   async findAll(
     @Query('role', new ParseEnumPipe(Role, { optional: true })) role: Role,
     @Query('placeCode', ParsePlaceCodePipe) placeCode: string,
-    @Query('field')
-    field: keyof Pick<
-      User,
-      'createdAt' | 'updatedAt' | 'name' | 'lastName' | 'email'
-    >,
-    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
+    @Query(new ParseOrderParamsPipe<CommonType<Delivery>>(userOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Delivery>]: FindOptionsOrderValue;
+    },
   ) {
     const users = await this.userService.findAll({
       role,
       placeCode,
-      orderParams: { [field]: order },
+      orderParams,
     });
     const parsedUsers = users.map(user => new ResponseUserDto(user));
     return parsedUsers;
