@@ -12,8 +12,9 @@ import { UpdateWorkTimeDto } from 'src/work-time/dto/work-time/update-work-time.
 import { CreateWorkTimeDto } from 'src/work-time/dto/work-time/create-work-time.dto';
 import { CreateIntervalTimeDto } from 'src/work-time/dto/interval-time/create-interval-time.dto';
 import { IntervalTimeService } from 'src/work-time/services/interval-time.service';
-import { DataSource, FindOptionsWhere } from 'typeorm';
+import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
+import { getTimeFromDateIsoString } from 'src/common/utils/get-time-from-date-iso-string';
 
 @Injectable()
 export class WorkTimePlaceUserService {
@@ -40,20 +41,13 @@ export class WorkTimePlaceUserService {
       this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
       const workTime = await this.workTimeService.create(dto, true, manager);
-      workTime.isDefault = !!dto.isDefault;
+      if (workTime.isDefault) {
+        const defaultWorkTime =
+          this.workTimeService.findDefaultFromPlaceOrFail(place);
 
-      const defaultWorkTime = dto.isDefault
-        ? this.workTimeService.findDefaultFromPlace(place)
-        : undefined;
+        defaultWorkTime.isDefault = false;
 
-      if (defaultWorkTime) {
-        await this.workTimeService.save(
-          {
-            ...defaultWorkTime,
-            isDefault: false,
-          },
-          manager,
-        );
+        await this.workTimeService.save(defaultWorkTime, manager);
       }
       place.workTimes.push(workTime);
 
@@ -62,14 +56,21 @@ export class WorkTimePlaceUserService {
     });
   }
 
-  async updateShared(id: string, dto: UpdateWorkTimeDto, user: User) {
-    return this.dataSource.transaction(async manager => {
+  async updateShared(
+    id: string,
+    dto: UpdateWorkTimeDto,
+    user: User,
+    extManager?: EntityManager,
+  ) {
+    return this.dataSource.transaction(async intManager => {
+      const manager = extManager ? extManager : intManager;
       const workTime = await this.workTimeService.findOneByOrFail(
         { id, isShared: true },
         true,
         manager,
       );
       const { places } = workTime;
+      const wantsDefault = !!dto.isDefault;
 
       let isOwner = false;
       let info: { owner?: string; place?: string } = {};
@@ -93,19 +94,18 @@ export class WorkTimePlaceUserService {
         { id: info.place },
         manager,
       );
-      if (dto.isDefault) {
+
+      if (wantsDefault) {
         const defaultWorkTime =
           this.workTimeService.findDefaultFromPlaceOrFail(place);
 
-        await this.workTimeService.save(
-          {
-            ...defaultWorkTime,
-            isDefault: false,
-          },
-          manager,
-        );
-        workTime.isDefault = dto.isDefault;
+        defaultWorkTime.isDefault = false;
+
+        await this.workTimeService.save(defaultWorkTime, manager);
+
+        workTime.isDefault = true;
       }
+
       if (dto.initHour && dto.endHour) {
         workTime.duration = generateDurationTime(dto.initHour, dto.endHour);
       } else if (dto.initHour) {
@@ -119,6 +119,12 @@ export class WorkTimePlaceUserService {
           dto.endHour,
         );
       }
+      workTime.initHour = dto.initHour
+        ? getTimeFromDateIsoString(dto.initHour)
+        : workTime.initHour;
+      workTime.endHour = dto.endHour
+        ? getTimeFromDateIsoString(dto.endHour)
+        : workTime.endHour;
       workTime.shift = dto.shift ?? workTime.shift;
 
       const updated = await this.workTimeService.save(workTime, manager);
@@ -173,7 +179,7 @@ export class WorkTimePlaceUserService {
 
       if (workTime.isDefault) {
         throw new ForbiddenException(
-          'Defina outra horário de serviço como padrão antes de remover esse',
+          'Defina outro horário de serviço como padrão antes de remover esse',
         );
       }
 

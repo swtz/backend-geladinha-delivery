@@ -49,7 +49,6 @@ export class WorkTimeDateService {
         'A data inicial não pode ser maior do que a data final',
       );
     }
-
     const utcInitDate = fromZonedTime(`${fromDate}T${initHour}`, tz);
     const utcEndDate = fromZonedTime(`${toDate}T${endHour}`, tz);
     const isAnotherDay =
