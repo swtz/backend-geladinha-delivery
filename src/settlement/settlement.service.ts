@@ -39,6 +39,24 @@ export class SettlementService {
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
+  // método responsável pelos cálculos do caixa
+  // leva em conta um caixa lançado para
+  // UM Operator && UM WorkDay, ou seja,
+  // o sistema só permite UM lançamento por dia
+
+  // Fluxo da funcionalidade de troco:
+  // TELE-VENDAS insere:
+  //// paymentMethod === 'money'
+  //// `totalPurchase`
+  //// `deliveryTax`
+  //// change > 0 || change !== null
+  ////// change = 100 // de fato, 100 representa o valor em dinheiro que
+  ///// o motoboy RECEBERÁ, logo → totalRemainingMotoboy += change (?)
+  //// Assim, o valor fica PENDENTE até que o TELE-VENDAS atualize
+  //// o status da Delivery, a saber Delivery.isPaid = true;
+
+  // Há anotações sobre uma possível implementação do
+  // "fechamento parcial" do caixa
   async preview(
     userData: FindOptionsWhere<User>,
     from: Date,
@@ -90,7 +108,11 @@ export class SettlementService {
       vouchers,
     };
 
-    const generatePrefix = (name: PaymentMethod) => {
+    const generatePrefix = (name: PaymentMethod | null) => {
+      if (!name) {
+        return null;
+      }
+
       const prefix =
         name === PaymentMethod.Credit || name === PaymentMethod.Debit
           ? 'card'
@@ -99,9 +121,13 @@ export class SettlementService {
     };
 
     function sumPaymentMethodSubtotal(
-      prefix: PaymentMethod | 'card',
+      prefix: PaymentMethod | 'card' | null,
       value: number,
     ) {
+      if (!prefix) {
+        return null;
+      }
+
       const prop = `${prefix}Subtotal`;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       settlement[prop] = setDecimalPlaces(settlement[prop] + value, 2);
@@ -115,12 +141,14 @@ export class SettlementService {
       });
 
       deliveries.forEach(delivery => {
-        const { name } = delivery.paymentMethod;
+        const name = delivery.paymentMethod
+          ? delivery.paymentMethod.name
+          : null;
         sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
       });
     } else if (deliveries.length === 1) {
       const [delivery] = deliveries;
-      const { name } = delivery.paymentMethod;
+      const name = delivery.paymentMethod ? delivery.paymentMethod.name : null;
 
       sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
       settlement.subtotal = delivery.totalPurchase;

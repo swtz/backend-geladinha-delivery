@@ -33,7 +33,8 @@ export class ResponseDeliveryDto {
     this.description = delivery.description;
     this.totalPurchase = delivery.totalPurchase;
     this.deliveryTax = delivery.deliveryTax;
-    this.paymentMethod = delivery?.paymentMethod.name;
+    this.paymentMethod =
+      delivery.paymentMethod !== null ? delivery.paymentMethod.name : null;
     this.isPaid = delivery.isPaid;
     this.createdAt = delivery.createdAt;
     this.updatedAt = delivery.updatedAt;

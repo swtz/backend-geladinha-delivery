@@ -6,6 +6,8 @@ import {
 import {
   DataSource,
   EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
@@ -104,84 +106,90 @@ export class DeliveryService {
         manager,
       );
 
-      if (dto.motoboy && dto.motoboy !== delivery.motoboy.id) {
-        const newMotoboy = await this.deliveryManService.findOneByOrFail(
-          { user: { id: dto.motoboy } },
-          false,
-          manager,
-        );
-
-        if (delivery.tip !== null) {
-          await this.tipService.update(
-            {
-              id: delivery.tip.id,
-              motoboy: newMotoboy,
-            },
+      if (dto.motoboy) {
+        if (!delivery.motoboy || dto.motoboy !== delivery.motoboy.id) {
+          const newMotoboy = await this.deliveryManService.findOneByOrFail(
+            { user: { id: dto.motoboy } },
+            false,
             manager,
           );
+
+          if (delivery.tip !== null) {
+            await this.tipService.update(
+              {
+                id: delivery.tip.id,
+                motoboy: newMotoboy,
+              },
+              manager,
+            );
+          }
+
+          delivery.motoboy = newMotoboy;
         }
-
-        delivery.motoboy = newMotoboy;
       }
 
-      if (
-        dto.address &&
-        dto.customer === delivery.customer.id &&
-        dto.address !== delivery.address.id
-      ) {
-        const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
-          { id: dto.address },
-          { id: delivery.customer.id },
-          manager,
-        );
-        delivery.address = newOwnedAddress;
-      }
-
-      if (dto.customer && dto.customer !== delivery.customer.id) {
-        const newCustomer = await this.customerService.findOneByOrFail(
-          { id: dto.customer },
-          manager,
-        );
-        const newDefaultAddress = await this.addressService.findOneOwnedOrFail(
-          { isDefault: true },
-          { id: dto.customer },
-          manager,
-        );
-
-        delivery.customer = newCustomer;
-        delivery.address = newDefaultAddress;
-      }
-
-      if (
-        dto.paymentMethod &&
-        dto.paymentMethod !== delivery.paymentMethod.name
-      ) {
-        const newPaymentMethod =
-          await this.paymentMethodService.findOneOrCreate(
-            dto.paymentMethod,
+      if (dto.address && delivery.customer) {
+        if (!delivery.address || dto.address !== delivery.address.id) {
+          const customerId = dto.customer ? dto.customer : delivery.customer.id;
+          const newOwnedAddress = await this.addressService.findOneOwnedOrFail(
+            { id: dto.address },
+            { id: customerId },
             manager,
           );
-
-        delivery.paymentMethod = newPaymentMethod;
-      }
-
-      if (dto.tip || dto.tip === 0) {
-        if (delivery.tip === null) {
-          delivery.tip = await this.tipService.create(
-            dto.tip,
-            delivery.motoboy,
-            manager,
-          );
+          delivery.address = newOwnedAddress;
         }
+      }
 
-        if (dto.tip !== delivery.tip.amount) {
-          delivery.tip = await this.tipService.update(
-            {
-              id: delivery.tip.id,
-              amount: dto.tip,
-            },
+      if (dto.customer) {
+        if (!delivery.customer || dto.customer !== delivery.customer.id) {
+          const newCustomer = await this.customerService.findOneByOrFail(
+            { id: dto.customer },
             manager,
           );
+          const newDefaultAddress =
+            await this.addressService.findOneOwnedOrFail(
+              { isDefault: true },
+              { id: dto.customer },
+              manager,
+            );
+
+          delivery.customer = newCustomer;
+          delivery.address = newDefaultAddress;
+        }
+      }
+
+      if (dto.paymentMethod) {
+        if (
+          !delivery.paymentMethod ||
+          dto.paymentMethod !== delivery.paymentMethod.name
+        ) {
+          const newPaymentMethod =
+            await this.paymentMethodService.findOneOrCreate(
+              dto.paymentMethod,
+              manager,
+            );
+
+          delivery.paymentMethod = newPaymentMethod;
+        }
+      }
+
+      if (delivery.motoboy) {
+        if (dto.tip || dto.tip === 0) {
+          if (delivery.tip === null) {
+            delivery.tip = await this.tipService.create(
+              dto.tip,
+              delivery.motoboy,
+              manager,
+            );
+          } else {
+            delivery.tip = await this.tipService.update(
+              {
+                id: delivery.tip.id,
+                amount: dto.tip,
+              },
+              manager,
+            );
+          }
         }
       }
 
@@ -284,12 +292,17 @@ export class DeliveryService {
     return delivery;
   }
 
-  async findAll(queryParams: FindAllParams) {
+  async findAll(
+    queryParams: FindAllParams,
+    orderParams?: {
+      [K in keyof FindOptionsOrder<Delivery>]: FindOptionsOrderValue;
+    },
+  ) {
     const queryFactory = new DeliveryFindAllFactory();
     const queryObject = queryFactory.factoryMethod(queryParams);
     const deliveries = await this.deliveryRepository.find({
       where: queryObject,
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations,
     });
 

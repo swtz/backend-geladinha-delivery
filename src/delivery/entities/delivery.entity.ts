@@ -20,8 +20,8 @@ export class Delivery {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ length: 150, nullable: true })
-  description!: string;
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  description!: string | null;
 
   @Column('float')
   totalPurchase!: number;
@@ -50,23 +50,40 @@ export class Delivery {
     onUpdate: 'SET NULL',
   })
   @JoinColumn()
-  tip!: Tip;
+  tip!: Tip | null;
 
   @ManyToOne(() => PaymentMethod, paymentMethod => paymentMethod.deliveries, {
-    onDelete: 'SET NULL',
     nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
   })
-  paymentMethod!: PaymentMethod;
+  paymentMethod!: PaymentMethod | null;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
-  operator!: User;
+  @ManyToOne(() => User, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  operator!: User | null;
 
-  @ManyToOne(() => DeliveryMan, { onDelete: 'SET NULL', nullable: true })
-  motoboy!: DeliveryMan;
+  @ManyToOne(() => DeliveryMan, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  motoboy!: DeliveryMan | null;
 
-  @ManyToOne(() => Customer, { onDelete: 'SET NULL', nullable: true })
-  customer!: Customer;
+  @ManyToOne(() => Customer, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  customer!: Customer | null;
 
-  @ManyToOne(() => Address, { onDelete: 'SET NULL', nullable: true })
-  address!: Address;
+  @ManyToOne(() => Address, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  address!: Address | null;
 }
