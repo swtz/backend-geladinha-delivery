@@ -114,6 +114,7 @@ export class PlaceController {
     return new ResponsePlaceDto(place);
   }
 
+  @Roles(Role.Admin, Role.Operator)
   @Get()
   async findAll(
     @Query('type') type: 'workTime' | 'owner',
