@@ -26,6 +26,10 @@ export class PaymentMethod {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => Delivery, delivery => delivery.paymentMethod)
-  deliveries!: Delivery[];
+  @OneToMany(() => Delivery, delivery => delivery.paymentMethod, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
+  deliveries!: Delivery[] | null;
 }

@@ -25,11 +25,11 @@ export class Customer {
   @Column({ unique: true })
   phone!: string;
 
-  @Column({ nullable: true, unique: true })
-  email!: string;
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  email!: string | null;
 
-  @Column({ nullable: true, unique: true })
-  secondPhone!: string;
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  secondPhone!: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;
