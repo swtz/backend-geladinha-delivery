@@ -132,40 +132,41 @@ export class PlaceService {
     });
   }
 
-  async remove(id: string, user: User, manager?: EntityManager) {
-    const repo = manager ? manager.getRepository(Place) : this.placeRepository;
-    const place = await this.findOneByOrFail({ id }, manager);
+  async remove(id: string, user: User) {
+    return this.dataSource.transaction(async manager => {
+      const place = await this.findOneByOrFail({ id }, manager);
 
-    if (place.code === process.env.DEFAULT_PLACE_CODE) {
-      throw new UnauthorizedException(
-        'Não é possível remover o estabelecimento padrão',
-      );
-    }
+      if (place.code === process.env.DEFAULT_PLACE_CODE) {
+        throw new UnauthorizedException(
+          'Não é possível remover o estabelecimento padrão',
+        );
+      }
 
-    const isOwner = place.owners.some(item => item.id === user.id);
+      const isOwner = place.owners.some(item => item.id === user.id);
 
-    if (!isOwner) {
-      throw new UnauthorizedException('Acesso negado');
-    }
+      if (!isOwner) {
+        throw new UnauthorizedException('Acesso negado');
+      }
 
-    const { workTimes } = place;
-    const workTimesId = workTimes.map(workTime => workTime.id);
+      const { workTimes } = place;
+      const workTimesId = workTimes.map(workTime => workTime.id);
 
-    // Conversa com Claude sobre N+1 queries
-    for (const id of workTimesId) {
-      await this.workTimeService.save(
-        {
-          id,
-          isDefault: false,
-          isShared: false,
-        },
-        manager,
-      );
-      await this.workTimeService.remove(id, manager);
-    }
+      // Conversa com Claude sobre N+1 queries
+      for (const id of workTimesId) {
+        await this.workTimeService.save(
+          {
+            id,
+            isDefault: false,
+            isShared: false,
+          },
+          manager,
+        );
+        await this.workTimeService.remove(id, manager);
+      }
 
-    await repo.delete({ id });
-    return place;
+      await this.placeRepository.delete({ id });
+      return place;
+    });
   }
 
   async save(place: Partial<Place>, manager?: EntityManager) {

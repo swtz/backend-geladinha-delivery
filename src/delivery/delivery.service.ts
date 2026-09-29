@@ -336,16 +336,15 @@ export class DeliveryService {
     return setDecimalPlaces(total, 2);
   }
 
-  async remove(user: User, id: string, manager?: EntityManager) {
-    const repo = manager
-      ? manager.getRepository(Delivery)
-      : this.deliveryRepository;
-    const delivery = await this.findOneOwnedByOrFail(user, { id }, manager);
-    if (delivery.tip !== null) {
-      await this.tipService.remove(delivery.tip.id, manager);
-    }
-    await repo.delete({ id });
-    return delivery;
+  async remove(user: User, id: string) {
+    return this.dataSource.transaction(async manager => {
+      const delivery = await this.findOneOwnedByOrFail(user, { id }, manager);
+      if (delivery.tip !== null) {
+        await this.tipService.remove(delivery.tip.id, manager);
+      }
+      await this.deliveryRepository.delete({ id });
+      return delivery;
+    });
   }
 
   async save(delivery: Partial<Delivery>, manager?: EntityManager) {

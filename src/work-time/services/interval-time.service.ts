@@ -18,12 +18,14 @@ import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 import { WorkTime } from '../entities/work-time.entity';
 import { getTimeFromDateIsoString } from 'src/common/utils/get-time-from-date-iso-string';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class IntervalTimeService {
   constructor(
     @InjectRepository(IntervalTime)
     private readonly intervalTimeRepository: Repository<IntervalTime>,
+    private readonly dataSource: DataSource,
   ) {}
   async create(
     { initHour, endHour }: CreateIntervalTimeDto,
@@ -125,13 +127,13 @@ export class IntervalTimeService {
     return repo.save(intervalTime);
   }
 
-  async remove(id: string, manager?: EntityManager) {
-    const repo = manager
-      ? manager.getRepository(IntervalTime)
-      : this.intervalTimeRepository;
-    const intervalTime = await this.findOneByOrFail({ id }, manager);
+  async remove(id: string, extManager?: EntityManager) {
+    return this.dataSource.transaction(async intManager => {
+      const manager = extManager ? extManager : intManager;
+      const intervalTime = await this.findOneByOrFail({ id }, manager);
 
-    await repo.delete({ id });
-    return intervalTime;
+      await this.intervalTimeRepository.delete({ id });
+      return intervalTime;
+    });
   }
 }

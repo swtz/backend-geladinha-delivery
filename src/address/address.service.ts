@@ -18,12 +18,14 @@ import { Customer } from 'src/customer/entities/customer.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { formatBrPostalCode } from 'src/common/utils/format-br-postal-code';
 import { trimWhiteSpacesFromDto } from 'src/common/utils/trim-white-spaces-from-dto';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AddressService {
   constructor(
     @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
+    private readonly dataSource: DataSource,
   ) {}
 
   create(dto: CreateAddressDto, isDefault = true, manager?: EntityManager) {
@@ -138,23 +140,23 @@ export class AddressService {
     return addresses;
   }
 
-  async remove(id: string, manager?: EntityManager) {
-    const repo = manager
-      ? manager.getRepository(Address)
-      : this.addressRepository;
-    const address = await this.findOneByOrFail({ id }, true, manager);
-    if (address.customer?.addresses.length === 1) {
-      throw new UnprocessableEntityException(
-        'Cliente precisa ter ao menos 1 endereço',
-      );
-    }
-    if (address.isDefault) {
-      throw new ForbiddenException(
-        'Não é possível excluir o endereço que está como padrão',
-      );
-    }
-    await repo.delete({ id });
-    return address;
+  async remove(id: string, extManager?: EntityManager) {
+    return this.dataSource.transaction(async intManager => {
+      const manager = extManager ? extManager : intManager;
+      const address = await this.findOneByOrFail({ id }, true, manager);
+      if (address.customer?.addresses.length === 1) {
+        throw new UnprocessableEntityException(
+          'Cliente precisa ter ao menos 1 endereço',
+        );
+      }
+      if (address.isDefault) {
+        throw new ForbiddenException(
+          'Não é possível excluir o endereço que está como padrão',
+        );
+      }
+      await this.addressRepository.delete({ id });
+      return address;
+    });
   }
 
   async save(address: Partial<Address>, manager?: EntityManager) {

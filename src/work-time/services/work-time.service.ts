@@ -21,12 +21,14 @@ import { User } from 'src/user/entities/user.entity';
 import { full, essencial, tiny } from '../data/relations/work-time';
 import { generateDurationTime } from 'src/common/utils/generate-duration-time';
 import { getTimeFromDateIsoString } from 'src/common/utils/get-time-from-date-iso-string';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class WorkTimeService {
   constructor(
     @InjectRepository(WorkTime)
     private readonly workTimeRepository: Repository<WorkTime>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -190,20 +192,20 @@ export class WorkTimeService {
     });
   }
 
-  async remove(id: string, manager?: EntityManager) {
-    const repo = manager
-      ? manager.getRepository(WorkTime)
-      : this.workTimeRepository;
-    const workTime = await this.findOneByOrFail({ id }, true, manager);
+  async remove(id: string, extManager?: EntityManager) {
+    return this.dataSource.transaction(async intManager => {
+      const manager = extManager ? extManager : intManager;
+      const workTime = await this.findOneByOrFail({ id }, true, manager);
 
-    if (workTime.isDefault || workTime.isShared) {
-      throw new UnauthorizedException(
-        'Esse horário de serviço pertence a algum estabelecimento',
-      );
-    }
+      if (workTime.isDefault || workTime.isShared) {
+        throw new UnauthorizedException(
+          'Esse horário de serviço pertence a algum estabelecimento',
+        );
+      }
 
-    await repo.delete({ id });
-    return workTime;
+      await this.workTimeRepository.delete({ id });
+      return workTime;
+    });
   }
 
   async save(workTimeData: Partial<WorkTime>, manager?: EntityManager) {
