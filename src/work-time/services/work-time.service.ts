@@ -5,7 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { Shift } from 'src/common/enums/work-shifts.enum';
 import { Place } from 'src/place/entities/place.entity';
 import { WorkTime } from '../entities/work-time.entity';
@@ -164,10 +170,15 @@ export class WorkTimeService {
     }
   }
 
-  async findAll(queryParams: FindOptionsWhere<WorkTime>) {
+  async findAll(
+    queryParams: FindOptionsWhere<WorkTime>,
+    orderParams: {
+      [K in keyof FindOptionsOrder<WorkTime>]: FindOptionsOrderValue;
+    },
+  ) {
     return this.workTimeRepository.find({
       where: queryParams,
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations: tiny,
     });
   }

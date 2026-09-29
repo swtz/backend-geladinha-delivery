@@ -17,6 +17,12 @@ import { ResponseIntervalTimeDto } from '../dto/interval-time/response-interval-
 import { UpdateIntervalTimeDto } from '../dto/interval-time/update-interval-time.dto';
 import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type';
 import { IntervalTime } from '../entities/interval-time.entity';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { intervalTimeOrderMap } from 'src/common/data/entity-instructions/ordering';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
 
 @Controller('interval-time')
 @Roles(Role.Admin, Role.Operator)
@@ -38,9 +44,12 @@ export class IntervalTimeController {
     workTimeId: string,
     @Query('userId', new ParseUUIDPipe({ optional: true })) userId: string,
     @Query('duration') duration: string,
-    @Query('field')
-    field: 'createdAt' | 'updatedAt' | 'initHour' | 'endHour' | 'duration',
-    @Query('order') order: 'asc' | 'desc' | 'ASC' | 'DESC',
+    @Query(
+      new ParseOrderParamsPipe<CommonType<IntervalTime>>(intervalTimeOrderMap),
+    )
+    orderParams: {
+      [K in keyof FindOptionsOrder<IntervalTime>]: FindOptionsOrderValue;
+    },
   ) {
     const intervalTimes = await this.intervalTimeService.findAll(
       {
@@ -48,7 +57,7 @@ export class IntervalTimeController {
         workTime: { id: workTimeId },
         user: { id: userId },
       },
-      { [field]: order },
+      orderParams,
     );
     const parsedIntervalTimes = intervalTimes.map(
       item => new ResponseIntervalTimeDto(item),

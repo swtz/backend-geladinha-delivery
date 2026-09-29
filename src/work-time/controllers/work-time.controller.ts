@@ -21,6 +21,13 @@ import { AuthenticatedRequest } from 'src/auth/types/authenticated-request.type'
 import { ParseBrPhonePipe } from 'src/user/pipes/format-br-phone.pipe';
 import { ResponseWorkTimeDto } from '../dto/work-time/response-work-time.dto';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { WorkTime } from '../entities/work-time.entity';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
+import { workTimeOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin)
 @Controller('work-time')
@@ -41,21 +48,28 @@ export class WorkTimeController {
     @Query('email', ParseEmailPipe) email: string,
     @Query('phone', ParseBrPhonePipe) phone: string,
     @Query('secondPhone', ParseBrPhonePipe) secondPhone: string,
+    @Query(new ParseOrderParamsPipe<CommonType<WorkTime>>(workTimeOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<WorkTime>]: FindOptionsOrderValue;
+    },
   ) {
-    const workTimes = await this.workTimeService.findAll({
-      shift,
-      isDefault,
-      isShared,
-      users: {
-        nickname,
-        id,
-        name,
-        lastName,
-        email,
-        phone,
-        secondPhone,
+    const workTimes = await this.workTimeService.findAll(
+      {
+        shift,
+        isDefault,
+        isShared,
+        users: {
+          nickname,
+          id,
+          name,
+          lastName,
+          email,
+          phone,
+          secondPhone,
+        },
       },
-    });
+      orderParams,
+    );
     const parsedWorkTimes = workTimes.map(
       item => new ResponseWorkTimeDto(item),
     );

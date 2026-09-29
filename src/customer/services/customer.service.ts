@@ -4,7 +4,13 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsOrder,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
@@ -107,9 +113,11 @@ export class CustomerService implements Service {
     return this.findOneByOrFail({ id: updated.id });
   }
 
-  findAll() {
+  findAll(orderParams: {
+    [K in keyof FindOptionsOrder<Customer>]: FindOptionsOrderValue;
+  }) {
     return this.customerRepository.find({
-      order: { createdAt: 'DESC' },
+      order: orderParams,
       relations: { addresses: true },
     });
   }

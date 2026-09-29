@@ -24,6 +24,12 @@ import { validateFindOneParamsOrFail } from 'src/common/utils/validate-find-one-
 import { Customer } from '../entities/customer.entity';
 import { formatPhone } from 'src/common/utils/format-phone';
 import { ParseEmailPipe } from 'src/user/pipes/format-email.pipe';
+import {
+  CommonType,
+  ParseOrderParamsPipe,
+} from 'src/delivery/pipes/parse-order-params.pipe';
+import { FindOptionsOrder, FindOptionsOrderValue } from 'typeorm';
+import { customerOrderMap } from 'src/common/data/entity-instructions/ordering';
 
 @Roles(Role.Admin, Role.Operator)
 @Controller('customer')
@@ -69,8 +75,13 @@ export class CustomerAddressController {
   }
 
   @Get()
-  async findAll() {
-    const customers = await this.customerService.findAll();
+  async findAll(
+    @Query(new ParseOrderParamsPipe<CommonType<Customer>>(customerOrderMap))
+    orderParams: {
+      [K in keyof FindOptionsOrder<Customer>]: FindOptionsOrderValue;
+    },
+  ) {
+    const customers = await this.customerService.findAll(orderParams);
     const parsedCustomers = customers.map(
       customer => new ResponseCustomerDto(customer),
     );
