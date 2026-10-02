@@ -1,12 +1,10 @@
 import { WeekDay, weekDays } from 'src/common/enums/weekDays.enum';
 import { User } from 'src/user/entities/user.entity';
-import { Voucher } from 'src/voucher/entities/voucher.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -61,6 +59,9 @@ export class Settlement {
   @Column({ default: false })
   isClosed!: boolean;
 
+  @Column({ type: 'timestamp', nullable: true })
+  closingAt!: Date | null;
+
   @Column()
   placeCode!: string;
 
@@ -70,11 +71,4 @@ export class Settlement {
     onUpdate: 'CASCADE',
   })
   operator!: User;
-
-  @OneToMany(() => Voucher, voucher => voucher.settlement, {
-    nullable: true,
-    onDelete: 'SET NULL',
-    onUpdate: 'SET NULL',
-  })
-  vouchers!: Voucher[] | null;
 }

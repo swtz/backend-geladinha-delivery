@@ -1,11 +1,10 @@
 import { WeekDay } from 'src/common/enums/weekDays.enum';
 import { User } from 'src/user/entities/user.entity';
-import { Voucher } from 'src/voucher/entities/voucher.entity';
 
 export type ResponsePreviewSettlement = {
   weekDay: WeekDay;
   workDay: Date;
-  initValue: number | undefined;
+  initValue: number;
   quantityDeliveries: number;
   totalRemainingMotoboy: number;
   subtotal: number;
@@ -16,5 +15,4 @@ export type ResponsePreviewSettlement = {
   expectedTotal: number;
   description: string | undefined | null;
   operator: User;
-  vouchers: Voucher[];
 };

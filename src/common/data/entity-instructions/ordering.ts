@@ -145,7 +145,6 @@ export const voucherOrderMap = generateOrderingMap<Voucher>({
   description: undefined,
   user: undefined,
   payout: undefined,
-  settlement: undefined,
   createdBy: undefined,
 });
 

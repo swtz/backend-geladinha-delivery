@@ -21,9 +21,7 @@ import { User } from 'src/user/entities/user.entity';
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
 import { PaymentMethod } from 'src/delivery/enums/payment-methods.enum';
-import voucherRelations from '../voucher/data/relations/voucher';
 import { Role } from 'src/common/role/roles.enum';
-import { Voucher } from 'src/voucher/enums/voucher.enum';
 import { WorkTimeDateService } from 'src/place/services/work-time-date.service';
 import { getUnixTime } from 'date-fns';
 import { ResponsePreviewSettlement } from './types/response-preview-settlement.type';
@@ -54,9 +52,6 @@ export class SettlementService {
   ///// o motoboy RECEBERÁ, logo → totalRemainingMotoboy += change (?)
   //// Assim, o valor fica PENDENTE até que o TELE-VENDAS atualize
   //// o status da Delivery, a saber Delivery.isPaid = true;
-
-  // Há anotações sobre uma possível implementação do
-  // "fechamento parcial" do caixa
   async preview(
     userData: FindOptionsWhere<User>,
     from: Date,
@@ -77,35 +72,28 @@ export class SettlementService {
       workDay: from,
       operator: { id: operator.id },
     });
-
-    const vouchers = await this.voucherService.findAll({
-      from,
-      to,
-      type: Voucher.User,
-      userData,
-    });
+    const safeFrom = exists?.closingAt ? new Date(exists.closingAt) : from;
     const deliveries = await this.deliveryService.findAll({
-      from,
+      from: safeFrom,
       to,
       type: Role.Operator,
       userData,
     });
 
-    const settlement = {
-      weekDay: weekDays[from.getDay()],
-      workDay: from,
-      initValue: exists !== null ? exists.initValue : undefined,
+    const settlement: ResponsePreviewSettlement = {
+      weekDay: weekDays[safeFrom.getDay()],
+      workDay: safeFrom,
+      initValue: 0,
       quantityDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
       subtotal: 0,
       moneySubtotal: 0,
       cardSubtotal: 0,
       pixSubtotal: 0,
-      currentTotal: exists !== null ? exists.currentTotal : 0,
-      expectedTotal: exists !== null ? exists.expectedTotal : 0,
-      description: exists !== null ? exists.description : undefined,
+      currentTotal: 0,
+      expectedTotal: 0,
+      description: undefined,
       operator,
-      vouchers,
     };
 
     const generatePrefix = (name: PaymentMethod | null) => {
@@ -136,7 +124,7 @@ export class SettlementService {
     if (deliveries.length > 1) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
         userData,
-        from,
+        from: safeFrom,
         to,
       });
 
@@ -157,7 +145,7 @@ export class SettlementService {
     settlement.totalRemainingMotoboy =
       await this.deliveryService.sumTotalPurchaseCol({
         userData,
-        from,
+        from: safeFrom,
         to,
         isPaid: false,
       });
@@ -171,7 +159,12 @@ export class SettlementService {
       2,
     );
 
-    if (exists) {
+    if (exists && !exists.closingAt) {
+      settlement.initValue = exists.initValue;
+      settlement.currentTotal = exists.currentTotal;
+      settlement.expectedTotal = exists.expectedTotal;
+      settlement.description = exists.description;
+
       settlement.currentTotal = setDecimalPlaces(
         exists.initValue + currentTotal,
         2,
@@ -261,6 +254,7 @@ export class SettlementService {
     const settlement = await this.findOneByOrFail({ id });
 
     settlement.isClosed = flag;
+    settlement.closingAt = new Date();
 
     const updated = await this.save(settlement);
 
@@ -294,7 +288,6 @@ export class SettlementService {
       where: settlementData,
       relations: {
         operator: { workTime: true },
-        vouchers: voucherRelations,
       },
     });
   }
