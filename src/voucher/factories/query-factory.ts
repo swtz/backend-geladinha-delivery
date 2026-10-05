@@ -1,7 +1,6 @@
 import { User } from 'src/user/entities/user.entity';
 import { Between, FindOperator, FindOptionsWhere } from 'typeorm';
 import { Voucher } from '../enums/voucher.enum';
-import { Settlement } from 'src/settlement/entities/settlement.entity';
 import { Payout } from 'src/payout/entities/payout.entity';
 
 export interface Query {
@@ -12,7 +11,6 @@ export class VoucherFindAllQuery implements Query {
   user?: FindOptionsWhere<User>;
   createdBy?: FindOptionsWhere<User>;
   createdAt?: FindOperator<Date>;
-  settlement?: FindOptionsWhere<Settlement>;
   payout?: FindOptionsWhere<Payout>;
 }
 
@@ -24,7 +22,6 @@ type DateParams = {
 export type FindAllParams = {
   type?: Voucher;
   userData?: FindOptionsWhere<User>;
-  settlementData?: FindOptionsWhere<Settlement>;
   payoutData?: FindOptionsWhere<Payout>;
 } & DateParams;
 
@@ -41,7 +38,6 @@ abstract class AbstractMethod {
 export class VoucherFindAllFactory extends AbstractMethod {
   factoryMethod({
     userData,
-    settlementData,
     payoutData,
     from,
     to,
@@ -54,10 +50,6 @@ export class VoucherFindAllFactory extends AbstractMethod {
 
     if (!type || type === Voucher.DeliveryMan || type === Voucher.User) {
       queryObject.user = data;
-      return queryObject;
-    }
-    if (type === Voucher.Settlement) {
-      queryObject.settlement = settlementData;
       return queryObject;
     }
     if (type === Voucher.Payout) {
