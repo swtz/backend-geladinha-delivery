@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -52,39 +53,49 @@ export class DeliveryService {
         undefined,
         manager,
       );
-      const motoboy = await this.deliveryManService.findOneByOrFail(
-        { user: { id: dto.motoboy } },
-        true,
-        manager,
-      );
-      if (!motoboy.motorcycle) {
+      const motoboy = dto.motoboy
+        ? await this.deliveryManService.findOneByOrFail(
+            { user: { id: dto.motoboy } },
+            true,
+            manager,
+          )
+        : null;
+      if (motoboy && !motoboy.motorcycle) {
         throw new UnprocessableEntityException(
           `O motoboy ${motoboy.user.name} não possui uma moto cadastrada`,
         );
       }
 
-      const customer = await this.customerService.findOneByOrFail(
-        { id: dto.customer },
-        manager,
-      );
-      const defaultAddress = await this.addressService.findOneOwnedOrFail(
-        { isDefault: true },
-        { id: dto.customer },
-        manager,
-      );
+      const customer = dto.customer
+        ? await this.customerService.findOneByOrFail(
+            { id: dto.customer },
+            manager,
+          )
+        : null;
+      const defaultAddress = dto.customer
+        ? await this.addressService.findOneOwnedOrFail(
+            { isDefault: true },
+            { id: dto.customer },
+            manager,
+          )
+        : null;
       const paymentMethod = await this.paymentMethodService.findOneOrCreate(
         dto.paymentMethod,
         manager,
       );
-      const tip = dto.tip
-        ? await this.tipService.create(dto.tip, motoboy, manager)
-        : undefined;
+      const tip =
+        dto.tip && motoboy
+          ? await this.tipService.create(dto.tip, motoboy, manager)
+          : undefined;
 
       const delivery = {
         description: dto.description,
         totalPurchase: dto.totalPurchase,
         deliveryTax: dto.deliveryTax,
-        motorcycleLicensePlate: motoboy.motorcycle.licensePlate,
+        motorcycleLicensePlate:
+          motoboy && motoboy.motorcycle
+            ? motoboy.motorcycle.licensePlate
+            : null,
         tip,
         paymentMethod,
         operator,
@@ -203,6 +214,27 @@ export class DeliveryService {
 
       return this.save(delivery, manager);
     });
+  }
+
+  async attachTo(motoboy: User, id: string) {
+    const user = await this.userService.findOneByOrFail(
+      { id: motoboy.id },
+      'motoboy-essencial',
+    );
+    const delivery = await this.findOneByOrFail({ id });
+    if (!user.deliveryMan) {
+      throw new ForbiddenException('Acesso negado');
+    }
+    if (!user.deliveryMan.motorcycle) {
+      throw new UnprocessableEntityException(
+        'Você precisa ter uma moto cadastrada',
+      );
+    }
+    delivery.motoboy = user.deliveryMan;
+    delivery.motorcycleLicensePlate = user.deliveryMan.motorcycle.licensePlate;
+
+    const updated = await this.save(delivery);
+    return this.findOneByOrFail({ id: updated.id });
   }
 
   async findOneOwnedByOrFail(

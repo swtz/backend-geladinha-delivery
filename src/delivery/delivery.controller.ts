@@ -68,6 +68,16 @@ export class DeliveryController {
     return new ResponseDeliveryDto(delivery);
   }
 
+  @Roles(Role.Motoboy)
+  @Patch('me/attachTo/:id')
+  async attachTo(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const delivery = await this.deliveryService.attachTo(req.user, id);
+    return new ResponseDeliveryDto(delivery);
+  }
+
   @Delete('me/:id')
   async remove(
     @Req() req: AuthenticatedRequest,

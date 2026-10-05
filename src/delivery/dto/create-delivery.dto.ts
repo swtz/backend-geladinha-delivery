@@ -46,13 +46,13 @@ export class CreateDeliveryDto {
   @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Número inválido' })
   change?: number;
 
+  @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
-  motoboy!: string;
+  motoboy!: string | null;
 
+  @IsOptional()
   @IsUUID('4', { message: 'Formato inválido' })
-  @IsNotEmpty({ message: 'Campo cliente não pode estar vazio' })
-  customer!: string;
+  customer!: string | null;
 
   @IsNotEmpty({ message: 'Campo estabelecimento não pode estar vazio' })
   @IsString({ message: 'Formato inválido' })

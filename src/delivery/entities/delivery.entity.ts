@@ -41,8 +41,8 @@ export class Delivery {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @Column()
-  motorcycleLicensePlate!: string;
+  @Column({ type: 'varchar', nullable: true })
+  motorcycleLicensePlate!: string | null;
 
   @Column()
   placeCode!: string;

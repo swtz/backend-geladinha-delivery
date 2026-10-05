@@ -15,7 +15,7 @@ export class ResponseDeliveryDto {
   readonly deliveryTax: number;
   readonly paymentMethod: string | null;
   readonly isPaid: boolean;
-  readonly motorcycleLicensePlate: string;
+  readonly motorcycleLicensePlate: string | null;
   readonly placeCode: string;
   readonly change: number | null;
   readonly tip: Pick<Tip, 'id' | 'amount'> | null;
