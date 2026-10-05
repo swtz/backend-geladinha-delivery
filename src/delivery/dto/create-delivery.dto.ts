@@ -42,6 +42,10 @@ export class CreateDeliveryDto {
   )
   tip?: number;
 
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Número inválido' })
+  change?: number;
+
   @IsUUID('4', { message: 'Formato inválido' })
   @IsNotEmpty({ message: 'Campo motoboy não pode estar vazio' })
   motoboy!: string;

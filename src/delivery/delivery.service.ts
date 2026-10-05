@@ -92,6 +92,7 @@ export class DeliveryService {
         customer,
         address: defaultAddress,
         placeCode: dto.placeCode,
+        change: dto.change,
       };
       const created = await this.save(delivery, manager);
       return this.findOneByOrFail({ id: created.id }, manager);
@@ -198,6 +199,7 @@ export class DeliveryService {
       delivery.description = dto.description ?? delivery.description;
       delivery.totalPurchase = dto.totalPurchase ?? delivery.totalPurchase;
       delivery.placeCode = dto.placeCode ?? delivery.placeCode;
+      delivery.change = dto.change ?? delivery.change;
 
       return this.save(delivery, manager);
     });

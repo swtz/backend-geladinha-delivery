@@ -16,7 +16,6 @@ import { Settlement } from './entities/settlement.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeliveryService } from 'src/delivery/delivery.service';
 import { UserService } from 'src/user/services/user.service';
-import { VoucherService } from 'src/voucher/voucher.service';
 import { User } from 'src/user/entities/user.entity';
 import { weekDays } from 'src/common/enums/weekDays.enum';
 import { setDecimalPlaces } from 'src/common/utils/set-decimal-places';
@@ -32,26 +31,10 @@ export class SettlementService {
     @InjectRepository(Settlement)
     private readonly settlementRepository: Repository<Settlement>,
     private readonly deliveryService: DeliveryService,
-    private readonly voucherService: VoucherService,
     private readonly userService: UserService,
     private readonly workTimeDateService: WorkTimeDateService,
   ) {}
 
-  // método responsável pelos cálculos do caixa
-  // leva em conta um caixa lançado para
-  // UM Operator && UM WorkDay, ou seja,
-  // o sistema só permite UM lançamento por dia
-
-  // Fluxo da funcionalidade de troco:
-  // TELE-VENDAS insere:
-  //// paymentMethod === 'money'
-  //// `totalPurchase`
-  //// `deliveryTax`
-  //// change > 0 || change !== null
-  ////// change = 100 // de fato, 100 representa o valor em dinheiro que
-  ///// o motoboy RECEBERÁ, logo → totalRemainingMotoboy += change (?)
-  //// Assim, o valor fica PENDENTE até que o TELE-VENDAS atualize
-  //// o status da Delivery, a saber Delivery.isPaid = true;
   async preview(
     userData: FindOptionsWhere<User>,
     from: Date,
@@ -72,17 +55,25 @@ export class SettlementService {
       workDay: from,
       operator: { id: operator.id },
     });
-    const safeFrom = exists?.closingAt ? new Date(exists.closingAt) : from;
+    const [lastClosed] = await this.findAll(
+      {
+        operator: userData,
+        workDay: from,
+        isClosed: true,
+      },
+      { createdAt: 'DESC' },
+    );
+    const newFrom = lastClosed?.closingAt ? lastClosed.closingAt : from;
     const deliveries = await this.deliveryService.findAll({
-      from: safeFrom,
+      from: newFrom,
       to,
       type: Role.Operator,
       userData,
     });
 
     const settlement: ResponsePreviewSettlement = {
-      weekDay: weekDays[safeFrom.getDay()],
-      workDay: safeFrom,
+      weekDay: weekDays[from.getDay()],
+      workDay: from,
       initValue: 0,
       quantityDeliveries: deliveries.length,
       totalRemainingMotoboy: 0,
@@ -96,7 +87,14 @@ export class SettlementService {
       operator,
     };
 
-    const generatePrefix = (name: PaymentMethod | null) => {
+    if (exists && !exists.isClosed) {
+      settlement.initValue = exists.initValue;
+      settlement.description = exists.description;
+      settlement.currentTotal = exists.initValue;
+      settlement.expectedTotal = exists.initValue;
+    }
+
+    const generatePrefix = (name: PaymentMethod | undefined) => {
       if (!name) {
         return null;
       }
@@ -109,7 +107,7 @@ export class SettlementService {
     };
 
     function sumPaymentMethodSubtotal(
-      prefix: PaymentMethod | 'card' | null,
+      prefix: PaymentMethod | 'card' | null | undefined,
       value: number,
     ) {
       if (!prefix) {
@@ -121,66 +119,34 @@ export class SettlementService {
       settlement[prop] = setDecimalPlaces(settlement[prop] + value, 2);
     }
 
-    if (deliveries.length > 1) {
+    if (deliveries.length > 0) {
       settlement.subtotal = await this.deliveryService.sumTotalPurchaseCol({
         userData,
-        from: safeFrom,
+        from: newFrom,
         to,
       });
-
       deliveries.forEach(delivery => {
-        const name = delivery.paymentMethod
-          ? delivery.paymentMethod.name
-          : null;
-        sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
+        sumPaymentMethodSubtotal(
+          generatePrefix(delivery.paymentMethod?.name),
+          delivery.totalPurchase,
+        );
+
+        if (
+          delivery.paymentMethod?.name === PaymentMethod.Money &&
+          delivery.change
+        ) {
+          const bagValue = delivery.change - delivery.totalPurchase;
+          if (!delivery.isPaid) {
+            settlement.totalRemainingMotoboy += delivery.change;
+            settlement.currentTotal -= bagValue;
+          } else {
+            settlement.totalRemainingMotoboy -= 0;
+            settlement.currentTotal += delivery.totalPurchase;
+          }
+        }
       });
-    } else if (deliveries.length === 1) {
-      const [delivery] = deliveries;
-      const name = delivery.paymentMethod ? delivery.paymentMethod.name : null;
-
-      sumPaymentMethodSubtotal(generatePrefix(name), delivery.totalPurchase);
-      settlement.subtotal = delivery.totalPurchase;
     }
-
-    settlement.totalRemainingMotoboy =
-      await this.deliveryService.sumTotalPurchaseCol({
-        userData,
-        from: safeFrom,
-        to,
-        isPaid: false,
-      });
-
-    const currentTotal = setDecimalPlaces(
-      settlement.subtotal - settlement.totalRemainingMotoboy,
-      2,
-    );
-    const expectedTotal = setDecimalPlaces(
-      currentTotal + settlement.totalRemainingMotoboy,
-      2,
-    );
-
-    if (exists && !exists.closingAt) {
-      settlement.initValue = exists.initValue;
-      settlement.currentTotal = exists.currentTotal;
-      settlement.expectedTotal = exists.expectedTotal;
-      settlement.description = exists.description;
-
-      settlement.currentTotal = setDecimalPlaces(
-        exists.initValue + currentTotal,
-        2,
-      );
-
-      settlement.expectedTotal = setDecimalPlaces(
-        exists.initValue + expectedTotal,
-        2,
-      );
-
-      return settlement;
-    }
-
-    settlement.currentTotal += currentTotal;
-    settlement.expectedTotal += expectedTotal;
-
+    settlement.expectedTotal += settlement.subtotal;
     return settlement;
   }
 
@@ -195,7 +161,20 @@ export class SettlementService {
       operator: { id: settlementData.operator.id },
     });
 
-    if (exists) {
+    const [lastClosed] = await this.findAll(
+      {
+        operator: { id: settlementData.operator.id },
+        workDay: settlementData.workDay,
+        isClosed: true,
+      },
+      { createdAt: 'DESC' },
+    );
+
+    if (exists && !lastClosed) {
+      throw new ConflictException(
+        `Finalize o caixa anterior para abrir outro.\nOperador: ${exists.operator.name}`,
+      );
+    } else if (exists && !exists.isClosed) {
       throw new ConflictException(
         `Já foi criado um caixa para esse dia.\nOperador: ${exists.operator.name}`,
       );
@@ -235,7 +214,7 @@ export class SettlementService {
 
     if (getUnixTime(initDate) > getUnixTime(to)) {
       throw new BadRequestException(
-        'A data final não pode ser maior do que a data inicial',
+        'A data inicial não pode ser maior do que a data final',
       );
     }
 
@@ -254,8 +233,12 @@ export class SettlementService {
     const settlement = await this.findOneByOrFail({ id });
 
     settlement.isClosed = flag;
-    settlement.closingAt = new Date();
 
+    if (flag) {
+      settlement.closingAt = new Date();
+    } else {
+      settlement.closingAt = null;
+    }
     const updated = await this.save(settlement);
 
     return this.findOneByOrFail({ id: updated.id });

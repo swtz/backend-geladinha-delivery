@@ -12,7 +12,7 @@ export class ResponseSettlementDto {
   readonly weekDay: WeekDay;
   readonly workDay: Date;
   readonly isClosed?: boolean;
-  readonly closingDate?: Date | null;
+  readonly closingAt?: Date | null;
   readonly initValue?: number;
   readonly quantityDeliveries: number;
   readonly totalRemainingMotoboy: number;
@@ -35,7 +35,7 @@ export class ResponseSettlementDto {
       this.updatedAt = settlement.updatedAt;
       this.description = settlement.description;
       this.isClosed = settlement.isClosed;
-      this.closingDate = settlement.closingAt;
+      this.closingAt = settlement.closingAt;
     }
     this.initValue = settlement.initValue;
     this.quantityDeliveries = settlement.quantityDeliveries;

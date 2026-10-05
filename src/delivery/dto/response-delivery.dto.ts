@@ -17,6 +17,7 @@ export class ResponseDeliveryDto {
   readonly isPaid: boolean;
   readonly motorcycleLicensePlate: string;
   readonly placeCode: string;
+  readonly change: number | null;
   readonly tip: Pick<Tip, 'id' | 'amount'> | null;
   readonly operator: SmallResponseUserDto | null;
   readonly motoboy:
@@ -40,6 +41,7 @@ export class ResponseDeliveryDto {
     this.updatedAt = delivery.updatedAt;
     this.motorcycleLicensePlate = delivery.motorcycleLicensePlate;
     this.placeCode = delivery.placeCode;
+    this.change = delivery.change;
     this.tip = delivery.tip
       ? {
           id: delivery.tip.id,

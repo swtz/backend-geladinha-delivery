@@ -29,6 +29,9 @@ export class Delivery {
   @Column('float')
   deliveryTax!: number;
 
+  @Column({ type: 'float', nullable: true })
+  change!: number | null;
+
   @Column({ default: false })
   isPaid!: boolean;
 

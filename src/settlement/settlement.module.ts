@@ -4,7 +4,6 @@ import { SettlementController } from './settlement.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Settlement } from './entities/settlement.entity';
 import { DeliveryModule } from 'src/delivery/delivery.module';
-import { VoucherModule } from 'src/voucher/voucher.module';
 import { UserModule } from 'src/user/user.module';
 import { WorkTimeModule } from 'src/work-time/work-time.module';
 import { PlaceModule } from 'src/place/place.module';
@@ -13,7 +12,6 @@ import { PlaceModule } from 'src/place/place.module';
   imports: [
     TypeOrmModule.forFeature([Settlement]),
     DeliveryModule,
-    VoucherModule,
     UserModule,
     WorkTimeModule,
     PlaceModule,
