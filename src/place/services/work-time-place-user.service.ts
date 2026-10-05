@@ -40,7 +40,12 @@ export class WorkTimePlaceUserService {
       }
       this.workTimeService.failIfShiftExistsInPlace(place, dto.shift);
 
-      const workTime = await this.workTimeService.create(dto, true, manager);
+      const workTime = await this.workTimeService.create(
+        dto,
+        true,
+        dto.isDefault,
+        manager,
+      );
       if (workTime.isDefault) {
         const defaultWorkTime =
           this.workTimeService.findDefaultFromPlaceOrFail(place);
@@ -206,6 +211,7 @@ export class WorkTimePlaceUserService {
       const { workTime: oldWorkTime, intervalTime: oldIntervalTime } = user;
       const newWorkTime = await this.workTimeService.create(
         dto,
+        false,
         false,
         manager,
       );

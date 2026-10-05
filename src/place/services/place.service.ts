@@ -54,6 +54,7 @@ export class PlaceService {
       const workTime = await this.workTimeService.create(
         dto.workTime,
         true,
+        true,
         manager,
       );
       const place = {

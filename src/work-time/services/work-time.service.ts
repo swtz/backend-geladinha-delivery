@@ -34,6 +34,7 @@ export class WorkTimeService {
   async create(
     dto: CreateWorkTimeDto,
     isShared = false,
+    isDefault = false,
     manager?: EntityManager,
   ) {
     const duration = generateDurationTime(dto.initHour, dto.endHour);
@@ -42,7 +43,7 @@ export class WorkTimeService {
       initHour: getTimeFromDateIsoString(dto.initHour),
       endHour: getTimeFromDateIsoString(dto.endHour),
       duration,
-      isDefault: dto.isDefault ? dto.isDefault : false,
+      isDefault,
       isShared,
     };
     const created = await this.save(workTime, manager);
