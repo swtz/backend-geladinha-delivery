@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -46,6 +47,18 @@ export class DeliveryController {
     @Body() dto: CreateDeliveryDto,
     @Body('placeCode', ParsePlaceCodePipe) placeCode: string,
   ) {
+    if (dto.paymentMethod !== PaymentMethod.Money && dto.change) {
+      throw new BadRequestException(
+        'Campo troco só existe se a entrega for paga no dinheiro',
+      );
+    }
+
+    if (dto.change && dto.change < dto.totalPurchase) {
+      throw new BadRequestException(
+        'O troco não pode ser menor que o total da compra',
+      );
+    }
+
     const delivery = await this.deliveryService.create(
       { ...dto, placeCode },
       req.user,

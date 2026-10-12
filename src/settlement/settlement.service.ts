@@ -83,7 +83,7 @@ export class SettlementService {
       pixSubtotal: 0,
       currentTotal: 0,
       expectedTotal: 0,
-      description: undefined,
+      description: null,
       operator,
     };
 
@@ -94,11 +94,7 @@ export class SettlementService {
       settlement.expectedTotal = exists.initValue;
     }
 
-    const generatePrefix = (name: PaymentMethod | undefined) => {
-      if (!name) {
-        return null;
-      }
-
+    const generatePrefix = (name: PaymentMethod) => {
       const prefix =
         name === PaymentMethod.Credit || name === PaymentMethod.Debit
           ? 'card'
@@ -107,13 +103,9 @@ export class SettlementService {
     };
 
     function sumPaymentMethodSubtotal(
-      prefix: PaymentMethod | 'card' | null | undefined,
+      prefix: PaymentMethod | 'card',
       value: number,
     ) {
-      if (!prefix) {
-        return null;
-      }
-
       const prop = `${prefix}Subtotal`;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       settlement[prop] = setDecimalPlaces(settlement[prop] + value, 2);
@@ -125,28 +117,50 @@ export class SettlementService {
         from: newFrom,
         to,
       });
-      deliveries.forEach(delivery => {
-        sumPaymentMethodSubtotal(
-          generatePrefix(delivery.paymentMethod?.name),
-          delivery.totalPurchase,
-        );
+      settlement.currentTotal += await this.deliveryService.sumTotalPurchaseCol(
+        {
+          userData,
+          from: newFrom,
+          to,
+          isPaid: true,
+        },
+      );
+      settlement.totalRemainingMotoboy = 0;
 
-        if (
-          delivery.paymentMethod?.name === PaymentMethod.Money &&
-          delivery.change
-        ) {
-          const bagValue = delivery.change - delivery.totalPurchase;
-          if (!delivery.isPaid) {
-            settlement.totalRemainingMotoboy += delivery.change;
+      deliveries.forEach(delivery => {
+        if (delivery.paymentMethod !== null) {
+          const bagValue = delivery.change
+            ? delivery.change - delivery.totalPurchase
+            : 0;
+
+          if (
+            !delivery.isPaid &&
+            delivery.paymentMethod.name === PaymentMethod.Money
+          ) {
             settlement.currentTotal -= bagValue;
-          } else {
-            settlement.totalRemainingMotoboy -= 0;
-            settlement.currentTotal += delivery.totalPurchase;
+            settlement.totalRemainingMotoboy = delivery.change || 0;
           }
+
+          sumPaymentMethodSubtotal(
+            generatePrefix(delivery.paymentMethod.name),
+            delivery.totalPurchase,
+          );
         }
+
+        // compra: R$ 100,00 | troco: R$ 200,00
+        // bagValue = R$ 100,00 (valor que sai do caixa) logo:
+        //// currentTotal -= bagValue
+        // totalRemainingMotoboy = troco
+        // expectedTotal = initValue + (cálculo abaixo)
+        // bate o total da compra + o valor que saiu do caixa
+
+        // currentTotal deve conter a soma do totalPurchase
+        // apenas das delivery.isPaid === true
+
+        // se troco for mais do que o previsto é igual à gorjeta (?)
       });
+      settlement.expectedTotal += settlement.subtotal;
     }
-    settlement.expectedTotal += settlement.subtotal;
     return settlement;
   }
 
@@ -154,7 +168,7 @@ export class SettlementService {
     settlementData: ResponsePreviewSettlement,
     initValue: number,
     placeCode: string,
-    description?: string,
+    description: string | null,
   ) {
     const exists = await this.findOneByWorkDayAndOperator({
       workDay: settlementData.workDay,
@@ -181,20 +195,15 @@ export class SettlementService {
     }
 
     const { currentTotal, expectedTotal } = settlementData;
-
     settlementData.initValue = initValue;
+    settlementData.description = description;
     settlementData.currentTotal = setDecimalPlaces(currentTotal + initValue, 2);
     settlementData.expectedTotal = setDecimalPlaces(
       expectedTotal + initValue,
       2,
     );
 
-    if (description !== undefined) {
-      settlementData.description = description;
-    }
-
     const created = await this.save({ ...settlementData, placeCode });
-
     return this.findOneByOrFail({ id: created.id });
   }
 
