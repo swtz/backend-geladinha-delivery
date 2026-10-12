@@ -20,7 +20,7 @@ export class ResponseSettlementDto {
   readonly cardSubtotal: number;
   readonly pixSubtotal: number;
   readonly subtotal: number;
-  readonly description?: string | null;
+  readonly description: string | null;
   readonly currentTotal: number;
   readonly expectedTotal: number;
   readonly operator: SmallResponseUserDto & {
@@ -33,11 +33,11 @@ export class ResponseSettlementDto {
       this.placeCode = settlement.placeCode;
       this.createdAt = settlement.createdAt;
       this.updatedAt = settlement.updatedAt;
-      this.description = settlement.description;
       this.isClosed = settlement.isClosed;
       this.closingAt = settlement.closingAt;
     }
     this.initValue = settlement.initValue;
+    this.description = settlement.description;
     this.quantityDeliveries = settlement.quantityDeliveries;
     this.totalRemainingMotoboy = settlement.totalRemainingMotoboy;
     this.moneySubtotal = settlement.moneySubtotal;

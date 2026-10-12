@@ -35,5 +35,5 @@ export class CreateSettlementDto {
   @MaxLength(130, {
     message: 'A descrição só pode ter no máximo 130 caracteres',
   })
-  description?: string;
+  description!: string | null;
 }
