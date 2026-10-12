@@ -34,7 +34,8 @@ export class AddressService {
   }
 
   async update(dto: UpdateAddressDto, id: string, manager?: EntityManager) {
-    const address = await this.findOneByOrFail({ id }, false, manager);
+    const address = await this.findOneByOrFail({ id }, true, manager);
+    const { customer } = address;
     trimWhiteSpacesFromDto(dto, 4, 'number', 'stateCode', 'location');
     address.complement =
       dto.complement !== null ? dto.complement || address.complement : null;
@@ -55,10 +56,31 @@ export class AddressService {
       ? formatBrPostalCode(dto.postalCode)
       : address.postalCode;
     address.stateCode = dto.stateCode ?? address.stateCode;
-    // checar definição da instrução abaixo, pois isso pode dar problema
-    // ao lançar uma entrega em que o recurso não encontre
-    // nenhum Customer.addresses[0].isDefault === 'true';
-    address.isDefault = !dto.isDefault ? address.isDefault : dto.isDefault;
+
+    if (customer) {
+      const defaultAddress = this.findDefaultFromCustomer(customer);
+      if (dto.isDefault) {
+        if (defaultAddress) {
+          defaultAddress.isDefault = false;
+          await this.save(defaultAddress, manager);
+        } else {
+          throw new UnprocessableEntityException(
+            `Cliente ${customer.name} não possui endereço padrão`,
+          );
+        }
+        address.isDefault = true;
+      }
+
+      if (
+        dto.isDefault === false &&
+        defaultAddress &&
+        customer.addresses.length === 1
+      ) {
+        throw new UnprocessableEntityException(
+          `Cliente ${customer.name} requer, no mínimo, 1 endereço padrão`,
+        );
+      }
+    }
 
     const updated = await this.save(address, manager);
     return this.findOneByOrFail({ id: updated.id }, false, manager);
@@ -122,6 +144,12 @@ export class AddressService {
       throw new NotFoundException('Endereço não encontrado');
     }
 
+    return address;
+  }
+
+  findDefaultFromCustomer(customer: Customer) {
+    const { addresses } = customer;
+    const address = addresses.find(item => item.isDefault === true);
     return address;
   }
 

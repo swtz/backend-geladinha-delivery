@@ -61,11 +61,8 @@ export class CustomerAddressService {
           { id },
           manager,
         );
-
-        await this.addressService.save(
-          { ...defaultAddress, isDefault: false },
-          manager,
-        );
+        defaultAddress.isDefault = false;
+        await this.addressService.save(defaultAddress, manager);
       }
       const address = await this.addressService.create(
         dto,
