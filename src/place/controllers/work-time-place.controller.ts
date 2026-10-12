@@ -44,6 +44,7 @@ export class WorkTimePlaceController {
     return date;
   }
 
+  @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @Get()
   async findAllOfPlace(
     @Query('id', new ParseUUIDPipe({ optional: true })) id: string,

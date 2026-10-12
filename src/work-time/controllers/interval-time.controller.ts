@@ -66,6 +66,7 @@ export class IntervalTimeController {
     return parsedIntervalTimes;
   }
 
+  @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @Get('me')
   async findMy(@Req() req: AuthenticatedRequest) {
     const {

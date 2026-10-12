@@ -44,6 +44,7 @@ export class WorkTimeUserController {
     return new ResponseUserDto(user);
   }
 
+  @Roles(Role.Admin, Role.Operator, Role.Motoboy)
   @Post('me/interval-time')
   async createIntervalTime(
     @Req() req: AuthenticatedRequest,
